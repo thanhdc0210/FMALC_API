@@ -1,9 +1,0 @@
-package fmalc.api.repository;
-
-import fmalc.api.entities.DriverLicense;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-
-public interface DriverLicenseRepository extends JpaRepository<DriverLicense, Integer>, JpaSpecificationExecutor<DriverLicense> {
-
-}
