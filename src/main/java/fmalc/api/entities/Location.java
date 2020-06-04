@@ -1,6 +1,7 @@
 package fmalc.api.entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.*;
 
 import lombok.*;
@@ -26,10 +27,10 @@ public class Location implements Serializable {
     private String longitude;
 
     /**
-     * Thời gian xe dừng tại 1 điểm
+     * Thời gian khi xe dừng tại 1 điểm
      */
     @Column(name = "time", nullable = false)
-    private Double time;
+    private Timestamp time;
 
     @JoinColumn(name = "vehicle_id", nullable = false)
     @ManyToOne
