@@ -16,6 +16,10 @@ public class Schedule implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", insertable = false, nullable = false)
+    private Integer id;
+
     @JoinColumn(name = "consignment_id", insertable = false, nullable = false)
     @ManyToOne
     private Consignment consignmentId;
@@ -23,7 +27,6 @@ public class Schedule implements Serializable {
     @Column(name = "drive_date", nullable = false)
     private Date driveDate;
 
-    @Id
     @JoinColumn(insertable = false, name = "driver_id", nullable = false)
     @ManyToOne
     private Driver driverId;
@@ -37,7 +40,6 @@ public class Schedule implements Serializable {
     @Column(name = "note")
     private String note;
 
-    @Id
     @JoinColumn(name = "vehicle_id", insertable = false, nullable = false)
     @ManyToOne
     private Vehicle vehicleId;
