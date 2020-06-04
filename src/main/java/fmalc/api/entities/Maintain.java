@@ -38,7 +38,5 @@ public class Maintain implements Serializable {
 
     @JoinColumn(name = "vehicle_id", nullable = false)
     @ManyToOne
-    private Integer vehicleId;
-
-    
+    private Vehicle vehicleId;
 }
