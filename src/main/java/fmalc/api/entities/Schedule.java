@@ -20,14 +20,14 @@ public class Schedule implements Serializable {
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 
-    @JoinColumn(name = "consignment_id", insertable = false, nullable = false)
+    @JoinColumn(name = "consignment_id", nullable = false)
     @ManyToOne
     private Consignment consignmentId;
 
     @Column(name = "drive_date", nullable = false)
     private Date driveDate;
 
-    @JoinColumn(insertable = false, name = "driver_id", nullable = false)
+    @JoinColumn(name = "driver_id", nullable = false)
     @ManyToOne
     private Driver driverId;
 
@@ -40,7 +40,7 @@ public class Schedule implements Serializable {
     @Column(name = "note")
     private String note;
 
-    @JoinColumn(name = "vehicle_id", insertable = false, nullable = false)
+    @JoinColumn(name = "vehicle_id", nullable = false)
     @ManyToOne
     private Vehicle vehicleId;
 
