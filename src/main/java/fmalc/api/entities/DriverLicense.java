@@ -32,6 +32,5 @@ public class DriverLicense implements Serializable {
 
     @Column(name = "no", nullable = false)
     private String no;
-
     
 }
