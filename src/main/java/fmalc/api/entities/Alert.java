@@ -5,19 +5,18 @@ import java.sql.Timestamp;
 import javax.persistence.*;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "alert")
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Alert implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @JoinColumn(name = "alert_type_id", nullable = false)
-    @OneToOne
-    private AlertType alertTypeId;
+    @Column(name = "level", nullable = false)
+    private Integer level;
 
     @Column(name = "content", nullable = false)
     private String content;
@@ -27,7 +26,8 @@ public class Alert implements Serializable {
     private Driver driverId;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "generator", strategy = "increment")
+    @GeneratedValue(generator = "generator")
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 

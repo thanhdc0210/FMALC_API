@@ -5,11 +5,11 @@ import java.sql.Timestamp;
 import javax.persistence.*;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "notify")
 @Entity
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Notify implements Serializable {
@@ -19,7 +19,8 @@ public class Notify implements Serializable {
     private String content;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "generator", strategy = "increment")
+    @GeneratedValue(generator = "generator")
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 

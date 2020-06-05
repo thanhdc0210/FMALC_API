@@ -5,9 +5,9 @@ import java.sql.Timestamp;
 import javax.persistence.*;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "driver_license")
@@ -22,16 +22,15 @@ public class DriverLicense implements Serializable {
     private Double expires;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "generator", strategy = "increment")
+    @GeneratedValue(generator = "generator")
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 
-    @JoinColumn(name = "license_type_id", nullable = false)
-    @OneToOne
-    private LicenseType licenseTypeId;
+    @Column(name = "license_type", nullable = false)
+    private String licenseType;
 
     @Column(name = "no", nullable = false)
     private String no;
-
     
 }

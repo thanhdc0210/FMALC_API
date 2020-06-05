@@ -1,7 +1,4 @@
 package fmalc.api.service;
 
-import org.springframework.stereotype.Service;
-
-@Service
-public class NotifyTypeService {
+public interface NotifyTypeService {
 }
