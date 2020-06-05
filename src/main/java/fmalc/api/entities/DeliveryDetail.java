@@ -4,10 +4,10 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "delivery_detail")
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -15,7 +15,8 @@ public class DeliveryDetail implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "generator", strategy = "increment")
+    @GeneratedValue(generator = "generator")
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 

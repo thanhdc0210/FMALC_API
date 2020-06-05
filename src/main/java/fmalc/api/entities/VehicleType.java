@@ -9,10 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "vehicle_type")
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -23,7 +23,8 @@ public class VehicleType implements Serializable {
     private Double averageFuel;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "generator", strategy = "increment")
+    @GeneratedValue(generator = "generator")
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 

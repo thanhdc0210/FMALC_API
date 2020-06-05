@@ -10,10 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "receipt")
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -21,15 +21,16 @@ public class Receipt implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "generator", strategy = "increment")
+    @GeneratedValue(generator = "generator")
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 
     @Column(name = "latitude", nullable = false)
-    private String latitude;
+    private Double latitude;
 
     @Column(name = "longitude", nullable = false)
-    private String longitude;
+    private Double longitude;
 
     @Column(name = "place_of_receipt", nullable = false)
     private String placeOfReceipt;
