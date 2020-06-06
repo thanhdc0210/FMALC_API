@@ -14,4 +14,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer>, JpaS
 
     @Query("select a.role from Account a where a.username = ?1 and a.password = ?2")
     String findRoleByUsernameAndPassword(String username, String password);
+
+    Account findByUsername(String username);
 }
