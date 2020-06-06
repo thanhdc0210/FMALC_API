@@ -1,7 +1,6 @@
 package fmalc.api.controller;
 
 import fmalc.api.entities.Account;
-import fmalc.api.entities.ModelTest;
 import fmalc.api.response.AccountResponse;
 import fmalc.api.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
