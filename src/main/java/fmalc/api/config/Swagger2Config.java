@@ -2,6 +2,8 @@ package fmalc.api.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -23,13 +25,9 @@ import java.util.List;
 public class Swagger2Config {
     @Bean
     public Docket api(ServletContext servletContext) {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("fmalc.api.controller"))
-                .paths(PathSelectors.any())
-                .build()
-                .apiInfo(apiInfo())
-                .securitySchemes(Arrays.asList(apiKey()))
+        return new Docket(DocumentationType.SWAGGER_2).select()
+                .apis(RequestHandlerSelectors.basePackage("fmalc.api.controller")).paths(PathSelectors.any()).build()
+                .apiInfo(apiInfo()).securitySchemes(Arrays.asList(apiKey()))
                 .securityContexts(Collections.singletonList(securityContext()));
     }
 
@@ -39,7 +37,7 @@ public class Swagger2Config {
 
     private List<SecurityReference> defaultAuth() {
         final AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-        final AuthorizationScope[] authorizationScopes = new AuthorizationScope[]{authorizationScope};
+        final AuthorizationScope[] authorizationScopes = new AuthorizationScope[] { authorizationScope };
         return Collections.singletonList(new SecurityReference("Bearer", authorizationScopes));
     }
 
@@ -48,8 +46,7 @@ public class Swagger2Config {
     }
 
     private ApiInfo apiInfo() {
-        ApiInfo apiInfo = new ApiInfo("FMALC REST API", "REST API for FMALC", "1.0", "",
-                null, "", "");
+        ApiInfo apiInfo = new ApiInfo("FMALC REST API", "REST API for FMALC", "1.0", "", null, "", "");
         return apiInfo;
     }
 }
