@@ -31,6 +31,4 @@ public class ConsignmentStatusDetail implements Serializable {
 
     @Column(name = "time", nullable = false)
     private Timestamp time;
-
-    
 }
