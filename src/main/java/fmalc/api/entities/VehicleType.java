@@ -4,7 +4,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -34,5 +33,4 @@ public class VehicleType implements Serializable {
     @Column(name = "vehicle_type_name", nullable = false)
     private String vehicleTypeName;
 
-    
 }

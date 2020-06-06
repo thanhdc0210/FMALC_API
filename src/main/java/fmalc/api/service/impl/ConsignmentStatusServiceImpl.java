@@ -1,6 +1,5 @@
 package fmalc.api.service.impl;
 
-import fmalc.api.service.ConsignmentService;
 import fmalc.api.service.ConsignmentStatusService;
 import org.springframework.stereotype.Service;
 
