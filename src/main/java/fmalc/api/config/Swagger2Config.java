@@ -46,7 +46,7 @@ public class Swagger2Config {
     }
 
     private ApiInfo apiInfo() {
-        ApiInfo apiInfo = new ApiInfo("FMALC REST API", "REST API for FMALC", "1.0", "", null, "", "");
-        return apiInfo;
+
+        return new ApiInfoBuilder().title("FMALC REST API").description("REST API for FMALC").version("1.0.0").build();
     }
 }
