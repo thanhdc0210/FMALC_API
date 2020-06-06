@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -14,4 +15,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer>, JpaS
 
     @Query("select a.role from Account a where a.username = ?1 and a.password = ?2")
     String findRoleByUsernameAndPassword(String username, String password);
+
+    List<Account> findAllBy();
 }
