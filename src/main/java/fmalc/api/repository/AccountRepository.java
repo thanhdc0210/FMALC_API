@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
