@@ -20,7 +20,7 @@ public class Vehicle implements Serializable {
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
     @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
+    @Column(name = "id")
     private Integer id;
 
     @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })

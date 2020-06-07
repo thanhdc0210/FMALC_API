@@ -17,7 +17,7 @@ public class DriverLicense implements Serializable {
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
     @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
+    @Column(name = "id")
     private Integer id;
 
     @Column(name = "beginning_date", nullable = false)

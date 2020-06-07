@@ -15,13 +15,10 @@ import org.hibernate.annotations.GenericGenerator;
 public class Notify implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "content", nullable = false)
-    private String content;
-
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
     @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
+    @Column(name = "id")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
@@ -38,8 +35,7 @@ public class Notify implements Serializable {
     @Column(name = "time", nullable = false)
     private Timestamp time;
 
-    @JoinColumn(name = "vehicle_id", nullable = false)
-    @ManyToOne
-    private Vehicle vehicleId;
+    @Column(name = "content", nullable = false)
+    private String content;
 
 }
