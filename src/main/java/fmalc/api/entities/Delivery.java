@@ -43,7 +43,4 @@ public class Delivery implements Serializable {
 
     @Column(name = "place_of_delivery")
     private String placeOfDelivery;
-
-    @Column(name = "time_receipt", nullable = false)
-    private Timestamp timeReceipt;
 }
