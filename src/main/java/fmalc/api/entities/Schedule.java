@@ -21,16 +21,20 @@ public class Schedule implements Serializable {
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 
-    @JoinColumn(name = "consignment_id", nullable = false)
-    @ManyToOne
-    private Consignment consignmentId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", insertable = false)
+    private Vehicle vehicle;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "driver_id", referencedColumnName = "id", insertable = false)
+    private Driver driverId;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "consignment_id", referencedColumnName = "id", insertable = false)
+    private Consignment consignment;
 
     @Column(name = "drive_date", nullable = false)
     private Date driveDate;
-
-    @JoinColumn(name = "driver_id", nullable = false)
-    @ManyToOne
-    private Driver driverId;
 
     @Column(name = "image_consignment", nullable = false)
     private String imageConsignment;
@@ -40,10 +44,4 @@ public class Schedule implements Serializable {
      */
     @Column(name = "note")
     private String note;
-
-    @JoinColumn(name = "vehicle_id", nullable = false)
-    @ManyToOne
-    private Vehicle vehicleId;
-
-    
 }

@@ -21,16 +21,15 @@ public class VehicleStatusDetail implements Serializable {
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 
-    @JoinColumn(name = "id_status", nullable = false)
-    @ManyToOne
-    private VehicleStatus idStatus;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "id_vehicle", referencedColumnName = "id", insertable = false)
+    private Vehicle vehicle;
 
-    @JoinColumn(name = "id_vehicle", nullable = false)
-    @ManyToOne
-    private Vehicle idVehicle;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "id_status", referencedColumnName = "id", insertable = false)
+    private VehicleStatus vehicleStatus;
 
     @Column(name = "time", nullable = false)
     private Timestamp time;
 
-    
 }

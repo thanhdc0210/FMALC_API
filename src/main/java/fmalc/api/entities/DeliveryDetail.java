@@ -17,20 +17,14 @@ public class DeliveryDetail implements Serializable {
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
     @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
+    @Column(name = "id")
     private Integer id;
 
-    @JoinColumn(name = "id_consignment", nullable = false)
-    @OneToOne
-    private Consignment idConsignment;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "id_consignment", referencedColumnName = "id", insertable = false)
+    private Consignment consignment;
 
-    @JoinColumn(name = "id_delivery", nullable = false)
-    @ManyToOne
-    private Delivery idDelivery;
-
-    @JoinColumn(name = "id_receipt", nullable = false)
-    @ManyToOne
-    private Receipt idReceipt;
-
-    
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "id_delivery", referencedColumnName = "id", insertable = false)
+    private Delivery delivery;
 }

@@ -21,6 +21,14 @@ public class Maintain implements Serializable {
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", insertable = false)
+    private Vehicle vehicle;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "maintain_type_id", referencedColumnName = "id", insertable = false)
+    private MaintainType maintainType;
+
     @Column(name = "image_maintain", nullable = false)
     private String imageMaintain;
 
@@ -32,12 +40,4 @@ public class Maintain implements Serializable {
 
     @Column(name = "maintain_date", nullable = false)
     private Date maintainDate;
-
-    @JoinColumn(name = "maintain_type_id", nullable = false)
-    @ManyToOne
-    private MaintainType maintainTypeId;
-
-    @JoinColumn(name = "vehicle_id", nullable = false)
-    @ManyToOne
-    private Vehicle vehicleId;
 }

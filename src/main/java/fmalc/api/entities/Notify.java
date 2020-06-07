@@ -24,9 +24,13 @@ public class Notify implements Serializable {
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 
-    @JoinColumn(name = "notify_type_id", nullable = false)
-    @ManyToOne
-    private NotifyType notifyTypeId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", updatable = false, insertable = false)
+    private Vehicle onwerNotify;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "notify_type_id", referencedColumnName = "id")
+    private NotifyType notifyType;
 
     /**
      * Thời gian gửi thông báo
@@ -38,5 +42,4 @@ public class Notify implements Serializable {
     @ManyToOne
     private Vehicle vehicleId;
 
-    
 }

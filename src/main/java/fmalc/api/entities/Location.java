@@ -32,10 +32,4 @@ public class Location implements Serializable {
      */
     @Column(name = "time", nullable = false)
     private Timestamp time;
-
-    @JoinColumn(name = "vehicle_id", nullable = false)
-    @ManyToOne
-    private Vehicle vehicleId;
-
-    
 }

@@ -14,6 +14,11 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class DriverLicense implements Serializable {
     private static final long serialVersionUID = 1L;
+    @Id
+    @GenericGenerator(name = "generator", strategy = "increment")
+    @GeneratedValue(generator = "generator")
+    @Column(name = "id", insertable = false, nullable = false)
+    private Integer id;
 
     @Column(name = "beginning_date", nullable = false)
     private Timestamp beginningDate;
@@ -21,16 +26,10 @@ public class DriverLicense implements Serializable {
     @Column(name = "expires", nullable = false)
     private Double expires;
 
-    @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
-    private Integer id;
-
     @Column(name = "license_type", nullable = false)
     private String licenseType;
 
     @Column(name = "no", nullable = false)
     private String no;
-    
+
 }

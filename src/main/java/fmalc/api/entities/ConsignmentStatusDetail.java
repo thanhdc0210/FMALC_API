@@ -21,12 +21,16 @@ public class ConsignmentStatusDetail implements Serializable {
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 
-    @JoinColumn(name = "id_consignment", nullable = false)
-    @ManyToOne
-    private Consignment idConsignment;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "id_consignment", referencedColumnName = "id", insertable = false)
+    private Consignment consignment;
 
-    @JoinColumn(name = "id_status", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "id_status", referencedColumnName = "id", insertable = false, updatable = false)
+    private ConsignmentStatus status;
+
     @ManyToOne
+    @JoinColumn(name = "id_status", nullable = false)
     private ConsignmentStatus idStatus;
 
     @Column(name = "time", nullable = false)
