@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class BootstrapData implements ApplicationListener<ContextRefreshedEvent> {
+
     @Autowired
     private AccountRepository accountRepository;
 
