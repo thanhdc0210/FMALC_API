@@ -29,19 +29,16 @@ public class Driver implements Serializable {
     private Collection<Alert> alerts;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "driver_status_id", referencedColumnName = "id", insertable = true)
+    @JoinColumn(name = "driver_status_id", referencedColumnName = "id", insertable = false)
     private DriverStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "driver_license_id", referencedColumnName = "id", insertable = true)
+    @JoinColumn(name = "driver_license_id", referencedColumnName = "id", insertable = false)
     private DriverLicense license;
 
      @JoinColumn(name = "account_id", nullable = false)
      @OneToOne
      private Account accountId;
-
-//    @Column(name = "driver_license_id", nullable = false)
-//    private Integer driverLicenseId;
 
     @Column(name = "identity_no", nullable = false)
     private String identityNo;
