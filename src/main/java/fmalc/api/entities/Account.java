@@ -1,7 +1,6 @@
 package fmalc.api.entities;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.*;
 
 import lombok.*;
