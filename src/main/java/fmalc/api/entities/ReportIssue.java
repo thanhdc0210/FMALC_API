@@ -18,23 +18,21 @@ public class ReportIssue implements Serializable {
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
     @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
+    @Column(name = "id")
     private Integer id;
 
-    @JoinColumn(name = "inspection_id", nullable = false)
-    @ManyToOne
-    private Inspection inspectionId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", insertable = false)
+    private Vehicle vehicle;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "driver_id", referencedColumnName = "id", insertable = false)
+    private Driver driver;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "inspection_id", referencedColumnName = "id", insertable = false)
+    private Inspection inspection;
 
     @Column(name = "time", nullable = false)
     private Timestamp time;
-
-    @JoinColumn(name = "vehicle_id", nullable = false)
-    @ManyToOne
-    private Vehicle vehicleId;
-
-    @JoinColumn(name = "driver_id", nullable = false)
-    @ManyToOne
-    private Driver driverId;
-
-    
 }

@@ -21,7 +21,7 @@ public class VehicleStatus implements Serializable {
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
     @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
+    @Column(name = "id")
     private Integer id;
 
     @Column(name = "vehicle_status_name", nullable = false)

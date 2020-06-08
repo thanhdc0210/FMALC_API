@@ -1,10 +1,14 @@
 package fmalc.api.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.*;
@@ -24,8 +28,17 @@ public class Consignment implements Serializable {
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
     @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
+    @Column(name = "id")
     private Integer id;
+
+    @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    private Collection<Schedule> shedules;
+
+    @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    private Collection<ConsignmentStatusDetail> consignmentStatusDetails;
+
+    @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    private Collection<DeliveryDetail> deliveries;
 
     @Column(name = "owner_name", nullable = false)
     private String ownerName;

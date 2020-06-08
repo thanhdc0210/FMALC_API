@@ -25,9 +25,13 @@ import java.util.List;
 public class Swagger2Config {
     @Bean
     public Docket api(ServletContext servletContext) {
-        return new Docket(DocumentationType.SWAGGER_2).select()
-                .apis(RequestHandlerSelectors.basePackage("fmalc.api.controller")).paths(PathSelectors.any()).build()
-                .apiInfo(apiInfo()).securitySchemes(Arrays.asList(apiKey()))
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("fmalc.api.controller"))
+                .paths(PathSelectors.any())
+                .build()
+                .apiInfo(apiInfo())
+                .securitySchemes(Arrays.asList(apiKey()))
                 .securityContexts(Collections.singletonList(securityContext()));
     }
 

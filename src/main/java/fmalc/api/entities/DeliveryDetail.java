@@ -1,6 +1,8 @@
 package fmalc.api.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
+
 import javax.persistence.*;
 
 import lombok.*;
@@ -17,20 +19,18 @@ public class DeliveryDetail implements Serializable {
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
     @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
+    @Column(name = "id")
     private Integer id;
 
-    @JoinColumn(name = "id_consignment", nullable = false)
-    @OneToOne
-    private Consignment idConsignment;
+    @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    @JoinColumn(name = "id_receipt", referencedColumnName = "id", insertable = false)
+    private Collection<Receipt> receipts;
 
-    @JoinColumn(name = "id_delivery", nullable = false)
-    @ManyToOne
-    private Delivery idDelivery;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "id_consignment", referencedColumnName = "id", insertable = false)
+    private Consignment consignment;
 
-    @JoinColumn(name = "id_receipt", nullable = false)
-    @ManyToOne
-    private Receipt idReceipt;
-
-    
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "id_delivery", referencedColumnName = "id", insertable = false)
+    private Delivery delivery;
 }

@@ -18,19 +18,18 @@ public class VehicleStatusDetail implements Serializable {
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
     @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
+    @Column(name = "id")
     private Integer id;
 
-    @JoinColumn(name = "id_status", nullable = false)
-    @ManyToOne
-    private VehicleStatus idStatus;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "id_vehicle", referencedColumnName = "id", insertable = false)
+    private Vehicle vehicle;
 
-    @JoinColumn(name = "id_vehicle", nullable = false)
-    @ManyToOne
-    private Vehicle idVehicle;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "id_status", referencedColumnName = "id", insertable = false)
+    private VehicleStatus vehicleStatus;
 
     @Column(name = "time", nullable = false)
     private Timestamp time;
 
-    
 }
