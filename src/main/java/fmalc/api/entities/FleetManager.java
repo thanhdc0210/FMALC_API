@@ -13,7 +13,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "fleet_manager")
 public class FleetManager {
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
