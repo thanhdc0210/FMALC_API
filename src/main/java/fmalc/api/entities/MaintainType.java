@@ -18,14 +18,14 @@ import org.hibernate.annotations.GenericGenerator;
 public class MaintainType implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "content", nullable = false)
-    private String content;
-
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
     @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
+    @Column(name = "id")
     private Integer id;
+
+    @Column(name = "content", nullable = false)
+    private String content;
 
     @Column(name = "kilometers_number", nullable = false)
     private Integer kilometersNumber;

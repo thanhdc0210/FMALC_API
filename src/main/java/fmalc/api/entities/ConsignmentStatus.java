@@ -18,13 +18,12 @@ import org.hibernate.annotations.GenericGenerator;
 public class ConsignmentStatus implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "consignment_status_name", nullable = false)
-    private String consignmentStatusName;
-
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
     @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
+    @Column(name = "id")
     private Integer id;
 
+    @Column(name = "consignment_status_name", nullable = false)
+    private String consignmentStatusName;
 }

@@ -2,10 +2,14 @@ package fmalc.api.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.*;
@@ -25,8 +29,11 @@ public class Delivery implements Serializable {
     @Id
     @GenericGenerator(name = "generator", strategy = "increment")
     @GeneratedValue(generator = "generator")
-    @Column(name = "id", insertable = false, nullable = false)
+    @Column(name = "id")
     private Integer id;
+
+    @OneToMany(mappedBy = "delivery", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    private Collection<DeliveryDetail> deliveryDetail;
 
     @Column(name = "latitude")
     private Double latitude;
@@ -36,5 +43,4 @@ public class Delivery implements Serializable {
 
     @Column(name = "place_of_delivery")
     private String placeOfDelivery;
-
 }
