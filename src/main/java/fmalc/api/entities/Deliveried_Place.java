@@ -19,8 +19,8 @@ import org.hibernate.annotations.GenericGenerator;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "delivery")
-public class Delivery implements Serializable {
+@Table(name = "deliveried_place")
+public class Deliveried_Place implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "delivery_time")
@@ -32,7 +32,7 @@ public class Delivery implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @OneToMany(mappedBy = "delivery", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    @OneToMany(mappedBy = "deliveriedPlaces", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<DeliveryDetail> deliveryDetail;
 
     @Column(name = "latitude")
@@ -41,6 +41,6 @@ public class Delivery implements Serializable {
     @Column(name = "longitude")
     private Double longitude;
 
-    @Column(name = "place_of_delivery")
-    private String placeOfDelivery;
+    @Column(name = "address")
+    private String address;
 }

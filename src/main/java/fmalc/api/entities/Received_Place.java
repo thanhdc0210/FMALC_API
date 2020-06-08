@@ -2,21 +2,18 @@ package fmalc.api.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.Collection;
+import javax.persistence.*;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-@Table(name = "receipt")
+@Table(name = "received_place")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Receipt implements Serializable {
+public class Received_Place implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -31,10 +28,13 @@ public class Receipt implements Serializable {
     @Column(name = "longitude", nullable = false)
     private Double longitude;
 
-    @Column(name = "place_of_receipt", nullable = false)
-    private String placeOfReceipt;
+    @Column(name = "address", nullable = false)
+    private String address;
 
-    @Column(name = "time_receipt", nullable = false)
-    private Timestamp timeReceipt;
+    @Column(name = "receive_time", nullable = false)
+    private Timestamp receiveTime;
+
+    @OneToMany(mappedBy = "receivedPlaces", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    private Collection<DeliveryDetail> deliveryDetail;
 
 }

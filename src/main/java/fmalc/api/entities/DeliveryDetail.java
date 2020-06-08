@@ -23,14 +23,14 @@ public class DeliveryDetail implements Serializable {
     private Integer id;
 
     @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    @JoinColumn(name = "id_receipt", referencedColumnName = "id", insertable = false)
-    private Collection<Receipt> receipts;
+    @JoinColumn(name = "received_place_id", referencedColumnName = "id", insertable = false)
+    private Collection<Received_Place> receivedPlaces;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "id_consignment", referencedColumnName = "id", insertable = false)
+    @JoinColumn(name = "consignment_id", referencedColumnName = "id", insertable = false)
     private Consignment consignment;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "id_delivery", referencedColumnName = "id", insertable = false)
-    private Delivery delivery;
+    @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    @JoinColumn(name = "deliveried_place_id", referencedColumnName = "id", insertable = false)
+    private Collection<Deliveried_Place> deliveriedPlaces;
 }

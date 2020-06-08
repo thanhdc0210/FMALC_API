@@ -11,23 +11,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class BootstrapData implements ApplicationListener<ContextRefreshedEvent> {
-
-    @Autowired
-    private AccountRepository accountRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Override
-    @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        Account admin = accountRepository.findByUsername("admin");
-        if (admin == null) {
-            admin = new Account();
-            admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode("123456"));
-            admin.setRole("FLEET_MANAGER");
-            accountRepository.save(admin);
-        }
+
     }
+
+//    @Autowired
+//    private AccountRepository accountRepository;
+//
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
+//
+//    @Override
+//    @Transactional
+//    public void onApplicationEvent(ContextRefreshedEvent event) {
+//        Account admin = accountRepository.findByUsername("admin");
+//        if (admin == null) {
+//            admin = new Account();
+//            admin.setUsername("admin");
+//            admin.setPassword(passwordEncoder.encode("123456"));
+//            admin.setRole("FLEET_MANAGER");
+//            accountRepository.save(admin);
+//        }
+//    }
 }
