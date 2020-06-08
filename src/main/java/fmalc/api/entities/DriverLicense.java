@@ -21,8 +21,8 @@ public class DriverLicense implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    private Collection<DriverLicense> licenses;
+    @OneToMany(mappedBy = "license", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    private Collection<Driver> drivers;
 
     @Column(name = "beginning_date", nullable = false)
     private Timestamp beginningDate;

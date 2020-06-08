@@ -1,11 +1,8 @@
 package fmalc.api.entities;
 
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.Collection;
+import javax.persistence.*;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -28,10 +25,11 @@ public class Account implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "role", nullable = false)
-    private String role;
-
     @Column(name = "username", nullable = false)
     private String username;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false)
+    private Role role;
 
 }
