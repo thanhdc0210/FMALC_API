@@ -28,7 +28,7 @@ public class DriverLicense implements Serializable {
     private Timestamp beginningDate;
 
     @Column(name = "expires", nullable = false)
-    private Double expires;
+    private Timestamp expires;
 
     @Column(name = "license_type", nullable = false)
     private String licenseType;

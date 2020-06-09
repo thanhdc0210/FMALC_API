@@ -35,12 +35,15 @@ public class Deliveried_Place implements Serializable {
     @OneToMany(mappedBy = "deliveriedPlaces", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<DeliveryDetail> deliveryDetail;
 
-    @Column(name = "latitude")
+    @Column(name = "latitude", nullable = false)
     private Double latitude;
 
-    @Column(name = "longitude")
+    @Column(name = "longitude", nullable = false)
     private Double longitude;
 
-    @Column(name = "address")
+    @Column(name = "address", nullable = false)
     private String address;
+
+    @Column(name = "delivered_place_name", nullable = false)
+    private String delivered_place_name;
 }
