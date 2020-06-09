@@ -37,4 +37,6 @@ public class Received_Place implements Serializable {
     @OneToMany(mappedBy = "receivedPlaces", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<DeliveryDetail> deliveryDetail;
 
+    @Column(name = "received_place_name", nullable = false)
+    private String received_place_name;
 }
