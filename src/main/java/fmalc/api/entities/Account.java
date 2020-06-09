@@ -28,7 +28,7 @@ public class Account implements Serializable {
     private String username;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false)
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role role;
 
 }
