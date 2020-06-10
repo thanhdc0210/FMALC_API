@@ -17,20 +17,20 @@ public class DeliveryDetail implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
     @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    @JoinColumn(name = "received_place_id", referencedColumnName = "id", insertable = false, nullable = false)
+    @JoinColumn(name = "received_place_id", referencedColumnName = "id", nullable = false)
     private Received_Place receivedPlaces;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "consignment_id", referencedColumnName = "id", insertable = false, nullable = false)
+    @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
     private Consignment consignment;
 
     @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    @JoinColumn(name = "deliveried_place_id", referencedColumnName = "id", insertable = false, nullable = false)
+    @JoinColumn(name = "deliveried_place_id", referencedColumnName = "id", nullable = false)
     private Deliveried_Place deliveriedPlaces;
 }
