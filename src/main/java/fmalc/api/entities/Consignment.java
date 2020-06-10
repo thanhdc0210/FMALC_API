@@ -1,15 +1,10 @@
 package fmalc.api.entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Collection;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -26,8 +21,8 @@ public class Consignment implements Serializable {
     private Integer amount;
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
+    @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "id")
     private Integer id;
 
@@ -35,7 +30,7 @@ public class Consignment implements Serializable {
     private Collection<Schedule> shedules;
 
     @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    private Collection<ConsignmentStatusDetail> consignmentStatusDetails;
+    private Collection<ConsignmentHistory> consignmentHistories;
 
     @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<DeliveryDetail> deliveries;
@@ -55,4 +50,6 @@ public class Consignment implements Serializable {
     @Column(name = "weight", nullable = false)
     private Double weight;
 
+    @Column(name = "status", nullable = false)
+    private String status;
 }

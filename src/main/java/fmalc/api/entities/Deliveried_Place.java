@@ -4,13 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Collection;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -23,12 +17,9 @@ import org.hibernate.annotations.GenericGenerator;
 public class Deliveried_Place implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "delivery_time")
-    private Timestamp deliveryTime;
-
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
+    @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "id")
     private Integer id;
 
@@ -46,4 +37,10 @@ public class Deliveried_Place implements Serializable {
 
     @Column(name = "delivered_place_name", nullable = false)
     private String delivered_place_name;
+
+    @Column(name = "planned_delivery_time", nullable = false)
+    private Timestamp plannedDeliveryTime;
+
+    @Column(name = "actual_delivery_time", nullable = false)
+    private Timestamp actualDeliveryTime;
 }

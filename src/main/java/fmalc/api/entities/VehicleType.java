@@ -3,14 +3,7 @@ package fmalc.api.entities;
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -24,8 +17,8 @@ public class VehicleType implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
+    @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "id")
     private Integer id;
 
@@ -42,4 +35,7 @@ public class VehicleType implements Serializable {
     @Column(name = "vehicle_type_name", nullable = false)
     private String vehicleTypeName;
 
+    // Trọng tải của xe
+    @Column(name = "weight", nullable = false)
+    private Double weight;
 }
