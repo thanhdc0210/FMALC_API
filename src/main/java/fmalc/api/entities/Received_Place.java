@@ -34,7 +34,7 @@ public class Received_Place implements Serializable {
     @Column(name = "planned_receive_time", nullable = false)
     private Timestamp plannedReceiveTime;
 
-    @Column(name = "actual_receive_time", nullable = false)
+    @Column(name = "actual_receive_time")
     private Timestamp actualReceiveTime;
 
     @OneToMany(mappedBy = "receivedPlaces", cascade = { CascadeType.MERGE, CascadeType.PERSIST })

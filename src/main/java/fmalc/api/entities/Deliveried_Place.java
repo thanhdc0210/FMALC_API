@@ -41,6 +41,6 @@ public class Deliveried_Place implements Serializable {
     @Column(name = "planned_delivery_time", nullable = false)
     private Timestamp plannedDeliveryTime;
 
-    @Column(name = "actual_delivery_time", nullable = false)
+    @Column(name = "actual_delivery_time")
     private Timestamp actualDeliveryTime;
 }
