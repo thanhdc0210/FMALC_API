@@ -16,21 +16,21 @@ public class ReportIssue implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
+    @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "id")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", insertable = false)
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", insertable = false, nullable = false)
     private Vehicle vehicle;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "driver_id", referencedColumnName = "id", insertable = false)
+    @JoinColumn(name = "driver_id", referencedColumnName = "id", insertable = false, nullable = false)
     private Driver driver;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "inspection_id", referencedColumnName = "id", insertable = false)
+    @JoinColumn(name = "inspection_id", referencedColumnName = "id", insertable = false, nullable = false)
     private Inspection inspection;
 
     @Column(name = "time", nullable = false)

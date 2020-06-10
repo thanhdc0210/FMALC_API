@@ -17,20 +17,20 @@ public class DeliveryDetail implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
+    @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "id")
     private Integer id;
 
-    @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    @JoinColumn(name = "received_place_id", referencedColumnName = "id", insertable = false)
-    private Collection<Received_Place> receivedPlaces;
+    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    @JoinColumn(name = "received_place_id", referencedColumnName = "id", insertable = false, nullable = false)
+    private Received_Place receivedPlaces;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "consignment_id", referencedColumnName = "id", insertable = false)
+    @JoinColumn(name = "consignment_id", referencedColumnName = "id", insertable = false, nullable = false)
     private Consignment consignment;
 
-    @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    @JoinColumn(name = "deliveried_place_id", referencedColumnName = "id", insertable = false)
-    private Collection<Deliveried_Place> deliveriedPlaces;
+    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    @JoinColumn(name = "deliveried_place_id", referencedColumnName = "id", insertable = false, nullable = false)
+    private Deliveried_Place deliveriedPlaces;
 }
