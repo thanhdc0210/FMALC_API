@@ -26,10 +26,10 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         // Check role FLEET_MANAGER exist
-        Role fleetManagerRole = roleRepository.findByRole("ROLE_FLEET_MANAGER");
+        Role fleetManagerRole = roleRepository.findByRole("ROLE_ADMIN");
         if (fleetManagerRole == null) {
             fleetManagerRole = new Role();
-            fleetManagerRole.setRole("ROLE_FLEET_MANAGER");
+            fleetManagerRole.setRole("ROLE_ADMIN");
             fleetManagerRole = roleRepository.save(fleetManagerRole);
         }
 

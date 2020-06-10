@@ -18,8 +18,8 @@ public class Vehicle implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
@@ -45,7 +45,7 @@ public class Vehicle implements Serializable {
     private Collection<ReportIssue> reportIssues;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    @JoinColumn(name = "vehicle_type_id", referencedColumnName = "id", insertable = false, nullable = false)
+    @JoinColumn(name = "vehicle_type_id", referencedColumnName = "id", nullable = false)
     private VehicleType vehicleType;
 
     @Column(name = "kilometer_running", nullable = false)

@@ -16,21 +16,21 @@ public class Schedule implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", insertable = false, nullable = false)
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", nullable = false)
     private Vehicle vehicle;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "driver_id", referencedColumnName = "id", insertable = false, nullable = false)
+    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
     private Driver driverId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "consignment_id", referencedColumnName = "id", insertable = false, nullable = false)
+    @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
     private Consignment consignment;
 
     @Column(name = "image_consignment", nullable = false)

@@ -16,10 +16,10 @@ import java.sql.Timestamp;
 public class ConsignmentHistory {
 
     @Id
-//    @GenericGenerator(name = "generator", strategy = "increment")
-//    @GeneratedValue(generator = "generator")
-    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
+//    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
+//    @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "id")
     private Integer id;
 
@@ -31,10 +31,10 @@ public class ConsignmentHistory {
     private String note;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "consignment_id", referencedColumnName = "id", insertable = false, nullable = false)
+    @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
     private Consignment consignment;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "fleet_manager_id", referencedColumnName = "id", insertable = false, nullable = false)
+    @JoinColumn(name = "fleet_manager_id", referencedColumnName = "id", nullable = false)
     private FleetManager fleetManager;
 }

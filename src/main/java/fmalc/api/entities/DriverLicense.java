@@ -17,8 +17,8 @@ import org.hibernate.annotations.GenericGenerator;
 public class DriverLicense implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
