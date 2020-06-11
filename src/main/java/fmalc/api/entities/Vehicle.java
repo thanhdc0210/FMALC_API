@@ -26,8 +26,8 @@ public class Vehicle implements Serializable {
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<Location> locations;
 
-    @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    private Collection<VehicleStatusDetail> statusReport;
+    @Column(name = "status", nullable = false)
+    private Integer status;
 
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<Maintain> maintains;
