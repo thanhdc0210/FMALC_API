@@ -1,18 +1,33 @@
 package fmalc.api.enums;
 
 public enum DriverStatusEnum {
-    ĐANG_RẢNH("Đang rảnh"),
-    ĐANG_CHẠY("Đang chạy"),
-    XIN_NGHỈ_PHÉP("Xin nghỉ phép")
+    ĐANG_RẢNH("Đang rảnh"){public int getValue(){return 0;}},
+    ĐANG_CHẠY("Đang chạy"){public int getValue(){return 1;}},
+    XIN_NGHỈ_PHÉP("Xin nghỉ phép"){public int getValue(){return 2;}}
     ;
 
-    String driver_status_enum;
+    String driverStatusEnum;
 
     DriverStatusEnum(String driver_status_enum) {
-        this.driver_status_enum = driver_status_enum;
+        this.driverStatusEnum = driver_status_enum;
     }
 
-    public String getDriver_status_enum(){
-        return driver_status_enum;
+    public String getDriverStatusEnum(){
+        return driverStatusEnum;
+    }
+
+    public abstract int getValue();
+
+    public String getValueEnumToShow(int status){
+        switch (status){
+            case 0:
+                return ĐANG_RẢNH.getDriverStatusEnum();
+            case 1:
+                return ĐANG_CHẠY.getDriverStatusEnum();
+            case 2:
+                return XIN_NGHỈ_PHÉP.getDriverStatusEnum();
+            default:
+                throw new AssertionError("Unknown operations " + this);
+        }
     }
 }

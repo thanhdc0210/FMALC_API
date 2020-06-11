@@ -63,4 +63,7 @@ public class Vehicle implements Serializable {
     // Trọng tải của xe
     @Column(name = "weight", nullable = false)
     private Double weight;
+
+    @Column (name = "vehicle_name", nullable = false)
+    private String vehicleName;
 }

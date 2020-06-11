@@ -34,4 +34,7 @@ public class DriverLicense implements Serializable {
     @Column(name = "no", nullable = false)
     private String no;
 
+    @OneToMany(mappedBy = "driver_license", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    private Collection<VehicleType> vehicleTypes;
+
 }
