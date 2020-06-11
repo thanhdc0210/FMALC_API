@@ -33,15 +33,22 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
             roleAdmin = roleRepository.save(roleAdmin);
         }
 
-        // Check account FLEET_ADMIN exist
-        Account roleAccount = accountRepository.findByUsername("admin");
-        if (roleAccount == null) {
-            roleAccount = new Account();
-            roleAccount.setUsername("admin");
-            roleAccount.setPassword(passwordEncoder.encode("123456"));
-            roleAccount.setRole(roleAdmin);
-            roleAccount.setIsActive(true);
-            accountRepository.save(roleAccount);
+        // Check role DRIVER exist
+        Role driverRole = roleRepository.findByRole("ROLE_DRIVER");
+        if (driverRole == null) {
+            driverRole = new Role();
+            driverRole.setRole("ROLE_DRIVER");
+            roleRepository.save(driverRole);
+        }
+
+        // Check account FLEET_MANAGER exist
+        Account fleetManagerAccount = accountRepository.findByUsername("admin");
+        if (fleetManagerAccount == null) {
+            fleetManagerAccount = new Account();
+            fleetManagerAccount.setUsername("admin");
+            fleetManagerAccount.setPassword(passwordEncoder.encode("123456"));
+            fleetManagerAccount.setRole(roleAdmin);
+            accountRepository.save(fleetManagerAccount);
         }
     }
 }
