@@ -35,7 +35,7 @@ public class Deliveried_Place implements Serializable {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "delivered_place_name", nullable = false)
+    @Column(name = "deliveried_place_name", nullable = false)
     private String delivered_place_name;
 
     @Column(name = "planned_delivery_time", nullable = false)
