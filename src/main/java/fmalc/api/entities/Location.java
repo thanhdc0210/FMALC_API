@@ -16,8 +16,8 @@ public class Location implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
@@ -32,4 +32,8 @@ public class Location implements Serializable {
      */
     @Column(name = "time", nullable = false)
     private Timestamp time;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", nullable = false)
+    private Vehicle vehicle;
 }

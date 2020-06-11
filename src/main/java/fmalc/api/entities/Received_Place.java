@@ -17,8 +17,8 @@ public class Received_Place implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
@@ -31,10 +31,15 @@ public class Received_Place implements Serializable {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "receive_time", nullable = false)
-    private Timestamp receiveTime;
+    @Column(name = "planned_receive_time", nullable = false)
+    private Timestamp plannedReceiveTime;
+
+    @Column(name = "actual_receive_time")
+    private Timestamp actualReceiveTime;
 
     @OneToMany(mappedBy = "receivedPlaces", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<DeliveryDetail> deliveryDetail;
 
+    @Column(name = "received_place_name", nullable = false)
+    private String received_place_name;
 }

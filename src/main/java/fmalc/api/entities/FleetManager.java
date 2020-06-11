@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Getter
@@ -15,8 +16,8 @@ import javax.persistence.*;
 public class FleetManager {
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
@@ -33,7 +34,6 @@ public class FleetManager {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @JoinColumn(name = "vehicle_type_id", nullable = false)
-    @OneToOne
-    private VehicleType vehicleType;
+    @OneToMany(mappedBy = "fleetManager", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    private Collection<ConsignmentHistory> consignmentHistories;
 }

@@ -16,17 +16,17 @@ public class Notify implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", updatable = false, insertable = false)
-    private Vehicle onwerNotify;
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", nullable = false)
+    private Vehicle vehicle;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "notify_type_id", referencedColumnName = "id")
+    @JoinColumn(name = "notify_type_id", referencedColumnName = "id", nullable = false)
     private NotifyType notifyType;
 
     /**

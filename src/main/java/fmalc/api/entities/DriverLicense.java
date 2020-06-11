@@ -1,8 +1,8 @@
 package fmalc.api.entities;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.*;
 
 import lombok.*;
@@ -16,24 +16,24 @@ import org.hibernate.annotations.GenericGenerator;
 public class DriverLicense implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
     @OneToMany(mappedBy = "license", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<Driver> drivers;
 
-    @Column(name = "beginning_date", nullable = false)
-    private Timestamp beginningDate;
-
     @Column(name = "expires", nullable = false)
-    private Double expires;
+    private Date expires;
 
     @Column(name = "license_type", nullable = false)
     private String licenseType;
 
     @Column(name = "no", nullable = false)
     private String no;
+
+    @OneToMany(mappedBy = "driver_license", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    private Collection<VehicleType> vehicleTypes;
 
 }

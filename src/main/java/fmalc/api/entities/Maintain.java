@@ -16,17 +16,17 @@ public class Maintain implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", insertable = false)
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", nullable = false)
     private Vehicle vehicle;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "maintain_type_id", referencedColumnName = "id", insertable = false)
+    @JoinColumn(name = "maintain_type_id", referencedColumnName = "id", nullable = false)
     private MaintainType maintainType;
 
     @Column(name = "image_maintain", nullable = false)

@@ -17,8 +17,8 @@ public class Driver implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
@@ -28,12 +28,11 @@ public class Driver implements Serializable {
     @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
     private Collection<Alert> alerts;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "driver_status_id", referencedColumnName = "id", insertable = false)
-    private DriverStatus status;
+    @Column(name = "status", nullable = false)
+    private Integer status;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "driver_license_id", referencedColumnName = "id", insertable = false)
+    @JoinColumn(name = "driver_license_id", referencedColumnName = "id", nullable = false)
     private DriverLicense license;
 
      @JoinColumn(name = "account_id", nullable = false)

@@ -18,22 +18,21 @@ public class Vehicle implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "increment")
-    @GeneratedValue(generator = "generator")
+    @GenericGenerator(name = "generator", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
-    @OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<Location> locations;
 
-    @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    private Collection<VehicleStatusDetail> statusReport;
+    @Column(name = "status", nullable = false)
+    private Integer status;
 
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<Maintain> maintains;
 
-    @OneToMany(mappedBy = "onwerNotify", cascade = { CascadeType.MERGE })
+    @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<Notify> notifies;
 
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
@@ -46,14 +45,11 @@ public class Vehicle implements Serializable {
     private Collection<ReportIssue> reportIssues;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    @JoinColumn(name = "vehicle_type_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "vehicle_type_id", referencedColumnName = "id", nullable = false)
     private VehicleType vehicleType;
 
     @Column(name = "kilometer_running", nullable = false)
     private Integer kilometerRunning;
-
-    @Column(name = "current_location", nullable = false)
-    private String currentLocation;
 
     @Column(name = "date_of_manufacture", nullable = false)
     private Date dateOfManufacture;
@@ -64,8 +60,10 @@ public class Vehicle implements Serializable {
     @Column(name = "license_plates", nullable = false)
     private String licensePlates;
 
-    @JoinColumn(name = "vehicle_type_id", nullable = false)
-    @ManyToOne
-    private VehicleType vehicleTypeId;
+    // Trọng tải của xe
+    @Column(name = "weight", nullable = false)
+    private Double weight;
 
+    @Column (name = "vehicle_name", nullable = false)
+    private String vehicleName;
 }
