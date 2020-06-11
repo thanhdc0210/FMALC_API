@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "driver")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
