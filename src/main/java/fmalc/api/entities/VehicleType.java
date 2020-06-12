@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "vehicle_type")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -22,7 +23,7 @@ public class VehicleType implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @OneToMany(mappedBy = "vehicleType", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    @OneToMany(mappedBy = "vehicleType", cascade = { CascadeType.MERGE})
     @OrderBy("id")
     private Set<Vehicle> vehicles;
 
@@ -36,6 +37,5 @@ public class VehicleType implements Serializable {
     private String vehicleTypeName;
 
     // Trọng tải của xe
-    @Column(name = "weight", nullable = false)
-    private Double weight;
+
 }

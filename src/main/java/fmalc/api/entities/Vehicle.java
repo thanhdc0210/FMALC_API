@@ -6,12 +6,14 @@ import java.util.Collection;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "vehicle")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Vehicle implements Serializable {
@@ -23,7 +25,8 @@ public class Vehicle implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    @JsonIgnore
+    @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<Location> locations;
 
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -44,7 +47,8 @@ public class Vehicle implements Serializable {
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<ReportIssue> reportIssues;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE})
     @JoinColumn(name = "vehicle_type_id", referencedColumnName = "id", nullable = false)
     private VehicleType vehicleType;
 
@@ -54,6 +58,8 @@ public class Vehicle implements Serializable {
     @Column(name = "date_of_manufacture", nullable = false)
     private Date dateOfManufacture;
 
+    @Column(name = "weight", nullable = false)
+    private Double weight;
     /**
      * Biển số xe
      */
