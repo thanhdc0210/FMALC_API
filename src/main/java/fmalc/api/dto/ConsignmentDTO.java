@@ -21,7 +21,7 @@ public class ConsignmentDTO {
 
     private Integer consignment_id;
     private String owner_name;
-    private List<DeliveredPlace> deliveredPlaces;
+    DeliveredPlace deliveredPlace;
     private List<ReceivedPlace> receivedPlaces;
     private String license_plates; // Biển số xe
     private String driver_name;
@@ -34,10 +34,6 @@ public class ConsignmentDTO {
         String delivered_place_name = null;
         Timestamp planned_received_time = null;
         String received_place_name = null;
-
-        if (deliveredPlaces == null){
-            deliveredPlaces = new ArrayList<>();
-        }
 
         if (receivedPlaces == null){
             receivedPlaces = new ArrayList<>();
@@ -52,9 +48,8 @@ public class ConsignmentDTO {
             planned_received_time = deliveryDetail.getReceivedPlaces().getPlannedReceiveTime();
             planned_delivered_time = deliveryDetail.getDeliveredPlaces().getPlannedDeliveryTime();
             ReceivedPlace receivedPlace = new ReceivedPlace(planned_received_time, received_place_name);
-            DeliveredPlace deliveredPlace = new DeliveredPlace(planned_delivered_time, delivered_place_name);
+            deliveredPlace = new DeliveredPlace(planned_delivered_time, delivered_place_name);
             receivedPlaces.add(receivedPlace);
-            deliveredPlaces.add(deliveredPlace);
         }
 
         Collection<Schedule> schedulesList = consignment.getShedules();

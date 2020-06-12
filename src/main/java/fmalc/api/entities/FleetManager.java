@@ -37,4 +37,7 @@ public class FleetManager {
 
     @OneToMany(mappedBy = "fleetManager", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<ConsignmentHistory> consignmentHistories;
+
+    @OneToMany(mappedBy = "fleetManager", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    private Collection<Driver> drivers;
 }

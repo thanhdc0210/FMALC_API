@@ -39,6 +39,10 @@ public class Driver implements Serializable {
     @JoinColumn(name = "driver_license_id", referencedColumnName = "id", nullable = false)
     private DriverLicense license;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "fleet_manager_id", referencedColumnName = "id", nullable = false)
+    private FleetManager fleetManager;
+
      @JoinColumn(name = "account_id", nullable = false)
      @OneToOne
      private Account account;
