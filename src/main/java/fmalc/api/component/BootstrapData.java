@@ -33,6 +33,14 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
             fleetManagerRole = roleRepository.save(fleetManagerRole);
         }
 
+        // Check role DRIVER exist
+        Role driverRole = roleRepository.findByRole("ROLE_DRIVER");
+        if (driverRole == null) {
+            driverRole = new Role();
+            driverRole.setRole("ROLE_DRIVER");
+            roleRepository.save(driverRole);
+        }
+
         // Check account FLEET_MANAGER exist
         Account fleetManagerAccount = accountRepository.findByUsername("admin");
         if (fleetManagerAccount == null) {
