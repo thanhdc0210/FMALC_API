@@ -1,8 +1,8 @@
 package fmalc.api.controller;
 
 import fmalc.api.entities.Consignment;
-import fmalc.api.response.ConsignmentResponse;
-import fmalc.api.response.DetailedConsignmentResponse;
+import fmalc.api.dto.ConsignmentDTO;
+import fmalc.api.dto.DetailedConsignmentDTO;
 import fmalc.api.service.ConsignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,11 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/v1.0/consignments")
@@ -25,25 +23,25 @@ public class ConsignmentController {
     ConsignmentService consignmentService;
 
 
-    @GetMapping(value = "/{status}")
+    @GetMapping(value = "status/{status}")
 
-    public ResponseEntity<List<ConsignmentResponse>> findByStatus(@PathVariable("status") Integer status){
+    public ResponseEntity<List<ConsignmentDTO>> findByStatus(@PathVariable("status") Integer status){
         List<Consignment> consignments = consignmentService.findByStatus(status);
         if (consignments.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        List<ConsignmentResponse> consignmentResponses = new ArrayList<>(new ConsignmentResponse().mapToListResponse(consignments));
+        List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
 
         return ResponseEntity.ok().body(consignmentResponses);
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<List<DetailedConsignmentResponse>> findByConsignmentId(@PathVariable("id") Integer id){
+    @GetMapping(value = "id/{id}")
+    public ResponseEntity<List<DetailedConsignmentDTO>> findByConsignmentId(@PathVariable("id") Integer id){
         List<Consignment> consignments = consignmentService.findByConsignmentId(id);
         if (consignments.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-        List<DetailedConsignmentResponse> detailedConsignmentResponses = new ArrayList<>(new DetailedConsignmentResponse().mapToListResponse(consignments));
+        List<DetailedConsignmentDTO> detailedConsignmentResponses = new ArrayList<>(new DetailedConsignmentDTO().mapToListResponse(consignments));
 
         return ResponseEntity.ok().body(detailedConsignmentResponses);
     }

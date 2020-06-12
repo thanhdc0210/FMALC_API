@@ -1,4 +1,4 @@
-package fmalc.api.response;
+package fmalc.api.dto;
 
 import fmalc.api.entities.*;
 import lombok.AllArgsConstructor;
@@ -16,14 +16,14 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DetailedConsignmentResponse {
+public class DetailedConsignmentDTO {
     private Integer consignment_id;
     private String license_plates;
     private List<DeliveredPlace> deliveredPlaces;
     private List<ReceivedPlace> receivedPlaces;
     private String owner_note;
 
-    public DetailedConsignmentResponse(Consignment consignment){
+    public DetailedConsignmentDTO(Consignment consignment){
 
         Timestamp planned_delivered_time = null;
         String delivered_place_name = null;
@@ -66,10 +66,10 @@ public class DetailedConsignmentResponse {
         }
     }
 
-    public List<DetailedConsignmentResponse> mapToListResponse(List<Consignment> baseEntities) {
+    public List<DetailedConsignmentDTO> mapToListResponse(List<Consignment> baseEntities) {
         return baseEntities
                 .stream()
-                .map(DetailedConsignmentResponse::new)
+                .map(DetailedConsignmentDTO::new)
                 .collect(Collectors.toList());
     }
 }

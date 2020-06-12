@@ -1,4 +1,4 @@
-package fmalc.api.response;
+package fmalc.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fmalc.api.entities.Account;
@@ -12,22 +12,22 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AccountResponse {
+public class AccountDTO {
 
     private String username;
 
     @JsonProperty("roleAccount")
     private String role;
 
-    public AccountResponse(Account entity) {
+    public AccountDTO(Account entity) {
         this.username = entity.getUsername();
         this.role = entity.getRole().getRole();
     }
 
-    public List<AccountResponse> mapToListResponse(List<Account> baseEntities) {
+    public List<AccountDTO> mapToListResponse(List<Account> baseEntities) {
         return baseEntities
                 .stream()
-                .map(AccountResponse::new)
+                .map(AccountDTO::new)
                 .collect(Collectors.toList());
     }
 

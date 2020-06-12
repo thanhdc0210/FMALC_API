@@ -6,7 +6,6 @@ import fmalc.api.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -48,9 +47,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         authenticationFilter.setFilterProcessesUrl(AUTH_LOGIN_URL);
 
         http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll()
-                .antMatchers(HttpMethod.POST, AUTH_LOGIN_URL).permitAll()
+//                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll()
+//                .antMatchers(HttpMethod.POST, "/auth/**").permitAll()
 //                .anyRequest().authenticated()
                 //Disable to apply Authorize
                 .anyRequest().permitAll()

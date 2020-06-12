@@ -1,4 +1,4 @@
-package fmalc.api.response;
+package fmalc.api.dto;
 
 import fmalc.api.entities.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConsignmentResponse {
+public class ConsignmentDTO {
 
     private Integer consignment_id;
     private String owner_name;
@@ -28,7 +28,7 @@ public class ConsignmentResponse {
     private Double weight; // Khối lượng lô hàng
     private String status;
 
-    public ConsignmentResponse(Consignment consignment) {
+    public ConsignmentDTO(Consignment consignment) {
 
         Timestamp planned_delivered_time = null;
         String delivered_place_name = null;
@@ -66,10 +66,10 @@ public class ConsignmentResponse {
         this.status = ConsignmentStatusEnum.ĐANG_CHỜ_XỬ_LÝ.getValueEnumToShow(consignment.getStatus());
     }
 
-    public List<ConsignmentResponse> mapToListResponse(List<Consignment> baseEntities) {
+    public List<ConsignmentDTO> mapToListResponse(List<Consignment> baseEntities) {
         return baseEntities
                 .stream()
-                .map(ConsignmentResponse::new)
+                .map(ConsignmentDTO::new)
                 .collect(Collectors.toList());
     }
 }
