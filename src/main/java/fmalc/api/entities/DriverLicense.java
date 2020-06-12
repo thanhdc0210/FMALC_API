@@ -26,14 +26,10 @@ public class DriverLicense implements Serializable {
     @OneToMany(mappedBy = "license", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<Driver> drivers;
 
-    @Column(name = "expires", nullable = false)
-    private Date expires;
-
+    // Hạng bằng lái
     @Column(name = "license_type", nullable = false)
     private String licenseType;
 
-    @Column(name = "no", nullable = false)
-    private String no;
 
     @OneToMany(mappedBy = "driver_license", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<VehicleType> vehicleTypes;

@@ -2,6 +2,7 @@ package fmalc.api.entities;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -55,4 +56,10 @@ public class Driver implements Serializable {
 
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
+
+    @Column(name = "no", nullable = false)
+    private String no;
+
+    @Column(name = "expires", nullable = false)
+    private Date expires;
 }
