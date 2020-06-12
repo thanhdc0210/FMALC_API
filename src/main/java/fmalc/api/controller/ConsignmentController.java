@@ -17,13 +17,16 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-//@RequestMapping(name = "/api/v1.0/consigments", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1.0/consignments")
+
 public class ConsignmentController {
 
     @Autowired
     ConsignmentService consignmentService;
 
-    @GetMapping(value = "/homepage/{status}")
+
+    @GetMapping(value = "/{status}")
+
     public ResponseEntity<List<ConsignmentResponse>> findByStatus(@PathVariable("status") Integer status){
         List<Consignment> consignments = consignmentService.findByStatus(status);
         if (consignments.isEmpty()){

@@ -26,11 +26,11 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
         // Check role FLEET_MANAGER exist
-        Role fleetManagerRole = roleRepository.findByRole("ROLE_ADMIN");
-        if (fleetManagerRole == null) {
-            fleetManagerRole = new Role();
-            fleetManagerRole.setRole("ROLE_ADMIN");
-            fleetManagerRole = roleRepository.save(fleetManagerRole);
+        Role roleAdmin = roleRepository.findByRole("ROLE_ADMIN");
+        if (roleAdmin == null) {
+            roleAdmin = new Role();
+            roleAdmin.setRole("ROLE_ADMIN");
+            roleAdmin = roleRepository.save(roleAdmin);
         }
 
         // Check role DRIVER exist
@@ -42,13 +42,13 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         }
 
         // Check account FLEET_MANAGER exist
-        Account fleetManagerAccount = accountRepository.findByUsername("admin");
-        if (fleetManagerAccount == null) {
-            fleetManagerAccount = new Account();
-            fleetManagerAccount.setUsername("admin");
-            fleetManagerAccount.setPassword(passwordEncoder.encode("123456"));
-            fleetManagerAccount.setRole(fleetManagerRole);
-            accountRepository.save(fleetManagerAccount);
+        Account admin = accountRepository.findByUsername("admin");
+        if (admin == null) {
+            admin = new Account();
+            admin.setUsername("admin");
+            admin.setPassword(passwordEncoder.encode("123456"));
+            admin.setRole(roleAdmin);
+            accountRepository.save(admin);
         }
     }
 }

@@ -66,7 +66,9 @@ public class DriverServiceImpl implements DriverService {
         account.setRole(role);
         account = accountRepository.save(account);
 
-        driver.setAccountId(account);
+
+        driver.setAccount(account);
+
         driverLicense = driverLicenseRepository.save(driverLicense);
         driver.setLicense(driverLicense);
         driverRepository.save(driver);
