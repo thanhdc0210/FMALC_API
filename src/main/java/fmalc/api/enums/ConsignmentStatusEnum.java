@@ -1,13 +1,14 @@
 package fmalc.api.enums;
 
 public enum ConsignmentStatusEnum {
-    ĐANG_CHỜ_XỬ_LÝ("Đang chờ xử lý"){public int getValue(){return 0;}},
-    ĐANG_LẤY_HÀNG("Đang lấy hàng"){public int getValue(){return 1;}},
-    ĐANG_GIAO_HÀNG("Đang_giao_hàng"){public int getValue(){return 2;}},
-    HOÀN_THÀNH("Hoàn thành"){public int getValue(){return 3;}},
-    BỊ_HỦY("Bị hủy"){public int getValue(){return 4;}},
-    THIẾU_CHỨNG_TỪ("Thiếu chứng từ"){public int getValue(){return 5;}},
-    TẠM_HOÃN("Tạm hoãn"){public int getValue(){return 6;}};
+    ĐANG_CHỜ_XỬ_LÝ("Đang chờ xử lý"){@Override public int getValue(){return 0;}},
+    ĐANG_LẤY_HÀNG("Đang lấy hàng"){@Override public int getValue(){return 1;}},
+    ĐANG_GIAO_HÀNG("Đang_giao_hàng"){@Override public int getValue(){return 2;}},
+    HOÀN_THÀNH("Hoàn thành"){@Override public int getValue(){return 3;}},
+    BỊ_HỦY("Bị hủy"){@Override public int getValue(){return 4;}},
+    THIẾU_CHỨNG_TỪ("Thiếu chứng từ"){@Override public int getValue(){return 5;}},
+    TẠM_HOÃN("Tạm hoãn"){@Override public int getValue(){return 6;}},
+    ĐANG_KHỞI_HÀNH("Đang khởi hành"){@Override public int getValue(){return 7;}};
 
     String consignmentStatusEnum;
 
@@ -35,6 +36,8 @@ public enum ConsignmentStatusEnum {
                 return THIẾU_CHỨNG_TỪ.getConsignmentStatusEnum();
             case 6:
                 return TẠM_HOÃN.getConsignmentStatusEnum();
+            case 7:
+                return ĐANG_KHỞI_HÀNH.getConsignmentStatusEnum();
             default:
                 throw new AssertionError("Unknown operations " + this);
         }

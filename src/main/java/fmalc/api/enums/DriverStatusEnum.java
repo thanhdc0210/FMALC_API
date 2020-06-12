@@ -1,9 +1,10 @@
 package fmalc.api.enums;
 
 public enum DriverStatusEnum {
-    ĐANG_RẢNH("Đang rảnh"){public int getValue(){return 0;}},
-    ĐANG_CHẠY("Đang chạy"){public int getValue(){return 1;}},
-    XIN_NGHỈ_PHÉP("Xin nghỉ phép"){public int getValue(){return 2;}}
+    ĐANG_RẢNH("Đang rảnh"){@Override public int getValue(){return 0;}},
+    ĐANG_CHẠY("Đang chạy"){@Override public int getValue(){return 1;}},
+    XIN_NGHỈ_PHÉP("Xin nghỉ phép"){@Override public int getValue(){return 2;}},
+    CÓ_LỊCH_CHẠY("Có lịch chạy"){@Override public int getValue(){return 3;}}
     ;
 
     String driverStatusEnum;
@@ -26,6 +27,8 @@ public enum DriverStatusEnum {
                 return ĐANG_CHẠY.getDriverStatusEnum();
             case 2:
                 return XIN_NGHỈ_PHÉP.getDriverStatusEnum();
+            case 3:
+                return CÓ_LỊCH_CHẠY.getDriverStatusEnum();
             default:
                 throw new AssertionError("Unknown operations " + this);
         }

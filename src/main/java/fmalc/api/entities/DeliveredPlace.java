@@ -13,8 +13,8 @@ import org.hibernate.annotations.GenericGenerator;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "deliveried_place")
-public class Deliveried_Place implements Serializable {
+@Table(name = "delivered_place")
+public class DeliveredPlace implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -23,7 +23,7 @@ public class Deliveried_Place implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @OneToMany(mappedBy = "deliveriedPlaces", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    @OneToMany(mappedBy = "deliveredPlaces", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<DeliveryDetail> deliveryDetail;
 
     @Column(name = "latitude", nullable = false)
@@ -35,7 +35,7 @@ public class Deliveried_Place implements Serializable {
     @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "deliveried_place_name", nullable = false)
+    @Column(name = "delivered_place_name", nullable = false)
     private String delivered_place_name;
 
     @Column(name = "planned_delivery_time", nullable = false)
@@ -43,4 +43,15 @@ public class Deliveried_Place implements Serializable {
 
     @Column(name = "actual_delivery_time")
     private Timestamp actualDeliveryTime;
+
+    public DeliveredPlace(Timestamp plannedDeliveryTime, String delivered_place_name, String address) {
+        this.address = address;
+        this.delivered_place_name = delivered_place_name;
+        this.plannedDeliveryTime = plannedDeliveryTime;
+    }
+
+    public DeliveredPlace(Timestamp plannedDeliveryTime, String delivered_place_name) {
+        this.delivered_place_name = delivered_place_name;
+        this.plannedDeliveryTime = plannedDeliveryTime;
+    }
 }

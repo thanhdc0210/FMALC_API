@@ -1,7 +1,6 @@
 package fmalc.api.response;
 
 import fmalc.api.entities.*;
-import fmalc.api.enums.ConsignmentStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,23 +16,21 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConsignmentResponse {
-
+public class DetailedConsignmentResponse {
     private Integer consignment_id;
-    private String owner_name;
+    private String license_plates;
     private List<DeliveredPlace> deliveredPlaces;
     private List<ReceivedPlace> receivedPlaces;
-    private String license_plates; // Biển số xe
-    private String driver_name;
-    private Double weight; // Khối lượng lô hàng
-    private String status;
+    private String owner_note;
 
-    public ConsignmentResponse(Consignment consignment) {
+    public DetailedConsignmentResponse(Consignment consignment){
 
         Timestamp planned_delivered_time = null;
         String delivered_place_name = null;
+        String delivered_place_address = null;
         Timestamp planned_received_time = null;
         String received_place_name = null;
+        String received_place_address = null;
 
         if (deliveredPlaces == null){
             deliveredPlaces = new ArrayList<>();
@@ -44,32 +41,35 @@ public class ConsignmentResponse {
         }
 
         this.consignment_id = consignment.getId();
-        this.owner_name = consignment.getOwnerName();
-        Collection<DeliveryDetail> deliveryDetailList = consignment.getDeliveries();
-        for (DeliveryDetail deliveryDetail : deliveryDetailList){
-            received_place_name = deliveryDetail.getReceivedPlaces().getReceived_place_name();
-            delivered_place_name = deliveryDetail.getDeliveredPlaces().getDelivered_place_name();
-            planned_received_time = deliveryDetail.getReceivedPlaces().getPlannedReceiveTime();
-            planned_delivered_time = deliveryDetail.getDeliveredPlaces().getPlannedDeliveryTime();
-            ReceivedPlace receivedPlace = new ReceivedPlace(planned_received_time, received_place_name);
-            DeliveredPlace deliveredPlace = new DeliveredPlace(planned_delivered_time, delivered_place_name);
-            receivedPlaces.add(receivedPlace);
-            deliveredPlaces.add(deliveredPlace);
-        }
-
         Collection<Schedule> schedulesList = consignment.getShedules();
         for (Schedule schedule : schedulesList){
             this.license_plates = schedule.getVehicle().getLicensePlates();
-            this.driver_name = schedule.getDriver().getName();
         }
-        this.weight = consignment.getWeight();
-        this.status = ConsignmentStatusEnum.ĐANG_CHỜ_XỬ_LÝ.getValueEnumToShow(consignment.getStatus());
+
+        Collection<DeliveryDetail> deliveryDetailList = consignment.getDeliveries();
+        for (DeliveryDetail deliveryDetail : deliveryDetailList){
+            received_place_name = deliveryDetail.getReceivedPlaces().getReceived_place_name();
+            received_place_address = deliveryDetail.getReceivedPlaces().getAddress();
+            delivered_place_name = deliveryDetail.getDeliveredPlaces().getDelivered_place_name();
+            delivered_place_address = deliveryDetail.getDeliveredPlaces().getAddress();
+            planned_received_time = deliveryDetail.getReceivedPlaces().getPlannedReceiveTime();
+            planned_delivered_time = deliveryDetail.getDeliveredPlaces().getPlannedDeliveryTime();
+            ReceivedPlace receivedPlace = new ReceivedPlace(planned_received_time, received_place_name, received_place_address);
+            DeliveredPlace deliveredPlace = new DeliveredPlace(planned_delivered_time, delivered_place_name, delivered_place_address);
+            receivedPlaces.add(receivedPlace);
+            deliveredPlaces.add(deliveredPlace);
+        }
+        if (consignment.getOwnerNote() != null){
+            this.owner_note = consignment.getOwnerNote();
+        }else{
+            this.owner_note = "";
+        }
     }
 
-    public List<ConsignmentResponse> mapToListResponse(List<Consignment> baseEntities) {
+    public List<DetailedConsignmentResponse> mapToListResponse(List<Consignment> baseEntities) {
         return baseEntities
                 .stream()
-                .map(ConsignmentResponse::new)
+                .map(DetailedConsignmentResponse::new)
                 .collect(Collectors.toList());
     }
 }

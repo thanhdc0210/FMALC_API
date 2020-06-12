@@ -31,4 +31,6 @@ public class Account implements Serializable {
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     private Role role;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 }

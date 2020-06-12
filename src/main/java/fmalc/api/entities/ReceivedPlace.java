@@ -13,7 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Received_Place implements Serializable {
+public class ReceivedPlace implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -42,4 +42,15 @@ public class Received_Place implements Serializable {
 
     @Column(name = "received_place_name", nullable = false)
     private String received_place_name;
+
+    public ReceivedPlace(Timestamp plannedReceiveTime, String received_place_name, String address) {
+        this.address = address;
+        this.plannedReceiveTime = plannedReceiveTime;
+        this.received_place_name = received_place_name;
+    }
+
+    public ReceivedPlace(Timestamp plannedReceiveTime, String received_place_name) {
+        this.plannedReceiveTime = plannedReceiveTime;
+        this.received_place_name = received_place_name;
+    }
 }

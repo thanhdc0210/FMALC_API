@@ -1,10 +1,11 @@
 package fmalc.api.enums;
 
 public enum VehicleStatusEnum {
-    ĐANG_RẢNH("Đang rảnh"){public int getValue(){return 0;}},
-    ĐANG_BẢO_TRÌ("Đang bảo trì"){public int getValue(){return 1;}},
-    ĐANG_CHẠY("Đang chạy"){public int getValue(){return 2;}},
-    ĐÃ_BÁN("Đã bán"){public int getValue(){return 3;}};
+    ĐANG_RẢNH("Đang rảnh"){@Override public int getValue(){return 0;}}, // Xe chưa xếp lịch chạy
+    ĐANG_BẢO_TRÌ("Đang bảo trì"){@Override public int getValue(){return 1;}},
+    ĐANG_CHẠY("Đang chạy"){@Override public int getValue(){return 2;}},
+    ĐÃ_BÁN("Đã bán"){@Override public int getValue(){return 3;}},
+    CÓ_LỊCH_CHẠY("Có lịch chạy"){@Override public  int getValue(){return 4;}}; // Xe đã xếp lịch nhưng chưa chạy
 
     String vehicleStatusEnum;
 
@@ -28,6 +29,8 @@ public enum VehicleStatusEnum {
                 return ĐANG_CHẠY.getVehicleStatusEnum();
             case 3:
                 return ĐÃ_BÁN.getVehicleStatusEnum();
+            case 4:
+                return CÓ_LỊCH_CHẠY.getVehicleStatusEnum();
             default:throw new AssertionError("Unknown operations " + this);
         }
     }

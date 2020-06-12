@@ -28,6 +28,9 @@ public class Driver implements Serializable {
     @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
     private Collection<Alert> alerts;
 
+    @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
+    private Collection<Schedule> schedules;
+
     @Column(name = "status", nullable = false)
     private Integer status;
 
@@ -37,7 +40,7 @@ public class Driver implements Serializable {
 
      @JoinColumn(name = "account_id", nullable = false)
      @OneToOne
-     private Account accountId;
+     private Account account;
 
     @Column(name = "identity_no", nullable = false)
     private String identityNo;
