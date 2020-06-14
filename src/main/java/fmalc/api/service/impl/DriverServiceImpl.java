@@ -1,15 +1,9 @@
 package fmalc.api.service.impl;
 
-import fmalc.api.entities.Account;
-import fmalc.api.entities.Driver;
-import fmalc.api.entities.DriverLicense;
-import fmalc.api.entities.Role;
-import fmalc.api.model.DriverDTO;
-import fmalc.api.model.DriverLicenseDTO;
-import fmalc.api.repository.AccountRepository;
-import fmalc.api.repository.DriverLicenseRepository;
-import fmalc.api.repository.DriverRepository;
-import fmalc.api.repository.RoleRepository;
+import fmalc.api.dto.DriverLicenseRequestDTO;
+import fmalc.api.dto.DriverRequestDTO;
+import fmalc.api.entities.*;
+import fmalc.api.repository.*;
 import fmalc.api.service.DriverService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +14,6 @@ import java.util.List;
 
 @Service
 public class DriverServiceImpl implements DriverService {
-
-    @Autowired
-    ModelMapper modelMapper;
-
     @Autowired
     private DriverRepository driverRepository;
 
@@ -44,6 +34,9 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     private DriverLicenseRepository driverLicenseRepository;
 
+    @Autowired
+    private FleetManagerRepository fleetManagerRepository;
+
     @Override
     public Driver findById(Integer id) {
         if (driverRepository.existsById(id)) {
@@ -53,27 +46,28 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void save(DriverDTO driverDTO) {
-        Driver driver = modelMapper.map(driverDTO, Driver.class);
-        DriverLicenseDTO driverLicenseDTO = driverDTO.getLicenseDTO();
-        DriverLicense driverLicense = modelMapper.map(driverLicenseDTO, DriverLicense.class);
+    public Driver save(DriverRequestDTO driverRequest) {
+        ModelMapper modelMapper = new ModelMapper();
+        Driver driver = modelMapper.map(driverRequest, Driver.class);
+        DriverLicenseRequestDTO driverLicenseRequest = driverRequest.getDriverLicenseRequestDTO();
+        DriverLicense driverLicense = modelMapper.map(driverLicenseRequest, DriverLicense.class);
         Role role = roleRepository.findByRole("ROLE_DRIVER");
 
         Account account = new Account();
         account.setUsername(driver.getPhoneNumber());
+        // To do random password
         account.setPassword(passwordEncoder.encode("123456"));
         account.setRole(role);
+        account.setIsActive(true);
         account = accountRepository.save(account);
+
+        FleetManager fleetManager = fleetManagerRepository.findById(driverRequest.getFleetManagerId()).get();
 
         driver.setAccount(account);
         driverLicense = driverLicenseRepository.save(driverLicense);
         driver.setLicense(driverLicense);
+        driver.setFleetManager(fleetManager);
         driverRepository.save(driver);
-    }
-
-    @Override
-    public void changeStatus(Driver driver, Integer status) {
-        driver.setStatus(status);
-        driverRepository.save((driver));
+        return driver;
     }
 }

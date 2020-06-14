@@ -6,5 +6,4 @@ import lombok.Getter;
 public class AccountDTO {
     private Integer id;
     private String username;
-    private RoleDTO role;
 }
