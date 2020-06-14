@@ -18,7 +18,7 @@ public enum DriverStatusEnum {
 
     public abstract int getValue();
 
-    public String getValueEnumToShow(int status){
+    public static String getValueEnumToShow(int status){
         switch (status){
             case 0:
                 return ĐANG_RẢNH.getDriverStatusEnum();
@@ -27,7 +27,7 @@ public enum DriverStatusEnum {
             case 2:
                 return XIN_NGHỈ_PHÉP.getDriverStatusEnum();
             default:
-                throw new AssertionError("Unknown operations " + this);
+                throw new AssertionError("Unknown operations");
         }
     }
 }

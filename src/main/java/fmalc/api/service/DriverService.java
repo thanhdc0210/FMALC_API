@@ -1,7 +1,7 @@
 package fmalc.api.service;
 
 import fmalc.api.entities.Driver;
-import fmalc.api.model.DriverDTO;
+import fmalc.api.request.DriverRequest;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public interface DriverService {
 
     Driver findById(Integer id);
 
-    void save(DriverDTO driverDTO);
+    Driver save(DriverRequest driverRequest);
 
     void changeStatus(Driver driver, Integer status);
 }

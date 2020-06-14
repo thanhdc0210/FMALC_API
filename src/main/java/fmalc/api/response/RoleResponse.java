@@ -1,9 +1,9 @@
-package fmalc.api.model;
+package fmalc.api.response;
 
 import lombok.Data;
 
 @Data
-public class RoleDTO {
+public class RoleResponse {
     private Integer id;
     private String role;
 }

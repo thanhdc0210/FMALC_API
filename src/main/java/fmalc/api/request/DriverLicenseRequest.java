@@ -1,11 +1,11 @@
-package fmalc.api.model;
+package fmalc.api.request;
 
 import lombok.Data;
+
 import java.util.Date;
 
 @Data
-public class DriverLicenseDTO {
-    private Integer id;
+public class DriverLicenseRequest {
     private Date expires;
     private String licenseType;
     private String no;
