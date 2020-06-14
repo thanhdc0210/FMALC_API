@@ -1,4 +1,4 @@
-package fmalc.api.response;
+package fmalc.api.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,20 +13,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class AccountResponse {
+public class AccountDTO {
 
     private String username;
 
     @JsonProperty("roleAccount")
     private String role;
 
-    public AccountResponse(Account entity) {
+    public AccountDTO(Account entity) {
         this.username = entity.getUsername();
         this.role = entity.getRole().getRole();
     }
 
-    public List<AccountResponse> mapToListResponse(List<Account> baseEntities) {
-        return baseEntities.stream().map(AccountResponse::new).collect(Collectors.toList());
+    public List<AccountDTO> mapToListResponse(List<Account> baseEntities) {
+        return baseEntities.stream().map(AccountDTO::new).collect(Collectors.toList());
     }
-
 }

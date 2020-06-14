@@ -26,7 +26,7 @@ public class Schedule implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
-    private Driver driverId;
+    private Driver driver;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
