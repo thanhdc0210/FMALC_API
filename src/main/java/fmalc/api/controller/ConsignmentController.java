@@ -47,10 +47,10 @@ public class ConsignmentController {
         return ResponseEntity.ok().body(detailedConsignmentDTO);
     }
 
-//    @GetMapping(value = "/all")
-//    public ResponseEntity<List<Consignment>> findAll(){
-//
-//        return ResponseEntity.ok().body(consignmentService.findAll());
-//    }
+    @GetMapping(value = "/all")
+    public ResponseEntity<List<Consignment>> findAll(){
+
+        return ResponseEntity.ok().body(consignmentService.findAll());
+    }
 
 }
