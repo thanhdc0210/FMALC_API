@@ -1,6 +1,6 @@
 package fmalc.api.service;
 
-import fmalc.api.entities.Account;
+import fmalc.api.entity.Account;
 
 import java.util.List;
 

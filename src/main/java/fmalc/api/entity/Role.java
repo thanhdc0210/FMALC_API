@@ -1,4 +1,4 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

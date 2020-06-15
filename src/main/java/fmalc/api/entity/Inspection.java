@@ -1,4 +1,4 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
@@ -10,8 +10,8 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "maintain_type")
-public class MaintainType implements Serializable {
+@Table(name = "inspection")
+public class Inspection implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -20,13 +20,10 @@ public class MaintainType implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "content", nullable = false)
-    private String content;
+    @Column(name = "inspection_level", nullable = false)
+    private Integer inspectionLevel;
 
-    @Column(name = "kilometers_number", nullable = false)
-    private Integer kilometersNumber;
-
-    @Column(name = "maintain_type_name", nullable = false)
-    private String maintainTypeName;
+    @Column(name = "inspection_name", nullable = false)
+    private String inspectionName;
 
 }

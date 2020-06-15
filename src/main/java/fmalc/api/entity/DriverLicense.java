@@ -1,9 +1,7 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.Date;
 import javax.persistence.*;
 
 import lombok.*;

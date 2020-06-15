@@ -1,6 +1,6 @@
 package fmalc.api.repository;
 
-import fmalc.api.entities.Role;
+import fmalc.api.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

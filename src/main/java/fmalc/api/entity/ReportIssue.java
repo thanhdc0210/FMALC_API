@@ -1,18 +1,18 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
 import javax.persistence.*;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+@Table(name = "report_issue")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "schedule")
 @Entity
-public class Schedule implements Serializable {
+public class ReportIssue implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -30,15 +30,9 @@ public class Schedule implements Serializable {
     private Driver driver;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
-    private Consignment consignment;
+    @JoinColumn(name = "inspection_id", referencedColumnName = "id", nullable = false)
+    private Inspection inspection;
 
-    @Column(name = "image_consignment", nullable = false)
-    private String imageConsignment;
-
-    /**
-     * Lý do cancel
-     */
-    @Column(name = "note")
-    private String note;
+    @Column(name = "time", nullable = false)
+    private Timestamp time;
 }

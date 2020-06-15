@@ -1,7 +1,7 @@
 package fmalc.api.component;
 
-import fmalc.api.entities.Account;
-import fmalc.api.entities.Role;
+import fmalc.api.entity.Account;
+import fmalc.api.entity.Role;
 import fmalc.api.repository.AccountRepository;
 import fmalc.api.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;

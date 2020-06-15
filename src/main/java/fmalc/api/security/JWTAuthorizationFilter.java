@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fmalc.api.constants.SecurityConstant.*;
+import static fmalc.api.constant.SecurityConstant.*;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 

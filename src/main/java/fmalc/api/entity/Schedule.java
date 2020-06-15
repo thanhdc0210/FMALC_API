@@ -1,18 +1,17 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
-import java.sql.Date;
 import javax.persistence.*;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-@Entity
-@Table(name = "maintain")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Maintain implements Serializable {
+@Table(name = "schedule")
+@Entity
+public class Schedule implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -26,18 +25,19 @@ public class Maintain implements Serializable {
     private Vehicle vehicle;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "maintain_type_id", referencedColumnName = "id", nullable = false)
-    private MaintainType maintainType;
+    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
+    private Driver driver;
 
-    @Column(name = "image_maintain", nullable = false)
-    private String imageMaintain;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
+    private Consignment consignment;
 
-    @Column(name = "km_new", nullable = false)
-    private Integer kmNew;
+    @Column(name = "image_consignment", nullable = false)
+    private String imageConsignment;
 
-    @Column(name = "km_old", nullable = false)
-    private Integer kmOld;
-
-    @Column(name = "maintain_date", nullable = false)
-    private Date maintainDate;
+    /**
+     * Lý do cancel
+     */
+    @Column(name = "note")
+    private String note;
 }

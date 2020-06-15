@@ -1,4 +1,4 @@
-package fmalc.api.constants;
+package fmalc.api.constant;
 
 public class SecurityConstant {
     public static final String SECRET = "secretKey";

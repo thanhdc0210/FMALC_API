@@ -15,7 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import static fmalc.api.constants.SecurityConstant.AUTH_LOGIN_URL;
+import static fmalc.api.constant.SecurityConstant.AUTH_LOGIN_URL;
 
 @Configuration
 @EnableWebSecurity

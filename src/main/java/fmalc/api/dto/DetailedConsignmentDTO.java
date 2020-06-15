@@ -1,6 +1,6 @@
 package fmalc.api.dto;
 
-import fmalc.api.entities.*;
+import fmalc.api.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DetailedConsignmentDTO {
-    private Integer consignment_id;
-    private String license_plates;
+    private Integer consignmentId;
+    private String licensePlates;
     private List<DeliveredPlace> deliveredPlaces;
     private List<ReceivedPlace> receivedPlaces;
-    private String owner_note;
+    private String ownerNote;
 
     public DetailedConsignmentDTO(Consignment consignment){
 
@@ -40,17 +40,17 @@ public class DetailedConsignmentDTO {
             receivedPlaces = new ArrayList<>();
         }
 
-        this.consignment_id = consignment.getId();
+        this.consignmentId = consignment.getId();
         Collection<Schedule> schedulesList = consignment.getShedules();
         for (Schedule schedule : schedulesList){
-            this.license_plates = schedule.getVehicle().getLicensePlates();
+            this.licensePlates = schedule.getVehicle().getLicensePlates();
         }
 
         Collection<DeliveryDetail> deliveryDetailList = consignment.getDeliveries();
         for (DeliveryDetail deliveryDetail : deliveryDetailList){
-            received_place_name = deliveryDetail.getReceivedPlaces().getReceived_place_name();
+            received_place_name = deliveryDetail.getReceivedPlaces().getReceivedPlaceName();
             received_place_address = deliveryDetail.getReceivedPlaces().getAddress();
-            delivered_place_name = deliveryDetail.getDeliveredPlaces().getDelivered_place_name();
+            delivered_place_name = deliveryDetail.getDeliveredPlaces().getDeliveredPlaceName();
             delivered_place_address = deliveryDetail.getDeliveredPlaces().getAddress();
             planned_received_time = deliveryDetail.getReceivedPlaces().getPlannedReceiveTime();
             planned_delivered_time = deliveryDetail.getDeliveredPlaces().getPlannedDeliveryTime();
@@ -60,9 +60,9 @@ public class DetailedConsignmentDTO {
             deliveredPlaces.add(deliveredPlace);
         }
         if (consignment.getOwnerNote() != null){
-            this.owner_note = consignment.getOwnerNote();
+            this.ownerNote = consignment.getOwnerNote();
         }else{
-            this.owner_note = "";
+            this.ownerNote = "";
         }
     }
 

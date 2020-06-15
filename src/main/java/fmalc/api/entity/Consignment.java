@@ -1,7 +1,6 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Collection;
 
 import javax.persistence.*;
@@ -13,6 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "consignment")
 public class Consignment implements Serializable {
     private static final long serialVersionUID = 1L;

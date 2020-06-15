@@ -1,4 +1,4 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "received_place")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -41,16 +42,16 @@ public class ReceivedPlace implements Serializable {
     private Collection<DeliveryDetail> deliveryDetail;
 
     @Column(name = "received_place_name", nullable = false)
-    private String received_place_name;
+    private String receivedPlaceName;
 
-    public ReceivedPlace(Timestamp plannedReceiveTime, String received_place_name, String address) {
+    public ReceivedPlace(Timestamp plannedReceiveTime, String receivedPlaceName, String address) {
         this.address = address;
         this.plannedReceiveTime = plannedReceiveTime;
-        this.received_place_name = received_place_name;
+        this.receivedPlaceName = receivedPlaceName;
     }
 
-    public ReceivedPlace(Timestamp plannedReceiveTime, String received_place_name) {
+    public ReceivedPlace(Timestamp plannedReceiveTime, String receivedPlaceName) {
         this.plannedReceiveTime = plannedReceiveTime;
-        this.received_place_name = received_place_name;
+        this.receivedPlaceName = receivedPlaceName;
     }
 }

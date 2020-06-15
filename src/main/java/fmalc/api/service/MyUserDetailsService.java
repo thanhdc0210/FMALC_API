@@ -1,9 +1,7 @@
 package fmalc.api.service;
 
-import fmalc.api.entities.Account;
-import fmalc.api.entities.Role;
+import fmalc.api.entity.Account;
 import fmalc.api.repository.AccountRepository;
-import fmalc.api.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
