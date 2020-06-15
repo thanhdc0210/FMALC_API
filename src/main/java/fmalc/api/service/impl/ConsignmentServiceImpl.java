@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ConsignmentServiceImpl implements ConsignmentService {
@@ -16,7 +15,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     ConsignmentRepository consignmentRepository;
 
     @Override
-    public List<Consignment> findByStatus(Integer status){
+    public List<Consignment> findByStatus(Integer status) {
         return consignmentRepository.findByStatus(status);
     }
 
@@ -25,8 +24,8 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         return consignmentRepository.findById(consignment_id).get();
     }
 
-//    @Override
-//    public List<Consignment> findAll() {
-//        return consignmentRepository.findAll();
-//    }
+    // @Override
+    // public List<Consignment> findAll() {
+    // return consignmentRepository.findAll();
+    // }
 }
