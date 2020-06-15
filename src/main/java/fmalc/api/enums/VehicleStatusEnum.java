@@ -19,7 +19,7 @@ public enum VehicleStatusEnum {
 
     public abstract int getValue();
 
-    public String getValueEnumToShow(int status){
+    public static String getValueEnumToShow(int status){
         switch (status){
             case 0:
                 return ĐANG_RẢNH.getVehicleStatusEnum();
@@ -31,7 +31,7 @@ public enum VehicleStatusEnum {
                 return ĐÃ_BÁN.getVehicleStatusEnum();
             case 4:
                 return CÓ_LỊCH_CHẠY.getVehicleStatusEnum();
-            default:throw new AssertionError("Unknown operations " + this);
+            default:throw new AssertionError("Unknown operations " );
         }
     }
 

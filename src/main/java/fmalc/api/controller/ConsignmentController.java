@@ -38,7 +38,7 @@ public class ConsignmentController {
 
     @GetMapping(value = "id/{id}")
     public ResponseEntity<DetailedConsignmentDTO> findById(@PathVariable("id") Integer id){
-        Consignment consignment = consignmentService.findById(id).orElse(Consignment.builder().build());
+        Consignment consignment = consignmentService.findById(id);
         if (consignment == null || consignment.equals("")){
             return ResponseEntity.noContent().build();
         }
@@ -46,4 +46,11 @@ public class ConsignmentController {
 
         return ResponseEntity.ok().body(detailedConsignmentDTO);
     }
+
+//    @GetMapping(value = "/all")
+//    public ResponseEntity<List<Consignment>> findAll(){
+//
+//        return ResponseEntity.ok().body(consignmentService.findAll());
+//    }
+
 }

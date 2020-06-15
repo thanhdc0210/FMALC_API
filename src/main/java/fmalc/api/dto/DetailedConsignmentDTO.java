@@ -1,10 +1,7 @@
 package fmalc.api.dto;
 
 import fmalc.api.entity.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -16,6 +13,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class DetailedConsignmentDTO {
     private Integer consignmentId;
     private String licensePlates;

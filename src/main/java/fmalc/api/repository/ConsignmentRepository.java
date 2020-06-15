@@ -14,6 +14,5 @@ import java.util.List;
 public interface ConsignmentRepository
         extends JpaRepository<Consignment, Integer>, JpaSpecificationExecutor<Consignment> {
 
-    // @Query("Select c from Consignment c Where c.status = ?1")
     List<Consignment> findByStatus(Integer status);
 }

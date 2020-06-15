@@ -20,7 +20,7 @@ public enum ConsignmentStatusEnum {
         return consignmentStatusEnum;
     }
 
-    public String getValueEnumToShow(int status){
+    public static String getValueEnumToShow(int status){
         switch (status){
             case 0:
                 return ĐANG_CHỜ_XỬ_LÝ.getConsignmentStatusEnum();
@@ -39,7 +39,7 @@ public enum ConsignmentStatusEnum {
             case 7:
                 return ĐANG_KHỞI_HÀNH.getConsignmentStatusEnum();
             default:
-                throw new AssertionError("Unknown operations " + this);
+                throw new AssertionError("Unknown operations ");
         }
     }
 

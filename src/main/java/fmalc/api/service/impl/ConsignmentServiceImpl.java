@@ -21,7 +21,12 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     }
 
     @Override
-    public Optional<Consignment> findById(Integer consignment_id) {
-        return consignmentRepository.findById(consignment_id);
+    public Consignment findById(Integer consignment_id) {
+        return consignmentRepository.findById(consignment_id).get();
     }
+
+//    @Override
+//    public List<Consignment> findAll() {
+//        return consignmentRepository.findAll();
+//    }
 }
