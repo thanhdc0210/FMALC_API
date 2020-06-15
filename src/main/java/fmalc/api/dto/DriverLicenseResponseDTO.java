@@ -6,5 +6,4 @@ import lombok.Data;
 public class DriverLicenseResponseDTO {
     private Integer id;
     private String licenseType;
-    private String no;
 }
