@@ -1,6 +1,8 @@
 package fmalc.api.controller;
 
 import fmalc.api.entity.Account;
+import java.util.ArrayList;
+import java.util.List;
 import fmalc.api.dto.AccountDTO;
 import fmalc.api.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
+// @RequestMapping(name = "/api/v1.0/accounts", produces =
+// MediaType.APPLICATION_JSON_VALUE, consumes =
+// MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(value = "/api/v1.0/accounts")
 public class AccountController {
 

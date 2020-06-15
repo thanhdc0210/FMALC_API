@@ -26,14 +26,12 @@ public class MyUserDetailsService implements UserDetailsService {
 
         Account account = accountRepository.findByUsername(username);
         if (account == null) {
-            return new org.springframework.security.core.userdetails.User(
-                    " ", " ", true,
-                    true, true, true, getAuthorities(""));
+            return new org.springframework.security.core.userdetails.User(" ", " ", true, true, true, true,
+                    getAuthorities(""));
         }
 
-        return new org.springframework.security.core.userdetails.User(
-                account.getUsername(), account.getPassword(), true, true, true,
-                true, getAuthorities(account.getRole().getRole()));
+        return new org.springframework.security.core.userdetails.User(account.getUsername(), account.getPassword(),
+                true, true, true, true, getAuthorities(account.getRole().getRole()));
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(String role) {
