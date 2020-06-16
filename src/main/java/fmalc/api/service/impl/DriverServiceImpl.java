@@ -63,6 +63,7 @@ public class DriverServiceImpl implements DriverService {
 
         FleetManager fleetManager = fleetManagerRepository.findById(driverRequest.getFleetManagerId()).get();
 
+        driver.setId(null);
         driver.setAccount(account);
         driverLicense = driverLicenseRepository.save(driverLicense);
         driver.setLicense(driverLicense);
