@@ -57,7 +57,7 @@ public class ConsignmentDTO {
             this.driverName = schedule.getDriver().getName();
         }
         this.weight = consignment.getWeight();
-        this.status = ConsignmentStatusEnum.ĐANG_CHỜ_XỬ_LÝ.getValueEnumToShow(consignment.getStatus());
+        this.status = ConsignmentStatusEnum.getValueEnumToShow(consignment.getStatus());
     }
 
     public List<ConsignmentDTO> mapToListResponse(List<Consignment> baseEntities) {
