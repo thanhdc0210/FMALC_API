@@ -22,12 +22,12 @@ public class AccountController {
     AccountService accountService;
 
     @GetMapping("/accounts")
-    public ResponseEntity<List<AccountDTO>> getListAccount() {
+    public ResponseEntity<List<Account>> getListAccount() {
         List<Account> accountList = accountService.findAll();
-        if (accountList.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        List<AccountDTO> responseList = new ArrayList<>(new AccountDTO().mapToListResponse(accountList));
-        return ResponseEntity.ok().body(responseList);
+//        if (accountList.isEmpty()) {
+//            return ResponseEntity.noContent().build();
+//        }
+//        List<AccountDTO> responseList = new ArrayList<>(new AccountDTO().mapToListResponse(accountList));
+        return ResponseEntity.ok().body(accountList);
     }
 }
