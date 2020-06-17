@@ -51,5 +51,5 @@ public class Consignment implements Serializable {
     private Double weight;
 
     @Column(name = "status", nullable = false)
-    private String status;
+    private Integer status;
 }

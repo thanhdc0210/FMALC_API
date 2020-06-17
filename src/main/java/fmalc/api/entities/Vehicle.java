@@ -29,8 +29,8 @@ public class Vehicle implements Serializable {
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<Location> locations;
 
-    @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    private Collection<VehicleStatusDetail> statusReport;
+    @Column(name = "status", nullable = false)
+    private Integer status;
 
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<Maintain> maintains;
@@ -65,4 +65,9 @@ public class Vehicle implements Serializable {
      */
     @Column(name = "license_plates", nullable = false)
     private String licensePlates;
+
+    // Trọng tải của xe
+
+    @Column (name = "vehicle_name", nullable = false)
+    private String vehicleName;
 }

@@ -25,22 +25,23 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        // Check role FLEET_MANAGER exist
-        Role fleetManagerRole = roleRepository.findByRole("ROLE_ADMIN");
-        if (fleetManagerRole == null) {
-            fleetManagerRole = new Role();
-            fleetManagerRole.setRole("ROLE_ADMIN");
-            fleetManagerRole = roleRepository.save(fleetManagerRole);
+        // Check role FLEET_ADMIN exist
+        Role roleAdmin = roleRepository.findByRole("ROLE_ADMIN");
+        if (roleAdmin == null) {
+            roleAdmin = new Role();
+            roleAdmin.setRole("ROLE_ADMIN");
+            roleAdmin = roleRepository.save(roleAdmin);
         }
 
-        // Check account FLEET_MANAGER exist
-        Account fleetManagerAccount = accountRepository.findByUsername("admin");
-        if (fleetManagerAccount == null) {
-            fleetManagerAccount = new Account();
-            fleetManagerAccount.setUsername("admin");
-            fleetManagerAccount.setPassword(passwordEncoder.encode("123456"));
-            fleetManagerAccount.setRole(fleetManagerRole);
-            accountRepository.save(fleetManagerAccount);
+        // Check account FLEET_ADMIN exist
+        Account roleAccount = accountRepository.findByUsername("admin");
+        if (roleAccount == null) {
+            roleAccount = new Account();
+            roleAccount.setUsername("admin");
+            roleAccount.setPassword(passwordEncoder.encode("123456"));
+            roleAccount.setRole(roleAdmin);
+            roleAccount.setIsActive(true);
+            accountRepository.save(roleAccount);
         }
     }
 }

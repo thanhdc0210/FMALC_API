@@ -36,6 +36,8 @@ public class VehicleType implements Serializable {
     @Column(name = "vehicle_type_name", nullable = false)
     private String vehicleTypeName;
 
-    // Trọng tải của xe
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "driver_license_id", referencedColumnName = "id", nullable = false)
+    private DriverLicense driver_license;
 
 }

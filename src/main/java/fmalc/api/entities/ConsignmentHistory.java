@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Table(name = "consignment_history")
@@ -25,9 +26,9 @@ public class ConsignmentHistory {
 
     // Thời gian cập nhật status của consignment
     @Column(name = "time", nullable = false)
-    private Timestamp time;
+    private Date time;
 
-    @Column(name = "note", nullable = false)
+    @Column(name = "note")
     private String note;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
