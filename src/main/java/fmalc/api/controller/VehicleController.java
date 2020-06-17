@@ -1,8 +1,9 @@
 package fmalc.api.controller;
 
 import fmalc.api.dto.VehicleDTO;
-import fmalc.api.entities.Vehicle;
-import fmalc.api.entities.VehicleType;
+
+import fmalc.api.entity.Vehicle;
+import fmalc.api.entity.VehicleType;
 import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

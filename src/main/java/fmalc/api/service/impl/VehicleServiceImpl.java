@@ -1,6 +1,7 @@
 package fmalc.api.service.impl;
 
-import fmalc.api.entities.Vehicle;
+
+import fmalc.api.entity.Vehicle;
 import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;

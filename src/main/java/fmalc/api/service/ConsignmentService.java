@@ -1,6 +1,6 @@
 package fmalc.api.service;
 
-import fmalc.api.entities.Consignment;
+import fmalc.api.entity.Consignment;
 
 import java.util.List;
 
@@ -8,5 +8,7 @@ public interface ConsignmentService {
 
     List<Consignment> findByStatus(Integer status);
 
-    List<Consignment> findByConsignmentId(Integer consignment_id);
+    Consignment findById(Integer consignment_id);
+
+    List<Consignment> findAll();
 }

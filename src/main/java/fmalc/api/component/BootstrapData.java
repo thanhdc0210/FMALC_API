@@ -1,8 +1,10 @@
 package fmalc.api.component;
 
-import fmalc.api.entities.Account;
-import fmalc.api.entities.Role;
+import fmalc.api.entity.Account;
+import fmalc.api.entity.FleetManager;
+import fmalc.api.entity.Role;
 import fmalc.api.repository.AccountRepository;
+import fmalc.api.repository.FleetManagerRepository;
 import fmalc.api.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -20,6 +22,9 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     private RoleRepository roleRepository;
 
     @Autowired
+    private FleetManagerRepository fleetManagerRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -33,15 +38,49 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
             roleAdmin = roleRepository.save(roleAdmin);
         }
 
-        // Check account FLEET_ADMIN exist
-        Account roleAccount = accountRepository.findByUsername("admin");
-        if (roleAccount == null) {
-            roleAccount = new Account();
-            roleAccount.setUsername("admin");
-            roleAccount.setPassword(passwordEncoder.encode("123456"));
-            roleAccount.setRole(roleAdmin);
-            roleAccount.setIsActive(true);
-            accountRepository.save(roleAccount);
+        // Check role FLEET_MANAGER exist
+        Role roleFleetManager = roleRepository.findByRole("ROLE_FLEET_MANAGER");
+        if (roleFleetManager == null) {
+            roleFleetManager = new Role();
+            roleFleetManager.setRole("ROLE_FLEET_MANAGER");
+            roleRepository.save(roleFleetManager);
+        }
+
+        // Check role DRIVER exist
+        Role roleDriver = roleRepository.findByRole("ROLE_DRIVER");
+        if (roleDriver == null) {
+            roleDriver = new Role();
+            roleDriver.setRole("ROLE_DRIVER");
+            roleRepository.save(roleDriver);
+        }
+
+        // Check account ADMIN exist
+        Account adminAccount = accountRepository.findByUsername("admin");
+        if (adminAccount == null) {
+            adminAccount = new Account();
+            adminAccount.setUsername("admin");
+            adminAccount.setPassword(passwordEncoder.encode("123456"));
+            adminAccount.setRole(roleAdmin);
+            adminAccount.setIsActive(true);
+            accountRepository.save(adminAccount);
+        }
+
+        // Account for first Fleet_Manager to test
+        Account managerAccount = accountRepository.findByUsername("manager1");
+        if (managerAccount == null) {
+            managerAccount = new Account();
+            managerAccount.setUsername("manager1");
+            managerAccount.setPassword(passwordEncoder.encode("123456"));
+            managerAccount.setRole(roleFleetManager);
+            managerAccount.setIsActive(true);
+            managerAccount = accountRepository.save(managerAccount);
+
+            FleetManager fleetManager = new FleetManager();
+            fleetManager.setAccount(managerAccount);
+            fleetManager.setIdentityNo("123456789");
+            fleetManager.setName("Fleet Manager");
+            fleetManager.setPhoneNumber("0909090909");
+            fleetManagerRepository.save(fleetManager);
         }
     }
 }

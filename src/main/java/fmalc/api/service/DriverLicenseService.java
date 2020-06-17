@@ -1,6 +1,7 @@
 package fmalc.api.service;
 
-import fmalc.api.entities.DriverLicense;
+
+import fmalc.api.entity.DriverLicense;
 
 import java.util.List;
 

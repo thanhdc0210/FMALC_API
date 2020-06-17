@@ -1,7 +1,6 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
-import java.sql.Date;
 import javax.persistence.*;
 
 import lombok.*;
@@ -17,7 +16,7 @@ public class Schedule implements Serializable {
 
     @Id
     @GenericGenerator(name = "generator", strategy = "native")
-    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
+    @GeneratedValue(generator = "generator", strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 

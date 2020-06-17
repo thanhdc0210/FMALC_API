@@ -1,6 +1,7 @@
 package fmalc.api.repository;
 
-import fmalc.api.entities.Vehicle;
+
+import fmalc.api.entity.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

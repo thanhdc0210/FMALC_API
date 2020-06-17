@@ -1,10 +1,9 @@
 package fmalc.api.repository;
 
-import fmalc.api.entity.Role;
+import fmalc.api.entity.FleetManager;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Integer> {
-    Role findByRole(String role);
+public interface FleetManagerRepository extends JpaRepository<FleetManager, Integer> {
 }

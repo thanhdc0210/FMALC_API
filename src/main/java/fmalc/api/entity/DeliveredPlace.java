@@ -1,4 +1,4 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -36,7 +36,7 @@ public class DeliveredPlace implements Serializable {
     private String address;
 
     @Column(name = "delivered_place_name", nullable = false)
-    private String delivered_place_name;
+    private String deliveredPlaceName;
 
     @Column(name = "planned_delivery_time", nullable = false)
     private Timestamp plannedDeliveryTime;
@@ -44,14 +44,14 @@ public class DeliveredPlace implements Serializable {
     @Column(name = "actual_delivery_time")
     private Timestamp actualDeliveryTime;
 
-    public DeliveredPlace(Timestamp plannedDeliveryTime, String delivered_place_name, String address) {
+    public DeliveredPlace(Timestamp plannedDeliveryTime, String deliveredPlaceName, String address) {
         this.address = address;
-        this.delivered_place_name = delivered_place_name;
+        this.deliveredPlaceName = deliveredPlaceName;
         this.plannedDeliveryTime = plannedDeliveryTime;
     }
 
-    public DeliveredPlace(Timestamp plannedDeliveryTime, String delivered_place_name) {
-        this.delivered_place_name = delivered_place_name;
+    public DeliveredPlace(Timestamp plannedDeliveryTime, String deliveredPlaceName) {
+        this.deliveredPlaceName = deliveredPlaceName;
         this.plannedDeliveryTime = plannedDeliveryTime;
     }
 }

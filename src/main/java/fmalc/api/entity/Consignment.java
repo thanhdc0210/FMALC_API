@@ -1,7 +1,6 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Collection;
 
 import javax.persistence.*;
@@ -10,9 +9,11 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "consignment")
 public class Consignment implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -22,7 +23,7 @@ public class Consignment implements Serializable {
 
     @Id
     @GenericGenerator(name = "generator", strategy = "native")
-    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
+    @GeneratedValue(generator = "generator", strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 

@@ -1,8 +1,9 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -10,11 +11,11 @@ import java.util.Collection;
 
 @Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "fleet_manager")
 public class FleetManager {
-    private static final long serialVersionUID = 1L;
 
     @Id
     @GenericGenerator(name = "generator", strategy = "native")

@@ -1,22 +1,22 @@
 package fmalc.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import fmalc.api.entities.Account;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import fmalc.api.entity.Account;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Getter
 @Setter
 @NoArgsConstructor
+@Data
 public class AccountDTO {
 
     private String username;
 
-    @JsonProperty("roleAccount")
     private String role;
 
     public AccountDTO(Account entity) {
@@ -25,10 +25,6 @@ public class AccountDTO {
     }
 
     public List<AccountDTO> mapToListResponse(List<Account> baseEntities) {
-        return baseEntities
-                .stream()
-                .map(AccountDTO::new)
-                .collect(Collectors.toList());
+        return baseEntities.stream().map(AccountDTO::new).collect(Collectors.toList());
     }
-
 }

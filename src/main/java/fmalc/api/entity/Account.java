@@ -1,4 +1,4 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
@@ -24,7 +24,7 @@ public class Account implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })

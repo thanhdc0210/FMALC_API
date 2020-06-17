@@ -1,11 +1,8 @@
 package fmalc.api.dto;
 
-import fmalc.api.entities.*;
+import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -17,14 +14,15 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class ConsignmentDTO {
 
-    private Integer consignment_id;
-    private String owner_name;
-    DeliveredPlace deliveredPlace;
-    private List<ReceivedPlace> receivedPlaces;
-    private String license_plates; // Biển số xe
-    private String driver_name;
+    private Integer consignmentId;
+    private String ownerName;
+    private ReceivedPlace receivedPlace = new ReceivedPlace();
+    private List<DeliveredPlace> deliveredPlaces;
+    private String licensePlates; // Biển số xe
+    private String driverName;
     private Double weight; // Khối lượng lô hàng
     private String status;
 
@@ -35,30 +33,31 @@ public class ConsignmentDTO {
         Timestamp planned_received_time = null;
         String received_place_name = null;
 
-        if (receivedPlaces == null){
-            receivedPlaces = new ArrayList<>();
+        if (deliveredPlaces == null){
+            deliveredPlaces = new ArrayList<>();
         }
 
-        this.consignment_id = consignment.getId();
-        this.owner_name = consignment.getOwnerName();
+        this.consignmentId = consignment.getId();
+        this.ownerName = consignment.getOwnerName();
         Collection<DeliveryDetail> deliveryDetailList = consignment.getDeliveries();
         for (DeliveryDetail deliveryDetail : deliveryDetailList){
-            received_place_name = deliveryDetail.getReceivedPlaces().getReceived_place_name();
-            delivered_place_name = deliveryDetail.getDeliveredPlaces().getDelivered_place_name();
+            received_place_name = deliveryDetail.getReceivedPlaces().getReceivedPlaceName();
+            delivered_place_name = deliveryDetail.getDeliveredPlaces().getDeliveredPlaceName();
             planned_received_time = deliveryDetail.getReceivedPlaces().getPlannedReceiveTime();
             planned_delivered_time = deliveryDetail.getDeliveredPlaces().getPlannedDeliveryTime();
-            ReceivedPlace receivedPlace = new ReceivedPlace(planned_received_time, received_place_name);
-            deliveredPlace = new DeliveredPlace(planned_delivered_time, delivered_place_name);
-            receivedPlaces.add(receivedPlace);
+            receivedPlace.setPlannedReceiveTime(planned_received_time);
+            receivedPlace.setReceivedPlaceName(received_place_name);
+            DeliveredPlace deliveredPlace = new DeliveredPlace(planned_delivered_time, delivered_place_name);
+            deliveredPlaces.add(deliveredPlace);
         }
 
         Collection<Schedule> schedulesList = consignment.getShedules();
         for (Schedule schedule : schedulesList){
-            this.license_plates = schedule.getVehicle().getLicensePlates();
-            this.driver_name = schedule.getDriver().getName();
+            this.licensePlates = schedule.getVehicle().getLicensePlates();
+            this.driverName = schedule.getDriver().getName();
         }
         this.weight = consignment.getWeight();
-        this.status = ConsignmentStatusEnum.ĐANG_CHỜ_XỬ_LÝ.getValueEnumToShow(consignment.getStatus());
+        this.status = ConsignmentStatusEnum.WAITING.getValueEnumToShow(consignment.getStatus());
     }
 
     public List<ConsignmentDTO> mapToListResponse(List<Consignment> baseEntities) {

@@ -1,18 +1,18 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.sql.Date;
 import javax.persistence.*;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-@Table(name = "notify")
 @Entity
+@Table(name = "maintain")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Notify implements Serializable {
+public class Maintain implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -26,16 +26,18 @@ public class Notify implements Serializable {
     private Vehicle vehicle;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "notify_type_id", referencedColumnName = "id", nullable = false)
-    private NotifyType notifyType;
+    @JoinColumn(name = "maintain_type_id", referencedColumnName = "id", nullable = false)
+    private MaintainType maintainType;
 
-    /**
-     * Thời gian gửi thông báo
-     */
-    @Column(name = "time", nullable = false)
-    private Timestamp time;
+    @Column(name = "image_maintain", nullable = false)
+    private String imageMaintain;
 
-    @Column(name = "content", nullable = false)
-    private String content;
+    @Column(name = "km_new", nullable = false)
+    private Integer kmNew;
 
+    @Column(name = "km_old", nullable = false)
+    private Integer kmOld;
+
+    @Column(name = "maintain_date", nullable = false)
+    private Date maintainDate;
 }

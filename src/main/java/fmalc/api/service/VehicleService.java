@@ -1,6 +1,7 @@
 package fmalc.api.service;
 
-import fmalc.api.entities.Vehicle;
+
+import fmalc.api.entity.Vehicle;
 
 import java.util.List;
 

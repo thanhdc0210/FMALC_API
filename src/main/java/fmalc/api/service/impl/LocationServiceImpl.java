@@ -1,8 +1,8 @@
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.LocationDTO;
-import fmalc.api.entities.Location;
-import fmalc.api.entities.Vehicle;
+
+import fmalc.api.entity.Location;
 import fmalc.api.repository.LocationRepository;
 import fmalc.api.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;

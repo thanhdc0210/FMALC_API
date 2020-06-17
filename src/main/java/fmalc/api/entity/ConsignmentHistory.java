@@ -1,4 +1,4 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -18,9 +17,9 @@ public class ConsignmentHistory {
 
     @Id
     @GenericGenerator(name = "generator", strategy = "native")
-    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
-//    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
-//    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(generator = "generator", strategy = GenerationType.AUTO)
+    // @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
+    // @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "id")
     private Integer id;
 

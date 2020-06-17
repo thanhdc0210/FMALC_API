@@ -1,8 +1,7 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Collection;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,7 +19,7 @@ public class Location implements Serializable {
 
     @Id
     @GenericGenerator(name = "generator", strategy = "native")
-    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
+    @GeneratedValue(generator = "generator", strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
 

@@ -1,14 +1,14 @@
 package fmalc.api.enums;
 
 public enum ConsignmentStatusEnum {
-    ĐANG_CHỜ_XỬ_LÝ("Đang chờ xử lý"){@Override public int getValue(){return 0;}},
-    ĐANG_LẤY_HÀNG("Đang lấy hàng"){@Override public int getValue(){return 1;}},
-    ĐANG_GIAO_HÀNG("Đang_giao_hàng"){@Override public int getValue(){return 2;}},
-    HOÀN_THÀNH("Hoàn thành"){@Override public int getValue(){return 3;}},
-    BỊ_HỦY("Bị hủy"){@Override public int getValue(){return 4;}},
-    THIẾU_CHỨNG_TỪ("Thiếu chứng từ"){@Override public int getValue(){return 5;}},
-    TẠM_HOÃN("Tạm hoãn"){@Override public int getValue(){return 6;}},
-    ĐANG_KHỞI_HÀNH("Đang khởi hành"){@Override public int getValue(){return 7;}};
+    WAITING("Đang chờ xử lý"){@Override public int getValue(){return 0;}},
+    OBTAINING("Đang lấy hàng"){@Override public int getValue(){return 1;}},
+    DELIVERING("Đang_giao_hàng"){@Override public int getValue(){return 2;}},
+    COMPLETED("Hoàn thành"){@Override public int getValue(){return 3;}},
+    CANCELED("Bị hủy"){@Override public int getValue(){return 4;}},
+    MISSING_DOCUMENT("Thiếu chứng từ"){@Override public int getValue(){return 5;}},
+    PENDING("Tạm hoãn"){@Override public int getValue(){return 6;}},
+    DEPARTING("Đang khởi hành"){@Override public int getValue(){return 7;}};
 
     String consignmentStatusEnum;
 
@@ -20,26 +20,26 @@ public enum ConsignmentStatusEnum {
         return consignmentStatusEnum;
     }
 
-    public String getValueEnumToShow(int status){
+    public static String getValueEnumToShow(int status){
         switch (status){
             case 0:
-                return ĐANG_CHỜ_XỬ_LÝ.getConsignmentStatusEnum();
+                return WAITING.getConsignmentStatusEnum();
             case 1:
-                return ĐANG_LẤY_HÀNG.getConsignmentStatusEnum();
+                return OBTAINING.getConsignmentStatusEnum();
             case 2:
-                return ĐANG_GIAO_HÀNG.getConsignmentStatusEnum();
+                return DELIVERING.getConsignmentStatusEnum();
             case 3:
-                return HOÀN_THÀNH.getConsignmentStatusEnum();
+                return COMPLETED.getConsignmentStatusEnum();
             case 4:
-                return BỊ_HỦY.getConsignmentStatusEnum();
+                return CANCELED.getConsignmentStatusEnum();
             case 5:
-                return THIẾU_CHỨNG_TỪ.getConsignmentStatusEnum();
+                return MISSING_DOCUMENT.getConsignmentStatusEnum();
             case 6:
-                return TẠM_HOÃN.getConsignmentStatusEnum();
+                return PENDING.getConsignmentStatusEnum();
             case 7:
-                return ĐANG_KHỞI_HÀNH.getConsignmentStatusEnum();
+                return DEPARTING.getConsignmentStatusEnum();
             default:
-                throw new AssertionError("Unknown operations " + this);
+                throw new AssertionError("Unknown operations ");
         }
     }
 

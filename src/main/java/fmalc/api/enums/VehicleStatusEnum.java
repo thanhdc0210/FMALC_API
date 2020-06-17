@@ -1,11 +1,11 @@
 package fmalc.api.enums;
 
 public enum VehicleStatusEnum {
-    ĐANG_RẢNH("Đang rảnh"){@Override public int getValue(){return 0;}}, // Xe chưa xếp lịch chạy
-    ĐANG_BẢO_TRÌ("Đang bảo trì"){@Override public int getValue(){return 1;}},
-    ĐANG_CHẠY("Đang chạy"){@Override public int getValue(){return 2;}},
-    ĐÃ_BÁN("Đã bán"){@Override public int getValue(){return 3;}},
-    CÓ_LỊCH_CHẠY("Có lịch chạy"){@Override public  int getValue(){return 4;}}; // Xe đã xếp lịch nhưng chưa chạy
+    AVAILABLE("Đang rảnh"){@Override public int getValue(){return 0;}}, // Xe chưa xếp lịch chạy
+    MAINTAINING("Đang bảo trì"){@Override public int getValue(){return 1;}},
+    RUNNING("Đang chạy"){@Override public int getValue(){return 2;}},
+    SOLD("Đã bán"){@Override public int getValue(){return 3;}},
+    SCHEDULED("Có lịch chạy"){@Override public  int getValue(){return 4;}}; // Xe đã xếp lịch nhưng chưa chạy
 
     String vehicleStatusEnum;
 
@@ -19,19 +19,19 @@ public enum VehicleStatusEnum {
 
     public abstract int getValue();
 
-    public String getValueEnumToShow(int status){
+    public static String getValueEnumToShow(int status){
         switch (status){
             case 0:
-                return ĐANG_RẢNH.getVehicleStatusEnum();
+                return AVAILABLE.getVehicleStatusEnum();
             case 1:
-                return ĐANG_BẢO_TRÌ.getVehicleStatusEnum();
+                return MAINTAINING.getVehicleStatusEnum();
             case 2:
-                return ĐANG_CHẠY.getVehicleStatusEnum();
+                return RUNNING.getVehicleStatusEnum();
             case 3:
-                return ĐÃ_BÁN.getVehicleStatusEnum();
+                return SOLD.getVehicleStatusEnum();
             case 4:
-                return CÓ_LỊCH_CHẠY.getVehicleStatusEnum();
-            default:throw new AssertionError("Unknown operations " + this);
+                return SCHEDULED.getVehicleStatusEnum();
+            default:throw new AssertionError("Unknown operations " );
         }
     }
 

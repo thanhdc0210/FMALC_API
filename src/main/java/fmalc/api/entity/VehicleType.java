@@ -1,4 +1,4 @@
-package fmalc.api.entities;
+package fmalc.api.entity;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -37,7 +37,7 @@ public class VehicleType implements Serializable {
     private String vehicleTypeName;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "driver_license_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "driver_license_id", referencedColumnName = "id")
     private DriverLicense driver_license;
 
 }
