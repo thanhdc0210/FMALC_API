@@ -26,8 +26,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
         Account account = accountRepository.findByUsername(username);
         if (account == null) {
-            return new org.springframework.security.core.userdetails.User(" ", " ", true, true, true, true,
-                    getAuthorities(""));
+            throw new UsernameNotFoundException(username);
         }
 
         return new org.springframework.security.core.userdetails.User(account.getUsername(), account.getPassword(),

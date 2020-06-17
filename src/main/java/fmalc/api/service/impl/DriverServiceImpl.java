@@ -70,4 +70,23 @@ public class DriverServiceImpl implements DriverService {
         driverRepository.save(driver);
         return driver;
     }
+
+    @Override
+    public Driver update(Integer id, DriverRequestDTO driverRequest) throws Exception {
+        if (!driverRepository.existsById(id)) {
+            throw new Exception();
+        }
+
+        Driver driverUpdate = driverRepository.findById(id).get();
+        DriverLicense driverLicenseUpdate = driverUpdate.getLicense();
+        driverLicenseUpdate.setLicenseType(driverRequest.getDriverLicenseRequestDTO().getLicenseType());
+
+        driverUpdate.setName(driverRequest.getName());
+        driverUpdate.setIdentityNo(driverRequest.getIdentityNo());
+        driverUpdate.setNo(driverRequest.getNo());
+        driverUpdate.setExpires(driverRequest.getExpires());
+        driverUpdate.setLicense(driverLicenseUpdate);
+        driverRepository.save(driverUpdate);
+        return driverUpdate;
+    }
 }
