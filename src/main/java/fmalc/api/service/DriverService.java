@@ -12,5 +12,5 @@ public interface DriverService {
 
     Driver save(DriverRequestDTO driverRequest);
 
-    Driver createDriver(DriverRequestDTO driverRequestDTO);
+
 }
