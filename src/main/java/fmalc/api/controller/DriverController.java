@@ -47,7 +47,7 @@ public class DriverController {
         }
     }
     @PutMapping(value = "id/{id}")
-    public ResponseEntity<DriverResponseDTO> findById(@PathVariable("id") Integer id, @RequestBody DriverRequestDTO driverRequest) {
+    public ResponseEntity<DriverResponseDTO> updateDriver(@PathVariable("id") Integer id, @RequestBody DriverRequestDTO driverRequest) {
        try {
            Driver driver = driverService.update(id, driverRequest);
            return ResponseEntity.ok().body(new DriverResponseDTO().mapToResponse(driver));
