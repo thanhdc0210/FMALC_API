@@ -49,7 +49,7 @@ public class Driver implements Serializable {
      private Account account;
 
     @Column(name = "identity_no", nullable = false)
-    private String identityNo;
+    private String identityNo; // Số trên CMND
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -58,7 +58,7 @@ public class Driver implements Serializable {
     private String phoneNumber;
 
     @Column(name = "no", nullable = false)
-    private String no;
+    private String no; // Số bằng lái
 
     @Column(name = "expires", nullable = false)
     private Date expires;
