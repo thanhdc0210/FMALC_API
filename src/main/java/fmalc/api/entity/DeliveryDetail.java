@@ -29,6 +29,6 @@ public class DeliveryDetail implements Serializable {
     @JoinColumn(name = "place_id", referencedColumnName = "id", nullable = false)
     private Place place;
 
-    @Column(name = "order", nullable = false)
-    private Integer order;
+    @Column(name = "priority", nullable = false)
+    private Integer priority;
 }

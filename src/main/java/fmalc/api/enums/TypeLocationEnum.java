@@ -1,8 +1,8 @@
 package fmalc.api.enums;
 
 public enum TypeLocationEnum {
-    DELIVERED_PLACE("Nơi lấy hàng"){@Override public int getValue(){return 0;}},
-    RECEIVED_PLACE("Nơi giao hàng"){@Override public int getValue(){return 1;}};
+    DELIVERED_PLACE("Lấy hàng"){@Override public int getValue(){return 0;}},
+    RECEIVED_PLACE("Giao hàng"){@Override public int getValue(){return 1;}};
 
     String typeLocationEnum;
 
@@ -18,9 +18,9 @@ public enum TypeLocationEnum {
 
     public static String getValueEnumToShow(Integer type){
         switch (type){
-            case 1:
+            case 0:
                 return DELIVERED_PLACE.getTypeLocationEnum();
-            case 2:
+            case 1:
                 return RECEIVED_PLACE.getTypeLocationEnum();
             default:
                 throw new AssertionError("Unknown operations");
