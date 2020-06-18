@@ -21,15 +21,14 @@ public class DeliveryDetail implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    @JoinColumn(name = "received_place_id", referencedColumnName = "id", nullable = false)
-    private ReceivedPlace receivedPlaces;
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
     private Consignment consignment;
 
-    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    @JoinColumn(name = "delivered_place_id", referencedColumnName = "id", nullable = false)
-    private DeliveredPlace deliveredPlaces;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+    @JoinColumn(name = "place_id", referencedColumnName = "id", nullable = false)
+    private Place place;
+
+    @Column(name = "order", nullable = false)
+    private Integer order;
 }
