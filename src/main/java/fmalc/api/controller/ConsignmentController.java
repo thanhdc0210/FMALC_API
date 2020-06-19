@@ -1,7 +1,6 @@
 package fmalc.api.controller;
 
 import fmalc.api.dto.DetailedConsignmentDTO;
-import fmalc.api.dto.StatusRequestDTO;
 import fmalc.api.entity.Consignment;
 import fmalc.api.dto.ConsignmentDTO;
 //import fmalc.api.dto.DetailedConsignmentDTO;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/v1.0/consignments")
@@ -25,8 +22,8 @@ public class ConsignmentController {
 
 
     @GetMapping(value = "driver")
-    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestBody StatusRequestDTO statusRequestDTO){
-        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForDriver(statusRequestDTO);
+    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
+        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForDriver(status, username);
 
         if (consignments == null){
             return ResponseEntity.noContent().build();
@@ -37,14 +34,14 @@ public class ConsignmentController {
     }
 
     @GetMapping(value = "fleetManager")
-    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForFleetManager(@RequestBody StatusRequestDTO statusRequestDTO){
-        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForFleetManager(statusRequestDTO);
+    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForFleetManager(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
+        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForFleetManager(status, username);
 
         if (consignments == null){
             return ResponseEntity.noContent().build();
         }
         List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
-
+        System.out.println(consignmentResponses.size());
         return ResponseEntity.ok().body(consignmentResponses);
     }
 

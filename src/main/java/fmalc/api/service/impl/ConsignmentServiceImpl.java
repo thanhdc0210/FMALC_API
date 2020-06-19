@@ -1,6 +1,5 @@
 package fmalc.api.service.impl;
 
-import fmalc.api.dto.StatusRequestDTO;
 import fmalc.api.entity.Consignment;
 import fmalc.api.repository.ConsignmentRepository;
 import fmalc.api.service.ConsignmentService;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ConsignmentServiceImpl implements ConsignmentService {
@@ -17,14 +15,14 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     ConsignmentRepository consignmentRepository;
 
     @Override
-    public List<Consignment> findByConsignmentStatusAndUsernameForDriver(StatusRequestDTO statusRequestDTO){
+    public List<Consignment> findByConsignmentStatusAndUsernameForDriver(List<Integer> status, String username){
 
-        return consignmentRepository.findByConsignmentStatusAndUsernameForDriver(statusRequestDTO.getStatus(), statusRequestDTO.getUsername());
+        return consignmentRepository.findByConsignmentStatusAndUsernameForDriver(status, username);
     }
 
     @Override
-    public List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(StatusRequestDTO statusRequestDTO) {
-        return consignmentRepository.findByConsignmentStatusAndUsernameForFleetManager(statusRequestDTO.getStatus(), statusRequestDTO.getUsername());
+    public List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(List<Integer> status, String username) {
+        return consignmentRepository.findByConsignmentStatusAndUsernameForFleetManager(status, username);
     }
 
     @Override
