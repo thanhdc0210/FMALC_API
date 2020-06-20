@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "delivery_detail")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

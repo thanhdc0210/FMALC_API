@@ -11,6 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "place")

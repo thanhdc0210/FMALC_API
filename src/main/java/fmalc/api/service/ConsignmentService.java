@@ -1,5 +1,6 @@
 package fmalc.api.service;
 
+import fmalc.api.dto.ConsignmentRequestDTO;
 import fmalc.api.entity.Consignment;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface ConsignmentService {
     Consignment findById(Integer consignment_id);
 
     List<Consignment> findAll();
+
+    Consignment save(ConsignmentRequestDTO consignmentRequestDTO);
 }
