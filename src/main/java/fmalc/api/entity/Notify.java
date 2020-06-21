@@ -26,8 +26,8 @@ public class Notify implements Serializable {
     private Vehicle vehicle;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "notify_type_id", referencedColumnName = "id", nullable = false)
-    private NotifyType notifyType;
+    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
+    private Driver driver;
 
     /**
      * Thời gian gửi thông báo
@@ -37,5 +37,9 @@ public class Notify implements Serializable {
 
     @Column(name = "content", nullable = false)
     private String content;
+
+    // Kiểm tra thông báo đã được đọc hay chưa
+    @Column(name = "status", nullable = false)
+    private Boolean status;
 
 }

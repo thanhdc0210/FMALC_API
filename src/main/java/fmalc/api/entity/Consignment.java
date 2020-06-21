@@ -28,9 +28,6 @@ public class Consignment implements Serializable {
     private Integer id;
 
     @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    private Collection<Schedule> shedules;
-
-    @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<ConsignmentHistory> consignmentHistories;
 
     @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
@@ -53,4 +50,7 @@ public class Consignment implements Serializable {
 
     @Column(name = "status", nullable = false)
     private Integer status;
+
+    @OneToOne(mappedBy = "consignment")
+    private Schedule schedule;
 }
