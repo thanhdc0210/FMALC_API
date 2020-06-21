@@ -44,7 +44,7 @@ public class Driver implements Serializable {
     @JoinColumn(name = "fleet_manager_id", referencedColumnName = "id", nullable = false)
     private FleetManager fleetManager;
 
-     @JoinColumn(name = "account_id", nullable = false)
+     @JoinColumn(name = "account_id", referencedColumnName = "id",nullable = false)
      @OneToOne
      private Account account;
 
@@ -60,6 +60,9 @@ public class Driver implements Serializable {
     @Column(name = "no", nullable = false)
     private String no; // Số bằng lái
 
-    @Column(name = "expires", nullable = false)
-    private Date expires;
+    @Column(name = "license_expires", nullable = false)
+    private Date license_expires;
+
+    @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
+    private Collection<Notify> notifies;
 }

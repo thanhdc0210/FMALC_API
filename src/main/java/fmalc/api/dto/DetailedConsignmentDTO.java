@@ -44,11 +44,7 @@ public class DetailedConsignmentDTO {
             placeDTO.setLatitude(deliveryDetail.getPlace().getLatitude());
             places.add(placeDTO);
         }
-
-        Collection<Schedule> schedulesList = consignment.getShedules();
-        for (Schedule schedule : schedulesList){
-            this.licensePlates = schedule.getVehicle().getLicensePlates();
-        }
+        licensePlates = consignment.getSchedule().getVehicle().getLicensePlates();
         this.status = ConsignmentStatusEnum.getValueEnumToShow(consignment.getStatus());
     }
 }

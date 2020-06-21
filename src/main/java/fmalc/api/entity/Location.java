@@ -36,4 +36,7 @@ public class Location implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "vehicle_id", referencedColumnName = "id", nullable = false)
     private Vehicle vehicle;
+
+    @Column(name = "address", nullable = false)
+    private String address;
 }
