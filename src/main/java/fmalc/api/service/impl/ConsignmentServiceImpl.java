@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class ConsignmentServiceImpl implements ConsignmentService {
 
     @Autowired
-    ConsignmentRepository consignmentRepository;
+    private ConsignmentRepository consignmentRepository;
 
     @Override
     public List<Consignment> findByConsignmentStatusAndUsernameForDriver(List<Integer> status, String username){
@@ -60,5 +60,10 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     @Override
     public List<Consignment> findAll() {
         return consignmentRepository.findAll();
+    }
+
+    @Override
+    public List<Consignment> getAllByStatus(Integer status) {
+        return consignmentRepository.findAllByStatus(status);
     }
 }

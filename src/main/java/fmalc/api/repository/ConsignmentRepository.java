@@ -24,4 +24,6 @@ public interface ConsignmentRepository
             " Where c.id = ch.consignment.id and ch.fleetManager.id = fm.id" +
             " and fm.account.id = a.id and c.status IN :status and a.username = :username")
     List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(@Param("status") List<Integer> status, @Param("username") String username);
+
+    List<Consignment> findAllByStatus(Integer status);
 }
