@@ -72,6 +72,15 @@ public class ConsignmentController {
         return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToListResponse(consignments));
     }
 
+    @GetMapping(value = "status")
+    public ResponseEntity<List<ConsignmentResponseDTO>> getAllByStatus(@RequestParam("status") Integer status) {
+        List<Consignment> consignments = consignmentService.getAllByStatus(status);
+        if (consignments.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToListResponse(consignments));
+    }
+
     @PostMapping
     public ResponseEntity<ConsignmentResponseDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
         try {
