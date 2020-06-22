@@ -1,5 +1,7 @@
 package fmalc.api.controller;
 
+import fmalc.api.dto.ConsignmentRequestDTO;
+import fmalc.api.dto.ConsignmentResponseDTO;
 import fmalc.api.dto.DetailedConsignmentDTO;
 import fmalc.api.entity.Consignment;
 import fmalc.api.dto.ConsignmentDTO;
@@ -61,4 +63,22 @@ public class ConsignmentController {
 //        return ResponseEntity.ok().body(consignmentService.findAll());
 //    }
 
+    @GetMapping
+    public ResponseEntity<List<ConsignmentResponseDTO>> getAll() {
+        List<Consignment> consignments = consignmentService.findAll();
+        if (consignments.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToListResponse(consignments));
+    }
+
+    @PostMapping
+    public ResponseEntity<ConsignmentResponseDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
+        try {
+            Consignment consignment = consignmentService.save(consignmentRequestDTO);
+            return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToResponse(consignment));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

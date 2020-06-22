@@ -22,6 +22,11 @@ public class DriverResponseDTO {
     private Date expires;
     private String no;
 
+    public void setStatus(Integer status) {
+        this.status = status;
+        this.driverStatus = DriverStatusEnum.getValueEnumToShow(status);
+    }
+
     public DriverResponseDTO mapToResponse(Driver baseEntitie) {
         ModelMapper modelMapper = new ModelMapper();
         DriverResponseDTO driverResponse = modelMapper.map(baseEntitie, DriverResponseDTO.class);
@@ -38,7 +43,6 @@ public class DriverResponseDTO {
                 .collect(Collectors.toList());
         for (int i = 0; i < baseEntities.size(); i++) {
             DriverResponseDTO dto = result.get(i);
-            dto.setDriverStatus(DriverStatusEnum.getValueEnumToShow(dto.getStatus()));
             dto.setDriverLicenseResponseDTO(modelMapper.map(baseEntities.get(i).getLicense(), DriverLicenseResponseDTO.class));
         }
         return result;
