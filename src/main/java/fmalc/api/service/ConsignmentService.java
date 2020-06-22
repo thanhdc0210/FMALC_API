@@ -13,7 +13,7 @@ public interface ConsignmentService {
 
     Consignment findById(Integer consignment_id);
 
-    List<Consignment> findAll();
-
     Consignment save(ConsignmentRequestDTO consignmentRequestDTO);
+
+//    List<Consignment> findAll();
 }

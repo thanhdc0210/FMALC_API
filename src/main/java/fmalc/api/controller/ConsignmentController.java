@@ -5,7 +5,6 @@ import fmalc.api.dto.ConsignmentResponseDTO;
 import fmalc.api.dto.DetailedConsignmentDTO;
 import fmalc.api.entity.Consignment;
 import fmalc.api.dto.ConsignmentDTO;
-//import fmalc.api.dto.DetailedConsignmentDTO;
 import fmalc.api.service.ConsignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -57,12 +56,12 @@ public class ConsignmentController {
 
         return ResponseEntity.ok().body(detailedConsignmentDTO);
     }
-
-    @GetMapping(value = "/all")
-    public ResponseEntity<List<Consignment>> findAll(){
-
-        return ResponseEntity.ok().body(consignmentService.findAll());
-    }
+//
+//    @GetMapping(value = "/all")
+//    public ResponseEntity<List<Consignment>> findAll(){
+//
+//        return ResponseEntity.ok().body(consignmentService.findAll());
+//    }
 
     @GetMapping
     public ResponseEntity<List<ConsignmentResponseDTO>> getAll() {

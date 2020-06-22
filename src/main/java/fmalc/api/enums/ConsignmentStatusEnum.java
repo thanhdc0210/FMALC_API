@@ -7,8 +7,7 @@ public enum ConsignmentStatusEnum {
     COMPLETED("Hoàn thành"){@Override public int getValue(){return 3;}},
     CANCELED("Bị hủy"){@Override public int getValue(){return 4;}},
     MISSING_DOCUMENT("Thiếu chứng từ"){@Override public int getValue(){return 5;}},
-    PENDING("Tạm hoãn"){@Override public int getValue(){return 6;}},
-    DEPARTING("Đang khởi hành"){@Override public int getValue(){return 7;}};
+    PENDING("Tạm hoãn"){@Override public int getValue(){return 6;}};
 
     String consignmentStatusEnum;
 
@@ -36,8 +35,6 @@ public enum ConsignmentStatusEnum {
                 return MISSING_DOCUMENT.getConsignmentStatusEnum();
             case 6:
                 return PENDING.getConsignmentStatusEnum();
-            case 7:
-                return DEPARTING.getConsignmentStatusEnum();
             default:
                 throw new AssertionError("Unknown operations ");
         }

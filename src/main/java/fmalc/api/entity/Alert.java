@@ -37,4 +37,8 @@ public class Alert implements Serializable {
 
     @Column(name = "content", nullable = false)
     private String content;
+
+    // Xác định xem thông báo đã được đọc hay chưa
+    @Column(name = "status", nullable = false)
+    private Boolean status;
 }

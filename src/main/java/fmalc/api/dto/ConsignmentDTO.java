@@ -47,11 +47,9 @@ public class ConsignmentDTO {
             places.add(placeDTO);
         }
 
-        Collection<Schedule> schedulesList = consignment.getShedules();
-        for (Schedule schedule : schedulesList){
-            this.licensePlates = schedule.getVehicle().getLicensePlates();
-            this.driverName = schedule.getDriver().getName();
-        }
+        Schedule schedule = consignment.getSchedule();
+        this.licensePlates = schedule.getVehicle().getLicensePlates();
+        this.driverName = schedule.getDriver().getName();
         this.weight = consignment.getWeight();
         this.status = ConsignmentStatusEnum.getValueEnumToShow(consignment.getStatus());
     }

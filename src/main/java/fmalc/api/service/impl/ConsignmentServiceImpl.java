@@ -37,11 +37,6 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     }
 
     @Override
-    public List<Consignment> findAll() {
-        return consignmentRepository.findAll();
-    }
-
-    @Override
     public Consignment save(ConsignmentRequestDTO consignmentRequestDTO) {
         ModelMapper modelMapper = new ModelMapper();
         Consignment consignment = modelMapper.map(consignmentRequestDTO, Consignment.class);
@@ -61,4 +56,9 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         consignment.setDeliveries(deliveryDetails);
         return consignmentRepository.save(consignment);
     }
+  
+//    @Override
+//    public List<Consignment> findAll() {
+//        return consignmentRepository.findAll();
+//    }
 }

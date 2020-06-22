@@ -84,7 +84,7 @@ public class DriverServiceImpl implements DriverService {
         driverUpdate.setName(driverRequest.getName());
         driverUpdate.setIdentityNo(driverRequest.getIdentityNo());
         driverUpdate.setNo(driverRequest.getNo());
-        driverUpdate.setExpires(driverRequest.getExpires());
+        driverUpdate.setLicense_expires(driverRequest.getExpires());
         driverUpdate.setLicense(driverLicenseUpdate);
         driverRepository.save(driverUpdate);
         return driverUpdate;
