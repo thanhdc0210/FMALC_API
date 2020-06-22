@@ -15,5 +15,5 @@ public interface ConsignmentService {
 
     Consignment save(ConsignmentRequestDTO consignmentRequestDTO);
 
-//    List<Consignment> findAll();
+    List<Consignment> findAll();
 }

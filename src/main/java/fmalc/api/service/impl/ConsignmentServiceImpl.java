@@ -57,8 +57,8 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         return consignmentRepository.save(consignment);
     }
   
-//    @Override
-//    public List<Consignment> findAll() {
-//        return consignmentRepository.findAll();
-//    }
+    @Override
+    public List<Consignment> findAll() {
+        return consignmentRepository.findAll();
+    }
 }
