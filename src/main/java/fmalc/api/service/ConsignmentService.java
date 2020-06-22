@@ -12,5 +12,5 @@ public interface ConsignmentService {
 
     Consignment findById(Integer consignment_id);
 
-    List<Consignment> findAll();
+//    List<Consignment> findAll();
 }
