@@ -36,10 +36,6 @@ public class Driver implements Serializable {
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "driver_license_id", referencedColumnName = "id", nullable = false)
-    private DriverLicense license;
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "fleet_manager_id", referencedColumnName = "id", nullable = false)
     private FleetManager fleetManager;
@@ -68,4 +64,8 @@ public class Driver implements Serializable {
 
     @Column(name = "dateOfBirth", nullable = false)
     private Date dateOfBirth;
+
+    // Loại bằng lái của tài xế
+    @Column(name = "driver_license", nullable = false)
+    private Integer driverLicense;
 }
