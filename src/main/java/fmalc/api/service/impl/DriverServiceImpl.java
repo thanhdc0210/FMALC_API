@@ -49,8 +49,7 @@ public class DriverServiceImpl implements DriverService {
     public Driver save(DriverRequestDTO driverRequest) {
         ModelMapper modelMapper = new ModelMapper();
         Driver driver = modelMapper.map(driverRequest, Driver.class);
-        DriverLicenseRequestDTO driverLicenseRequest = driverRequest.getDriverLicenseRequestDTO();
-        DriverLicense driverLicense = modelMapper.map(driverLicenseRequest, DriverLicense.class);
+        DriverLicense driverLicense = driverLicenseRepository.findById(driverRequest.getDriverLicenseRequestDTO().getId()).get();
         Role role = roleRepository.findByRole("ROLE_DRIVER");
 
         Account account = new Account();
@@ -64,7 +63,6 @@ public class DriverServiceImpl implements DriverService {
         FleetManager fleetManager = fleetManagerRepository.findById(driverRequest.getFleetManagerId()).get();
 
         driver.setAccount(account);
-        driverLicense = driverLicenseRepository.save(driverLicense);
         driver.setLicense(driverLicense);
         driver.setFleetManager(fleetManager);
         driverRepository.save(driver);
@@ -78,8 +76,7 @@ public class DriverServiceImpl implements DriverService {
         }
 
         Driver driverUpdate = driverRepository.findById(id).get();
-        DriverLicense driverLicenseUpdate = driverUpdate.getLicense();
-        driverLicenseUpdate.setLicenseType(driverRequest.getDriverLicenseRequestDTO().getLicenseType());
+        DriverLicense driverLicenseUpdate = driverLicenseRepository.findById(driverRequest.getDriverLicenseRequestDTO().getId()).get();
 
         driverUpdate.setName(driverRequest.getName());
         driverUpdate.setIdentityNo(driverRequest.getIdentityNo());
