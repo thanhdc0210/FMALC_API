@@ -66,8 +66,13 @@ public class Vehicle implements Serializable {
     @Column(name = "license_plates", nullable = false, unique = true)
     private String licensePlates;
 
-    // Trọng tải của xe
 
     @Column (name = "vehicle_name", nullable = false)
-    private String vehicleName;
+    private String vehicleName; // tên xe
+
+    @Column(name = "average_fuel", nullable = false)
+    private Double averageFuel;
+
+    @Column(name = "maximum_capacity", nullable = false)
+    private Double maximumCapacity;
 }

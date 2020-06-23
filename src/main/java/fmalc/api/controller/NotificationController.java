@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.function.ServerResponse;
 import reactor.core.CoreSubscriber;
 import reactor.core.Disposable;
@@ -38,80 +39,81 @@ public class NotificationController {
 
     private List<NotificationResponeDTO> notificationResponeDTOS = new ArrayList<>();
 
-    private NotificationResponeDTO notificationSend =null;
+    private NotificationResponeDTO notificationSend = new NotificationResponeDTO();
 
     @PostMapping("/")
-    public ResponseEntity<NotificationResponeDTO> createNotification(@RequestBody NotificationRequestDTO notificationRequestDTO){
+    public ResponseEntity<NotificationResponeDTO> createNotification(@RequestBody NotificationRequestDTO notificationRequestDTO) {
         NotificationResponeDTO check = null;
-
-        try{
+        String url = "localhost:8082/fmacl/notification/notificationworking";
+        try {
 
             Notify notificationSaved = notificationService.createNotifiation(notificationRequestDTO);
-            if(notificationSaved!=null){
+            if (notificationSaved != null) {
 
                 NotificationResponeDTO notificationResponeDTO = convertToDto(notificationSaved);
-                if(notificationSend != notificationResponeDTO){
+                if (notificationSend != notificationResponeDTO) {
                     notificationResponeDTOS.add(notificationResponeDTO);
                     notificationSend = notificationResponeDTO;
-                    notifyForManagerWorkingHours();
+//                    Flux<List<NotificationResponeDTO>> flux =
+//                    notifyForManagerWorkingHours();
+                    RestTemplate restTemplate = new RestTemplate();
+                    restTemplate.getForObject(url,String.class);
+                    notifyForManagerWorkingHours(notificationResponeDTO);
                 }
 //
                 check = notificationResponeDTO;
 //                    if()
-                    notificationSend =notificationResponeDTO;
+                notificationSend = notificationResponeDTO;
 //                }
 
                 return ResponseEntity.ok().body(notificationResponeDTO);
-            }else{
+            } else {
                 return ResponseEntity.noContent().build();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
 
     }
 
-    private List<NotificationResponeDTO> returnResponeFor(){
+    private List<NotificationResponeDTO> returnResponeFor() {
         return notificationResponeDTOS;
     }
 
-    private void lll(Flux<Long> intervals){
+    private void lll(Flux<Long> intervals) {
         notificationResponeDTOS = new ArrayList<>();
         Disposable disposable = intervals.subscribe();
         disposable.dispose();
     }
-//
+
+    //
     @GetMapping(value = "/notificationworking", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<List<NotificationResponeDTO>> notifyForManagerWorkingHours(){
+    public Flux<NotificationResponeDTO> notifyForManagerWorkingHours(NotificationResponeDTO notificationResponeDTO) {
 
-//        System.out.println("NOTIFY"+ notificationResponeDTO);
-//
+        Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
+//        intervals.subscribe((i) -> returnResponeFor());
+        Flux<NotificationResponeDTO> monoTransaction = Flux.fromStream(Stream.generate(() -> notificationResponeDTO));
 
-            Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
-            intervals.subscribe((i)->returnResponeFor());
-            Flux<List<NotificationResponeDTO>> monoTransaction  = Flux.fromStream(Stream.generate(()->returnResponeFor()));
+        Flux<NotificationResponeDTO> flux = Flux.zip(intervals, monoTransaction).map(Tuple2::getT2);
+//        if (returnResponeFor().size() <= 0) {
+//            lll(intervals);
+////            lll(intervals);
+//        } else {
+//            lll(intervals);
 
-            Flux<List<NotificationResponeDTO>>  flux = Flux.zip(intervals, monoTransaction).map(Tuple2::getT2);
-            if(returnResponeFor().size()<=0){
+//            Date timeToRun = new Date(System.currentTimeMillis() + (1000 * 10));
+//            Timer timer = new Timer();
+//            timer.schedule(new TimerTask() {
+//                public void run() {
+//                    notificationResponeDTOS = new ArrayList<>();
+//                    Disposable disposable = intervals.subscribe();
+//                    disposable.dispose();
+//                }
+//            }, timeToRun);
 
-            }else{
-
-                Date timeToRun = new Date(System.currentTimeMillis() + (1000*10));
-                Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    public void run() {
-                        notificationResponeDTOS = new ArrayList<>();
-                        Disposable disposable = intervals.subscribe();
-                        disposable.dispose();
-                    }
-                }, timeToRun);
-
-
-
-
-            }
-            System.out.println("NOTIFY");
-            return  flux;
+//        }
+        System.out.println("NOTIFY");
+        return flux;
 
 //        return (Mono<ServerResponse>) ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(notificationResponeDTO, NotificationResponeDTO.class);
 

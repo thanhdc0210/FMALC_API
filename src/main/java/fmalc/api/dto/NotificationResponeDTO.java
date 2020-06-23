@@ -6,7 +6,9 @@ import lombok.Data;
 @Data
 public class NotificationResponeDTO {
     private VehicleReponseDTO vehicle;
-    private NotificationTypeDTO notifyType;
+    private DriverResponseDTO driver;
     private String time;
     private String content;
+    private boolean status;
+    private int id;
 }

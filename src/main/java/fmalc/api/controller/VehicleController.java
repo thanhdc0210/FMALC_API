@@ -1,12 +1,15 @@
 package fmalc.api.controller;
 
 
+import fmalc.api.dto.LocationResponeDTO;
 import fmalc.api.dto.VehicleForDetailDTO;
 
 import fmalc.api.dto.VehicleReponseDTO;
+import fmalc.api.entity.Location;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.entity.VehicleType;
 import fmalc.api.service.VehicleService;
+import fmalc.api.service.VehicleTypeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +24,13 @@ import java.util.stream.Collectors;
 @RestController
 //@RequestMapping(name = "/api/v1.0/vehicles", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 
-    @RequestMapping("/vehicles")
+@RequestMapping("/vehicles")
 public class VehicleController {
     @Autowired
     VehicleService vehicleService;
+
+    @Autowired
+    VehicleTypeService vehicleTypeService;
 
     @GetMapping("/listVehicles")
     public ResponseEntity<List<VehicleReponseDTO>> getLocationOfVehicle() {
@@ -63,15 +69,20 @@ public class VehicleController {
 
         java.util.Date utilDate = new SimpleDateFormat("yyyy").parse(dateString);
         java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-
+        vehicle = convertToVehicleEntity(dto);
         vehicle.setStatus(dto.getStatus());
-        vehicle.setVehicleName(dto.getVehicleName());
-        vehicle.setLicensePlates(dto.getLicensePlates());
+//        vehicle.setVehicleName(dto.getVehicleName());
+//        vehicle.setLicensePlates(dto.getLicensePlates());
         vehicle.setKilometerRunning(0);
-        vehicle.setWeight(dto.getWeight());
+//        vehicle.setWeight(dto.getWeight());
         vehicle.setDateOfManufacture(sqlDate);
+
+
         VehicleType type = new VehicleType();
-        type.setId(dto.getVehicleType().getId());
+        type = vehicleTypeService.getTypeByLicense(dto.getVehicleType().getWeight());
+//        if(type== null){
+//            type = vehicleTypeService.saveTypeVehicle()
+//        }
         vehicle.setVehicleType(type);
 
         Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
@@ -89,6 +100,12 @@ public class VehicleController {
         }
 
 
+    }
+
+    private Vehicle convertToVehicleEntity(VehicleForDetailDTO vehicleForDetailDTO) {
+        ModelMapper modelMapper = new ModelMapper();
+        Vehicle vehicle = modelMapper.map(vehicleForDetailDTO, Vehicle.class);
+        return vehicle;
     }
 
     @GetMapping(value = "/report-inspection")

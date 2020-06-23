@@ -24,6 +24,11 @@ public class VehicleTypeServiceImpl implements VehicleTypeService {
     }
 
     @Override
+    public VehicleType getTypeByLicense(double weight) {
+        return vehicleTypeRepository.findByWeight(weight);
+    }
+
+    @Override
     public List<VehicleTypeDTO> getListVehicleType() {
         List<VehicleType> vehicleTypes = vehicleTypeRepository.findAll();
         ModelMapper modelMapper = new ModelMapper();

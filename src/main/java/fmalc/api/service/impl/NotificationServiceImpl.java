@@ -46,22 +46,9 @@ public class NotificationServiceImpl implements NotificationService {
         Vehicle vehicle = new Vehicle();
         vehicle = vehicleRepository.findByIdVehicle(dto.getVehicle_id());
         notify.setVehicle(vehicle);
-//        NotifyType notifyType = new NotifyType();
-//        if(notificationTypeRepository.findAll().isEmpty()){
-//            notifyType.setNotifyTypeName("Cảnh báo xe dừng đổ");
-//            notifyType = notificationTypeRepository.save(notifyType);
-//
-//        }else{
-//            notifyType = notificationTypeRepository.findById(dto.getNotify_type_id());
-//        }
         Driver driver = new Driver();
         driver =driverService.findById(dto.getDriver_id());
         notify.setDriver(driver);
-
-
-
-
-
         return notificationRepositry.save(notify);
     }
 

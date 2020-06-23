@@ -45,6 +45,7 @@ public class LocationController {
     private int interval = 1000 * 60; // 1 sec
 
     private int siez = 0;
+
     @PostMapping("/sendLocation")
     public ResponseEntity<HashMap<Object, Object>> tracking(@RequestBody LocationDTO dto) throws ParseException {
         Location location = new Location();
@@ -70,16 +71,16 @@ public class LocationController {
             }
         }
         int sizetmp = tracking.size();
-        if(sizetmp == siez){
+        if (sizetmp == siez) {
 
-        }else{
+        } else {
             Date timeToRun = new Date(System.currentTimeMillis() + interval);
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 public void run() {
                     for (Map.Entry key : tracking.entrySet()) {
                         Location locationSave = (Location) key.getKey();
-                        if(locationSave!=null){
+                        if (locationSave != null) {
                             locationService.createLocation(locationSave);
                         }
 
@@ -102,7 +103,7 @@ public class LocationController {
         intervals.subscribe((i) -> SSELocation(id));
         Flux<List<LocationResponeDTO>> transactionFlux = Flux.fromStream(Stream.generate(() -> SSELocation(id)));
 //        List<Location> locationList =  Flux.fromIterable(SSELocation(id)).filter(location->location.getVehicle_id() == id);
-        if(SSELocation(id).size()<=0){
+        if (SSELocation(id).size() <= 0) {
             Disposable disposable = intervals.subscribe();
             disposable.dispose();
         }
@@ -122,18 +123,18 @@ public class LocationController {
         int size = tracking.size();
         List<Location> locationLists = new ArrayList();
         List<LocationResponeDTO> locationDTOS = new ArrayList();
-        if ( size >0) {
+        if (size > 0) {
             for (Map.Entry key : tracking.entrySet()) {
-                if ((Integer) key.getValue() == id ) {
-                    if( vehicleService.findVehicleByIdForLocation(id).getStatus()==2){
+                if ((Integer) key.getValue() == id) {
+                    if (vehicleService.findVehicleByIdForLocation(id).getStatus() == 2) {
                         Location locationSave = (Location) key.getKey();
 //                    System.out.println("CCCCC");
                         locationLists.add(locationSave);
-                    }else{
+                    } else {
                         tracking.remove(key.getKey());
                     }
 
-                }else{
+                } else {
                     return locationDTOS;
                 }
             }

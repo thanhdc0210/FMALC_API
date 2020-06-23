@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface VehicleTypeService {
     VehicleType saveTypeVehicle(VehicleType vehicleType);
+    VehicleType getTypeByLicense(double weight);
     List<VehicleTypeDTO> getListVehicleType();
 }
