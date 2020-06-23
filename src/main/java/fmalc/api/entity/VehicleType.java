@@ -26,16 +26,11 @@ public class VehicleType implements Serializable {
     @OrderBy("id")
     private Set<Vehicle> vehicles;
 
-    @Column(name = "average_fuel", nullable = false)
-    private Double averageFuel;
-
-    @Column(name = "maximum_capacity", nullable = false)
-    private Double maximumCapacity;
-
-    @Column(name = "vehicle_type_name", nullable = false)
-    private String vehicleTypeName;
-
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "driver_license_id", referencedColumnName = "id", nullable = false)
     private DriverLicense driver_license;
+
+    // Trọng tải của xe
+    @Column(name = "weight", nullable = false)
+    private Double weight;
 }

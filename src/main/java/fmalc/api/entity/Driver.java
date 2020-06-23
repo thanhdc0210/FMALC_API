@@ -65,4 +65,7 @@ public class Driver implements Serializable {
 
     @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
     private Collection<Notify> notifies;
+
+    @Column(name = "dateOfBirth", nullable = false)
+    private Date dateOfBirth;
 }
