@@ -19,7 +19,7 @@ public class DriverResponseDTO {
     private String identityNo;
     private String name;
     private String phoneNumber;
-    private Date expires;
+    private Date license_expires;
     private String no;
 
     public void setStatus(Integer status) {
