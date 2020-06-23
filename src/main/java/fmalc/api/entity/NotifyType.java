@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "notify_type")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class NotifyType implements Serializable {

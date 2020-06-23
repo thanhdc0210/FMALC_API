@@ -8,23 +8,25 @@ public class LocationDTO implements Serializable {
 
     private double latitude;
     private  double longitude;
-    private Timestamp time;
+    private String time;
     private int vehicle_id;
 
     public LocationDTO() {
     }
 
-    public LocationDTO(double latitude, double longitude, Timestamp time) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.time = time;
-    }
-
-    public LocationDTO(double latitude, double longitude, Timestamp time, int vehicle_id) {
+    public LocationDTO(double latitude, double longitude, String time, int vehicle_id) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.time = time;
         this.vehicle_id = vehicle_id;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public double getLatitude() {
@@ -43,13 +45,6 @@ public class LocationDTO implements Serializable {
         this.longitude = longitude;
     }
 
-    public Timestamp getTime() {
-        return time;
-    }
-
-    public void setTime(Timestamp time) {
-        this.time = time;
-    }
 
     public int getVehicle_id() {
         return vehicle_id;

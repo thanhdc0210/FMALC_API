@@ -23,4 +23,9 @@ public class DriverLicenseServiceImpl implements DriverLicenseService {
     public List<DriverLicense> getListDriverLicense() {
         return driverLicenseRepository.findAll();
     }
+
+    @Override
+    public DriverLicense getLicenseByLicenseType(String type) {
+        return driverLicenseRepository.findByLicenseType(type);
+    }
 }

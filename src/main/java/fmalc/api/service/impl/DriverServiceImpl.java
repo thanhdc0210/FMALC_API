@@ -69,7 +69,9 @@ public class DriverServiceImpl implements DriverService {
         FleetManager fleetManager = fleetManagerRepository.findById(driverRequest.getFleetManagerId()).get();
 
 
+
         driver.setId(null);
+
         driver.setAccount(account);
         driverLicense = driverLicenseRepository.save(driverLicense);
         driver.setLicense(driverLicense);
@@ -78,5 +80,24 @@ public class DriverServiceImpl implements DriverService {
         return driver;
     }
 
+
+    @Override
+    public Driver update(Integer id, DriverRequestDTO driverRequest) throws Exception {
+        if (!driverRepository.existsById(id)) {
+            throw new Exception();
+        }
+
+        Driver driverUpdate = driverRepository.findById(id).get();
+        DriverLicense driverLicenseUpdate = driverUpdate.getLicense();
+        driverLicenseUpdate.setLicenseType(driverRequest.getDriverLicenseRequestDTO().getLicenseType());
+
+        driverUpdate.setName(driverRequest.getName());
+        driverUpdate.setIdentityNo(driverRequest.getIdentityNo());
+        driverUpdate.setNo(driverRequest.getNo());
+        driverUpdate.setExpires(driverRequest.getExpires());
+        driverUpdate.setLicense(driverLicenseUpdate);
+        driverRepository.save(driverUpdate);
+        return driverUpdate;
+    }
 
 }

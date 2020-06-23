@@ -36,7 +36,7 @@ public class Driver implements Serializable {
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "driver_license_id", referencedColumnName = "id", nullable = false)
     private DriverLicense license;
 

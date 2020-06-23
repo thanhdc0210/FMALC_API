@@ -27,7 +27,7 @@ public class Location implements Serializable {
     private double latitude;
 
     @Column(name = "longitude", nullable = false)
-    private double longitude;
+        private double longitude;
 
     /**
      * Thời gian khi xe dừng tại 1 điểm
@@ -36,7 +36,7 @@ public class Location implements Serializable {
     private Timestamp time;
 
 //    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "vehicle_id", referencedColumnName = "id", nullable = false)
     private Vehicle vehicle;
 

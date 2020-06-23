@@ -1,7 +1,9 @@
 package fmalc.api.dto;
 
 import fmalc.api.entity.*;
+import fmalc.api.enums.DriverStatusEnum;
 import lombok.*;
+import org.modelmapper.ModelMapper;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -64,10 +66,9 @@ public class DetailedConsignmentDTO {
         }
     }
 
-    public List<DetailedConsignmentDTO> mapToListResponse(List<Consignment> baseEntities) {
-        return baseEntities
-                .stream()
-                .map(DetailedConsignmentDTO::new)
-                .collect(Collectors.toList());
-    }
+//    public DetailedConsignmentDTO mapToResponse(Consignment baseEntitie) {
+//        ModelMapper modelMapper = new ModelMapper();
+//        DetailedConsignmentDTO detailedConsignmentDTO = modelMapper.map(baseEntitie, DetailedConsignmentDTO.class);
+//        return detailedConsignmentDTO;
+//    }
 }

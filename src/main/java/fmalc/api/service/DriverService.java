@@ -13,4 +13,6 @@ public interface DriverService {
     Driver save(DriverRequestDTO driverRequest);
 
 
+    Driver update(Integer id, DriverRequestDTO driverRequest) throws Exception;
+
 }

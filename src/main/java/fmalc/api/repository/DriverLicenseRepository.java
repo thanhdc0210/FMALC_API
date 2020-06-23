@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DriverLicenseRepository extends JpaRepository<DriverLicense, Integer> {
     DriverLicense findByLicenseType(String licentype);
+    DriverLicense findById(int id);
 }

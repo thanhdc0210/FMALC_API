@@ -1,18 +1,17 @@
 package fmalc.api.controller;
 
+import fmalc.api.dto.StatusRequestDTO;
 import fmalc.api.entity.Consignment;
 import fmalc.api.dto.ConsignmentDTO;
 import fmalc.api.dto.DetailedConsignmentDTO;
 import fmalc.api.service.ConsignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -24,11 +23,23 @@ public class ConsignmentController {
     ConsignmentService consignmentService;
 
 
-    @GetMapping(value = "status/{status}")
+    @GetMapping(value = "driver")
+    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestBody StatusRequestDTO statusRequestDTO){
+        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForDriver(statusRequestDTO);
 
-    public ResponseEntity<List<ConsignmentDTO>> findByStatus(@PathVariable("status") Integer status){
-        List<Consignment> consignments = consignmentService.findByStatus(status);
-        if (consignments.isEmpty()){
+        if (consignments == null){
+            return ResponseEntity.noContent().build();
+        }
+        List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
+
+        return ResponseEntity.ok().body(consignmentResponses);
+    }
+
+    @GetMapping(value = "fleetManager")
+    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForFleetManager(@RequestBody StatusRequestDTO statusRequestDTO){
+        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForFleetManager(statusRequestDTO);
+
+        if (consignments == null){
             return ResponseEntity.noContent().build();
         }
         List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));

@@ -25,7 +25,7 @@ public class Vehicle implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<Location> locations;
 
