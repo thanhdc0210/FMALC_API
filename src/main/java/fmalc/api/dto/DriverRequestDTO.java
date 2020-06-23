@@ -11,7 +11,7 @@ public class DriverRequestDTO {
     private String identityNo;
     private String name;
     private String phoneNumber;
-    private Date expires;
+    private Date license_expires;
     private Integer fleetManagerId;
     private String no;
 }

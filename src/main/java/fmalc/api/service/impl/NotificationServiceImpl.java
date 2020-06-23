@@ -3,17 +3,16 @@ package fmalc.api.service.impl;
 
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.VehicleTypeDTO;
-import fmalc.api.entity.Notify;
-import fmalc.api.entity.NotifyType;
-import fmalc.api.entity.Vehicle;
-import fmalc.api.entity.VehicleType;
+import fmalc.api.entity.*;
 import fmalc.api.repository.NotificationRepositry;
 import fmalc.api.repository.NotificationTypeRepository;
 import fmalc.api.repository.VehicleRepository;
+import fmalc.api.service.DriverService;
 import fmalc.api.service.NotificationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -28,7 +27,7 @@ public class NotificationServiceImpl implements NotificationService {
     NotificationRepositry notificationRepositry;
 
     @Autowired
-    NotificationTypeRepository notificationTypeRepository;
+    DriverService driverService;
 
     @Autowired
     VehicleRepository vehicleRepository;
@@ -47,15 +46,17 @@ public class NotificationServiceImpl implements NotificationService {
         Vehicle vehicle = new Vehicle();
         vehicle = vehicleRepository.findByIdVehicle(dto.getVehicle_id());
         notify.setVehicle(vehicle);
-        NotifyType notifyType = new NotifyType();
-        if(notificationTypeRepository.findAll().isEmpty()){
-            notifyType.setNotifyTypeName("Cảnh báo xe dừng đổ");
-            notifyType = notificationTypeRepository.save(notifyType);
-
-        }else{
-            notifyType = notificationTypeRepository.findById(dto.getNotify_type_id());
-        }
-        notify.setNotifyType(notifyType);
+//        NotifyType notifyType = new NotifyType();
+//        if(notificationTypeRepository.findAll().isEmpty()){
+//            notifyType.setNotifyTypeName("Cảnh báo xe dừng đổ");
+//            notifyType = notificationTypeRepository.save(notifyType);
+//
+//        }else{
+//            notifyType = notificationTypeRepository.findById(dto.getNotify_type_id());
+//        }
+        Driver driver = new Driver();
+        driver =driverService.findById(dto.getDriver_id());
+        notify.setDriver(driver);
 
 
 

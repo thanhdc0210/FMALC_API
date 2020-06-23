@@ -63,7 +63,7 @@ public class Vehicle implements Serializable {
     /**
      * Biển số xe
      */
-    @Column(name = "license_plates", nullable = false)
+    @Column(name = "license_plates", nullable = false, unique = true)
     private String licensePlates;
 
     // Trọng tải của xe

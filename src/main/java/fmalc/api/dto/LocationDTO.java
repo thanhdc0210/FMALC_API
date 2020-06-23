@@ -10,7 +10,7 @@ public class LocationDTO implements Serializable {
     private  double longitude;
     private String time;
     private int vehicle_id;
-
+    private String address;
     public LocationDTO() {
     }
 
@@ -19,6 +19,14 @@ public class LocationDTO implements Serializable {
         this.longitude = longitude;
         this.time = time;
         this.vehicle_id = vehicle_id;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getTime() {

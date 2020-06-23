@@ -1,6 +1,7 @@
 package fmalc.api.component;
 
 import fmalc.api.entity.Account;
+import fmalc.api.entity.Driver;
 import fmalc.api.entity.FleetManager;
 import fmalc.api.entity.Role;
 import fmalc.api.repository.AccountRepository;

@@ -1,9 +1,11 @@
 package fmalc.api.service;
 
 
+
 import fmalc.api.dto.VehicleForDetailDTO;
 import fmalc.api.entity.Vehicle;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface VehicleService {
@@ -13,4 +15,7 @@ public interface VehicleService {
     List<Vehicle> getListVehicle();
     Vehicle findVehicleByLicensePlates (String licensePlates);
     Vehicle findByStatus(int status);
+
+    List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate);
+
 }

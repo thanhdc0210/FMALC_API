@@ -50,7 +50,8 @@ public class LocationController {
         Location location = new Location();
         location.setLatitude(dto.getLatitude());
         location.setLongitude(dto.getLongitude());
-        int sizetmp = tracking.size();
+        location.setAddress(dto.getAddress());
+
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(df.format(date));
@@ -68,6 +69,7 @@ public class LocationController {
                 locationHashMap.put(key.getKey(), key.getValue());
             }
         }
+        int sizetmp = tracking.size();
         if(sizetmp == siez){
 
         }else{

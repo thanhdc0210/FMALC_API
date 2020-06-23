@@ -70,13 +70,15 @@ public class DriverServiceImpl implements DriverService {
 
 
 
-        driver.setId(null);
+
 
         driver.setAccount(account);
+
         driverLicense = driverLicenseRepository.save(driverLicense);
         driver.setLicense(driverLicense);
         driver.setFleetManager(fleetManager);
         driverRepository.save(driver);
+
         return driver;
     }
 
@@ -94,7 +96,7 @@ public class DriverServiceImpl implements DriverService {
         driverUpdate.setName(driverRequest.getName());
         driverUpdate.setIdentityNo(driverRequest.getIdentityNo());
         driverUpdate.setNo(driverRequest.getNo());
-        driverUpdate.setExpires(driverRequest.getExpires());
+        driverUpdate.setLicense_expires(driverRequest.getLicense_expires());
         driverUpdate.setLicense(driverLicenseUpdate);
         driverRepository.save(driverUpdate);
         return driverUpdate;
