@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class DriverLicenseRequestDTO {
-    private String licenseType;
+    private Integer id;
 }

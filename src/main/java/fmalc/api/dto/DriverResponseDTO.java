@@ -21,17 +21,18 @@ public class DriverResponseDTO {
     private String phoneNumber;
     private Date license_expires;
     private String no;
+    private Date dateOfBirth;
 
     public void setStatus(Integer status) {
         this.status = status;
         this.driverStatus = DriverStatusEnum.getValueEnumToShow(status);
     }
 
-    public DriverResponseDTO mapToResponse(Driver baseEntitie) {
+    public DriverResponseDTO mapToResponse(Driver baseEntities) {
         ModelMapper modelMapper = new ModelMapper();
-        DriverResponseDTO driverResponse = modelMapper.map(baseEntitie, DriverResponseDTO.class);
+        DriverResponseDTO driverResponse = modelMapper.map(baseEntities, DriverResponseDTO.class);
         driverResponse.setDriverStatus(DriverStatusEnum.getValueEnumToShow(driverResponse.getStatus()));
-        driverResponse.setDriverLicenseResponseDTO(modelMapper.map(baseEntitie.getLicense(), DriverLicenseResponseDTO.class));
+        driverResponse.setDriverLicenseResponseDTO(modelMapper.map(baseEntities.getLicense(), DriverLicenseResponseDTO.class));
         return driverResponse;
     }
 

@@ -1,10 +1,8 @@
 package fmalc.api.component;
 
-import fmalc.api.entity.Account;
-import fmalc.api.entity.Driver;
-import fmalc.api.entity.FleetManager;
-import fmalc.api.entity.Role;
+import fmalc.api.entity.*;
 import fmalc.api.repository.AccountRepository;
+import fmalc.api.repository.DriverLicenseRepository;
 import fmalc.api.repository.FleetManagerRepository;
 import fmalc.api.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,11 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class BootstrapData implements ApplicationListener<ContextRefreshedEvent> {
@@ -27,6 +30,9 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private DriverLicenseRepository driverLicenseRepository;
 
     @Override
     @Transactional
@@ -83,5 +89,17 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
             fleetManager.setPhoneNumber("0909090909");
             fleetManagerRepository.save(fleetManager);
         }
+
+        List<String> licenseTypes = Arrays.asList("B2", "C", "D", "E");
+        List<String> driverLicenses = driverLicenseRepository.findAll().stream().map(x -> x.getLicenseType()).collect(Collectors.toList());
+        List<String> notExists = licenseTypes.stream().filter(x -> !driverLicenses.contains(x))
+                .collect(Collectors.toList());
+        List<DriverLicense> lst = new ArrayList<>();
+        for (String type: notExists) {
+            DriverLicense driverLicense = new DriverLicense();
+            driverLicense.setLicenseType(type);
+            lst.add(driverLicense);
+        }
+        driverLicenseRepository.saveAll(lst);
     }
 }
