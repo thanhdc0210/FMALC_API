@@ -6,7 +6,7 @@ import java.util.Date;
 @Data
 public class DriverRequestDTO {
     private Integer status;
-    private DriverLicenseRequestDTO driverLicenseRequestDTO;
+    private Integer driverLicense;
     private String identityNo;
     private String name;
     private String phoneNumber;
