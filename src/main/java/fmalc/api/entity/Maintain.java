@@ -32,9 +32,6 @@ public class Maintain implements Serializable {
     @Column(name = "image_maintain", nullable = false)
     private String imageMaintain;
 
-    @Column(name = "km_new", nullable = false)
-    private Integer kmNew;
-
     @Column(name = "km_old", nullable = false)
     private Integer kmOld;
 
