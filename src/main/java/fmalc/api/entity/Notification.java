@@ -12,7 +12,8 @@ import org.hibernate.annotations.GenericGenerator;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Notify implements Serializable {
+// Thông báo lịch bảo trì, lịch làm việc
+public class Notification implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id

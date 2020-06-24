@@ -12,6 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+// Cảnh báo khi xe dừng 1 chỗ quá lâu
 public class Alert implements Serializable {
     private static final long serialVersionUID = 1L;
 

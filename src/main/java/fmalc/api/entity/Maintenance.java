@@ -8,11 +8,11 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "maintain")
+@Table(name = "maintenance")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Maintain implements Serializable {
+public class Maintenance implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
