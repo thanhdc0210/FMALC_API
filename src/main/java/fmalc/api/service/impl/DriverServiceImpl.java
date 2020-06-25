@@ -1,3 +1,5 @@
+
+
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.DriverRequestDTO;
@@ -8,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -30,7 +33,10 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     private AccountRepository accountRepository;
 
+
+
     @Autowired
+
     private FleetManagerRepository fleetManagerRepository;
 
     @Override
@@ -45,6 +51,11 @@ public class DriverServiceImpl implements DriverService {
     public Driver save(DriverRequestDTO driverRequest) {
         ModelMapper modelMapper = new ModelMapper();
         Driver driver = modelMapper.map(driverRequest, Driver.class);
+//<<<<<<< HEAD
+//        DriverLicenseRequestDTO driverLicenseRequest = driverRequest.getDriverLicenseRequestDTO();
+////        DriverLicense driverLicense = modelMapper.map(driverLicenseRequest, DriverLicense.class);
+//=======
+//>>>>>>> a2a2f9eb85853370ceda5fb37ef5ca1ec5351d75
         Role role = roleRepository.findByRole("ROLE_DRIVER");
 
         Account account = new Account();
@@ -57,12 +68,30 @@ public class DriverServiceImpl implements DriverService {
 
         FleetManager fleetManager = fleetManagerRepository.findById(driverRequest.getFleetManagerId()).get();
 
-        driver.setId(null);
+
+
+
+
+
         driver.setAccount(account);
+
+//        driverLicense = driverLicenseRepository.save(driverLicense);
+//        driver.setLicense(driverLicense);
         driver.setFleetManager(fleetManager);
         driverRepository.save(driver);
+
         return driver;
     }
+
+
+//=======
+//        driver.setId(null);
+//        driver.setAccount(account);
+//        driver.setFleetManager(fleetManager);
+//        driverRepository.save(driver);
+//        return driver;
+
+
 
     @Override
     public Driver update(Integer id, DriverRequestDTO driverRequest) throws Exception {
@@ -72,12 +101,18 @@ public class DriverServiceImpl implements DriverService {
 
         Driver driverUpdate = driverRepository.findById(id).get();
 
+
         driverUpdate.setName(driverRequest.getName());
         driverUpdate.setIdentityNo(driverRequest.getIdentityNo());
         driverUpdate.setNo(driverRequest.getNo());
         driverUpdate.setLicense_expires(driverRequest.getLicense_expires());
-        driverUpdate.setDriverLicense(driverRequest.getDriverLicense());
+
+//        driverUpdate.setLicense(driverLicenseUpdate);
         driverRepository.save(driverUpdate);
         return driverUpdate;
     }
+
 }
+
+
+

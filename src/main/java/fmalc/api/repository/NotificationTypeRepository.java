@@ -1,9 +1,10 @@
 package fmalc.api.repository;
 
-import fmalc.api.entity.Driver;
+import fmalc.api.entity.NotifyType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DriverRepository extends JpaRepository<Driver, Integer> {
+public interface NotificationTypeRepository extends JpaRepository<NotifyType, Integer> {
+    NotifyType findById(int id);
 }

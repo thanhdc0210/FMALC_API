@@ -1,3 +1,4 @@
+
 package fmalc.api.controller;
 
 import fmalc.api.dto.DriverRequestDTO;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/api/v1.0/drivers")
 public class DriverController {
+
     @Autowired
     DriverService driverService;
 
@@ -39,11 +41,15 @@ public class DriverController {
 
     @PostMapping
     public ResponseEntity createDriver(@RequestBody DriverRequestDTO driverRequest) {
+
+        Driver driver = new Driver();
         try {
-            Driver driver = driverService.save(driverRequest);
+             driver = driverService.save(driverRequest);
             return ResponseEntity.ok().body(new DriverResponseDTO().mapToResponse(driver));
         } catch (Exception ex) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(driver);
+
+
         }
     }
     @PutMapping(value = "id/{id}")
@@ -57,3 +63,5 @@ public class DriverController {
     }
 
 }
+
+

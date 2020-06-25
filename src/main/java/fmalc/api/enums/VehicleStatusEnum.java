@@ -1,7 +1,7 @@
 package fmalc.api.enums;
 
 public enum VehicleStatusEnum {
-    AVAILABLE("Đang rảnh"){@Override public int getValue(){return 0;}}, // Xe chưa xếp lịch chạy
+        AVAILABLE("Đang rảnh"){@Override public int getValue(){return 0;}}, // Xe chưa xếp lịch chạy
     MAINTAINING("Đang bảo trì"){@Override public int getValue(){return 1;}},
     RUNNING("Đang chạy"){@Override public int getValue(){return 2;}},
     SOLD("Đã bán"){@Override public int getValue(){return 3;}},

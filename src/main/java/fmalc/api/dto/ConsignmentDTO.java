@@ -51,7 +51,9 @@ public class ConsignmentDTO {
         this.licensePlates = schedule.getVehicle().getLicensePlates();
         this.driverName = schedule.getDriver().getName();
         this.weight = consignment.getWeight();
+
         this.status = ConsignmentStatusEnum.getValueEnumToShow(consignment.getStatus());
+
     }
 
     public List<ConsignmentDTO> mapToListResponse(List<Consignment> baseEntities){

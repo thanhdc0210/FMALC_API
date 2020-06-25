@@ -68,4 +68,5 @@ public class Driver implements Serializable {
     // Loại bằng lái của tài xế
     @Column(name = "driver_license", nullable = false)
     private Integer driverLicense;
+
 }

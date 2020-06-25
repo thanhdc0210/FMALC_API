@@ -18,6 +18,16 @@ public class MaintainType implements Serializable {
     @GenericGenerator(name = "generator", strategy = "native")
     @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
     @Column(name = "id")
+
+
+
+
+
+
+
+
+
+
     private Integer id;
 
     @Column(name = "content", nullable = false)

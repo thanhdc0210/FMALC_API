@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "notification")
 @Entity
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 // Thông báo lịch bảo trì, lịch làm việc

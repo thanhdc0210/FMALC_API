@@ -6,12 +6,14 @@ import java.util.Collection;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "vehicle")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Vehicle implements Serializable {
@@ -23,7 +25,8 @@ public class Vehicle implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
+
+    @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<Location> locations;
 
     @Column(name = "status", nullable = false)
@@ -44,17 +47,22 @@ public class Vehicle implements Serializable {
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<ReportIssue> reportIssues;
 
+
+
     @Column(name = "kilometer_running", nullable = false)
     private Integer kilometerRunning;
 
     @Column(name = "date_of_manufacture", nullable = false)
     private Date dateOfManufacture;
 
+    @Column(name = "weight", nullable = false)
+    private Double weight;
     /**
      * Biển số xe
      */
     @Column(name = "license_plates", nullable = false, unique = true)
     private String licensePlates;
+
 
     @Column (name = "vehicle_name", nullable = false)
     private String vehicleName; // tên xe
@@ -66,8 +74,8 @@ public class Vehicle implements Serializable {
     private Double maximumCapacity;
 
     // Trọng tải của xe
-    @Column(name = "weight", nullable = false)
-    private Double weight;
+//    @Column(name = "weight", nullable = false)
+//    private Double weight;
 
     // Loại bằng lái yêu cầu
     @Column(name = "driver_license", nullable = false)
