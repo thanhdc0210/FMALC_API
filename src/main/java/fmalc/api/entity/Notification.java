@@ -7,7 +7,7 @@ import javax.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-@Table(name = "notify")
+@Table(name = "notification")
 @Entity
 @Getter
 @AllArgsConstructor

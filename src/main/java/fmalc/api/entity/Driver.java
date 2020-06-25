@@ -62,7 +62,7 @@ public class Driver implements Serializable {
     @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
     private Collection<Notification> notifies;
 
-    @Column(name = "dateOfBirth", nullable = false)
+    @Column(name = "date_of_birth", nullable = false)
     private Date dateOfBirth;
 
     // Loại bằng lái của tài xế

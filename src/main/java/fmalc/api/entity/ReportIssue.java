@@ -37,6 +37,6 @@ public class ReportIssue implements Serializable {
     @Column(name = "time", nullable = false)
     private Timestamp time;
 
-    @Column(name = "note")
-    private String note;
+    @Column(name = "content")
+    private String content;
 }

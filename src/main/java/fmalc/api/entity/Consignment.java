@@ -39,12 +39,6 @@ public class Consignment implements Serializable {
     @Column(name = "owner_note")
     private String ownerNote;
 
-    /**
-     * Lí do khách hàng hủy, trì hoãn đơn hàng
-     */
-    @Column(name = "owner_reason_note")
-    private String ownerReasonNote;
-
     @Column(name = "weight", nullable = false)
     private Double weight;
 
