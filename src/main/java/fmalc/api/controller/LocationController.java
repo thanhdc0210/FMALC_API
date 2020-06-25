@@ -57,6 +57,7 @@ public class LocationController {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(df.format(date));
         Timestamp timestamp = new Timestamp(date.getTime());
+
         location.setTime(timestamp);
         Vehicle vehicle;
         vehicle = vehicleService.findVehicleByIdForLocation(dto.getVehicle_id());

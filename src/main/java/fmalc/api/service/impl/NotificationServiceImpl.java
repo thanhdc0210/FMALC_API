@@ -2,10 +2,8 @@ package fmalc.api.service.impl;
 
 
 import fmalc.api.dto.NotificationRequestDTO;
-import fmalc.api.dto.VehicleTypeDTO;
 import fmalc.api.entity.*;
 import fmalc.api.repository.NotificationRepositry;
-import fmalc.api.repository.NotificationTypeRepository;
 import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.DriverService;
 import fmalc.api.service.NotificationService;
@@ -33,9 +31,9 @@ public class NotificationServiceImpl implements NotificationService {
     VehicleRepository vehicleRepository;
 
     @Override
-    public Notify createNotifiation(NotificationRequestDTO dto) throws ParseException {
+    public Notification createNotifiation(NotificationRequestDTO dto) throws ParseException {
         Date date = new Date();
-        Notify notify = convertToDto(dto);
+        Notification notify = convertToDto(dto);
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(df.format(date));
         Timestamp timestamp = new Timestamp(date.getTime());
@@ -52,9 +50,9 @@ public class NotificationServiceImpl implements NotificationService {
         return notificationRepositry.save(notify);
     }
 
-    private Notify convertToDto(NotificationRequestDTO notificationRequestDTO) {
+    private Notification convertToDto(NotificationRequestDTO notificationRequestDTO) {
         ModelMapper modelMapper = new ModelMapper();
-        Notify dto = modelMapper.map(notificationRequestDTO, Notify.class);
+        Notification dto = modelMapper.map(notificationRequestDTO, Notification.class);
 
         return dto;
     }

@@ -5,16 +5,15 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class DriverRequestDTO {
+public class DriverResponseForNotifyDTO {
+    private Integer id;
     private Integer status;
     private Integer driverLicense;
     private String identityNo;
     private String name;
     private String phoneNumber;
-
-    private Integer fleetManagerId;
-    private String no;
     private Date license_expires;
+    private String no;
     private Date dateOfBirth;
-}
 
+}

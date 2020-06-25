@@ -7,9 +7,9 @@ import fmalc.api.dto.VehicleForDetailDTO;
 import fmalc.api.dto.VehicleReponseDTO;
 import fmalc.api.entity.Location;
 import fmalc.api.entity.Vehicle;
-import fmalc.api.entity.VehicleType;
+
 import fmalc.api.service.VehicleService;
-import fmalc.api.service.VehicleTypeService;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +28,6 @@ import java.util.stream.Collectors;
 public class VehicleController {
     @Autowired
     VehicleService vehicleService;
-
-    @Autowired
-    VehicleTypeService vehicleTypeService;
 
     @GetMapping("/listVehicles")
     public ResponseEntity<List<VehicleReponseDTO>> getLocationOfVehicle() {
@@ -65,9 +62,9 @@ public class VehicleController {
     public ResponseEntity<Vehicle> createVehicle(@RequestBody VehicleForDetailDTO dto) throws ParseException {
         Vehicle vehicle = new Vehicle();
 
-        String dateString = dto.getDateOfManufacture();
+        String dateString = dto.getDateOfManufacture(); //
 
-        java.util.Date utilDate = new SimpleDateFormat("yyyy").parse(dateString);
+        java.util.Date utilDate = new SimpleDateFormat("dd-MM-yyyy").parse(dateString);
         java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
         vehicle = convertToVehicleEntity(dto);
         vehicle.setStatus(dto.getStatus());
@@ -76,14 +73,13 @@ public class VehicleController {
         vehicle.setKilometerRunning(0);
 //        vehicle.setWeight(dto.getWeight());
         vehicle.setDateOfManufacture(sqlDate);
+        vehicle.setDriverLicense(dto.getDriverLicense());
 
 
-        VehicleType type = new VehicleType();
-        type = vehicleTypeService.getTypeByLicense(dto.getVehicleType().getWeight());
 //        if(type== null){
 //            type = vehicleTypeService.saveTypeVehicle()
 //        }
-        vehicle.setVehicleType(type);
+
 
         Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
 

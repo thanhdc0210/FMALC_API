@@ -33,10 +33,10 @@ public class Vehicle implements Serializable {
     private Integer status;
 
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
-    private Collection<Maintain> maintains;
+    private Collection<Maintenance> maintains;
 
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
-    private Collection<Notify> notifies;
+    private Collection<Notification> notifies;
 
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<Schedule> schedules;
@@ -74,8 +74,8 @@ public class Vehicle implements Serializable {
     private Double maximumCapacity;
 
     // Trọng tải của xe
-    @Column(name = "weight", nullable = false)
-    private Double weight;
+//    @Column(name = "weight", nullable = false)
+//    private Double weight;
 
     // Loại bằng lái yêu cầu
     @Column(name = "driver_license", nullable = false)
