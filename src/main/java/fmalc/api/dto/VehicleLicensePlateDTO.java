@@ -19,8 +19,4 @@ public class VehicleLicensePlateDTO {
     public VehicleLicensePlateDTO(Consignment consignment) {
         driverLicensePlate = consignment.getSchedule().getVehicle().getLicensePlates();
     }
-
-    public List<VehicleLicensePlateDTO> mapToListResponse(List<Consignment> baseEntities){
-        return baseEntities.stream().map(VehicleLicensePlateDTO::new).collect(Collectors.toList());
-    }
 }

@@ -1,6 +1,7 @@
 package fmalc.api.controller;
 
 
+import fmalc.api.dto.InspectionResponseDTO;
 import fmalc.api.dto.LocationResponeDTO;
 import fmalc.api.dto.VehicleForDetailDTO;
 
@@ -8,6 +9,7 @@ import fmalc.api.dto.VehicleReponseDTO;
 import fmalc.api.entity.Location;
 import fmalc.api.entity.Vehicle;
 
+import fmalc.api.service.InspectionService;
 import fmalc.api.service.VehicleService;
 
 import org.modelmapper.ModelMapper;
@@ -24,10 +26,13 @@ import java.util.stream.Collectors;
 @RestController
 //@RequestMapping(name = "/api/v1.0/vehicles", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 
-@RequestMapping("/vehicles")
+@RequestMapping("/api/v1.0/vehicles")
 public class VehicleController {
     @Autowired
     VehicleService vehicleService;
+
+    @Autowired
+    InspectionService inspectionService;
 
     @GetMapping("/listVehicles")
     public ResponseEntity<List<VehicleReponseDTO>> getLocationOfVehicle() {
@@ -105,7 +110,7 @@ public class VehicleController {
     }
 
     @GetMapping(value = "/report-inspection")
-    public ResponseEntity<List<String>> findVehicleLicensePlatesForReportInspection
+    public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspection
             (@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
 
         Timestamp currentDate = new Timestamp(System.currentTimeMillis());
@@ -117,7 +122,11 @@ public class VehicleController {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok().body(vehiclePlates);
+        InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+        inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
+        inspectionResponseDTO.setInspections(inspectionService.findAll());
+
+        return ResponseEntity.ok().body(inspectionResponseDTO);
 
     }
 }
