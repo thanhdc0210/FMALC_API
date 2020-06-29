@@ -44,7 +44,7 @@ public class LocationController {
     private HashMap<Location, Integer> tracking = new HashMap<>();
     private int interval = 1000 * 60; // 1 sec
 
-    private int siez = 0;
+    private int sizeHash = 0;
 
     @PostMapping("/sendLocation")
     public ResponseEntity<HashMap<Object, Object>> tracking(@RequestBody LocationDTO dto) throws ParseException {
@@ -72,7 +72,7 @@ public class LocationController {
             }
         }
         int sizetmp = tracking.size();
-        if (sizetmp == siez) {
+        if (sizetmp == sizeHash) {
 
         } else {
             Date timeToRun = new Date(System.currentTimeMillis() + interval);
@@ -84,16 +84,12 @@ public class LocationController {
                         if (locationSave != null) {
                             locationService.createLocation(locationSave);
                         }
-
                     }
                 }
             }, timeToRun);
-            sizetmp = siez;
+            sizeHash = sizetmp;
         }
-
         return ResponseEntity.ok().body(locationHashMap);
-
-
     }
 
     @GetMapping(value = "/trackingLocation/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -103,22 +99,14 @@ public class LocationController {
         Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
         intervals.subscribe((i) -> SSELocation(id));
         Flux<List<LocationResponeDTO>> transactionFlux = Flux.fromStream(Stream.generate(() -> SSELocation(id)));
-//        List<Location> locationList =  Flux.fromIterable(SSELocation(id)).filter(location->location.getVehicle_id() == id);
         if (SSELocation(id).size() <= 0) {
             Disposable disposable = intervals.subscribe();
             disposable.dispose();
         }
-        System.out.println("ssssssssssss");
-        return Flux.zip(intervals, transactionFlux).map(Tuple2::getT2);
 
+        return Flux.zip(intervals, transactionFlux).map(Tuple2::getT2);
     }
 
-
-//    @GetMapping(value = "/movement/{id}", produces= MediaType.TEXT_EVENT_STREAM_VALUE )
-//    public ResponseEntity<Alert> notifyMoving(@PathVariable int id){
-//
-//
-//    }
 
     private List<LocationResponeDTO> SSELocation(int id) {
         int size = tracking.size();
@@ -129,18 +117,15 @@ public class LocationController {
                 if ((Integer) key.getValue() == id) {
                     if (vehicleService.findVehicleByIdForLocation(id).getStatus() == 2) {
                         Location locationSave = (Location) key.getKey();
-//                    System.out.println("CCCCC");
                         locationLists.add(locationSave);
                     } else {
                         tracking.remove(key.getKey());
                     }
-
                 } else {
                     return locationDTOS;
                 }
             }
             locationDTOS = locationLists.stream().map(this::convertToDto).collect(Collectors.toList());
-//            sizeMap = tracking.size();
 
         } else {
 

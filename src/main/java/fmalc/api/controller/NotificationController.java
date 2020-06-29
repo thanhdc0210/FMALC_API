@@ -35,13 +35,21 @@ public class NotificationController {
     @Autowired
     VehicleService vehicleService;
 
+
+    // list notify
     private List<NotificationResponeDTO> notificationResponeDTOS = new ArrayList<>();
 
+    // check notify new or old
     private NotificationResponeDTO notificationSend = new NotificationResponeDTO();
-    Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
+
+    // set 5s to do
+    private Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
+
+
+    // save notify and send notify for fleet manager
     @PostMapping("/")
     public ResponseEntity<NotificationResponeDTO> createNotification(@RequestBody NotificationRequestDTO notificationRequestDTO) {
-        NotificationResponeDTO check = null;
+//        NotificationResponeDTO check = null;
         NotificationResponeDTO notificationResponeDTO = null;
 //        String url = "localhost:8082/fmacl/notification/notificationworking";
         try {
@@ -49,25 +57,18 @@ public class NotificationController {
             Notification notificationSaved = notificationService.createNotifiation(notificationRequestDTO);
             if (notificationSaved != null) {
 
-                 notificationResponeDTO = convertToDto(notificationSaved);
+                notificationResponeDTO = convertToDto(notificationSaved);
                 if (notificationSend != notificationResponeDTO) {
                     notificationResponeDTOS.add(notificationResponeDTO);
 //
                     intervals.subscribe((i) -> notifyForManagerWorkingHours());
-//                    intervals.subscribe((i)->returnResponeFor());
-
-//                    Flux<List<NotificationResponeDTO>> monoTransaction = Flux.fromStream(Stream.generate(() -> returnResponeFor()));
-//                    Flux<List<NotificationResponeDTO>> flux = Flux.zip(intervals, monoTransaction).map(Tuple2::getT2);
                     closeInterval();
 //       
                     closeInterval();
-                    System.out.println("LIST"+ notificationResponeDTOS.size());
+                    System.out.println("LIST" + notificationResponeDTOS.size());
                     System.out.println("NOTIFY");
                     notifyForManagerWorkingHours();
                 }
-//
-//                check = notificationResponeDTO;
-
 
                 return ResponseEntity.ok().body(notificationResponeDTO);
             } else {
@@ -88,54 +89,35 @@ public class NotificationController {
         disposable.dispose();
     }
 
-    //
+    // send notify for fleet manager
     @GetMapping(value = "/notificationworking", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<List<NotificationResponeDTO>> notifyForManagerWorkingHours() {
 
         intervals.subscribe((i) -> returnResponeFor());
         Flux<List<NotificationResponeDTO>> monoTransaction = Flux.fromStream(Stream.generate(() -> returnResponeFor()));
         Flux<List<NotificationResponeDTO>> flux = Flux.zip(intervals, monoTransaction).map(Tuple2::getT2);
-//        if(notificationResponeDTOS.isEmpty()){
-//            notificationResponeDTOS = new ArrayList<>();
-//            Disposable disposable = intervals.subscribe();
-//            disposable.dispose();
-//        }
+
         closeInterval();
-        System.out.println("LIST"+ notificationResponeDTOS.size());
-        System.out.println("NOTIFY");
+
         return flux;
 
 
-
     }
 
+    // delete list to disconnect notify
     @GetMapping(value = "/notificationworking/received", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<String> notifyReceived() {
 
-            String result= "";
-            closeInterval();
-            System.out.println("AAAAAAAAAAA");
-            notificationResponeDTOS = new ArrayList<>();
-            result = "OK";
+        closeInterval();
+//        System.out.println("AAAAAAAAAAA");
+        notificationResponeDTOS = new ArrayList<>();
+        String result = "OK";
 
-//        Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
-//        intervals.subscribe((i) -> returnResponeFor());
-//        Flux<List<NotificationResponeDTO>> monoTransaction = Flux.fromStream(Stream.generate(() -> returnResponeFor()));
-//        Flux<List<NotificationResponeDTO>> flux = Flux.zip(intervals, monoTransaction).map(Tuple2::getT2);
-////        if(notificationResponeDTOS.isEmpty()){
-////            notificationResponeDTOS = new ArrayList<>();
-////            Disposable disposable = intervals.subscribe();
-////            disposable.dispose();
-////        }
-//        lll(intervals);
-//        System.out.println("LIST"+ notificationResponeDTOS.size());
-//        System.out.println("NOTIFY");
         return ResponseEntity.ok().body(result);
-
-
-
     }
 
+
+    //convert notify
     private NotificationResponeDTO convertToDto(Notification notify) {
         ModelMapper modelMapper = new ModelMapper();
         NotificationResponeDTO dto = modelMapper.map(notify, NotificationResponeDTO.class);

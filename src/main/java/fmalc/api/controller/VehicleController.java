@@ -63,6 +63,16 @@ public class VehicleController {
         return ResponseEntity.ok().body(vehicle);
     }
 
+    @GetMapping("/detail/{licensePlates}")
+    public ResponseEntity<VehicleForDetailDTO> getDetailVehicleByLicensePlates(@PathVariable String licensePlates) {
+        Vehicle vehicle = vehicleService.findVehicleByLicensePlates(licensePlates);
+        VehicleForDetailDTO vehicleForDetailDTO = convertToVehicleDTO(vehicle);
+        if (vehicle == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(vehicleForDetailDTO);
+    }
+
     @PostMapping("/")
     public ResponseEntity<Vehicle> createVehicle(@RequestBody VehicleForDetailDTO dto) throws ParseException {
         Vehicle vehicle = new Vehicle();
@@ -107,6 +117,12 @@ public class VehicleController {
         ModelMapper modelMapper = new ModelMapper();
         Vehicle vehicle = modelMapper.map(vehicleForDetailDTO, Vehicle.class);
         return vehicle;
+    }
+
+    private VehicleForDetailDTO convertToVehicleDTO(Vehicle vehicle) {
+        ModelMapper modelMapper = new ModelMapper();
+        VehicleForDetailDTO vehicleForDetailDTO = modelMapper.map(vehicle, VehicleForDetailDTO.class);
+        return vehicleForDetailDTO;
     }
 
     @GetMapping(value = "/report-inspection")
