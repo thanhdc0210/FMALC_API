@@ -4,6 +4,7 @@ package fmalc.api.service.impl;
 
 import fmalc.api.dto.DriverRequestDTO;
 import fmalc.api.entity.*;
+import fmalc.api.enums.DriverLicenseEnum;
 import fmalc.api.repository.*;
 import fmalc.api.service.DriverService;
 import org.modelmapper.ModelMapper;
@@ -12,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -110,6 +113,18 @@ public class DriverServiceImpl implements DriverService {
 //        driverUpdate.setLicense(driverLicenseUpdate);
         driverRepository.save(driverUpdate);
         return driverUpdate;
+    }
+
+    @Override
+    public List<Driver> getListDriverByLicense(double weight) {
+        List<Driver> drivers = new ArrayList<>();
+        if(weight >3.5){
+            drivers = driverRepository.findByDriverLicenseC(DriverLicenseEnum.C.getValue());
+        }else{
+            drivers = driverRepository.findByDriverLicenseB2(DriverLicenseEnum.B2.getValue());
+        }
+
+        return drivers;
     }
 
 }

@@ -65,8 +65,8 @@ public class NotificationController {
                     closeInterval();
 //       
                     closeInterval();
-                    System.out.println("LIST" + notificationResponeDTOS.size());
-                    System.out.println("NOTIFY");
+//                    System.out.println("LIST" + notificationResponeDTOS.size());
+//                    System.out.println("NOTIFY");
                     notifyForManagerWorkingHours();
                 }
 
