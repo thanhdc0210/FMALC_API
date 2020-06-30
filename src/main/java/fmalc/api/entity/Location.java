@@ -37,8 +37,8 @@ public class Location implements Serializable {
 
 //    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", nullable = false)
-    private Vehicle vehicle;
+    @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
+    private Consignment consignment;
 
 
     @Column(name = "address", nullable = false)

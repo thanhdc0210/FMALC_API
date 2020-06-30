@@ -24,8 +24,11 @@ public class Driver implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
+    @OneToMany(mappedBy = "createBy", cascade = { CascadeType.MERGE })
     private Collection<ReportIssue> reportIssues;
+
+    @OneToMany(mappedBy = "updateBy", cascade = { CascadeType.MERGE })
+    private Collection<ReportIssue> reportIssue;
 
     @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
     private Collection<Alert> alerts;
@@ -68,5 +71,11 @@ public class Driver implements Serializable {
     // Loại bằng lái của tài xế
     @Column(name = "driver_license", nullable = false)
     private Integer driverLicense;
+
+    @Column(name = "working_hour")
+    private Float workingHour;
+
+    @Column(name = "image")
+    private String image;
 
 }

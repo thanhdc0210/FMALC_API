@@ -23,7 +23,7 @@ public class Inspection implements Serializable {
     @Column(name = "inspection_level", nullable = false)
     private Integer inspectionLevel;
 
-    @Column(name = "inspection_name", nullable = false)
+    @Column(name = "inspection_name", nullable = false, unique = true)
     private String inspectionName;
 
 }

@@ -47,4 +47,7 @@ public class Consignment implements Serializable {
 
     @OneToOne(mappedBy = "consignment")
     private Schedule schedule;
+
+    @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE })
+    private Collection<Location> locations;
 }
