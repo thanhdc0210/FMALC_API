@@ -9,7 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor  
 @Table(name = "account")
 @Entity
 public class Account implements Serializable {

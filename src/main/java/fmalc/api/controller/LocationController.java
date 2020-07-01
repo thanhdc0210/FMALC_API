@@ -79,12 +79,7 @@ public class LocationController {
         }
         int sizetmp = tracking.size();
         if (sizetmp == sizeHash) {
-//            Disposable disposable = intervals.subscribe();
-//            disposable.dispose();
         } else {
-//            Disposable disposable = intervals.subscribe();
-//            disposable.dispose();
-//            intervals = Flux.interval(Duration.ofSeconds(5));
             Date timeToRun = new Date(System.currentTimeMillis() + interval);
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -138,17 +133,19 @@ public class LocationController {
         List<LocationResponeDTO> locationDTOS = new ArrayList();
         if (size > 0) {
             for (Map.Entry key : tracking.entrySet()) {
-                ScheduleForLocationDTO schedule = scheduleService.getScheduleByConsignmentId((Integer)key.getValue());
-                VehicleForDetailDTO vehicle = vehicleService.findVehicleById(schedule.getVehicle_id());
-                if (vehicle.getId() == id) {
-                    if (vehicle.getStatus() ==2) {
-                        Location locationSave = (Location) key.getKey();
-                        locationLists.add(locationSave);
+                List<ScheduleForLocationDTO> schedules = scheduleService.getScheduleByConsignmentId((Integer)key.getValue());
+                for(int i =0; i<schedules.size(); i++){
+                    VehicleForDetailDTO vehicle = vehicleService.findVehicleById(schedules.get(i).getVehicle_id());
+                    if (vehicle.getId() == id) {
+                        if (vehicle.getStatus() ==2) {
+                            Location locationSave = (Location) key.getKey();
+                            locationLists.add(locationSave);
+                        } else {
+                            tracking.remove(key.getKey());
+                        }
                     } else {
-                        tracking.remove(key.getKey());
+                        //
                     }
-                } else {
-                    return locationDTOS;
                 }
             }
             locationDTOS = locationLists.stream().map(this::convertToDto).collect(Collectors.toList());

@@ -1,5 +1,6 @@
 package fmalc.api.service.impl;
 
+import fmalc.api.dto.ConsignmentListDTO;
 import fmalc.api.dto.ScheduleForLocationDTO;
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Driver;
@@ -14,7 +15,10 @@ import fmalc.api.service.VehicleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
@@ -32,16 +36,23 @@ public class ScheduleServiceImpl implements ScheduleService {
     DriverService driverService;
 
     @Override
-    public ScheduleForLocationDTO getScheduleByConsignmentId(int id) {
+    public List<ScheduleForLocationDTO> getScheduleByConsignmentId(int id) {
 
 
         //-----------------------------------------------------------------------
-        Schedule schedule = scheduleRepository.findByConsignment_Id(id);
-        ScheduleForLocationDTO scheduleForLocationDTO = convertScheduleResponse(schedule);
-        scheduleForLocationDTO.setVehicle_id(schedule.getVehicle().getId());
-        scheduleForLocationDTO.setDriver_id(schedule.getDriver().getId());
+        List<Schedule> schedules = scheduleRepository.findByConsignment_Id(id);
+        List<ScheduleForLocationDTO> scheduleForLocationDTOs= new ArrayList<>();
+        for(int i=0; i<schedules.size();i++){
+            ScheduleForLocationDTO scheduleForLocationDTO = convertScheduleResponse(schedules.get(i));
+            scheduleForLocationDTO.setVehicle_id(schedules.get(i).getVehicle().getId());
+            scheduleForLocationDTO.setDriver_id(schedules.get(i).getDriver().getId());
+            scheduleForLocationDTOs.add(scheduleForLocationDTO);
+        }
+//
+//         = mapToListResponse(schedules);
+//
 
-        return  scheduleForLocationDTO;
+        return  scheduleForLocationDTOs;
     }
 
     @Override
@@ -51,11 +62,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.save(schedule);
     }
 
-    private ScheduleForLocationDTO convertScheduleResponse(Schedule Schedule) {
+    private ScheduleForLocationDTO convertScheduleResponse(Schedule schedule) {
         ModelMapper modelMapper = new ModelMapper();
-        ScheduleForLocationDTO dto = modelMapper.map(Schedule, ScheduleForLocationDTO.class);
+        ScheduleForLocationDTO dto = modelMapper.map(schedule, ScheduleForLocationDTO.class);
 
         return dto;
+    }
+    public List<ScheduleForLocationDTO> mapToListResponse(List<Schedule> schedule) {
+        return schedule.stream()
+                .map(x -> convertScheduleResponse(x))
+                .collect(Collectors.toList());
     }
     public Driver findDriverForSchedule(){
         List<Vehicle> vehicles = vehicleService.findByStatus(VehicleStatusEnum.AVAILABLE.getValue());

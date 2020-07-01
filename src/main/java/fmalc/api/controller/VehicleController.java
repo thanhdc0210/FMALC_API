@@ -35,7 +35,7 @@ public class VehicleController {
     private static int defaultKilometRunning = 0;
 
     @GetMapping("/listVehicles")
-    public ResponseEntity<List<VehicleReponseDTO>> getLocationOfVehicle() {
+    public ResponseEntity<List<VehicleReponseDTO>> getListVehicle() {
         List<Vehicle> vehicles = vehicleService.getListVehicle();
 
         if (vehicles.isEmpty()) {

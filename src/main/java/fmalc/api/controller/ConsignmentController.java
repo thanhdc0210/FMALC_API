@@ -1,10 +1,7 @@
 package fmalc.api.controller;
 
-import fmalc.api.dto.ConsignmentRequestDTO;
-import fmalc.api.dto.ConsignmentResponseDTO;
-import fmalc.api.dto.DetailedConsignmentDTO;
+import fmalc.api.dto.*;
 import fmalc.api.entity.Consignment;
-import fmalc.api.dto.ConsignmentDTO;
 import fmalc.api.entity.Driver;
 import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
@@ -74,22 +71,54 @@ public class ConsignmentController {
         return ResponseEntity.ok().body(detailedConsignmentDTO);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ConsignmentResponseDTO>> getAll() {
-        List<Consignment> consignments = consignmentService.findAll();
-        if (consignments.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToListResponse(consignments));
-    }
+//    @GetMapping
+//    public ResponseEntity<List<ConsignmentListDTO>> getAll() {
+//        List<Consignment> consignments = consignmentService.findAll();
+//
+////        consignmentListDTOS.
+//        return  ResponseEntity.ok().body(consignmentListDTOS);
+////        return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToListResponse(consignments));
+//    }
 
     @GetMapping(value = "status")
-    public ResponseEntity<List<ConsignmentResponseDTO>> getAllByStatus(@RequestParam("status") Integer status) {
+    public ResponseEntity<List<ConsignmentListDTO>> getAllByStatus(@RequestParam("status") Integer status) {
         List<Consignment> consignments = consignmentService.getAllByStatus(status);
+        ConsignmentListDTO consignmentListDTO = new ConsignmentListDTO();
+        List<ConsignmentListDTO> consignmentListDTOS = consignmentListDTO.mapToListResponse(consignments);
         if (consignments.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToListResponse(consignments));
+
+
+
+        for (int i=0; i< consignmentListDTOS.size();i++){
+            List<ScheduleForLocationDTO> schedules = new ArrayList<>();
+            schedules = scheduleService.getScheduleByConsignmentId(consignmentListDTOS.get(i).getId());
+            for(int j=0; j<schedules.size();j++){
+                VehicleForDetailDTO vehicleForDetailDTO;
+                List<VehicleForDetailDTO> vehicleForDetailDTOS = new ArrayList<>();
+
+                Driver driver = new Driver();
+                List<Driver> drivers = new ArrayList<>();
+
+                DriverResponseDTO driverResponseDTO = new DriverResponseDTO();
+                List<DriverResponseDTO> driverResponseDTOS = new ArrayList<>();
+
+                vehicleForDetailDTO = vehicleService.findVehicleById(schedules.get(j).getVehicle_id());
+                vehicleForDetailDTOS.add(vehicleForDetailDTO);
+
+                driver = driverService.findById(schedules.get(j).getDriver_id());
+                drivers.add(driver);
+                driverResponseDTOS = driverResponseDTO.mapToListResponse(drivers);
+                consignmentListDTOS.get(i).setDrivers(driverResponseDTOS);
+                consignmentListDTOS.get(i).setVehicles(vehicleForDetailDTOS);
+            }
+
+        }
+        if (consignments.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().body(consignmentListDTOS);
     }
 
     @PostMapping

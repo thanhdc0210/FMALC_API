@@ -36,10 +36,7 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     private AccountRepository accountRepository;
 
-
-
     @Autowired
-
     private FleetManagerRepository fleetManagerRepository;
 
     @Override
