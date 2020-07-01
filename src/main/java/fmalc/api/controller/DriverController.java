@@ -8,7 +8,9 @@ import fmalc.api.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,16 +42,17 @@ public class DriverController {
     }
 
     @PostMapping
-    public ResponseEntity createDriver(@RequestBody DriverRequestDTO driverRequest) {
+    public ResponseEntity createDriver(@RequestPart(value = "file") MultipartFile file, @ModelAttribute DriverRequestDTO driverRequest) {
 
         Driver driver = new Driver();
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         try {
-             driver = driverService.save(driverRequest);
+             driver = driverService.save(driverRequest, file);
             return ResponseEntity.ok().body(new DriverResponseDTO().mapToResponse(driver));
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body(driver);
-
-
         }
     }
     @PutMapping(value = "id/{id}")

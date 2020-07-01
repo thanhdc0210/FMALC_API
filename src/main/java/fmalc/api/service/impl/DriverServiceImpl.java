@@ -7,12 +7,15 @@ import fmalc.api.entity.*;
 import fmalc.api.enums.DriverLicenseEnum;
 import fmalc.api.repository.*;
 import fmalc.api.service.DriverService;
+import fmalc.api.service.UploaderService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +38,8 @@ public class DriverServiceImpl implements DriverService {
     @Autowired
     private AccountRepository accountRepository;
 
-
+    @Autowired
+    private UploaderService uploaderService;
 
     @Autowired
 
@@ -50,7 +54,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Driver save(DriverRequestDTO driverRequest) {
+    public Driver save(DriverRequestDTO driverRequest, MultipartFile file) throws IOException {
         ModelMapper modelMapper = new ModelMapper();
         Driver driver = modelMapper.map(driverRequest, Driver.class);
         Role role = roleRepository.findByRole("ROLE_DRIVER");
@@ -64,45 +68,29 @@ public class DriverServiceImpl implements DriverService {
         account = accountRepository.save(account);
         FleetManager fleetManager = fleetManagerRepository.findById(driverRequest.getFleetManagerId()).get();
 
-
-
         driver.setId(null);
         driver.setAccount(account);
-        driver.setImage("12313");
-        driver.setWorkingHour((float) 0);
-//        driverLicense = driverLicenseRepository.save(driverLicense);
-//        driver.setLicense(driverLicense);
+        String link = uploaderService.upload(file);
+        driver.setImage(link);
+        driver.setWorkingHour(0f);
         driver.setFleetManager(fleetManager);
         driverRepository.save(driver);
 
         return driver;
     }
 
-
-//=======
-//        driver.setId(null);
-//        driver.setAccount(account);
-//        driver.setFleetManager(fleetManager);
-//        driverRepository.save(driver);
-//        return driver;
-
-
-
     @Override
     public Driver update(Integer id, DriverRequestDTO driverRequest) throws Exception {
         if (!driverRepository.existsById(id)) {
             throw new Exception();
         }
-
         Driver driverUpdate = driverRepository.findById(id).get();
-
 
         driverUpdate.setName(driverRequest.getName());
         driverUpdate.setIdentityNo(driverRequest.getIdentityNo());
         driverUpdate.setNo(driverRequest.getNo());
-        driverUpdate.setLicenseExpires(driverRequest.getLicense_expires());
+        driverUpdate.setLicenseExpires(driverRequest.getLicenseExpires());
 
-//        driverUpdate.setLicense(driverLicenseUpdate);
         driverRepository.save(driverUpdate);
         return driverUpdate;
     }
@@ -115,13 +103,11 @@ public class DriverServiceImpl implements DriverService {
         }else{
             drivers = driverRepository.findByDriverLicenseB2(DriverLicenseEnum.B2.getValue());
         }
-
         return drivers;
     }
 
     @Override
     public int updateStatus(int status, int id) {
-
         return driverRepository.updateStatusDriver(status,id);
     }
 

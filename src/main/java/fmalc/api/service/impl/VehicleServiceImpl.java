@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -74,16 +76,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle getVehicleByKmRunning( List<Vehicle> vehicles) {
-        Vehicle vehicle  = new Vehicle();
-            for(int i = 1; i<vehicles.size(); i++){
-                vehicle = vehicles.get(0);
-                int kmRunning = vehicle.getKilometerRunning();
-                int tmp = vehicles.get(i).getKilometerRunning();
-                if(kmRunning > tmp){
-                    vehicle = vehicles.get(i);
-                }
-            }
-        return  vehicle;
+        return Collections.min(vehicles, Comparator.comparing(s -> s.getKilometerRunning()));
     }
 
     @Override
