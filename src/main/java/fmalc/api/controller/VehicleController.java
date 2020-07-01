@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-//@RequestMapping(name = "/api/v1.0/vehicles", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-
 @RequestMapping("/api/v1.0/vehicles")
 public class VehicleController {
     @Autowired
