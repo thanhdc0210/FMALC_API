@@ -1,14 +1,12 @@
 package fmalc.api.controller;
 
 
-import fmalc.api.dto.InspectionResponseDTO;
-import fmalc.api.dto.LocationResponeDTO;
-import fmalc.api.dto.VehicleForDetailDTO;
+import fmalc.api.dto.*;
 
-import fmalc.api.dto.VehicleReponseDTO;
 import fmalc.api.entity.Location;
 import fmalc.api.entity.Vehicle;
 
+import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.service.InspectionService;
 import fmalc.api.service.VehicleService;
 
@@ -33,6 +31,8 @@ public class VehicleController {
 
     @Autowired
     InspectionService inspectionService;
+
+    private static int defaultKilometRunning = 0;
 
     @GetMapping("/listVehicles")
     public ResponseEntity<List<VehicleReponseDTO>> getLocationOfVehicle() {
@@ -63,28 +63,29 @@ public class VehicleController {
         return ResponseEntity.ok().body(vehicle);
     }
 
+    @GetMapping("/detail/{licensePlates}")
+    public ResponseEntity<VehicleForDetailDTO> getDetailVehicleByLicensePlates(@PathVariable String licensePlates) {
+        Vehicle vehicle = vehicleService.findVehicleByLicensePlates(licensePlates);
+        VehicleForDetailDTO vehicleForDetailDTO = convertToVehicleDTO(vehicle);
+        if (vehicle == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(vehicleForDetailDTO);
+    }
+
     @PostMapping("/")
-    public ResponseEntity<Vehicle> createVehicle(@RequestBody VehicleForDetailDTO dto) throws ParseException {
+    public ResponseEntity<Vehicle> createVehicle(@RequestBody VehicleForNewDTO dto) throws ParseException {
         Vehicle vehicle = new Vehicle();
 
         String dateString = dto.getDateOfManufacture(); //
 
-        java.util.Date utilDate = new SimpleDateFormat("dd-MM-yyyy").parse(dateString);
+        java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
         java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
         vehicle = convertToVehicleEntity(dto);
-        vehicle.setStatus(dto.getStatus());
-//        vehicle.setVehicleName(dto.getVehicleName());
-//        vehicle.setLicensePlates(dto.getLicensePlates());
-        vehicle.setKilometerRunning(0);
-//        vehicle.setWeight(dto.getWeight());
+        vehicle.setStatus(VehicleStatusEnum.AVAILABLE.getValue());
+        vehicle.setKilometerRunning(defaultKilometRunning);
         vehicle.setDateOfManufacture(sqlDate);
         vehicle.setDriverLicense(dto.getDriverLicense());
-
-
-//        if(type== null){
-//            type = vehicleTypeService.saveTypeVehicle()
-//        }
-
 
         Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
 
@@ -103,10 +104,16 @@ public class VehicleController {
 
     }
 
-    private Vehicle convertToVehicleEntity(VehicleForDetailDTO vehicleForDetailDTO) {
+    private Vehicle convertToVehicleEntity(VehicleForNewDTO vehicleForNewDTO) {
         ModelMapper modelMapper = new ModelMapper();
-        Vehicle vehicle = modelMapper.map(vehicleForDetailDTO, Vehicle.class);
+        Vehicle vehicle = modelMapper.map(vehicleForNewDTO, Vehicle.class);
         return vehicle;
+    }
+
+    private VehicleForDetailDTO convertToVehicleDTO(Vehicle vehicle) {
+        ModelMapper modelMapper = new ModelMapper();
+        VehicleForDetailDTO vehicleForDetailDTO = modelMapper.map(vehicle, VehicleForDetailDTO.class);
+        return vehicleForDetailDTO;
     }
 
     @GetMapping(value = "/report-inspection")

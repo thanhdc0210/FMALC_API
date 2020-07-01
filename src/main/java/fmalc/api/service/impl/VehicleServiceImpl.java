@@ -3,6 +3,7 @@ package fmalc.api.service.impl;
 import fmalc.api.dto.VehicleForDetailDTO;
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Vehicle;
+import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.VehicleService;
 import org.modelmapper.ModelMapper;
@@ -24,8 +25,8 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
 
     public Vehicle saveVehicle(Vehicle vehicle) {
-
-        vehicleRepository.save(vehicle);
+         vehicleRepository.saveAndFlush(vehicle);
+//        vehicleRepository.save(vehicle);
         return vehicle;
     }
 
@@ -62,11 +63,38 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Vehicle findByStatus(int status) {
+    public List<Vehicle> findByStatus(int status) {
+
         return vehicleRepository.findByStatus(status);
     }
     public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate) {
         return vehicleRepository.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
 
+    }
+
+    @Override
+    public Vehicle getVehicleByKmRunning( List<Vehicle> vehicles) {
+        Vehicle vehicle  = new Vehicle();
+            for(int i = 1; i<vehicles.size(); i++){
+                vehicle = vehicles.get(0);
+                int kmRunning = vehicle.getKilometerRunning();
+                int tmp = vehicles.get(i).getKilometerRunning();
+                if(kmRunning > tmp){
+                    vehicle = vehicles.get(i);
+                }
+            }
+        return  vehicle;
+    }
+
+    @Override
+    public void updateStatus(int status, int id) {
+//        Vehicle vehicle = new Vehicle();
+//        vehicle.setStatus(status);
+//        vehicle.setId(id);
+         vehicleRepository.updateStatusVehicle(status, id);
+//        if(vehicle != null){
+//            System.out.println(vehicle);
+//        }
+//        return statuss;
     }
 }

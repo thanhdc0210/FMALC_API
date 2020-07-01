@@ -26,4 +26,6 @@ public interface ConsignmentRepository
     List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(@Param("status") List<Integer> status, @Param("username") String username);
 
     List<Consignment> findAllByStatus(Integer status);
+
+    Consignment findById (int id);
 }

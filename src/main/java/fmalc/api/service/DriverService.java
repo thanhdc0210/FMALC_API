@@ -15,4 +15,6 @@ public interface DriverService {
 
     Driver update(Integer id, DriverRequestDTO driverRequest) throws Exception;
 
+    List<Driver> getListDriverByLicense(double weight);
+    int updateStatus(int status, int id);
 }

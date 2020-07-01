@@ -4,6 +4,7 @@ package fmalc.api.service.impl;
 
 import fmalc.api.dto.DriverRequestDTO;
 import fmalc.api.entity.*;
+import fmalc.api.enums.DriverLicenseEnum;
 import fmalc.api.repository.*;
 import fmalc.api.service.DriverService;
 import org.modelmapper.ModelMapper;
@@ -12,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -51,11 +54,6 @@ public class DriverServiceImpl implements DriverService {
     public Driver save(DriverRequestDTO driverRequest) {
         ModelMapper modelMapper = new ModelMapper();
         Driver driver = modelMapper.map(driverRequest, Driver.class);
-//<<<<<<< HEAD
-//        DriverLicenseRequestDTO driverLicenseRequest = driverRequest.getDriverLicenseRequestDTO();
-////        DriverLicense driverLicense = modelMapper.map(driverLicenseRequest, DriverLicense.class);
-//=======
-//>>>>>>> a2a2f9eb85853370ceda5fb37ef5ca1ec5351d75
         Role role = roleRepository.findByRole("ROLE_DRIVER");
 
         Account account = new Account();
@@ -65,16 +63,14 @@ public class DriverServiceImpl implements DriverService {
         account.setRole(role);
         account.setIsActive(true);
         account = accountRepository.save(account);
-
         FleetManager fleetManager = fleetManagerRepository.findById(driverRequest.getFleetManagerId()).get();
 
 
 
-
-
-
+        driver.setId(null);
         driver.setAccount(account);
-
+        driver.setImage("12313");
+        driver.setWorkingHour((float) 0);
 //        driverLicense = driverLicenseRepository.save(driverLicense);
 //        driver.setLicense(driverLicense);
         driver.setFleetManager(fleetManager);
@@ -110,6 +106,24 @@ public class DriverServiceImpl implements DriverService {
 //        driverUpdate.setLicense(driverLicenseUpdate);
         driverRepository.save(driverUpdate);
         return driverUpdate;
+    }
+
+    @Override
+    public List<Driver> getListDriverByLicense(double weight) {
+        List<Driver> drivers = new ArrayList<>();
+        if(weight >3.5){
+            drivers = driverRepository.findByDriverLicenseC(DriverLicenseEnum.C.getValue());
+        }else{
+            drivers = driverRepository.findByDriverLicenseB2(DriverLicenseEnum.B2.getValue());
+        }
+
+        return drivers;
+    }
+
+    @Override
+    public int updateStatus(int status, int id) {
+
+        return driverRepository.updateStatusDriver(status,id);
     }
 
 }

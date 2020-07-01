@@ -4,26 +4,31 @@ package fmalc.api.repository;
 
 import fmalc.api.entity.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import org.springframework.transaction.annotation.Transactional;
-
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.*;
 
 @Repository
+//@Modifying(clearAutomatically = true)
 public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
         @Query("SELECT v FROM Vehicle v WHERE v.id = ?1")
         Vehicle findByIdVehicle(int id);
+
         @Query("SELECT v FROM Vehicle v WHERE v.licensePlates = ?1")
         Vehicle findByLicensePlates(String license);
 
-        Vehicle findByStatus(int status);
+        List<Vehicle> findByStatus(int status);
 
-
+        @Modifying(clearAutomatically = true)
+        @Transactional
+        @Query(value = "UPDATE Vehicle v set v.status = ?1 where v.id = ?2", nativeQuery = true)
+        void updateStatusVehicle(int status, int id);
 
 
     @Query("Select DISTINCT v.licensePlates " +

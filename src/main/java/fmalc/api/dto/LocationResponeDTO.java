@@ -12,7 +12,7 @@ public class LocationResponeDTO implements Serializable {
     private  double longitude;
     private String time;
     private String address;
-    private int vehicle_id;
+    private int consignment_id;
 
 
 }

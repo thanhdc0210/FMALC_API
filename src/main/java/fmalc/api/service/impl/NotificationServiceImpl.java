@@ -3,6 +3,7 @@ package fmalc.api.service.impl;
 
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.entity.*;
+import fmalc.api.repository.DriverRepository;
 import fmalc.api.repository.NotificationRepositry;
 import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.DriverService;
@@ -25,7 +26,7 @@ public class NotificationServiceImpl implements NotificationService {
     NotificationRepositry notificationRepositry;
 
     @Autowired
-    DriverService driverService;
+    DriverRepository driverRepository;
 
     @Autowired
     VehicleRepository vehicleRepository;
@@ -45,7 +46,12 @@ public class NotificationServiceImpl implements NotificationService {
         vehicle = vehicleRepository.findByIdVehicle(dto.getVehicle_id());
         notify.setVehicle(vehicle);
         Driver driver = new Driver();
-        driver =driverService.findById(dto.getDriver_id());
+        try {
+            driver =driverRepository.findById(dto.getDriver_id());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         notify.setDriver(driver);
         return notificationRepositry.save(notify);
     }

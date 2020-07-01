@@ -6,6 +6,7 @@ import fmalc.api.enums.DriverStatusEnum;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
+import javax.persistence.Column;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +25,8 @@ public class DriverResponseDTO {
     private Date license_expires;
     private String no;
     private Date dateOfBirth;
+    private Float workingHour;
+    private String image;
 
     public void setStatus(Integer status) {
         this.status = status;
