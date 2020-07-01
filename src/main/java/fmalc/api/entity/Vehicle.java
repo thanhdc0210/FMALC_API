@@ -43,6 +43,9 @@ public class Vehicle implements Serializable {
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<ReportIssue> reportIssues;
 
+    @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
+    private Collection<Fuel> fuels;
+
     @Column(name = "kilometer_running", nullable = false)
     private Integer kilometerRunning;
 
@@ -66,10 +69,6 @@ public class Vehicle implements Serializable {
 
     @Column(name = "maximum_capacity", nullable = false)
     private Double maximumCapacity;
-
-    // Trọng tải của xe
-//    @Column(name = "weight", nullable = false)
-//    private Double weight;
 
     // Loại bằng lái yêu cầu
     @Column(name = "driver_license", nullable = false)

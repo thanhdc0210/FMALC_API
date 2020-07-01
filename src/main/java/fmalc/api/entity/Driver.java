@@ -2,7 +2,7 @@ package fmalc.api.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
+import java.sql.Date;
 
 import javax.persistence.*;
 
@@ -60,7 +60,7 @@ public class Driver implements Serializable {
     private String no; // Số bằng lái
 
     @Column(name = "license_expires", nullable = false)
-    private Date license_expires;
+    private Date licenseExpires;
 
     @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
     private Collection<Notification> notifies;
@@ -78,4 +78,6 @@ public class Driver implements Serializable {
     @Column(name = "image")
     private String image;
 
+    @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
+    private Collection<Maintenance> maintains;
 }

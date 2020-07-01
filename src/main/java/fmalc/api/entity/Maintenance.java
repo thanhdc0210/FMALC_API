@@ -26,6 +26,10 @@ public class Maintenance implements Serializable {
     private Vehicle vehicle;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
+    private Driver driver;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "maintain_type_id", referencedColumnName = "id", nullable = false)
     private MaintainType maintainType;
 

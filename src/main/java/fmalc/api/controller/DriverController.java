@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1.0/drivers")
+@RequestMapping(value = "/api/v1.0/drivers")
 public class DriverController {
 
     @Autowired

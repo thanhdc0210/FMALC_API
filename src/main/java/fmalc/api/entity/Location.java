@@ -3,8 +3,6 @@ package fmalc.api.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -35,11 +33,9 @@ public class Location implements Serializable {
     @Column(name = "time", nullable = false)
     private Timestamp time;
 
-//    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
     private Consignment consignment;
-
 
     @Column(name = "address", nullable = false)
     private String address;

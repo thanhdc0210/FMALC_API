@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -98,7 +97,7 @@ public class DriverServiceImpl implements DriverService {
         driverUpdate.setName(driverRequest.getName());
         driverUpdate.setIdentityNo(driverRequest.getIdentityNo());
         driverUpdate.setNo(driverRequest.getNo());
-        driverUpdate.setLicense_expires(driverRequest.getLicense_expires());
+        driverUpdate.setLicenseExpires(driverRequest.getLicense_expires());
 
 //        driverUpdate.setLicense(driverLicenseUpdate);
         driverRepository.save(driverUpdate);
