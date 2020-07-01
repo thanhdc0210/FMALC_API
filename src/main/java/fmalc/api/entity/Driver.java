@@ -78,4 +78,6 @@ public class Driver implements Serializable {
     @Column(name = "image")
     private String image;
 
+    @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
+    private Collection<Maintenance> maintains;
 }
