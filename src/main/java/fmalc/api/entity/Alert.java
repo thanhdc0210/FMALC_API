@@ -12,7 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-// Cảnh báo khi xe dừng 1 chỗ quá lâu
+// Tài xế báo cáo về khi có sự cố xảy ra trên đường
 public class Alert implements Serializable {
     private static final long serialVersionUID = 1L;
 

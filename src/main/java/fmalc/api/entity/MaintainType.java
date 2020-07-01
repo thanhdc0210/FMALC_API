@@ -18,21 +18,12 @@ public class MaintainType implements Serializable {
     @GenericGenerator(name = "generator", strategy = "native")
     @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
     @Column(name = "id")
-
-
-
-
-
-
-
-
-
-
     private Integer id;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content")
     private String content;
 
+    // Bảo trì khi đạt 5000km hoặc 10000km
     @Column(name = "kilometers_number", nullable = false)
     private Integer kilometersNumber;
 

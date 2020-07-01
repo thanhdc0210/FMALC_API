@@ -2,7 +2,7 @@ package fmalc.api.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Date;
+import java.sql.Date;
 
 import javax.persistence.*;
 

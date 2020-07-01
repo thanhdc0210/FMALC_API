@@ -13,7 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-// Thông báo lịch bảo trì, lịch làm việc
+// Thông báo khi tài xế dừng tại 1 điểm quá lâu, lái xe ngoài giờ làm việc
 public class Notification implements Serializable {
     private static final long serialVersionUID = 1L;
 

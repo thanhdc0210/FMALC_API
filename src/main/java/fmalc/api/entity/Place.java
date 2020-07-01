@@ -47,15 +47,4 @@ public class Place implements Serializable {
 
     @Column(name = "type", nullable = false)
     private Integer type;
-
-    public Place(Timestamp plannedTime, String name, String address) {
-        this.address = address;
-        this.name = name;
-        this.plannedTime = plannedTime;
-    }
-
-    public Place(Timestamp plannedTime, String name) {
-        this.name = name;
-        this.plannedTime = plannedTime;
-    }
 }
