@@ -54,11 +54,6 @@ public class DriverServiceImpl implements DriverService {
     public Driver save(DriverRequestDTO driverRequest) {
         ModelMapper modelMapper = new ModelMapper();
         Driver driver = modelMapper.map(driverRequest, Driver.class);
-//<<<<<<< HEAD
-//        DriverLicenseRequestDTO driverLicenseRequest = driverRequest.getDriverLicenseRequestDTO();
-////        DriverLicense driverLicense = modelMapper.map(driverLicenseRequest, DriverLicense.class);
-//=======
-//>>>>>>> a2a2f9eb85853370ceda5fb37ef5ca1ec5351d75
         Role role = roleRepository.findByRole("ROLE_DRIVER");
 
         Account account = new Account();
@@ -68,16 +63,14 @@ public class DriverServiceImpl implements DriverService {
         account.setRole(role);
         account.setIsActive(true);
         account = accountRepository.save(account);
-
         FleetManager fleetManager = fleetManagerRepository.findById(driverRequest.getFleetManagerId()).get();
 
 
 
-
-
-
+        driver.setId(null);
         driver.setAccount(account);
-
+        driver.setImage("12313");
+        driver.setWorkingHour((float) 0);
 //        driverLicense = driverLicenseRepository.save(driverLicense);
 //        driver.setLicense(driverLicense);
         driver.setFleetManager(fleetManager);
@@ -125,6 +118,12 @@ public class DriverServiceImpl implements DriverService {
         }
 
         return drivers;
+    }
+
+    @Override
+    public int updateStatus(int status, int id) {
+
+        return driverRepository.updateStatusDriver(status,id);
     }
 
 }

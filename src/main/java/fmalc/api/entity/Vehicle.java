@@ -25,10 +25,6 @@ public class Vehicle implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-
-    @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
-    private Collection<Location> locations;
-
     @Column(name = "status", nullable = false)
     private Integer status;
 
@@ -46,8 +42,6 @@ public class Vehicle implements Serializable {
 
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
     private Collection<ReportIssue> reportIssues;
-
-
 
     @Column(name = "kilometer_running", nullable = false)
     private Integer kilometerRunning;

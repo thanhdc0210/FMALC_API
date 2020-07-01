@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
-    Schedule findScheduleByConsignment(Integer consignmentId);
+    Schedule findByConsignment_Id(int consignmentId);
 }

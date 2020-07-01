@@ -18,4 +18,5 @@ public interface VehicleService {
 
     List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate);
     Vehicle getVehicleByKmRunning(List<Vehicle> vehicles);
+    void updateStatus(int status, int id);
 }

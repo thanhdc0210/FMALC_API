@@ -26,7 +26,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 @RestController
-@RequestMapping("/notification")
+@RequestMapping("/api/v1.0/notification")
 public class NotificationController {
 
     @Autowired
@@ -50,7 +50,7 @@ public class NotificationController {
     @PostMapping("/")
     public ResponseEntity<NotificationResponeDTO> createNotification(@RequestBody NotificationRequestDTO notificationRequestDTO) {
 //        NotificationResponeDTO check = null;
-        NotificationResponeDTO notificationResponeDTO = null;
+        NotificationResponeDTO notificationResponeDTO;
 //        String url = "localhost:8082/fmacl/notification/notificationworking";
         try {
 
@@ -64,10 +64,10 @@ public class NotificationController {
                     intervals.subscribe((i) -> notifyForManagerWorkingHours());
                     closeInterval();
 //       
-                    closeInterval();
+//                    closeInterval();
 //                    System.out.println("LIST" + notificationResponeDTOS.size());
 //                    System.out.println("NOTIFY");
-                    notifyForManagerWorkingHours();
+//                    notifyForManagerWorkingHours();
                 }
 
                 return ResponseEntity.ok().body(notificationResponeDTO);

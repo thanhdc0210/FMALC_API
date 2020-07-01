@@ -25,8 +25,8 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
 
     public Vehicle saveVehicle(Vehicle vehicle) {
-
-        vehicleRepository.save(vehicle);
+         vehicleRepository.saveAndFlush(vehicle);
+//        vehicleRepository.save(vehicle);
         return vehicle;
     }
 
@@ -74,18 +74,27 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle getVehicleByKmRunning( List<Vehicle> vehicles) {
-        Vehicle vehicle = new Vehicle();
-
-
-
+        Vehicle vehicle  = new Vehicle();
             for(int i = 1; i<vehicles.size(); i++){
+                vehicle = vehicles.get(0);
                 int kmRunning = vehicle.getKilometerRunning();
                 int tmp = vehicles.get(i).getKilometerRunning();
                 if(kmRunning > tmp){
                     vehicle = vehicles.get(i);
                 }
             }
-
         return  vehicle;
+    }
+
+    @Override
+    public void updateStatus(int status, int id) {
+//        Vehicle vehicle = new Vehicle();
+//        vehicle.setStatus(status);
+//        vehicle.setId(id);
+         vehicleRepository.updateStatusVehicle(status, id);
+//        if(vehicle != null){
+//            System.out.println(vehicle);
+//        }
+//        return statuss;
     }
 }

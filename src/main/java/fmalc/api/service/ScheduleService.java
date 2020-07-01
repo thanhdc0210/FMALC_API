@@ -1,9 +1,11 @@
 package fmalc.api.service;
 
+import fmalc.api.dto.ScheduleForLocationDTO;
 import fmalc.api.entity.Schedule;
 import org.springframework.stereotype.Service;
 
 
 public interface ScheduleService {
-    Schedule getScheduleByConsignmentId( Integer id);
+    ScheduleForLocationDTO getScheduleByConsignmentId(int id);
+    Schedule createSchedule(Schedule schedule);
 }

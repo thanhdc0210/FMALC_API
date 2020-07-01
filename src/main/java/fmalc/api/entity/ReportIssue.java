@@ -27,16 +27,29 @@ public class ReportIssue implements Serializable {
     private Vehicle vehicle;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
-    private Driver driver;
+    @JoinColumn(name = "create_by", referencedColumnName = "id", nullable = false)
+    private Driver createBy;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "update_by", referencedColumnName = "id", nullable = false)
+    private Driver updateBy;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "inspection_id", referencedColumnName = "id", nullable = false)
     private Inspection inspection;
 
-    @Column(name = "time", nullable = false)
-    private Timestamp time;
+    @Column(name = "create_time", nullable = false)
+    private Timestamp createTime;
+
+    @Column(name = "update_time", nullable = false)
+    private Timestamp updateTime;
 
     @Column(name = "content")
     private String content;
+
+    @Column(name = "status")
+    private Boolean status;
+
+    @Column(name = "image")
+    private String image;
 }

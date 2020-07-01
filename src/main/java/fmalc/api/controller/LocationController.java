@@ -1,14 +1,16 @@
+
 package fmalc.api.controller;
 
 
 import fmalc.api.dto.LocationDTO;
 
 import fmalc.api.dto.LocationResponeDTO;
+import fmalc.api.dto.ScheduleForLocationDTO;
 import fmalc.api.dto.VehicleForDetailDTO;
-import fmalc.api.entity.Alert;
-import fmalc.api.entity.Location;
-import fmalc.api.entity.Vehicle;
+import fmalc.api.entity.*;
+import fmalc.api.service.ConsignmentService;
 import fmalc.api.service.LocationService;
+import fmalc.api.service.ScheduleService;
 import fmalc.api.service.VehicleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,25 +29,29 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.Flow;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
-@RequestMapping("/location")
+@RequestMapping("/api/v1.0/location")
 public class LocationController {
 
     @Autowired
     private LocationService locationService;
 
     @Autowired
+    private ConsignmentService consignmentService;
+
+    @Autowired
     private VehicleService vehicleService;
+
+    @Autowired
+    private ScheduleService scheduleService;
 
     private HashMap<Location, Integer> tracking = new HashMap<>();
     private int interval = 1000 * 60; // 1 sec
-
     private int sizeHash = 0;
-
+    private  Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
     @PostMapping("/sendLocation")
     public ResponseEntity<HashMap<Object, Object>> tracking(@RequestBody LocationDTO dto) throws ParseException {
         Location location = new Location();
@@ -59,22 +65,26 @@ public class LocationController {
         Timestamp timestamp = new Timestamp(date.getTime());
 
         location.setTime(timestamp);
-        Vehicle vehicle;
-        vehicle = vehicleService.findVehicleByIdForLocation(dto.getVehicle_id());
+        Consignment consignment;
+        consignment = consignmentService.findById(dto.getConsignment());
 //        vehicle.setId(dto.getVehicle_id());
-        location.setVehicle(vehicle);
+        location.setConsignment(consignment);
         HashMap<Object, Object> locationHashMap = new HashMap<>();
-        tracking.put(location, location.getVehicle().getId());
+        tracking.put(location, location.getConsignment().getId());
         for (Map.Entry key : tracking.entrySet()) {
 
-            if (key.getValue() == location.getVehicle().getId()) {
+            if (key.getValue() == location.getConsignment().getId()) {
                 locationHashMap.put(key.getKey(), key.getValue());
             }
         }
         int sizetmp = tracking.size();
         if (sizetmp == sizeHash) {
-
+//            Disposable disposable = intervals.subscribe();
+//            disposable.dispose();
         } else {
+//            Disposable disposable = intervals.subscribe();
+//            disposable.dispose();
+//            intervals = Flux.interval(Duration.ofSeconds(5));
             Date timeToRun = new Date(System.currentTimeMillis() + interval);
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -93,10 +103,10 @@ public class LocationController {
     }
 
     @GetMapping(value = "/trackingLocation/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<List<LocationResponeDTO>> locationList(@PathVariable int id) {
+    public Flux<List<LocationResponeDTO>> locationListForConsignment(@PathVariable int id) {
 
 
-        Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
+
         intervals.subscribe((i) -> SSELocation(id));
         Flux<List<LocationResponeDTO>> transactionFlux = Flux.fromStream(Stream.generate(() -> SSELocation(id)));
         if (SSELocation(id).size() <= 0) {
@@ -107,15 +117,31 @@ public class LocationController {
         return Flux.zip(intervals, transactionFlux).map(Tuple2::getT2);
     }
 
+    @GetMapping(value = "/locationofveicle/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<List<LocationResponeDTO>> locationListForVehicle(@PathVariable int id) {
 
-    private List<LocationResponeDTO> SSELocation(int id) {
+
+        Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
+        intervals.subscribe((i) -> SSELocationForVehicle(id));
+        Flux<List<LocationResponeDTO>> transactionFlux = Flux.fromStream(Stream.generate(() -> SSELocationForVehicle(id)));
+        if (SSELocationForVehicle(id).size() <= 0) {
+            Disposable disposable = intervals.subscribe();
+            disposable.dispose();
+        }
+
+        return Flux.zip(intervals, transactionFlux).map(Tuple2::getT2);
+    }
+
+    private List<LocationResponeDTO> SSELocationForVehicle(int id) {
         int size = tracking.size();
         List<Location> locationLists = new ArrayList();
         List<LocationResponeDTO> locationDTOS = new ArrayList();
         if (size > 0) {
             for (Map.Entry key : tracking.entrySet()) {
-                if ((Integer) key.getValue() == id) {
-                    if (vehicleService.findVehicleByIdForLocation(id).getStatus() == 2) {
+                ScheduleForLocationDTO schedule = scheduleService.getScheduleByConsignmentId((Integer)key.getValue());
+                VehicleForDetailDTO vehicle = vehicleService.findVehicleById(schedule.getVehicle_id());
+                if (vehicle.getId() == id) {
+                    if (vehicle.getStatus() ==2) {
                         Location locationSave = (Location) key.getKey();
                         locationLists.add(locationSave);
                     } else {
@@ -128,7 +154,31 @@ public class LocationController {
             locationDTOS = locationLists.stream().map(this::convertToDto).collect(Collectors.toList());
 
         } else {
+        }
+        System.out.println("AAAAAAAAAAA");
+        return locationDTOS;
+    }
 
+    private List<LocationResponeDTO> SSELocation(int id) {
+        int size = tracking.size();
+        List<Location> locationLists = new ArrayList();
+        List<LocationResponeDTO> locationDTOS = new ArrayList();
+        if (size > 0) {
+            for (Map.Entry key : tracking.entrySet()) {
+                if ((Integer) key.getValue() == id) {
+                    if (consignmentService.findById(id).getSchedule().getVehicle().getStatus() ==2) {
+                        Location locationSave = (Location) key.getKey();
+                        locationLists.add(locationSave);
+                    } else {
+                        tracking.remove(key.getKey());
+                    }
+                } else {
+                    return locationDTOS;
+                }
+            }
+            locationDTOS = locationLists.stream().map(this::convertToDto).collect(Collectors.toList());
+
+        } else {
         }
         return locationDTOS;
     }
@@ -141,3 +191,4 @@ public class LocationController {
     }
 
 }
+

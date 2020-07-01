@@ -11,11 +11,13 @@ public interface ConsignmentService {
 
     List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(List<Integer> status, String username);
 
-    Consignment findById(Integer consignment_id);
+    Consignment findById(int consignment_id);
 
     Consignment save(ConsignmentRequestDTO consignmentRequestDTO);
 
     List<Consignment> findAll();
 
     List<Consignment> getAllByStatus(Integer status);
+
+//    Consignment mapDriverForConsignment(Consignment consignment);
 }
