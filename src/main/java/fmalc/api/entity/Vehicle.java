@@ -70,10 +70,6 @@ public class Vehicle implements Serializable {
     @Column(name = "maximum_capacity", nullable = false)
     private Double maximumCapacity;
 
-    // Trọng tải của xe
-//    @Column(name = "weight", nullable = false)
-//    private Double weight;
-
     // Loại bằng lái yêu cầu
     @Column(name = "driver_license", nullable = false)
     private Integer driverLicense;

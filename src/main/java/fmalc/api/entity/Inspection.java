@@ -20,9 +20,6 @@ public class Inspection implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "inspection_level", nullable = false)
-    private Integer inspectionLevel;
-
     @Column(name = "inspection_name", nullable = false, unique = true)
     private String inspectionName;
 
