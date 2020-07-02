@@ -17,7 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/v1.0/consignments")
@@ -149,8 +152,6 @@ public class ConsignmentController {
                 }else{
                     System.out.println("schedule failed");
                 }
-
-//
             }else{
                 System.out.println("Null mej roi");
             }
@@ -169,25 +170,12 @@ public class ConsignmentController {
         return  vehicle;
     }
     private Driver findDriverForSchedule(Vehicle vehicle){
-
         Driver driver = new Driver();
-
             if(vehicle !=null){
                 double weight = vehicle.getWeight();
                 List<Driver> drivers =  driverService.getListDriverByLicense(weight);
-                float workingHours = drivers.get(0).getWorkingHour();
-                driver = drivers.get(0);
-                for (int i =1; i< drivers.size(); i++){
-                    float tmp = drivers.get(i).getWorkingHour();
-                    if(workingHours > tmp){
-                        driver = drivers.get(i);
-                    }
-                }
+                driver = Collections.min(drivers, Comparator.comparing(s -> s.getWorkingHour()));
             }
-
-
-
         return  driver;
-//        List<Consignment> consignments = consignmentService.getAllByStatus(0);
     }
 }
