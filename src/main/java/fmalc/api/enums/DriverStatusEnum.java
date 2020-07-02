@@ -4,7 +4,9 @@ public enum DriverStatusEnum {
     AVAILABLE("Đang rảnh"){@Override public int getValue(){return 0;}},
     RUNNING("Đang chạy"){@Override public int getValue(){return 1;}},
     UNAVAILABLE("Xin nghỉ phép"){@Override public int getValue(){return 2;}},
-    SCHEDULED("Có lịch chạy"){@Override public int getValue(){return 3;}}
+    SCHEDULED("Có lịch chạy"){@Override public int getValue(){return 3;}},
+    MAINTAIN("Có lịch bảo trì"){@Override public int getValue(){return 4;}}
+
     ;
 
     String driverStatusEnum;
@@ -29,6 +31,8 @@ public enum DriverStatusEnum {
                 return UNAVAILABLE.getDriverStatusEnum();
             case 3:
                 return SCHEDULED.getDriverStatusEnum();
+            case 4:
+                return MAINTAIN.getDriverStatusEnum();
             default:
                 throw new AssertionError("Unknown operations");
         }

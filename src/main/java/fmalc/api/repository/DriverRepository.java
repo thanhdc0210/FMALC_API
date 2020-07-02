@@ -14,11 +14,11 @@ import java.util.List;
 
 @Repository
 public interface DriverRepository extends JpaRepository<Driver, Integer> {
-    @Query("select d from  Driver d where d.driverLicense >= ?1")
-    List<Driver> findByDriverLicenseC(int license);
+    @Query("select d from  Driver d where d.driverLicense >= ?1 and d.status = ?2")
+    List<Driver> findByDriverLicenseC(int license, int status);
 
-    @Query("select d from  Driver d where d.driverLicense <= ?1")
-    List<Driver> findByDriverLicenseB2(int license);
+    @Query("select d from  Driver d where d.driverLicense <= ?1 and d.status = ?2")
+    List<Driver> findByDriverLicenseB2(int license, int status);
 
     Driver findById(int id);
 

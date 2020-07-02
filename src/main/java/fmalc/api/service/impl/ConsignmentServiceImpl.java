@@ -53,6 +53,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
             deliveryDetail.setPriority(1);
             deliveryDetails.add(deliveryDetail);
         }
+        consignment.setId(null);
         consignment.setDeliveries(deliveryDetails);
         return consignmentRepository.save(consignment);
     }

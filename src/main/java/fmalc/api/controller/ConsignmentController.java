@@ -1,25 +1,17 @@
 package fmalc.api.controller;
 
 import fmalc.api.dto.*;
-import fmalc.api.entity.Consignment;
-import fmalc.api.entity.Driver;
-import fmalc.api.entity.Schedule;
-import fmalc.api.entity.Vehicle;
+import fmalc.api.entity.*;
 import fmalc.api.enums.DriverStatusEnum;
 import fmalc.api.enums.VehicleStatusEnum;
-import fmalc.api.service.ConsignmentService;
-import fmalc.api.service.DriverService;
-import fmalc.api.service.ScheduleService;
-import fmalc.api.service.VehicleService;
+import fmalc.api.service.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -38,6 +30,28 @@ public class ConsignmentController {
 
     @Autowired
     DriverService driverService;
+
+    @Autowired
+    MaintainanceService maintainanceService;
+
+    @Autowired
+    DeliveryDetailService deliveryDetailService;
+
+    @GetMapping("test/{id}")
+    public ResponseEntity<PlaceResponeDTO> test(@PathVariable int id){
+        Consignment consignment = new Consignment();
+//        boolean check = maintainanceService.checkMaintainForVehicle(id);
+        Place deliveryDetail = deliveryDetailService.getDeliveryByConsignmentAndPriority(1,1,0);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        System.out.println(sdf.format(new Date()).compareTo(sdf.format(deliveryDetail.getPlannedTime()))+" compare");
+        System.out.println(sdf.format(deliveryDetail.getPlannedTime()) +" DATE DB");
+        System.out.println(sdf.format(new Date())+" DATE CONS");
+        PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
+        placeResponeDTO = placeResponeDTO.convertPlace(deliveryDetail);
+        return ResponseEntity.ok().body(placeResponeDTO);
+    }
+
 
     @GetMapping(value = "driver")
     public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
@@ -129,10 +143,16 @@ public class ConsignmentController {
         try {
             Consignment consignment = new Consignment();
 //            scheduleService= new Sc
-            Vehicle vehicle = findVehicleForSchedule();
-            if( findDriverForSchedule(vehicle) !=null){
-                Driver driver = findDriverForSchedule(vehicle);
+
+                consignmentRequestDTO.setImageConsignment("sdsaas");
                 consignment = consignmentService.save(consignmentRequestDTO);
+                if(consignment!=null){
+
+                    System.out.println(scheduleService.findVehicleForSchedule(consignment));
+                }
+            Vehicle vehicle = scheduleService.findVehicleForSchedule(consignment);
+            if( findDriverForSchedule(vehicle) !=null){
+                Driver driver = scheduleService.findDriverForSchedule(vehicle, consignment);
                 Schedule schedule = new Schedule();
                 schedule.setConsignment(consignment);
                 schedule.setDriver(findDriverForSchedule(vehicle));
@@ -142,18 +162,15 @@ public class ConsignmentController {
                 schedule.setId(null);
                 schedule = scheduleService.createSchedule(schedule);
                 if(schedule !=null){
-//                    vehicle.setStatus(VehicleStatusEnum.SCHEDULED.getValue());
+
                     vehicleService.updateStatus(VehicleStatusEnum.SCHEDULED.getValue(), vehicle.getId());
                     driverService.updateStatus(DriverStatusEnum.SCHEDULED.getValue(), driver.getId());
 
-//                    driver.setStatus(DriverStatusEnum.SCHEDULED.getValue());
-
-                    System.out.println("Thanh cong "+schedule.getId());
                 }else{
-                    System.out.println("schedule failed");
+
                 }
             }else{
-                System.out.println("Null mej roi");
+
             }
             return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToResponse(consignment));
         } catch (Exception ex) {
@@ -173,7 +190,7 @@ public class ConsignmentController {
         Driver driver = new Driver();
             if(vehicle !=null){
                 double weight = vehicle.getWeight();
-                List<Driver> drivers =  driverService.getListDriverByLicense(weight);
+                List<Driver> drivers =  driverService.getListDriverByLicense(weight,0);
                 driver = Collections.min(drivers, Comparator.comparing(s -> s.getWorkingHour()));
             }
         return  driver;
