@@ -23,7 +23,8 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
         @Query("SELECT v FROM Vehicle v WHERE v.licensePlates = ?1")
         Vehicle findByLicensePlates(String license);
 
-        List<Vehicle> findByStatus(int status);
+        @Query("SELECT v FROM Vehicle v WHERE v.status = ?1 and v.weight >= ?2")
+        List<Vehicle> findByStatus(int status, double weight);
 
         @Modifying(clearAutomatically = true)
         @Transactional

@@ -65,9 +65,9 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<Vehicle> findByStatus(int status) {
+    public List<Vehicle> findByStatus(int status, double weight) {
 
-        return vehicleRepository.findByStatus(status);
+        return vehicleRepository.findByStatus(status, weight);
     }
     public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate) {
         return vehicleRepository.findVehicleLicensePlatesForReportInspection(status, username, currentDate);

@@ -5,6 +5,8 @@ import lombok.Data;
 import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class ScheduleForLocationDTO {
@@ -15,5 +17,16 @@ public class ScheduleForLocationDTO {
     private String imageConsignment;
     private String note;
 
-
+    public ScheduleForLocationDTO convertSchedule(Schedule schedule){
+        ModelMapper modelMapper = new ModelMapper();
+        ScheduleForLocationDTO scheduleForLocationDTO = modelMapper.map(schedule, ScheduleForLocationDTO.class);
+        return  scheduleForLocationDTO;
+    }
+    public List<ScheduleForLocationDTO> mapToListResponse(List<Schedule> baseEntities) {
+        List<ScheduleForLocationDTO> result = baseEntities
+                .stream()
+                .map(driver -> convertSchedule(driver))
+                .collect(Collectors.toList());
+        return result;
+    }
 }

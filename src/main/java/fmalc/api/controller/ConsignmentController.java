@@ -4,6 +4,7 @@ import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.DriverStatusEnum;
 import fmalc.api.enums.VehicleStatusEnum;
+import fmalc.api.schedule.ScheduleForConsignment;
 import fmalc.api.service.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,14 +89,7 @@ public class ConsignmentController {
         return ResponseEntity.ok().body(detailedConsignmentDTO);
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<ConsignmentListDTO>> getAll() {
-//        List<Consignment> consignments = consignmentService.findAll();
-//
-////        consignmentListDTOS.
-//        return  ResponseEntity.ok().body(consignmentListDTOS);
-////        return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToListResponse(consignments));
-//    }
+
 
     @GetMapping(value = "status")
     public ResponseEntity<List<ConsignmentListDTO>> getAllByStatus(@RequestParam("status") Integer status) {
@@ -142,7 +136,7 @@ public class ConsignmentController {
     public ResponseEntity<ConsignmentResponseDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
         try {
             Consignment consignment = new Consignment();
-//            scheduleService= new Sc
+            ScheduleForConsignment scheduleForConsignment = new ScheduleForConsignment();
 
                 consignmentRequestDTO.setImageConsignment("sdsaas");
                 consignment = consignmentService.save(consignmentRequestDTO);
@@ -151,11 +145,12 @@ public class ConsignmentController {
                     System.out.println(scheduleService.findVehicleForSchedule(consignment));
                 }
             Vehicle vehicle = scheduleService.findVehicleForSchedule(consignment);
-            if( findDriverForSchedule(vehicle) !=null){
-                Driver driver = scheduleService.findDriverForSchedule(vehicle, consignment);
+            Driver driver = scheduleForConsignment.findDriverForSchedule(vehicle, consignment);
+            if( driver !=null){
+
                 Schedule schedule = new Schedule();
                 schedule.setConsignment(consignment);
-                schedule.setDriver(findDriverForSchedule(vehicle));
+                schedule.setDriver(driver);
                 schedule.setVehicle(vehicle);
                 schedule.setImageConsignment("no");
                 schedule.setNote("khong co");
@@ -178,21 +173,21 @@ public class ConsignmentController {
         }
     }
 
-    private Vehicle findVehicleForSchedule(){
-        List<Vehicle> vehicles = vehicleService.findByStatus(VehicleStatusEnum.AVAILABLE.getValue());
-        Vehicle vehicle= new Vehicle();
-        if(vehicles.size()>0) {
-           vehicle = vehicleService.getVehicleByKmRunning(vehicles);
-        }
-        return  vehicle;
-    }
-    private Driver findDriverForSchedule(Vehicle vehicle){
-        Driver driver = new Driver();
-            if(vehicle !=null){
-                double weight = vehicle.getWeight();
-                List<Driver> drivers =  driverService.getListDriverByLicense(weight,0);
-                driver = Collections.min(drivers, Comparator.comparing(s -> s.getWorkingHour()));
-            }
-        return  driver;
-    }
+//    private Vehicle findVehicleForSchedule(){
+//        List<Vehicle> vehicles = vehicleService.findByStatus(VehicleStatusEnum.AVAILABLE.getValue());
+//        Vehicle vehicle= new Vehicle();
+//        if(vehicles.size()>0) {
+//           vehicle = vehicleService.getVehicleByKmRunning(vehicles);
+//        }
+//        return  vehicle;
+//    }
+//    private Driver findDriverForSchedule(Vehicle vehicle){
+//        Driver driver = new Driver();
+//            if(vehicle !=null){
+//                double weight = vehicle.getWeight();
+//                List<Driver> drivers =  driverService.getListDriverByLicense(weight,0);
+//                driver = Collections.min(drivers, Comparator.comparing(s -> s.getWorkingHour()));
+//            }
+//        return  driver;
+//    }
 }

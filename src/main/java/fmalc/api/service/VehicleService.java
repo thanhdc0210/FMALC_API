@@ -14,7 +14,7 @@ public interface VehicleService {
     Vehicle findVehicleByIdForLocation(int id);
     List<Vehicle> getListVehicle();
     Vehicle findVehicleByLicensePlates (String licensePlates);
-    List<Vehicle> findByStatus(int status);
+    List<Vehicle> findByStatus(int status, double weight);
 
     List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate);
     Vehicle getVehicleByKmRunning(List<Vehicle> vehicles);
