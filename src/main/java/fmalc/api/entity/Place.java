@@ -24,9 +24,6 @@ public class Place implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @OneToMany(mappedBy = "place", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    private Collection<DeliveryDetail> deliveryDetail;
-
     @Column(name = "latitude", nullable = false)
     private Double latitude;
 
@@ -47,4 +44,11 @@ public class Place implements Serializable {
 
     @Column(name = "type", nullable = false)
     private Integer type;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
+    private Consignment consignment;
+
+    @Column(name = "priority", nullable = false)
+    private Integer priority;
 }

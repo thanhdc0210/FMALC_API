@@ -80,4 +80,7 @@ public class Driver implements Serializable {
 
     @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
     private Collection<Maintenance> maintains;
+
+    @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE})
+    private Collection<DayOff> dayOffs;
 }

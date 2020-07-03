@@ -5,7 +5,7 @@ public enum DriverStatusEnum {
     RUNNING("Đang chạy"){@Override public int getValue(){return 1;}},
     UNAVAILABLE("Xin nghỉ phép"){@Override public int getValue(){return 2;}},
     SCHEDULED("Có lịch chạy"){@Override public int getValue(){return 3;}},
-    MAINTAIN("Đi bảo trì"){@Override public int getValue(){return 4;}}
+    MAINTAIN("Có lịch bảo trì"){@Override public int getValue(){return 4;}}
     ;
 
     String driverStatusEnum;
