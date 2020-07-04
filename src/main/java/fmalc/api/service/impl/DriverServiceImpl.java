@@ -1,5 +1,3 @@
-
-
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.DriverRequestDTO;
@@ -81,19 +79,12 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Driver update(Integer id, DriverRequestDTO driverRequest) throws Exception {
+    public Driver update(Integer id, DriverRequestDTO driverRequest) {
         if (!driverRepository.existsById(id)) {
-            throw new Exception();
+            return null;
         }
-        Driver driverUpdate = driverRepository.findById(id).get();
-
-        driverUpdate.setName(driverRequest.getName());
-        driverUpdate.setIdentityNo(driverRequest.getIdentityNo());
-        driverUpdate.setNo(driverRequest.getNo());
-        driverUpdate.setLicenseExpires(driverRequest.getLicenseExpires());
-
-        driverRepository.save(driverUpdate);
-        return driverUpdate;
+        driverRepository.updateDriver(id, driverRequest.getName(), driverRequest.getIdentityNo(), driverRequest.getNo(), driverRequest.getLicenseExpires());
+        return driverRepository.findById(id).get();
     }
 
     @Override
