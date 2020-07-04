@@ -28,7 +28,7 @@ public class Consignment implements Serializable {
     private Integer id;
 
     @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    private Collection<ConsignmentHistory> consignmentHistories;
+        private Collection<ConsignmentHistory> consignmentHistories;
 
     @Column(name = "owner_name", nullable = false)
     private String ownerName;

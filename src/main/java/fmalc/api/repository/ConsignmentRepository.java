@@ -17,12 +17,14 @@ public interface ConsignmentRepository
 
     @Query("Select c From Consignment c, Schedule s, Account a, Driver d" +
             " Where d.account.id = a.id and s.driver.id = d.id and s.consignment.id = c.id" +
-            " and c.status IN :status and a.username = :username")
+            " and c.status IN :status and a.username = :username" +
+            " and c.schedule.isApprove = true")
     List<Consignment> findByConsignmentStatusAndUsernameForDriver(@Param("status") List<Integer> status, @Param("username") String username);
 
     @Query("Select c From Consignment c, Account a, ConsignmentHistory ch, FleetManager fm" +
             " Where c.id = ch.consignment.id and ch.fleetManager.id = fm.id" +
-            " and fm.account.id = a.id and c.status IN :status and a.username = :username")
+            " and fm.account.id = a.id and c.status IN :status and a.username = :username" +
+            " and c.schedule.isApprove = true")
     List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(@Param("status") List<Integer> status, @Param("username") String username);
 
     List<Consignment> findAllByStatus(Integer status);

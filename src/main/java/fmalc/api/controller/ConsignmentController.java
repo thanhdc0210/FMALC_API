@@ -1,88 +1,88 @@
-//package fmalc.api.controller;
-//
-//import fmalc.api.dto.*;
-//import fmalc.api.entity.Consignment;
-//import fmalc.api.entity.Driver;
-//import fmalc.api.entity.Schedule;
-//import fmalc.api.entity.Vehicle;
-//import fmalc.api.enums.DriverStatusEnum;
-//import fmalc.api.enums.VehicleStatusEnum;
-//import fmalc.api.service.ConsignmentService;
-//import fmalc.api.service.DriverService;
+package fmalc.api.controller;
+
+import fmalc.api.dto.*;
+import fmalc.api.entity.Consignment;
+import fmalc.api.entity.Driver;
+import fmalc.api.entity.Schedule;
+import fmalc.api.entity.Vehicle;
+import fmalc.api.enums.DriverStatusEnum;
+import fmalc.api.enums.VehicleStatusEnum;
+import fmalc.api.service.ConsignmentService;
+import fmalc.api.service.DriverService;
 //import fmalc.api.service.ScheduleService;
 //import fmalc.api.service.VehicleService;
-//import org.modelmapper.ModelMapper;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.util.ArrayList;
-//import java.util.Collections;
-//import java.util.Comparator;
-//import java.util.List;
-//import java.util.stream.Collectors;
-//
-//@RestController
-//@RequestMapping(value = "/api/v1.0/consignments")
-//
-//public class ConsignmentController {
-//
-//    @Autowired
-//    ConsignmentService consignmentService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping(value = "/api/v1.0/consignments")
+
+public class ConsignmentController {
+
+    @Autowired
+    ConsignmentService consignmentService;
 //
 //    @Autowired
 //    ScheduleService scheduleService;
 //
 //    @Autowired
 //    VehicleService vehicleService;
+
+    @Autowired
+    DriverService driverService;
+
+    @GetMapping(value = "driver")
+    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
+        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForDriver(status, username);
+
+        if (consignments == null){
+            return ResponseEntity.noContent().build();
+        }
+        List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
+
+        return ResponseEntity.ok().body(consignmentResponses);
+    }
+
+    @GetMapping(value = "fleetManager")
+    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForFleetManager(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
+        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForFleetManager(status, username);
+
+        if (consignments == null){
+            return ResponseEntity.noContent().build();
+        }
+        List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
+        System.out.println(consignmentResponses.size());
+        return ResponseEntity.ok().body(consignmentResponses);
+    }
+
+    @GetMapping(value = "id/{id}")
+    public ResponseEntity<DetailedConsignmentDTO> findById(@PathVariable("id") Integer id){
+        Consignment consignment = consignmentService.findById(id);
+        if (consignment == null || consignment.equals("")){
+            return ResponseEntity.noContent().build();
+        }
+        DetailedConsignmentDTO detailedConsignmentDTO = new DetailedConsignmentDTO(consignment);
+
+        return ResponseEntity.ok().body(detailedConsignmentDTO);
+    }
+
+//    @GetMapping
+//    public ResponseEntity<List<ConsignmentListDTO>> getAll() {
+//        List<Consignment> consignments = consignmentService.findAll();
 //
-//    @Autowired
-//    DriverService driverService;
-//
-//    @GetMapping(value = "driver")
-//    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
-//        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForDriver(status, username);
-//
-//        if (consignments == null){
-//            return ResponseEntity.noContent().build();
-//        }
-//        List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
-//
-//        return ResponseEntity.ok().body(consignmentResponses);
+////        consignmentListDTOS.
+//        return  ResponseEntity.ok().body(consignmentListDTOS);
+////        return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToListResponse(consignments));
 //    }
-//
-//    @GetMapping(value = "fleetManager")
-//    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForFleetManager(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
-//        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForFleetManager(status, username);
-//
-//        if (consignments == null){
-//            return ResponseEntity.noContent().build();
-//        }
-//        List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
-//        System.out.println(consignmentResponses.size());
-//        return ResponseEntity.ok().body(consignmentResponses);
-//    }
-//
-//    @GetMapping(value = "id/{id}")
-//    public ResponseEntity<DetailedConsignmentDTO> findById(@PathVariable("id") Integer id){
-//        Consignment consignment = consignmentService.findById(id);
-//        if (consignment == null || consignment.equals("")){
-//            return ResponseEntity.noContent().build();
-//        }
-//        DetailedConsignmentDTO detailedConsignmentDTO = new DetailedConsignmentDTO(consignment);
-//
-//        return ResponseEntity.ok().body(detailedConsignmentDTO);
-//    }
-//
-////    @GetMapping
-////    public ResponseEntity<List<ConsignmentListDTO>> getAll() {
-////        List<Consignment> consignments = consignmentService.findAll();
-////
-//////        consignmentListDTOS.
-////        return  ResponseEntity.ok().body(consignmentListDTOS);
-//////        return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToListResponse(consignments));
-////    }
-//
+
 //    @GetMapping(value = "status")
 //    public ResponseEntity<List<ConsignmentListDTO>> getAllByStatus(@RequestParam("status") Integer status) {
 //        List<Consignment> consignments = consignmentService.getAllByStatus(status);
@@ -178,4 +178,4 @@
 //            }
 //        return  driver;
 //    }
-//}
+}

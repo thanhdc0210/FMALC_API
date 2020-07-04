@@ -1,37 +1,37 @@
-//package fmalc.api.controller;
-//
-//
-//import fmalc.api.dto.*;
-//
-//import fmalc.api.entity.Location;
-//import fmalc.api.entity.Vehicle;
-//
-//import fmalc.api.enums.VehicleStatusEnum;
-//import fmalc.api.service.InspectionService;
-//import fmalc.api.service.VehicleService;
-//
-//import org.modelmapper.ModelMapper;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.sql.Timestamp;
-//import java.text.ParseException;
-//import java.text.SimpleDateFormat;
-//import java.util.List;
-//import java.util.stream.Collectors;
-//
-//@RestController
-//@RequestMapping("/api/v1.0/vehicles")
-//public class VehicleController {
-//    @Autowired
-//    VehicleService vehicleService;
-//
-//    @Autowired
-//    InspectionService inspectionService;
-//
-//    private static int defaultKilometRunning = 0;
-//
+package fmalc.api.controller;
+
+
+import fmalc.api.dto.*;
+
+import fmalc.api.entity.Location;
+import fmalc.api.entity.Vehicle;
+
+import fmalc.api.enums.VehicleStatusEnum;
+import fmalc.api.service.InspectionService;
+import fmalc.api.service.VehicleService;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/api/v1.0/vehicles")
+public class VehicleController {
+    @Autowired
+    VehicleService vehicleService;
+
+    @Autowired
+    InspectionService inspectionService;
+
+    private static int defaultKilometRunning = 0;
+
 //    @GetMapping("/listVehicles")
 //    public ResponseEntity<List<VehicleReponseDTO>> getListVehicle() {
 //        List<Vehicle> vehicles = vehicleService.getListVehicle();
@@ -113,26 +113,26 @@
 //        VehicleForDetailDTO vehicleForDetailDTO = modelMapper.map(vehicle, VehicleForDetailDTO.class);
 //        return vehicleForDetailDTO;
 //    }
-//
-//    @GetMapping(value = "/report-inspection")
-//    public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspection
-//            (@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
-//
-//        Timestamp currentDate = new Timestamp(System.currentTimeMillis());
-//        System.out.println(currentDate);
-//
-//        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
-//
-//        if (vehiclePlates == null) {
-//            return ResponseEntity.noContent().build();
-//        }
-//
-//        InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-//        inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
-//        inspectionResponseDTO.setInspections(inspectionService.findAll());
-//
-//        return ResponseEntity.ok().body(inspectionResponseDTO);
-//
-//    }
-//}
-//
+
+    @GetMapping(value = "/report-inspection")
+    public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspection
+            (@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
+
+        Timestamp currentDate = new Timestamp(System.currentTimeMillis());
+        System.out.println(currentDate);
+
+        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
+
+        if (vehiclePlates == null) {
+            return ResponseEntity.noContent().build();
+        }
+
+        InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+        inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
+        inspectionResponseDTO.setInspections(inspectionService.findAll());
+
+        return ResponseEntity.ok().body(inspectionResponseDTO);
+
+    }
+}
+
