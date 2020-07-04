@@ -9,6 +9,7 @@ public class ConsignmentRequestDTO {
     private Integer amount;
     private String ownerName;
     private String ownerNote;
+    private String ownerReasonNote;
     private Double weight;
     private Integer status;
     private List<PlaceRequestDTO> place;
