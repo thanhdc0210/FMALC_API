@@ -137,7 +137,7 @@ public class ConsignmentController {
     }
 
     @PostMapping
-    public ResponseEntity<ConsignmentResponseDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
+    public ResponseEntity<Consignment> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
         try {
             Consignment consignment = new Consignment();
 //            ScheduleForConsignment scheduleForConsignment = new ScheduleForConsignment();
@@ -149,30 +149,38 @@ public class ConsignmentController {
 //                    System.out.println(scheduleService.findVehicleForSchedule(consignment));
 //                }
             Vehicle vehicle = scheduleService.findVehicleForSchedule(consignment);
-            Driver driver = scheduleService.findDriverForSchedule(vehicle, consignment);
-            if( driver !=null){
+            Driver driver = new Driver();
+            Schedule schedule = new Schedule();
+            if(vehicle.getId() != null){
+                driver = scheduleService.findDriverForSchedule(vehicle, consignment);
+                if( driver !=null){
 
-                Schedule schedule = new Schedule();
-                schedule.setConsignment(consignment);
-                schedule.setDriver(driver);
-                schedule.setVehicle(vehicle);
-                schedule.setImageConsignment("no");
-                schedule.setNote("khong co");
-                schedule.setId(null);
-                schedule.setIsApprove(false);
-                schedule = scheduleService.createSchedule(schedule);
-                if(schedule !=null){
 
-                    vehicleService.updateStatus(VehicleStatusEnum.SCHEDULED.getValue(), vehicle.getId());
-                    driverService.updateStatus(DriverStatusEnum.SCHEDULED.getValue(), driver.getId());
+                    schedule.setConsignment(consignment);
+                    schedule.setDriver(driver);
+                    schedule.setVehicle(vehicle);
+                    schedule.setImageConsignment("no");
+                    schedule.setNote("khong co");
+                    schedule.setId(null);
+                    schedule.setIsApprove(false);
+                    schedule = scheduleService.createSchedule(schedule);
+                    if(schedule !=null){
 
+                        vehicleService.updateStatus(VehicleStatusEnum.SCHEDULED.getValue(), vehicle.getId());
+                        driverService.updateStatus(DriverStatusEnum.SCHEDULED.getValue(), driver.getId());
+
+                    }else{
+
+                    }
                 }else{
-
+//                    return ResponseEntity.badRequest().body("Lô hàng đã được tạo nhưng không có tài xế phù hợp. Vui lòng thêm tài xế sau");
                 }
             }else{
-
+//                return ResponseEntity.badRequest().body("Lô hàng đã được tạo nhưng không có xe phù hợp. Vui lòng thêm xe sau");
             }
-            return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToResponse(consignment));
+
+
+            return ResponseEntity.ok().body(consignment);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }

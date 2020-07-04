@@ -2,6 +2,7 @@ package fmalc.api.dto;
 
 import fmalc.api.entity.Place;
 import fmalc.api.entity.Schedule;
+import fmalc.api.enums.TypeLocationEnum;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
@@ -21,6 +22,12 @@ public class PlaceResponeDTO {
     private Timestamp actualTime;
     private Integer type;
     private Integer priority;
+    private String typeStr;
+
+    public void setType(Integer type) {
+        this.type = type;
+        this.typeStr = TypeLocationEnum.getValueEnumToShow(type);
+    }
 
     public PlaceResponeDTO convertPlace(Place place){
         ModelMapper modelMapper = new ModelMapper();
