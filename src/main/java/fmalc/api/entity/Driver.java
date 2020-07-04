@@ -7,7 +7,6 @@ import java.sql.Date;
 import javax.persistence.*;
 
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "driver")
@@ -16,7 +15,6 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@DynamicUpdate
 public class Driver implements Serializable {
     private static final long serialVersionUID = 1L;
 
