@@ -1,6 +1,7 @@
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.PlaceResponeDTO;
+import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Place;
 import fmalc.api.repository.PlaceRepository;
 import fmalc.api.service.PlaceService;
@@ -20,7 +21,11 @@ public class PlaceServiceImpl implements PlaceService {
     public List<PlaceResponeDTO> getPlaceOfConsignment(int idConsignment) {
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
         List<PlaceResponeDTO> placeResponeDTOS = new ArrayList<>();
-        placeResponeDTOS = placeResponeDTO.mapToListResponse(placeRepository.getPlaceOfConsignment(idConsignment));
+        List<Place> places =placeRepository.getPlaceOfConsignment(idConsignment);
+        if(places.size()>0){
+            placeResponeDTOS = placeResponeDTO.mapToListResponse(places);
+        }
+//        placeResponeDTOS = placeResponeDTO.mapToListResponse();
         return  placeResponeDTOS;
     }
 
@@ -28,7 +33,11 @@ public class PlaceServiceImpl implements PlaceService {
     public List<PlaceResponeDTO> getPlaceByPriority(int idConsignment, int priority) {
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
         List<PlaceResponeDTO> placeResponeDTOS = new ArrayList<>();
-        placeResponeDTOS = placeResponeDTO.mapToListResponse(placeRepository.getPlaceByPriority(idConsignment, priority));
+        List<Place> places = placeRepository.getPlaceByPriority(idConsignment, priority);
+        if(places.size()>0){
+            placeResponeDTOS = placeResponeDTO.mapToListResponse(places);
+        }
+//        placeResponeDTOS = placeResponeDTO.mapToListResponse();
         return  placeResponeDTOS;
     }
 
@@ -36,14 +45,22 @@ public class PlaceServiceImpl implements PlaceService {
     public List<PlaceResponeDTO> getPlaceByTypePlace(int idConsignment, int typePlace) {
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
         List<PlaceResponeDTO> placeResponeDTOS = new ArrayList<>();
-        placeResponeDTOS = placeResponeDTO.mapToListResponse(placeRepository.getPlaceByTypePlace(idConsignment, typePlace));
+        List<Place> places = placeRepository.getPlaceByTypePlace(idConsignment, typePlace);
+        if(places.size()>0){
+            placeResponeDTOS = placeResponeDTO.mapToListResponse(places);
+        }
+
         return  placeResponeDTOS;
     }
 
     @Override
     public PlaceResponeDTO getPlaceByTypePlaceAndPriority(int idConsignment, int priority, int typePlace) {
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
-        placeResponeDTO = placeResponeDTO.convertPlace(placeRepository.getPlaceByTypePlaceAndPriority(idConsignment, priority, typePlace));
+        Place place = placeRepository.getPlaceByTypePlaceAndPriority(idConsignment, priority, typePlace);
+        if(place!= null){
+            placeResponeDTO = placeResponeDTO.convertPlace(place);
+        }
+
         return  placeResponeDTO;
     }
 }

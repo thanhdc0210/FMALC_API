@@ -19,5 +19,5 @@ public interface ScheduleService {
      Vehicle findVehicleForSchedule(Consignment consignment) throws ParseException;
     Driver findDriverForSchedule(Vehicle vehicle, Consignment consignment);
     List<ScheduleForLocationDTO> checkScheduleForVehicle(int idVehicle) ;
-    List<ScheduleForLocationDTO> checkMaintainForDriver( int idDriver);
+    List<ScheduleForLocationDTO> checkScheduleForDriver( int idDriver);
 }

@@ -144,10 +144,10 @@ public class ConsignmentController {
 
                 consignmentRequestDTO.setImageConsignment("sdsaas");
                 consignment = consignmentService.save(consignmentRequestDTO);
-                if(consignment!=null){
-
-                    System.out.println(scheduleService.findVehicleForSchedule(consignment));
-                }
+//                if(consignment!=null){
+//
+//                    System.out.println(scheduleService.findVehicleForSchedule(consignment));
+//                }
             Vehicle vehicle = scheduleService.findVehicleForSchedule(consignment);
             Driver driver = scheduleService.findDriverForSchedule(vehicle, consignment);
             if( driver !=null){
@@ -159,6 +159,7 @@ public class ConsignmentController {
                 schedule.setImageConsignment("no");
                 schedule.setNote("khong co");
                 schedule.setId(null);
+                schedule.setIsApprove(false);
                 schedule = scheduleService.createSchedule(schedule);
                 if(schedule !=null){
 
