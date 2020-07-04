@@ -2,39 +2,20 @@ package fmalc.api.controller;
 
 import fmalc.api.dto.*;
 import fmalc.api.entity.Consignment;
-import fmalc.api.entity.Driver;
-import fmalc.api.entity.Schedule;
-import fmalc.api.entity.Vehicle;
-import fmalc.api.enums.DriverStatusEnum;
-import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.service.ConsignmentService;
 import fmalc.api.service.DriverService;
-//import fmalc.api.service.ScheduleService;
-//import fmalc.api.service.VehicleService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/v1.0/consignments")
-
 public class ConsignmentController {
 
     @Autowired
     ConsignmentService consignmentService;
-//
-//    @Autowired
-//    ScheduleService scheduleService;
-//
-//    @Autowired
-//    VehicleService vehicleService;
 
     @Autowired
     DriverService driverService;
@@ -123,16 +104,15 @@ public class ConsignmentController {
 //        }
 //        return ResponseEntity.ok().body(consignmentListDTOS);
 //    }
-//
-//    @PostMapping
-//    public ResponseEntity<ConsignmentResponseDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
-//        try {
-//            Consignment consignment = new Consignment();
-////            scheduleService= new Sc
+
+    @PostMapping
+    public ResponseEntity<ConsignmentResponseDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
+        try {
+            Consignment consignment = consignmentService.save(consignmentRequestDTO);
+//            scheduleService= new Sc
 //            Vehicle vehicle = findVehicleForSchedule();
 //            if( findDriverForSchedule(vehicle) !=null){
 //                Driver driver = findDriverForSchedule(vehicle);
-//                consignment = consignmentService.save(consignmentRequestDTO);
 //                Schedule schedule = new Schedule();
 //                schedule.setConsignment(consignment);
 //                schedule.setDriver(findDriverForSchedule(vehicle));
@@ -155,12 +135,13 @@ public class ConsignmentController {
 //            }else{
 //                System.out.println("Null mej roi");
 //            }
-//            return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToResponse(consignment));
-//        } catch (Exception ex) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
-//
+            return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToResponse(consignment));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
 //    private Vehicle findVehicleForSchedule(){
 //        List<Vehicle> vehicles = vehicleService.findByStatus(VehicleStatusEnum.AVAILABLE.getValue());
 //        Vehicle vehicle= new Vehicle();

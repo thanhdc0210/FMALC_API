@@ -2,16 +2,12 @@ package fmalc.api.service.impl;
 
 import fmalc.api.dto.ConsignmentRequestDTO;
 import fmalc.api.entity.Consignment;
-import fmalc.api.entity.Place;
 import fmalc.api.repository.ConsignmentRepository;
 import fmalc.api.service.ConsignmentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ConsignmentServiceImpl implements ConsignmentService {
@@ -21,7 +17,6 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 
     @Override
     public List<Consignment> findByConsignmentStatusAndUsernameForDriver(List<Integer> status, String username){
-
         return consignmentRepository.findByConsignmentStatusAndUsernameForDriver(status, username);
     }
 
@@ -55,6 +50,13 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 //        consignment.setDeliveries(deliveryDetails);
 //        return consignmentRepository.save(consignment);
 //    }
+
+    @Override
+    public Consignment save(ConsignmentRequestDTO consignmentRequestDTO) {
+        ModelMapper modelMapper = new ModelMapper();
+        Consignment consignment = modelMapper.map(consignmentRequestDTO, Consignment.class);
+        return consignmentRepository.save(consignment);
+    }
 
     @Override
     public List<Consignment> findAll() {
