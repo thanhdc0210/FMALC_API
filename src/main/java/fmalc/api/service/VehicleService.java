@@ -1,3 +1,4 @@
+
 package fmalc.api.service;
 
 
@@ -16,7 +17,8 @@ public interface VehicleService {
     Vehicle findVehicleByLicensePlates (String licensePlates);
     List<Vehicle> findByStatus(int status, double weight);
 
-    List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate);
+//    List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate);
     Vehicle getVehicleByKmRunning(List<Vehicle> vehicles);
     void updateStatus(int status, int id);
 }
+

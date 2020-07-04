@@ -30,9 +30,6 @@ public class Consignment implements Serializable {
     @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     private Collection<ConsignmentHistory> consignmentHistories;
 
-    @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE, CascadeType.PERSIST })
-    private Collection<DeliveryDetail> deliveries;
-
     @Column(name = "owner_name", nullable = false)
     private String ownerName;
 
@@ -50,4 +47,7 @@ public class Consignment implements Serializable {
 
     @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE })
     private Collection<Location> locations;
+
+    @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE})
+    private Collection<Place> places;
 }

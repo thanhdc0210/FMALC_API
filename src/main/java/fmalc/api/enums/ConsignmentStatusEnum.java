@@ -3,7 +3,7 @@ package fmalc.api.enums;
 public enum ConsignmentStatusEnum {
     WAITING("Đang chờ xử lý"){@Override public int getValue(){return 0;}},
     OBTAINING("Đang lấy hàng"){@Override public int getValue(){return 1;}},
-    DELIVERING("Đang_giao_hàng"){@Override public int getValue(){return 2;}},
+    DELIVERING("Đang giao hàng"){@Override public int getValue(){return 2;}},
     COMPLETED("Hoàn thành"){@Override public int getValue(){return 3;}},
     CANCELED("Bị hủy"){@Override public int getValue(){return 4;}},
     MISSING_DOCUMENT("Thiếu chứng từ"){@Override public int getValue(){return 5;}},

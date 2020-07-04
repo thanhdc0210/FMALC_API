@@ -1,7 +1,6 @@
 package fmalc.api.dto;
 
 import fmalc.api.entity.Consignment;
-import fmalc.api.entity.DeliveryDetail;
 import fmalc.api.enums.ConsignmentStatusEnum;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
@@ -20,19 +19,19 @@ public class ConsignmentResponseDTO {
     private Double weight;
     private Integer status;
     private String statusStr;
-    private List<DeliveryDetailResponseDTO> deliveryDetailResponseDTOs;
+    private List<PlaceResponseDTO> places;
 
     public ConsignmentResponseDTO mapToResponse(Consignment baseEntitie) {
         ModelMapper modelMapper = new ModelMapper();
         ConsignmentResponseDTO consignmentResponseDTO = modelMapper.map(baseEntitie, ConsignmentResponseDTO.class);
         consignmentResponseDTO.setStatusStr(ConsignmentStatusEnum.getValueEnumToShow(consignmentResponseDTO.getStatus()));
-        List<DeliveryDetailResponseDTO> deliveryDetailResponseDTOs = new ArrayList<>();
-        for (DeliveryDetail deliveryDetail: baseEntitie.getDeliveries()) {
-            DeliveryDetailResponseDTO deliveryDetailResponseDTO = modelMapper.map(deliveryDetail, DeliveryDetailResponseDTO.class);
-
-            deliveryDetailResponseDTOs.add(deliveryDetailResponseDTO);
-        }
-        consignmentResponseDTO.setDeliveryDetailResponseDTOs(deliveryDetailResponseDTOs);
+//        List<DeliveryDetailResponseDTO> deliveryDetailResponseDTOs = new ArrayList<>();
+//        for (DeliveryDetail deliveryDetail: baseEntitie.getDeliveries()) {
+//            DeliveryDetailResponseDTO deliveryDetailResponseDTO = modelMapper.map(deliveryDetail, DeliveryDetailResponseDTO.class);
+//
+//            deliveryDetailResponseDTOs.add(deliveryDetailResponseDTO);
+//        }
+//        consignmentResponseDTO.setDeliveryDetailResponseDTOs(deliveryDetailResponseDTOs);
         return consignmentResponseDTO;
     }
 

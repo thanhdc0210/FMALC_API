@@ -39,6 +39,9 @@ public class Maintenance implements Serializable {
     @Column(name = "km_old", nullable = false)
     private Integer kmOld;
 
-    @Column(name = "maintain_date", nullable = false)
-    private Date maintainDate;
+    @Column(name = "planned_maintain_date", nullable = false)
+    private Date plannedMaintainDate;
+
+    @Column(name = "actual_maintain_date", nullable = true)
+    private Date actualMaintainDate;
 }

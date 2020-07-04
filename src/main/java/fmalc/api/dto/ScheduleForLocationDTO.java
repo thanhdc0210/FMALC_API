@@ -1,3 +1,4 @@
+
 package fmalc.api.dto;
 
 import fmalc.api.entity.*;
@@ -30,3 +31,4 @@ public class ScheduleForLocationDTO {
         return result;
     }
 }
+

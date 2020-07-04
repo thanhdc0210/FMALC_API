@@ -48,4 +48,7 @@ public class FleetManager {
 
     @Column(name = "image")
     private String image;
+
+    @OneToMany(mappedBy = "fleetManager", cascade = { CascadeType.MERGE})
+    private Collection<DayOff> dayOffs;
 }

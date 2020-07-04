@@ -32,18 +32,18 @@ public class DetailedConsignmentDTO {
 
         this.consignmentId = consignment.getId();
         this.ownerNote = consignment.getOwnerNote();
-        Collection<DeliveryDetail> deliveryDetailList = consignment.getDeliveries();
-        for (DeliveryDetail deliveryDetail : deliveryDetailList){
-            PlaceDTO placeDTO = new PlaceDTO();
-            placeDTO.setPriority(deliveryDetail.getPriority());
-            placeDTO.setPlannedTime(deliveryDetail.getPlace().getPlannedTime());
-            placeDTO.setName(deliveryDetail.getPlace().getName());
-            placeDTO.setType(TypeLocationEnum.getValueEnumToShow(deliveryDetail.getPlace().getType()));
-            placeDTO.setAddress(deliveryDetail.getPlace().getAddress());
-            placeDTO.setLongitude(deliveryDetail.getPlace().getLongitude());
-            placeDTO.setLatitude(deliveryDetail.getPlace().getLatitude());
-            places.add(placeDTO);
-        }
+//        Collection<DeliveryDetail> deliveryDetailList = consignment.getDeliveries();
+//        for (DeliveryDetail deliveryDetail : deliveryDetailList){
+//            PlaceDTO placeDTO = new PlaceDTO();
+//            placeDTO.setPriority(deliveryDetail.getPriority());
+//            placeDTO.setPlannedTime(deliveryDetail.getPlace().getPlannedTime());
+//            placeDTO.setName(deliveryDetail.getPlace().getName());
+//            placeDTO.setType(TypeLocationEnum.getValueEnumToShow(deliveryDetail.getPlace().getType()));
+//            placeDTO.setAddress(deliveryDetail.getPlace().getAddress());
+//            placeDTO.setLongitude(deliveryDetail.getPlace().getLongitude());
+//            placeDTO.setLatitude(deliveryDetail.getPlace().getLatitude());
+//            places.add(placeDTO);
+//        }
         licensePlates = consignment.getSchedule().getVehicle().getLicensePlates();
         this.status = ConsignmentStatusEnum.getValueEnumToShow(consignment.getStatus());
     }

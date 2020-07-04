@@ -19,9 +19,9 @@ public enum TypeLocationEnum {
     public static String getValueEnumToShow(Integer type){
         switch (type){
             case 0:
-                return DELIVERED_PLACE.getTypeLocationEnum();
-            case 1:
                 return RECEIVED_PLACE.getTypeLocationEnum();
+            case 1:
+                return DELIVERED_PLACE.getTypeLocationEnum();
             default:
                 throw new AssertionError("Unknown operations");
         }

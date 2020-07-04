@@ -121,14 +121,14 @@ public class VehicleController {
         Timestamp currentDate = new Timestamp(System.currentTimeMillis());
         System.out.println(currentDate);
 
-        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
+//        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
 
-        if (vehiclePlates == null) {
-            return ResponseEntity.noContent().build();
-        }
+//        if (vehiclePlates == null) {
+//            return ResponseEntity.noContent().build();
+//        }
 
         InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-        inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
+//        inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
         inspectionResponseDTO.setInspections(inspectionService.findAll());
 
         return ResponseEntity.ok().body(inspectionResponseDTO);

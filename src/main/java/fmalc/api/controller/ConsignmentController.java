@@ -1,10 +1,12 @@
+
 package fmalc.api.controller;
 
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.DriverStatusEnum;
 import fmalc.api.enums.VehicleStatusEnum;
-import fmalc.api.schedule.ScheduleForConsignment;
+import fmalc.api.repository.PlaceRepository;
+//import fmalc.api.schedule.ScheduleForConsignment;
 import fmalc.api.service.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,21 +38,23 @@ public class ConsignmentController {
     MaintainanceService maintainanceService;
 
     @Autowired
-    DeliveryDetailService deliveryDetailService;
+    PlaceService placeService;
+
+
 
     @GetMapping("test/{id}")
-    public ResponseEntity<PlaceResponeDTO> test(@PathVariable int id){
+    public ResponseEntity<List<PlaceResponeDTO>> test(@PathVariable int id){
         Consignment consignment = new Consignment();
 //        boolean check = maintainanceService.checkMaintainForVehicle(id);
-        Place deliveryDetail = deliveryDetailService.getDeliveryByConsignmentAndPriority(1,1,0);
+//        Place deliveryDetail = deliveryDetailService.getDeliveryByConsignmentAndPriority(1,1,0);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        System.out.println(sdf.format(new Date()).compareTo(sdf.format(deliveryDetail.getPlannedTime()))+" compare");
-        System.out.println(sdf.format(deliveryDetail.getPlannedTime()) +" DATE DB");
-        System.out.println(sdf.format(new Date())+" DATE CONS");
-        PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
-        placeResponeDTO = placeResponeDTO.convertPlace(deliveryDetail);
-        return ResponseEntity.ok().body(placeResponeDTO);
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+//        System.out.println(sdf.format(new Date()).compareTo(sdf.format(deliveryDetail.getPlannedTime()))+" compare");
+//        System.out.println(sdf.format(deliveryDetail.getPlannedTime()) +" DATE DB");
+//        System.out.println(sdf.format(new Date())+" DATE CONS");
+        List<PlaceResponeDTO> placeResponeDTOs = new ArrayList<>();
+        placeResponeDTOs = placeService.getPlaceOfConsignment(id);
+        return ResponseEntity.ok().body(placeResponeDTOs);
     }
 
 
@@ -136,7 +140,7 @@ public class ConsignmentController {
     public ResponseEntity<ConsignmentResponseDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
         try {
             Consignment consignment = new Consignment();
-            ScheduleForConsignment scheduleForConsignment = new ScheduleForConsignment();
+//            ScheduleForConsignment scheduleForConsignment = new ScheduleForConsignment();
 
                 consignmentRequestDTO.setImageConsignment("sdsaas");
                 consignment = consignmentService.save(consignmentRequestDTO);
@@ -145,7 +149,7 @@ public class ConsignmentController {
                     System.out.println(scheduleService.findVehicleForSchedule(consignment));
                 }
             Vehicle vehicle = scheduleService.findVehicleForSchedule(consignment);
-            Driver driver = scheduleForConsignment.findDriverForSchedule(vehicle, consignment);
+            Driver driver = scheduleService.findDriverForSchedule(vehicle, consignment);
             if( driver !=null){
 
                 Schedule schedule = new Schedule();
@@ -171,23 +175,6 @@ public class ConsignmentController {
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
-    }
+    }}
 
-//    private Vehicle findVehicleForSchedule(){
-//        List<Vehicle> vehicles = vehicleService.findByStatus(VehicleStatusEnum.AVAILABLE.getValue());
-//        Vehicle vehicle= new Vehicle();
-//        if(vehicles.size()>0) {
-//           vehicle = vehicleService.getVehicleByKmRunning(vehicles);
-//        }
-//        return  vehicle;
-//    }
-//    private Driver findDriverForSchedule(Vehicle vehicle){
-//        Driver driver = new Driver();
-//            if(vehicle !=null){
-//                double weight = vehicle.getWeight();
-//                List<Driver> drivers =  driverService.getListDriverByLicense(weight,0);
-//                driver = Collections.min(drivers, Comparator.comparing(s -> s.getWorkingHour()));
-//            }
-//        return  driver;
-//    }
-}
+

@@ -1,3 +1,4 @@
+
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.VehicleForDetailDTO;
@@ -69,10 +70,10 @@ public class VehicleServiceImpl implements VehicleService {
 
         return vehicleRepository.findByStatus(status, weight);
     }
-    public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate) {
-        return vehicleRepository.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
-
-    }
+//    public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate) {
+//        return vehicleRepository.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
+//
+//    }
 
     @Override
     public Vehicle getVehicleByKmRunning( List<Vehicle> vehicles) {
@@ -91,3 +92,4 @@ public class VehicleServiceImpl implements VehicleService {
 //        return statuss;
     }
 }
+

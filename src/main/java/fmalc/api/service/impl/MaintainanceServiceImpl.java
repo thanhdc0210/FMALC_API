@@ -36,7 +36,7 @@ public class MaintainanceServiceImpl implements MaintainanceService {
             maintainCheckDTOs = maintainCheckDTO.mapToListResponse(maintenances);
             if(maintainCheckDTOs.size()>0){
                 for(int i=0; i< maintainCheckDTOs.size();i++){
-                    if(sdf.format(date).compareTo(sdf.format(maintainCheckDTOs.get(i).getMaintainDate()))>0){
+                    if(sdf.format(date).compareTo(sdf.format(maintainCheckDTOs.get(i).getPlannedMaintainDate()))>0){
                         id.add(maintainCheckDTOs.get(i).getId());
                     }
                 }
@@ -80,7 +80,7 @@ public class MaintainanceServiceImpl implements MaintainanceService {
 
                 for(int i=0; i< maintainCheckDTOs.size();i++){
 
-                    if(sdf.format(date).compareTo(sdf.format(maintainCheckDTOs.get(i).getMaintainDate()))>0){
+                    if(sdf.format(date).compareTo(sdf.format(maintainCheckDTOs.get(i).getPlannedMaintainDate()))>0){
                         id.add(maintainCheckDTOs.get(i).getId());
                     }
                 }

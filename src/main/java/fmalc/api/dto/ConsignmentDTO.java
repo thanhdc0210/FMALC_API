@@ -36,16 +36,16 @@ public class ConsignmentDTO {
 
         this.consignmentId = consignment.getId();
         this.ownerName = consignment.getOwnerName();
-        Collection<DeliveryDetail> deliveryDetailList = consignment.getDeliveries();
-        for (DeliveryDetail deliveryDetail : deliveryDetailList){
-            PlaceDTO placeDTO = new PlaceDTO();
-            placeDTO.setPriority(deliveryDetail.getPriority());
-            placeDTO.setPlannedTime(deliveryDetail.getPlace().getPlannedTime());
-            placeDTO.setName(deliveryDetail.getPlace().getName());
-            placeDTO.setType(TypeLocationEnum.getValueEnumToShow(deliveryDetail.getPlace().getType()));
-            placeDTO.setActualTime(deliveryDetail.getPlace().getActualTime());
-            places.add(placeDTO);
-        }
+//        Collection<DeliveryDetail> deliveryDetailList = consignment.getDeliveries();
+//        for (DeliveryDetail deliveryDetail : deliveryDetailList){
+//            PlaceDTO placeDTO = new PlaceDTO();
+//            placeDTO.setPriority(deliveryDetail.getPriority());
+//            placeDTO.setPlannedTime(deliveryDetail.getPlace().getPlannedTime());
+//            placeDTO.setName(deliveryDetail.getPlace().getName());
+//            placeDTO.setType(TypeLocationEnum.getValueEnumToShow(deliveryDetail.getPlace().getType()));
+//            placeDTO.setActualTime(deliveryDetail.getPlace().getActualTime());
+//            places.add(placeDTO);
+//        }
 
         Schedule schedule = consignment.getSchedule();
         this.licensePlates = schedule.getVehicle().getLicensePlates();

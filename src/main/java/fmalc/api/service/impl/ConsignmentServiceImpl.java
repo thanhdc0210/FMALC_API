@@ -1,10 +1,12 @@
+
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.ConsignmentRequestDTO;
 import fmalc.api.entity.Consignment;
-import fmalc.api.entity.DeliveryDetail;
+
 import fmalc.api.entity.Place;
 import fmalc.api.repository.ConsignmentRepository;
+import fmalc.api.repository.PlaceRepository;
 import fmalc.api.service.ConsignmentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 
     @Autowired
     private ConsignmentRepository consignmentRepository;
+
+    @Autowired
+    PlaceRepository placeRepository;
 
     @Override
     public List<Consignment> findByConsignmentStatusAndUsernameForDriver(List<Integer> status, String username){
@@ -46,19 +51,28 @@ public class ConsignmentServiceImpl implements ConsignmentService {
                 .map(x -> modelMapper.map(x, Place.class))
                 .collect(Collectors.toList());
 
-        List<DeliveryDetail> deliveryDetails = new ArrayList<>();
-        for (int i = 0; i < place.size(); i++) {
-            DeliveryDetail deliveryDetail = new DeliveryDetail();
-            deliveryDetail.setPlace(place.get(i));
-            deliveryDetail.setConsignment(consignment);
-            deliveryDetail.setPriority(1);
-            deliveryDetails.add(deliveryDetail);
+//        List<DeliveryDetail> deliveryDetails = new ArrayList<>();
+//        for (int i = 0; i < place.size(); i++) {
+//            DeliveryDetail deliveryDetail = new DeliveryDetail();
+//            deliveryDetail.setPlace(place.get(i));
+//            deliveryDetail.setConsignment(consignment);
+//            deliveryDetail.setPriority(1);
+//            deliveryDetails.add(deliveryDetail);
+//        }
+//        consignment.setId(null);
+//        consignment.setDeliveries(deliveryDetails);
+        consignment = consignmentRepository.save(consignment);
+        if(consignment.getId()!=null){
+            for(int i= 0; i<place.size();i++){
+
+                place.get(i).setConsignment(consignment);
+                place.get(i).setPriority(1);
+                placeRepository.save(place.get(i));
+            }
         }
-        consignment.setId(null);
-        consignment.setDeliveries(deliveryDetails);
         return consignmentRepository.save(consignment);
     }
-  
+
     @Override
     public List<Consignment> findAll() {
         return consignmentRepository.findAll();
@@ -69,3 +83,4 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         return consignmentRepository.findAllByStatus(status);
     }
 }
+
