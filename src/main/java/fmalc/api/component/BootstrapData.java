@@ -81,8 +81,9 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
             FleetManager fleetManager = new FleetManager();
             fleetManager.setAccount(managerAccount);
             fleetManager.setIdentityNo("123456789");
-            fleetManager.setName("Fleet Manager");
+            fleetManager.setName("Fleet Manager Default");
             fleetManager.setPhoneNumber("0909090909");
+            fleetManager.setImage("https://fmalc-img.s3-ap-southeast-1.amazonaws.com/abc.jpg");
             fleetManagerRepository.save(fleetManager);
         }
     }

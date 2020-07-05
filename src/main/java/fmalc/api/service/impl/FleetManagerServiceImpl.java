@@ -75,7 +75,7 @@ public class FleetManagerServiceImpl implements FleetManagerService {
 
     @Override
     public FleetManager update(Integer id, FleetManagerRequestDTO fleetManagerRequestDTO) {
-        fleetManagerRepository.updateFleetManager(id, fleetManagerRequestDTO.getName(), fleetManagerRequestDTO.getIdentityNo());
+        fleetManagerRepository.updateFleetManager(id, fleetManagerRequestDTO.getName(), fleetManagerRequestDTO.getIdentityNo(), fleetManagerRequestDTO.getDateOfBirth());
         return fleetManagerRepository.findById(id).get();
     }
 
