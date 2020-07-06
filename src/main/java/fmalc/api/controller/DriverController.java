@@ -55,6 +55,7 @@ public class DriverController {
             return ResponseEntity.badRequest().body(driver);
         }
     }
+
     @PutMapping(value = "id/{id}")
     public ResponseEntity<DriverResponseDTO> updateDriver(@PathVariable("id") Integer id, @RequestBody DriverRequestDTO driverRequest) {
        try {
@@ -63,6 +64,19 @@ public class DriverController {
        } catch (Exception ex) {
            return ResponseEntity.badRequest().build();
        }
+    }
+
+    @PutMapping(value = "update-avatar/{id}")
+    public ResponseEntity updateAvatar(@PathVariable("id") Integer id, @RequestPart(value = "file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            Driver driver = driverService.updateAvatar(id, file);
+            return ResponseEntity.ok().body(new DriverResponseDTO().mapToResponse(driver));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }

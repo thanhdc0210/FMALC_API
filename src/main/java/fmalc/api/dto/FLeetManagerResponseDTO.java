@@ -11,16 +11,19 @@ import java.util.stream.Collectors;
 @Data
 public class FLeetManagerResponseDTO {
     private Integer id;
+    private Integer accountId;
     private String identityNo;
     private String name;
     private String phoneNumber;
     private Date dateOfBirth;
     private String image;
-
+    private Boolean isActive;
 
     public FLeetManagerResponseDTO mapToResponse(FleetManager fleetManager) {
         ModelMapper modelMapper = new ModelMapper();
         FLeetManagerResponseDTO fLeetManagerResponseDTO = modelMapper.map(fleetManager, FLeetManagerResponseDTO.class);
+        fLeetManagerResponseDTO.setIsActive(fleetManager.getAccount().getIsActive());
+        fLeetManagerResponseDTO.setAccountId(fleetManager.getAccount().getId());
         return fLeetManagerResponseDTO;
     }
 
