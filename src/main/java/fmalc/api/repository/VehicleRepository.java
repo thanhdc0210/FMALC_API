@@ -14,7 +14,6 @@ import java.sql.Timestamp;
 import java.util.*;
 
 @Repository
-//@Modifying(clearAutomatically = true)
 public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
         @Query("SELECT v FROM Vehicle v WHERE v.id = ?1")
@@ -22,14 +21,13 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
         @Query("SELECT v FROM Vehicle v WHERE v.licensePlates = ?1")
         Vehicle findByLicensePlates(String license);
-
-        List<Vehicle> findByStatus(int status);
+        @Query("SELECT v FROM Vehicle v WHERE v.status = ?1 and v.weight >= ?2")
+        List<Vehicle> findByStatus(int status, double weight);
 
         @Modifying(clearAutomatically = true)
         @Transactional
         @Query(value = "UPDATE Vehicle v set v.status = ?1 where v.id = ?2", nativeQuery = true)
         void updateStatusVehicle(int status, int id);
-
 
     @Query("Select DISTINCT v.licensePlates " +
             "From Consignment c, Account a, Schedule s, Driver d, Place p, Vehicle v " +

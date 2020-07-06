@@ -3,6 +3,7 @@ package fmalc.api.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fmalc.api.dto.LoginResponseDTO;
 import fmalc.api.entity.Account;
 import org.json.JSONObject;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -67,10 +68,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).sign(alg);
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
         res.addHeader("Access-Control-Expose-Headers", "Access-Token, Uid");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("token", TOKEN_PREFIX + token);
-        jsonObject.put("role", roles.get(0));
-        jsonObject.put("username", ((UserDetails) auth.getPrincipal()).getUsername());
-        res.getWriter().write(jsonObject.toString());
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("token", TOKEN_PREFIX + token);
+//        jsonObject.put("role", roles.get(0));
+//        jsonObject.put("username", ((UserDetails) auth.getPrincipal()).getUsername());
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
+        loginResponseDTO.setUsername(((UserDetails) auth.getPrincipal()).getUsername());
+        loginResponseDTO.setToken(TOKEN_PREFIX + token);
+        loginResponseDTO.setRole(roles.get(0));
+        res.getWriter().write(loginResponseDTO.toString());
     }
 }

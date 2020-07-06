@@ -38,6 +38,8 @@ public class ConsignmentDTO {
         for(Place place : consignment.getPlaces()){
             places.add(new PlaceDTO(place));
         }
+
+        this.status = ConsignmentStatusEnum.getValueEnumToShow(consignment.getStatus());
     }
 
     public List<ConsignmentDTO> mapToListResponse(List<Consignment> baseEntities){
