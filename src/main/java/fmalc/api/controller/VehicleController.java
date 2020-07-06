@@ -32,94 +32,93 @@ public class VehicleController {
 
     private static int defaultKilometRunning = 0;
 
-//    @GetMapping("/listVehicles")
-//    public ResponseEntity<List<VehicleReponseDTO>> getListVehicle() {
-//        List<Vehicle> vehicles = vehicleService.getListVehicle();
-//
-//        if (vehicles.isEmpty()) {
-//            return ResponseEntity.noContent().build();
-//        }
-//
-//        List<VehicleReponseDTO> vehicleDTOS = vehicles.stream().map(this::convertToDto).collect(Collectors.toList());
-//
-//        return ResponseEntity.ok().body(vehicleDTOS);
-//    }
-//
-//    private VehicleReponseDTO convertToDto(Vehicle vehicleType) {
-//        ModelMapper modelMapper = new ModelMapper();
-//        VehicleReponseDTO dto = modelMapper.map(vehicleType, VehicleReponseDTO.class);
-//
-//        return dto;
-//    }
-//
-//    @GetMapping("/detailVehicle/{id}")
-//    public ResponseEntity<VehicleForDetailDTO> getDetailVehicleById(@PathVariable int id) {
-//        VehicleForDetailDTO vehicle = vehicleService.findVehicleById(id);
-//        if (vehicle == null) {
-//            return ResponseEntity.noContent().build();
-//        }
-//        return ResponseEntity.ok().body(vehicle);
-//    }
-//
-//    @GetMapping("/detail/{licensePlates}")
-//    public ResponseEntity<VehicleForDetailDTO> getDetailVehicleByLicensePlates(@PathVariable String licensePlates) {
-//        Vehicle vehicle = vehicleService.findVehicleByLicensePlates(licensePlates);
-//        VehicleForDetailDTO vehicleForDetailDTO = convertToVehicleDTO(vehicle);
-//        if (vehicle == null) {
-//            return ResponseEntity.noContent().build();
-//        }
-//        return ResponseEntity.ok().body(vehicleForDetailDTO);
-//    }
-//
-//    @PostMapping("/")
-//    public ResponseEntity<Vehicle> createVehicle(@RequestBody VehicleForNewDTO dto) throws ParseException {
-//        Vehicle vehicle = new Vehicle();
-//
-//        String dateString = dto.getDateOfManufacture(); //
-//
-//        java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
-//        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-//        vehicle = convertToVehicleEntity(dto);
-//        vehicle.setStatus(VehicleStatusEnum.AVAILABLE.getValue());
-//        vehicle.setKilometerRunning(defaultKilometRunning);
-//        vehicle.setDateOfManufacture(sqlDate);
-//        vehicle.setDriverLicense(dto.getDriverLicense());
-//
-//        Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
-//
-//        if (checkLicensePlate == null) {
-//
-//            vehicle = vehicleService.saveVehicle(vehicle);
-//
-//            if (vehicle == null) {
-//                return ResponseEntity.noContent().build();
-//            }
-//            return ResponseEntity.ok().body(vehicle);
-//        } else {
-//            return ResponseEntity.noContent().build();
-//        }
-//
-//
-//    }
-//
-//    private Vehicle convertToVehicleEntity(VehicleForNewDTO vehicleForNewDTO) {
-//        ModelMapper modelMapper = new ModelMapper();
-//        Vehicle vehicle = modelMapper.map(vehicleForNewDTO, Vehicle.class);
-//        return vehicle;
-//    }
-//
-//    private VehicleForDetailDTO convertToVehicleDTO(Vehicle vehicle) {
-//        ModelMapper modelMapper = new ModelMapper();
-//        VehicleForDetailDTO vehicleForDetailDTO = modelMapper.map(vehicle, VehicleForDetailDTO.class);
-//        return vehicleForDetailDTO;
-//    }
+    @GetMapping("/listVehicles")
+    public ResponseEntity<List<VehicleReponseDTO>> getListVehicle() {
+        List<Vehicle> vehicles = vehicleService.getListVehicle();
+
+        if (vehicles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        List<VehicleReponseDTO> vehicleDTOS = vehicles.stream().map(this::convertToDto).collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(vehicleDTOS);
+    }
+
+    private VehicleReponseDTO convertToDto(Vehicle vehicleType) {
+        ModelMapper modelMapper = new ModelMapper();
+        VehicleReponseDTO dto = modelMapper.map(vehicleType, VehicleReponseDTO.class);
+
+        return dto;
+    }
+
+    @GetMapping("/detailVehicle/{id}")
+    public ResponseEntity<VehicleForDetailDTO> getDetailVehicleById(@PathVariable int id) {
+        VehicleForDetailDTO vehicle = vehicleService.findVehicleById(id);
+        if (vehicle == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(vehicle);
+    }
+
+    @GetMapping("/detail/{licensePlates}")
+    public ResponseEntity<VehicleForDetailDTO> getDetailVehicleByLicensePlates(@PathVariable String licensePlates) {
+        Vehicle vehicle = vehicleService.findVehicleByLicensePlates(licensePlates);
+        VehicleForDetailDTO vehicleForDetailDTO = convertToVehicleDTO(vehicle);
+        if (vehicle == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(vehicleForDetailDTO);
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<Vehicle> createVehicle(@RequestBody VehicleForNewDTO dto) throws ParseException {
+        Vehicle vehicle = new Vehicle();
+
+        String dateString = dto.getDateOfManufacture(); //
+
+        java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+        vehicle = convertToVehicleEntity(dto);
+        vehicle.setStatus(VehicleStatusEnum.AVAILABLE.getValue());
+        vehicle.setKilometerRunning(defaultKilometRunning);
+        vehicle.setDateOfManufacture(sqlDate);
+        vehicle.setDriverLicense(dto.getDriverLicense());
+
+        Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
+
+        if (checkLicensePlate == null) {
+
+            vehicle = vehicleService.saveVehicle(vehicle);
+
+            if (vehicle == null) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok().body(vehicle);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+
+
+    }
+
+    private Vehicle convertToVehicleEntity(VehicleForNewDTO vehicleForNewDTO) {
+        ModelMapper modelMapper = new ModelMapper();
+        Vehicle vehicle = modelMapper.map(vehicleForNewDTO, Vehicle.class);
+        return vehicle;
+    }
+
+    private VehicleForDetailDTO convertToVehicleDTO(Vehicle vehicle) {
+        ModelMapper modelMapper = new ModelMapper();
+        VehicleForDetailDTO vehicleForDetailDTO = modelMapper.map(vehicle, VehicleForDetailDTO.class);
+        return vehicleForDetailDTO;
+    }
 
     @GetMapping(value = "/report-inspection")
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspection
             (@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
 
         Timestamp currentDate = new Timestamp(System.currentTimeMillis());
-        System.out.println(currentDate);
 
         List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
 

@@ -35,6 +35,7 @@ public class DetailedConsignmentDTO {
         for(Place place : consignment.getPlaces()){
             places.add(new PlaceDTO(place));
         }
+
         licensePlates = consignment.getSchedule().getVehicle().getLicensePlates();
         this.status = ConsignmentStatusEnum.getValueEnumToShow(consignment.getStatus());
     }

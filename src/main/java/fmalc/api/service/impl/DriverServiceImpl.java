@@ -88,12 +88,12 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public List<Driver> getListDriverByLicense(double weight) {
+    public List<Driver> getListDriverByLicense(double weight, int status) {
         List<Driver> drivers = new ArrayList<>();
         if(weight >3.5){
-            drivers = driverRepository.findByDriverLicenseC(DriverLicenseEnum.C.getValue());
+            drivers = driverRepository.findByDriverLicenseC(DriverLicenseEnum.C.getValue(), status);
         }else{
-            drivers = driverRepository.findByDriverLicenseB2(DriverLicenseEnum.B2.getValue());
+            drivers = driverRepository.findByDriverLicenseB2(DriverLicenseEnum.B2.getValue(), status);
         }
         return drivers;
     }

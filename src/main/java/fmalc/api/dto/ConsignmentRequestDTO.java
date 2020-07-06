@@ -11,5 +11,6 @@ public class ConsignmentRequestDTO {
     private String ownerNote;
     private Double weight;
     private Integer status;
+    private String imageConsignment;
     private List<PlaceRequestDTO> place;
 }

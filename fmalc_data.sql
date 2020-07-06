@@ -43,7 +43,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES (1,_binary '','$2a$10$jd9s3.dbrpn0IJXi3Xa65.L8.74PsCH8fp8bjEdn1vzr32kbPUfl6','admin',1),(2,_binary '','$2a$10$Qxx9h621fZ.OTm2y1tutGOzBNu9nhnfx.WIzSb/.5AeaR/BgbCeCe','manager1',2),(3,_binary '','$2a$10$Qxx9h621fZ.OTm2y1tutGOzBNu9nhnfx.WIzSb/.5AeaR/BgbCeCe','driver',3);
+INSERT INTO `account` VALUES (1,_binary '','$2a$10$haooG7VSGnSPEuMkq.Tmh.xyVAwk4aI.dQcw7aPjQjXoGtzOG6yCC','admin',1),(2,_binary '','$2a$10$Q2tjOEC.1teVST4kExa0DOjdfGXoZ/bXYAPTyPwKkzTVlhwd/zGkm','manager1',2),(3,_binary '','$2a$10$Q2tjOEC.1teVST4kExa0DOjdfGXoZ/bXYAPTyPwKkzTVlhwd/zGkm','driver',3);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,7 +94,7 @@ CREATE TABLE `consignment` (
   `status` int(11) NOT NULL,
   `weight` double NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,7 +103,7 @@ CREATE TABLE `consignment` (
 
 LOCK TABLES `consignment` WRITE;
 /*!40000 ALTER TABLE `consignment` DISABLE KEYS */;
-INSERT INTO `consignment` VALUES (1,1000,'Công ty TNHH Harima','Không đúng giờ là không trả tiền',0,1000);
+INSERT INTO `consignment` VALUES (1,1000,'Công ty THNH Harima','Trễ là trừ tiền',0,1000),(2,500,'Công ty TNHH Song Long','Trễ là trừ tiền',1,500),(3,250,'Công ty TNHH TH','Trễ là trừ tiền',3,250);
 /*!40000 ALTER TABLE `consignment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,7 +125,7 @@ CREATE TABLE `consignment_history` (
   KEY `FK93viguflthjfaqmhxisxyviab` (`fleet_manager_id`),
   CONSTRAINT `FK7un2dbefb101im4cxfl4q3jbr` FOREIGN KEY (`consignment_id`) REFERENCES `consignment` (`id`),
   CONSTRAINT `FK93viguflthjfaqmhxisxyviab` FOREIGN KEY (`fleet_manager_id`) REFERENCES `fleet_manager` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,38 +134,38 @@ CREATE TABLE `consignment_history` (
 
 LOCK TABLES `consignment_history` WRITE;
 /*!40000 ALTER TABLE `consignment_history` DISABLE KEYS */;
-INSERT INTO `consignment_history` VALUES (1,'created by admin','2020-07-01',1,1);
+INSERT INTO `consignment_history` VALUES (1,'created by admin','2020-07-01',1,1),(2,'created by admin','2020-07-01',2,1),(3,'created by admin','2020-07-01',3,1);
 /*!40000 ALTER TABLE `consignment_history` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `delivery_detail`
+-- Table structure for table `day_off`
 --
 
-DROP TABLE IF EXISTS `delivery_detail`;
+DROP TABLE IF EXISTS `day_off`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
-CREATE TABLE `delivery_detail` (
+CREATE TABLE `day_off` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `priority` int(11) NOT NULL,
-  `consignment_id` int(11) NOT NULL,
-  `place_id` int(11) NOT NULL,
+  `end_day` datetime(6) NOT NULL,
+  `start_day` datetime(6) NOT NULL,
+  `driver_id` int(11) NOT NULL,
+  `fleet_manager_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK1omaipqw78wifjeuf5p9cod3y` (`consignment_id`),
-  KEY `FKqwg9ilph9vwlrwin4lk601316` (`place_id`),
-  CONSTRAINT `FK1omaipqw78wifjeuf5p9cod3y` FOREIGN KEY (`consignment_id`) REFERENCES `consignment` (`id`),
-  CONSTRAINT `FKqwg9ilph9vwlrwin4lk601316` FOREIGN KEY (`place_id`) REFERENCES `place` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `FKjhcsd8ujun2885gu81adpsdhf` (`driver_id`),
+  KEY `FK78a9iphdyv6h5ni46a7tlfxnw` (`fleet_manager_id`),
+  CONSTRAINT `FK78a9iphdyv6h5ni46a7tlfxnw` FOREIGN KEY (`fleet_manager_id`) REFERENCES `fleet_manager` (`id`),
+  CONSTRAINT `FKjhcsd8ujun2885gu81adpsdhf` FOREIGN KEY (`driver_id`) REFERENCES `driver` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `delivery_detail`
+-- Dumping data for table `day_off`
 --
 
-LOCK TABLES `delivery_detail` WRITE;
-/*!40000 ALTER TABLE `delivery_detail` DISABLE KEYS */;
-INSERT INTO `delivery_detail` VALUES (1,1,1,2),(2,2,1,1),(3,3,1,4),(4,4,1,3);
-/*!40000 ALTER TABLE `delivery_detail` ENABLE KEYS */;
+LOCK TABLES `day_off` WRITE;
+/*!40000 ALTER TABLE `day_off` DISABLE KEYS */;
+/*!40000 ALTER TABLE `day_off` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -203,7 +203,7 @@ CREATE TABLE `driver` (
 
 LOCK TABLES `driver` WRITE;
 /*!40000 ALTER TABLE `driver` DISABLE KEYS */;
-INSERT INTO `driver` VALUES (1,'1998-01-27',1,'025917287',NULL,'2020-07-01','driver','00112233','0372813268',0,10,3,1);
+INSERT INTO `driver` VALUES (1,'1998-01-27',1,'025917287',NULL,'2020-07-01','driver','0123456789','0372813268',0,50,3,1);
 /*!40000 ALTER TABLE `driver` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -279,7 +279,7 @@ CREATE TABLE `inspection` (
   `inspection_name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_hbn4iokseogcve4w41vdtj3bv` (`inspection_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -288,6 +288,7 @@ CREATE TABLE `inspection` (
 
 LOCK TABLES `inspection` WRITE;
 /*!40000 ALTER TABLE `inspection` DISABLE KEYS */;
+INSERT INTO `inspection` VALUES (7,'Bánh xe'),(1,'Cần gạt nước'),(6,'Gương chiếu hậu'),(5,'Gương phải'),(4,'Gương trái'),(3,'Xi nhan phải'),(2,'Xi nhan trái');
 /*!40000 ALTER TABLE `inspection` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -354,16 +355,20 @@ DROP TABLE IF EXISTS `maintenance`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `maintenance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `actual_maintain_date` date DEFAULT NULL,
   `image_maintain` varchar(255) NOT NULL,
   `km_old` int(11) NOT NULL,
-  `maintain_date` date NOT NULL,
+  `planned_maintain_date` date NOT NULL,
+  `driver_id` int(11) NOT NULL,
   `maintain_type_id` int(11) NOT NULL,
   `vehicle_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
+  KEY `FKdovlmvrq34jei6sq558dgqd9h` (`driver_id`),
   KEY `FK4plhblq97ud7dinmio5lvlbs` (`maintain_type_id`),
   KEY `FK1uctvvn1p1y3rp57tq34mao9h` (`vehicle_id`),
   CONSTRAINT `FK1uctvvn1p1y3rp57tq34mao9h` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicle` (`id`),
-  CONSTRAINT `FK4plhblq97ud7dinmio5lvlbs` FOREIGN KEY (`maintain_type_id`) REFERENCES `maintain_type` (`id`)
+  CONSTRAINT `FK4plhblq97ud7dinmio5lvlbs` FOREIGN KEY (`maintain_type_id`) REFERENCES `maintain_type` (`id`),
+  CONSTRAINT `FKdovlmvrq34jei6sq558dgqd9h` FOREIGN KEY (`driver_id`) REFERENCES `driver` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -422,9 +427,13 @@ CREATE TABLE `place` (
   `longitude` double NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `planned_time` datetime(6) NOT NULL,
+  `priority` int(11) NOT NULL,
   `type` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `consignment_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK202l4yhf2qrxcptqcdy8pc6rx` (`consignment_id`),
+  CONSTRAINT `FK202l4yhf2qrxcptqcdy8pc6rx` FOREIGN KEY (`consignment_id`) REFERENCES `consignment` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -433,7 +442,7 @@ CREATE TABLE `place` (
 
 LOCK TABLES `place` WRITE;
 /*!40000 ALTER TABLE `place` DISABLE KEYS */;
-INSERT INTO `place` VALUES (1,'2020-07-01 00:00:00.000000','Lô D Quận 9',1,1,'Đại họcFPT','2020-07-01 00:00:00.000000',0),(2,'2020-07-01 00:00:00.000000','Chu Mạnh Trinh Thủ Đức',2,2,'L\'espoir coffee','2020-07-01 00:00:00.000000',0),(3,'2020-07-02 00:00:00.000000','Nguyễn Thái Sơn Gò Vấp',3,3,'Thức coffee','2020-07-02 00:00:00.000000',1),(4,'2020-07-02 00:00:00.000000','Đường 40 Hiệp Bình Thủ Đức',4,4,'Mầm non Hiếu Trung','2020-07-02 00:00:00.000000',1);
+INSERT INTO `place` VALUES (1,NULL,'Lô D, Quận 9',1,1,'Đại học FPT','2020-07-03 00:00:00.000000',1,0,1),(2,NULL,'Nguyễn Thái Sơn, Gò Vấp',2,2,'Thức coffee','2020-07-03 00:00:00.000000',2,0,1),(3,NULL,'Đặng Văn Bi, Thủ Đức',3,3,'The coffee house','2020-07-03 00:00:00.000000',3,1,1),(4,NULL,'Xô Viết Nghệ Tĩnh, Bình Thạnh',4,4,'Cheese coffee','2020-07-03 00:00:00.000000',4,1,1),(5,NULL,'Lô D, Quận 9',1,1,'Đại học FPT','2020-07-03 00:00:00.000000',1,0,2),(6,NULL,'Nguyễn Thái Sơn, Gò Vấp',2,2,'Thức coffee','2020-07-03 00:00:00.000000',2,0,2),(7,NULL,'Đặng Văn Bi, Thủ Đức',3,3,'The coffee house','2020-07-03 00:00:00.000000',3,1,2),(8,NULL,'Xô Viết Nghệ Tĩnh, Bình Thạnh',4,4,'Cheese coffee','2020-07-03 00:00:00.000000',4,1,2),(9,'2020-07-04 00:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',1,1,'Đại học FPT','2020-07-03 00:00:00.000000',1,0,3),(10,'2020-07-04 00:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',2,2,'Thức coffee','2020-07-03 00:00:00.000000',2,0,3),(11,'2020-07-04 00:00:00.000000','Đặng Văn Bi, Thủ Đức',3,3,'The coffee house','2020-07-03 00:00:00.000000',3,1,3),(12,'2020-07-04 00:00:00.000000','Lô D, Quận 9',4,4,'Cheese coffee','2020-07-03 00:00:00.000000',4,1,3);
 /*!40000 ALTER TABLE `place` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -510,6 +519,7 @@ DROP TABLE IF EXISTS `schedule`;
 CREATE TABLE `schedule` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `image_consignment` varchar(255) DEFAULT NULL,
+  `is_approve` bit(1) DEFAULT NULL,
   `note` varchar(255) DEFAULT NULL,
   `consignment_id` int(11) NOT NULL,
   `driver_id` int(11) NOT NULL,
@@ -521,7 +531,7 @@ CREATE TABLE `schedule` (
   CONSTRAINT `FK5s6sphay5edjq73mnw5gxwwaa` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicle` (`id`),
   CONSTRAINT `FKihr8fcsx7b2mygrjsh0bapdhj` FOREIGN KEY (`consignment_id`) REFERENCES `consignment` (`id`),
   CONSTRAINT `FKmjfuvpp6n6ce63ppi9j3xnntr` FOREIGN KEY (`driver_id`) REFERENCES `driver` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -530,7 +540,7 @@ CREATE TABLE `schedule` (
 
 LOCK TABLES `schedule` WRITE;
 /*!40000 ALTER TABLE `schedule` DISABLE KEYS */;
-INSERT INTO `schedule` VALUES (1,NULL,'Đi trễ là khỏi có tiền',1,1,1);
+INSERT INTO `schedule` VALUES (1,NULL,_binary '',NULL,1,1,1),(2,NULL,_binary '',NULL,2,1,1),(3,NULL,_binary '',NULL,3,1,1);
 /*!40000 ALTER TABLE `schedule` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -563,7 +573,7 @@ CREATE TABLE `vehicle` (
 
 LOCK TABLES `vehicle` WRITE;
 /*!40000 ALTER TABLE `vehicle` DISABLE KEYS */;
-INSERT INTO `vehicle` VALUES (1,80,'2020-07-01',1,1200,'59-X3 101.91',10,0,'Honda',3.5);
+INSERT INTO `vehicle` VALUES (1,100,'2020-07-01',1,15000,'59-X3 101.91',1000,0,'honda',3.5);
 /*!40000 ALTER TABLE `vehicle` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -580,4 +590,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-01 16:27:18
+-- Dump completed on 2020-07-06 22:23:13
