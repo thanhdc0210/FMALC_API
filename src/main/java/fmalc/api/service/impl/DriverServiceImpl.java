@@ -1,3 +1,5 @@
+
+
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.DriverRequestDTO;
@@ -83,7 +85,7 @@ public class DriverServiceImpl implements DriverService {
         if (!driverRepository.existsById(id)) {
             throw new Exception();
         }
-        driverRepository.updateDriver(id, driverRequest.getName(), driverRequest.getIdentityNo(), driverRequest.getNo(), driverRequest.getLicenseExpires(), driverRequest.getDriverLicense());
+        driverRepository.updateDriver(id,driverRequest.getName(), driverRequest.getIdentityNo(), driverRequest.getNo(), driverRequest.getLicenseExpires(), driverRequest.getDateOfBirth());
         return driverRepository.findById(id).get();
     }
 
