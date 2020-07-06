@@ -79,4 +79,11 @@ public class FleetManagerServiceImpl implements FleetManagerService {
         return fleetManagerRepository.findById(id).get();
     }
 
+    @Override
+    public FleetManager updateAvatar(Integer id, MultipartFile file) throws IOException {
+        String image = uploaderService.upload(file);
+        fleetManagerRepository.updateImageById(id, image);
+        return fleetManagerRepository.findById(id).get();
+    }
+
 }

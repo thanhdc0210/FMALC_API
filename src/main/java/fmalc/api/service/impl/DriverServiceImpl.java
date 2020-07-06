@@ -105,6 +105,13 @@ public class DriverServiceImpl implements DriverService {
         return driverRepository.updateStatusDriver(status,id);
     }
 
+    @Override
+    public Driver updateAvatar(Integer id, MultipartFile file) throws IOException {
+        String image = uploaderService.upload(file);
+        driverRepository.updateImageById(id, image);
+        return driverRepository.findById(id).get();
+    }
+
 }
 
 

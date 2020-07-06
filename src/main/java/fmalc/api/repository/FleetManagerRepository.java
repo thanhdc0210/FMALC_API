@@ -4,6 +4,7 @@ import fmalc.api.entity.FleetManager;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,4 +16,9 @@ public interface FleetManagerRepository extends JpaRepository<FleetManager, Inte
     @Transactional
     @Query(value = "Update fleet_manager f set f.name = :name, f.identity_no = :identityNo, f.date_of_birth = :dateOfBirth  where f.id =:id", nativeQuery = true)
     void updateFleetManager(Integer id, String name, String identityNo, Date dateOfBirth);
+
+    @Modifying
+    @Transactional
+    @Query(value = "Update fleet_manager f set f.image =:image where f.id =:id", nativeQuery = true)
+    int updateImageById(@Param("id") Integer id, @Param("image") String image);
 }
