@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class DriverResponseDTO {
 
     private Integer id;
+    private Integer accountId;
     private Integer status;
     private String driverStatus;
     private Integer driverLicense;
@@ -26,6 +27,7 @@ public class DriverResponseDTO {
     private Date dateOfBirth;
     private Float workingHour;
     private String image;
+    private Boolean isActive;
 
     public void setStatus(Integer status) {
         this.status = status;
@@ -41,6 +43,8 @@ public class DriverResponseDTO {
         ModelMapper modelMapper = new ModelMapper();
         DriverResponseDTO driverResponse = modelMapper.map(baseEntities, DriverResponseDTO.class);
         driverResponse.setDriverStatus(DriverStatusEnum.getValueEnumToShow(driverResponse.getStatus()));
+        driverResponse.setIsActive(baseEntities.getAccount().getIsActive());
+        driverResponse.setAccountId(baseEntities.getAccount().getId());
         return driverResponse;
     }
 

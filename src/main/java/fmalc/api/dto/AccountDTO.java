@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.modelmapper.ModelMapper;
 
 @Getter
 @Setter
@@ -26,5 +27,10 @@ public class AccountDTO {
 
     public List<AccountDTO> mapToListResponse(List<Account> baseEntities) {
         return baseEntities.stream().map(AccountDTO::new).collect(Collectors.toList());
+    }
+
+    public AccountDTO mapToResponse(Account account) {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(account, AccountDTO.class);
     }
 }

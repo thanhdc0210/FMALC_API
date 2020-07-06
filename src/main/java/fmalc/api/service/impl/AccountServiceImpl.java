@@ -18,4 +18,10 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> findAll() {
         return accountRepository.findAll();
     }
+
+    @Override
+    public Account updateIsActive(Integer id, Boolean isActive) {
+        accountRepository.updateIsActiveById(id, isActive);
+        return accountRepository.findById(id).get();
+    }
 }

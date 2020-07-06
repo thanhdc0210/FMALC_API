@@ -1,7 +1,9 @@
 package fmalc.api.controller;
 
+import fmalc.api.dto.DriverResponseDTO;
 import fmalc.api.dto.FLeetManagerResponseDTO;
 import fmalc.api.dto.FleetManagerRequestDTO;
+import fmalc.api.entity.Driver;
 import fmalc.api.entity.FleetManager;
 import fmalc.api.service.FleetManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,19 @@ public class FleetManagerController {
     public ResponseEntity<FLeetManagerResponseDTO> updateFleetManager(@PathVariable("id") Integer id, @RequestBody FleetManagerRequestDTO fleetManagerRequestDTO) {
         try {
             FleetManager fleetManager = fleetManagerService.update(id, fleetManagerRequestDTO);
+            return ResponseEntity.ok().body(new FLeetManagerResponseDTO().mapToResponse(fleetManager));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping(value = "update-avatar/{id}")
+    public ResponseEntity updateAvatar(@PathVariable("id") Integer id, @RequestPart(value = "file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            FleetManager fleetManager = fleetManagerService.updateAvatar(id, file);
             return ResponseEntity.ok().body(new FLeetManagerResponseDTO().mapToResponse(fleetManager));
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
