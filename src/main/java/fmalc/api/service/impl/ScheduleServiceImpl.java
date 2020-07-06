@@ -66,11 +66,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     /*
-    * Lấy danh sách xe có trạng thái hiện tại là Available
-    * Kiểm tra danh sách xe này có lịch bảo trì vs lịch chạy trong tương lai không
-    * Trả về danh sách xe không có việc bận từ hiện tại tới tương lai]
-    *
-   */
+     * Lấy danh sách xe có trạng thái hiện tại là Available
+     * Kiểm tra danh sách xe này có lịch bảo trì vs lịch chạy trong tương lai không
+     * Trả về danh sách xe không có việc bận từ hiện tại tới tương lai]
+     *
+     */
     @Override
     public Vehicle findVehicleForSchedule(Consignment consignment) {
 //        ScheduleForConsignment scheduleForConsignment = new ScheduleForConsignment();
@@ -110,9 +110,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     /*
-    * Kiểm tra xe có lịch chạy từ ngày hiện tại đến tương lai
-    * Trả về danh sách chạy trong tương lai của xe
-    * */
+     * Kiểm tra xe có lịch chạy từ ngày hiện tại đến tương lai
+     * Trả về danh sách chạy trong tương lai của xe
+     * */
     @Override
     public List<ScheduleForLocationDTO> checkScheduleForVehicle(int idVehicle) {
         List<ScheduleForLocationDTO> scheduleForLocationDTOS = new ArrayList<>();

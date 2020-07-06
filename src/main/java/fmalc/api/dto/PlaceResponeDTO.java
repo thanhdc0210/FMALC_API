@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Data
 public class PlaceResponeDTO {
-    private int id;
+    private Integer id;
     private Double latitude;
     private Double longitude;
     private String address;
