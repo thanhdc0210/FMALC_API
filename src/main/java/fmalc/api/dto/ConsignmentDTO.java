@@ -15,7 +15,7 @@ public class ConsignmentDTO {
 
     private Integer consignmentId;
     private String ownerName;
-    private List<PlaceDTO> places;
+    private List<PlaceResponeDTO> places;
     private String licensePlates; // Biển số xe
     private String driverName;
     private Double weight; // Khối lượng lô hàng
@@ -36,7 +36,7 @@ public class ConsignmentDTO {
         this.weight = consignment.getWeight();
         this.status = ConsignmentStatusEnum.getValueEnumToShow(consignment.getStatus());
         for(Place place : consignment.getPlaces()){
-            places.add(new PlaceDTO(place));
+            places.add(new PlaceResponeDTO().convertPlace(place));
         }
 
         this.status = ConsignmentStatusEnum.getValueEnumToShow(consignment.getStatus());
