@@ -1,19 +1,14 @@
-
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.ConsignmentRequestDTO;
 import fmalc.api.entity.Consignment;
-
-import fmalc.api.entity.Place;
 import fmalc.api.repository.ConsignmentRepository;
+import fmalc.api.entity.Place;
 import fmalc.api.repository.PlaceRepository;
 import fmalc.api.service.ConsignmentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,17 +45,6 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         List<Place> place = consignmentRequestDTO.getPlace().stream()
                 .map(x -> modelMapper.map(x, Place.class))
                 .collect(Collectors.toList());
-
-//        List<DeliveryDetail> deliveryDetails = new ArrayList<>();
-//        for (int i = 0; i < place.size(); i++) {
-//            DeliveryDetail deliveryDetail = new DeliveryDetail();
-//            deliveryDetail.setPlace(place.get(i));
-//            deliveryDetail.setConsignment(consignment);
-//            deliveryDetail.setPriority(1);
-//            deliveryDetails.add(deliveryDetail);
-//        }
-//        consignment.setId(null);
-//        consignment.setDeliveries(deliveryDetails);
         consignment = consignmentRepository.save(consignment);
         if(consignment.getId()!=null){
             for(int i= 0; i<place.size();i++){
@@ -83,4 +67,3 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         return consignmentRepository.findAllByStatus(status);
     }
 }
-

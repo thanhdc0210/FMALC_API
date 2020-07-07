@@ -16,8 +16,10 @@ import java.util.List;
 public interface ScheduleService {
     List<ScheduleForLocationDTO> getScheduleByConsignmentId(int id);
     Schedule createSchedule(Schedule schedule);
+
      List<Vehicle> findVehicleForSchedule(Consignment consignment) throws ParseException;
     List<Driver> findDriverForSchedule(Vehicle vehicle, Consignment consignment);
+
     List<ScheduleForLocationDTO> checkScheduleForVehicle(int idVehicle) ;
     List<ScheduleForLocationDTO> checkScheduleForDriver( int idDriver);
 }

@@ -1,14 +1,10 @@
-
 package fmalc.api.controller;
 
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.DriverStatusEnum;
 import fmalc.api.enums.VehicleStatusEnum;
-import fmalc.api.repository.PlaceRepository;
-//import fmalc.api.schedule.ScheduleForConsignment;
 import fmalc.api.service.*;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +15,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/v1.0/consignments")
-
 public class ConsignmentController {
 
     @Autowired
@@ -57,7 +52,6 @@ public class ConsignmentController {
         return ResponseEntity.ok().body(placeResponeDTOs);
     }
 
-
     @GetMapping(value = "driver")
     public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
         List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForDriver(status, username);
@@ -92,8 +86,6 @@ public class ConsignmentController {
 
         return ResponseEntity.ok().body(detailedConsignmentDTO);
     }
-
-
 
     @GetMapping(value = "status")
     public ResponseEntity<List<ConsignmentListDTO>> getAllByStatus(@RequestParam("status") Integer status) {
@@ -141,9 +133,12 @@ public class ConsignmentController {
         try {
             Consignment consignment = new Consignment();
 //            ScheduleForConsignment scheduleForConsignment = new ScheduleForConsignment();
+
             ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
                 consignmentRequestDTO.setImageConsignment("sdsaas");
                 consignment = consignmentService.save(consignmentRequestDTO);
+
+
 //                if(consignment!=null){
 //
 //                    System.out.println(scheduleService.findVehicleForSchedule(consignment));
@@ -196,6 +191,5 @@ public class ConsignmentController {
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
-    }}
-
-
+    }
+}

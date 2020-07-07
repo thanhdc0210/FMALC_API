@@ -26,6 +26,7 @@ public class ConsignmentResponseDTO {
         ModelMapper modelMapper = new ModelMapper();
         ConsignmentResponseDTO consignmentResponseDTO = modelMapper.map(baseEntitie, ConsignmentResponseDTO.class);
         consignmentResponseDTO.setStatusStr(ConsignmentStatusEnum.getValueEnumToShow(consignmentResponseDTO.getStatus()));
+
         List<PlaceResponseDTO> deliveryDetailResponseDTOs = new ArrayList<>();
         for (Place deliveryDetail: baseEntitie.getPlaces()) {
             PlaceResponseDTO deliveryDetailResponseDTO = modelMapper.map(deliveryDetail, PlaceResponseDTO.class);
@@ -33,6 +34,7 @@ public class ConsignmentResponseDTO {
             deliveryDetailResponseDTOs.add(deliveryDetailResponseDTO);
         }
         consignmentResponseDTO.setPlaces(deliveryDetailResponseDTOs);
+
         return consignmentResponseDTO;
     }
 

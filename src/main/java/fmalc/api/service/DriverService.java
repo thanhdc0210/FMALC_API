@@ -20,4 +20,6 @@ public interface DriverService {
 
     List<Driver> getListDriverByLicense(double weight, int status);
     int updateStatus(int status, int id);
+
+    Driver updateAvatar(Integer id, MultipartFile file) throws IOException;
 }

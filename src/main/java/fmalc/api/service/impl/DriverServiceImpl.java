@@ -85,15 +85,8 @@ public class DriverServiceImpl implements DriverService {
         if (!driverRepository.existsById(id)) {
             throw new Exception();
         }
-        Driver driverUpdate = driverRepository.findById(id).get();
-
-        driverUpdate.setName(driverRequest.getName());
-        driverUpdate.setIdentityNo(driverRequest.getIdentityNo());
-        driverUpdate.setNo(driverRequest.getNo());
-        driverUpdate.setLicenseExpires(driverRequest.getLicenseExpires());
-
-        driverRepository.save(driverUpdate);
-        return driverUpdate;
+        driverRepository.updateDriver(id,driverRequest.getName(), driverRequest.getIdentityNo(), driverRequest.getNo(), driverRequest.getLicenseExpires(), driverRequest.getDateOfBirth());
+        return driverRepository.findById(id).get();
     }
 
     @Override
@@ -121,6 +114,13 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public int updateStatus(int status, int id) {
         return driverRepository.updateStatusDriver(status,id);
+    }
+
+    @Override
+    public Driver updateAvatar(Integer id, MultipartFile file) throws IOException {
+        String image = uploaderService.upload(file);
+        driverRepository.updateImageById(id, image);
+        return driverRepository.findById(id).get();
     }
 
 }
