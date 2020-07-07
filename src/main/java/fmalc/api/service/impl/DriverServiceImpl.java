@@ -25,8 +25,8 @@ public class DriverServiceImpl implements DriverService {
     private DriverRepository driverRepository;
 
     @Override
-    public List<Driver> findAll() {
-        return driverRepository.findAll();
+    public List<Driver> findAllAndSearch(String searchPhone) {
+        return driverRepository.findByPhoneNumberContainingIgnoreCase(searchPhone);
     }
 
     @Autowired
