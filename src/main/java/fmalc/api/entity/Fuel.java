@@ -29,8 +29,8 @@ public class Fuel implements Serializable {
     @JoinColumn(name = "vehicle_id", referencedColumnName = "id", nullable = false)
     private Vehicle vehicle;
 
-    @Column(name = "unit_price", nullable = false)
-    private Double unitPrice;
+    @Column(name = "unit_price_at_filling_time", nullable = false)
+    private Double unitPriceAtFillingTime;
 
     @Column(name = "volume", nullable = false)
     private Double volume;
@@ -40,4 +40,8 @@ public class Fuel implements Serializable {
 
     @Column(name = "filling_date", nullable = false)
     private Date fillingDate;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "fuel_type_id", referencedColumnName = "id", nullable = false)
+    private FuelType fuelType;
 }
