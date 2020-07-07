@@ -37,20 +37,13 @@ public class ConsignmentController {
 
 
 
-    @GetMapping("test/{id}")
-    public ResponseEntity<List<PlaceResponeDTO>> test(@PathVariable int id){
-        Consignment consignment = new Consignment();
-//        boolean check = maintainanceService.checkMaintainForVehicle(id);
-//        Place deliveryDetail = deliveryDetailService.getDeliveryByConsignmentAndPriority(1,1,0);
-
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-//        System.out.println(sdf.format(new Date()).compareTo(sdf.format(deliveryDetail.getPlannedTime()))+" compare");
-//        System.out.println(sdf.format(deliveryDetail.getPlannedTime()) +" DATE DB");
-//        System.out.println(sdf.format(new Date())+" DATE CONS");
-        List<PlaceResponeDTO> placeResponeDTOs = new ArrayList<>();
-        placeResponeDTOs = placeService.getPlaceOfConsignment(id);
-        return ResponseEntity.ok().body(placeResponeDTOs);
-    }
+//    @GetMapping("test/{id}")
+//    public ResponseEntity<List<PlaceResponeDTO>> test(@PathVariable int id){
+//        Consignment consignment = new Consignment();
+//        List<PlaceResponeDTO> placeResponeDTOs = new ArrayList<>();
+//        placeResponeDTOs = placeService.getPlaceOfConsignment(id);
+//        return ResponseEntity.ok().body(placeResponeDTOs);
+//    }
 
     @GetMapping(value = "driver")
     public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
@@ -101,26 +94,30 @@ public class ConsignmentController {
         for (int i=0; i< consignmentListDTOS.size();i++){
             List<ScheduleForLocationDTO> schedules = new ArrayList<>();
             schedules = scheduleService.getScheduleByConsignmentId(consignmentListDTOS.get(i).getId());
-            for(int j=0; j<schedules.size();j++){
-                VehicleForDetailDTO vehicleForDetailDTO;
-                List<VehicleForDetailDTO> vehicleForDetailDTOS = new ArrayList<>();
+            if(schedules.size() >0){
+                for(int j=0; j<schedules.size();j++){
+                    if(schedules.get(j).isApprove()){
+                        VehicleForDetailDTO vehicleForDetailDTO;
+                        List<VehicleForDetailDTO> vehicleForDetailDTOS = new ArrayList<>();
 
-                Driver driver = new Driver();
-                List<Driver> drivers = new ArrayList<>();
+                        Driver driver = new Driver();
+                        List<Driver> drivers = new ArrayList<>();
 
-                DriverResponseDTO driverResponseDTO = new DriverResponseDTO();
-                List<DriverResponseDTO> driverResponseDTOS = new ArrayList<>();
+                        DriverResponseDTO driverResponseDTO = new DriverResponseDTO();
+                        List<DriverResponseDTO> driverResponseDTOS = new ArrayList<>();
 
-                vehicleForDetailDTO = vehicleService.findVehicleById(schedules.get(j).getVehicle_id());
-                vehicleForDetailDTOS.add(vehicleForDetailDTO);
+                        vehicleForDetailDTO = vehicleService.findVehicleById(schedules.get(j).getVehicle_id());
+                        vehicleForDetailDTOS.add(vehicleForDetailDTO);
 
-                driver = driverService.findById(schedules.get(j).getDriver_id());
-                drivers.add(driver);
-                driverResponseDTOS = driverResponseDTO.mapToListResponse(drivers);
-                consignmentListDTOS.get(i).setDrivers(driverResponseDTOS);
-                consignmentListDTOS.get(i).setVehicles(vehicleForDetailDTOS);
+                        driver = driverService.findById(schedules.get(j).getDriver_id());
+                        drivers.add(driver);
+                        driverResponseDTOS = driverResponseDTO.mapToListResponse(drivers);
+                        consignmentListDTOS.get(i).setDrivers(driverResponseDTOS);
+                        consignmentListDTOS.get(i).setVehicles(vehicleForDetailDTOS);
+                    }
+
+                }
             }
-
         }
         if (consignments.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -151,6 +148,7 @@ public class ConsignmentController {
                 drivers = scheduleService.findDriverForSchedule(vehicle, consignment);
                 if( drivers.size()>0){
                     Driver driver =  Collections.min(drivers, Comparator.comparing(s -> s.getWorkingHour()));
+
                     schedule.setConsignment(consignment);
                     schedule.setDriver(driver);
                     schedule.setVehicle(vehicle);

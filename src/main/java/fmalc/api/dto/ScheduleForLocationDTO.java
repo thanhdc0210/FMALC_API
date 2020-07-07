@@ -14,6 +14,7 @@ public class ScheduleForLocationDTO {
     private Integer id;
     private int vehicle_id;
     private int driver_id;
+    private boolean isApprove;
     private ConsignmentResponseDTO consignment;
     private String imageConsignment;
     private String note;

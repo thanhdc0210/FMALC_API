@@ -151,6 +151,7 @@ public class LocationController {
             locationDTOS = locationLists.stream().map(this::convertToDto).collect(Collectors.toList());
 
         } else {
+
         }
         System.out.println("AAAAAAAAAAA");
         return locationDTOS;
