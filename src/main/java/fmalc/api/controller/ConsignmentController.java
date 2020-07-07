@@ -129,42 +129,65 @@ public class ConsignmentController {
     }
 
     @PostMapping
-    public ResponseEntity<ConsignmentResponseDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
+    public ResponseEntity<ScheduleToConfirmDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
         try {
             Consignment consignment = new Consignment();
 //            ScheduleForConsignment scheduleForConsignment = new ScheduleForConsignment();
 
-            consignmentRequestDTO.setImageConsignment("sdsaas");
-            consignment = consignmentService.save(consignmentRequestDTO);
+            ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
+                consignmentRequestDTO.setImageConsignment("sdsaas");
+                consignment = consignmentService.save(consignmentRequestDTO);
+
+
 //                if(consignment!=null){
 //
 //                    System.out.println(scheduleService.findVehicleForSchedule(consignment));
 //                }
-            Vehicle vehicle = scheduleService.findVehicleForSchedule(consignment);
-            Driver driver = scheduleService.findDriverForSchedule(vehicle, consignment);
-            if( driver !=null){
+            List<Vehicle> vehicles = scheduleService.findVehicleForSchedule(consignment);
+            List<Driver> drivers = new ArrayList<>();
+            Schedule schedule = new Schedule();
+            if(vehicles.size() >0){
+                Vehicle vehicle = vehicleService.getVehicleByKmRunning(vehicles);
+                drivers = scheduleService.findDriverForSchedule(vehicle, consignment);
+                if( drivers.size()>0){
+                    Driver driver =  Collections.min(drivers, Comparator.comparing(s -> s.getWorkingHour()));
+                    schedule.setConsignment(consignment);
+                    schedule.setDriver(driver);
+                    schedule.setVehicle(vehicle);
+                    schedule.setImageConsignment("no");
+                    schedule.setNote("khong co");
+                    schedule.setId(null);
+                    schedule.setIsApprove(false);
+                    schedule = scheduleService.createSchedule(schedule);
+                    if(schedule !=null){
 
-                Schedule schedule = new Schedule();
-                schedule.setConsignment(consignment);
-                schedule.setDriver(driver);
-                schedule.setVehicle(vehicle);
-                schedule.setImageConsignment("no");
-                schedule.setNote("khong co");
-                schedule.setId(null);
-                schedule.setIsApprove(false);
-                schedule = scheduleService.createSchedule(schedule);
-                if(schedule !=null){
+                        VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
+                        List<VehicleForDetailDTO> vehicleForDetailDTOS = vehicleForDetailDTO.mapToListResponse(vehicles);
 
-                    vehicleService.updateStatus(VehicleStatusEnum.SCHEDULED.getValue(), vehicle.getId());
-                    driverService.updateStatus(DriverStatusEnum.SCHEDULED.getValue(), driver.getId());
+                        DriverForScheduleDTO driverForScheduleDTO = new DriverForScheduleDTO();
+                        List<DriverForScheduleDTO> driverForScheduleDTOS= driverForScheduleDTO.mapToListResponse(drivers);
+                        vehicleForDetailDTO = vehicleForDetailDTO.convertToDto(vehicle);
+                        driverForScheduleDTO = driverForScheduleDTO.convertToDto(driver);
+                        scheduleToConfirmDTO = scheduleToConfirmDTO.convertSchedule(schedule);
+                        scheduleToConfirmDTO.setDriverForScheduleDTOS(driverForScheduleDTOS);
+                        scheduleToConfirmDTO.setVehicleForDetailDTOS(vehicleForDetailDTOS);
+                        scheduleToConfirmDTO.setVehicle(vehicleForDetailDTO);
+                        scheduleToConfirmDTO.setDriver(driverForScheduleDTO);
 
+                        vehicleService.updateStatus(VehicleStatusEnum.SCHEDULED.getValue(), vehicle.getId());
+                        driverService.updateStatus(DriverStatusEnum.SCHEDULED.getValue(), driver.getId());
+                    }else{
+
+                    }
                 }else{
-
+//                    return ResponseEntity.badRequest().body("Lô hàng đã được tạo nhưng không có tài xế phù hợp. Vui lòng thêm tài xế sau");
                 }
             }else{
-
+//                return ResponseEntity.badRequest().body("Lô hàng đã được tạo nhưng không có xe phù hợp. Vui lòng thêm xe sau");
             }
-            return ResponseEntity.ok().body(new ConsignmentResponseDTO().mapToResponse(consignment));
+
+
+            return ResponseEntity.ok().body(scheduleToConfirmDTO);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
