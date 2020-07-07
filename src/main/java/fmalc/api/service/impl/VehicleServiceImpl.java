@@ -1,49 +1,40 @@
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.VehicleForDetailDTO;
-import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.VehicleService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
 
-
     @Autowired
     VehicleRepository vehicleRepository;
 
-
     public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate) {
         return vehicleRepository.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
-
     }
 
     @Override
 
     public Vehicle saveVehicle(Vehicle vehicle) {
          vehicleRepository.saveAndFlush(vehicle);
-//        vehicleRepository.save(vehicle);
         return vehicle;
     }
 
     @Override
     public VehicleForDetailDTO findVehicleById(int id) {
-        Vehicle vehicle =   vehicleRepository.findByIdVehicle(id);
-        VehicleForDetailDTO vehicleDTO = new VehicleForDetailDTO();
-        vehicleDTO = vehicleDTO.convertToDto(vehicle);
-        return vehicleDTO;
+        Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
+        return new VehicleForDetailDTO().convertToDto(vehicle);
     }
 
     @Override
@@ -51,14 +42,9 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.findByIdVehicle(id);
     }
 
-
-
-
     @Override
     public List<Vehicle> getListVehicle() {
-        List<Vehicle> vehicles = new ArrayList<>();
-        vehicles = vehicleRepository.findAll();
-        return vehicles;
+        return vehicleRepository.findAll();
     }
 
     @Override
@@ -72,23 +58,13 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.findByStatus(status, weight);
     }
 
-
     @Override
     public List<Vehicle> findByWeight(double weight) {
         List<Vehicle> vehicles = vehicleRepository.findByWeight(weight);
-        List<Vehicle> result =new ArrayList<>();
-        for(int i = 0; i< vehicles.size(); i ++){
-            if(vehicles.get(i).getStatus() != VehicleStatusEnum.SOLD.getValue()){
-                result.add(vehicles.get(i));
-            }
-        }
-        return result;
+        return vehicles.stream()
+                .filter(x -> x.getStatus() != VehicleStatusEnum.SOLD.getValue())
+                .collect(Collectors.toList());
     }
-//    public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate) {
-//        return vehicleRepository.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
-//
-//    }
-
 
     @Override
     public Vehicle getVehicleByKmRunning( List<Vehicle> vehicles) {
@@ -97,8 +73,6 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public void updateStatus(int status, int id) {
-
          vehicleRepository.updateStatusVehicle(status, id);
-
     }
 }
