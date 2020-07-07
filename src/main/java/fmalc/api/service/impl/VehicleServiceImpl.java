@@ -36,7 +36,8 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public VehicleForDetailDTO findVehicleById(int id) {
         Vehicle vehicle =   vehicleRepository.findByIdVehicle(id);
-        VehicleForDetailDTO vehicleDTO = convertToDto(vehicle);
+        VehicleForDetailDTO vehicleDTO = new VehicleForDetailDTO();
+        vehicleDTO = vehicleDTO.convertToDto(vehicle);
         return vehicleDTO;
     }
 
@@ -45,12 +46,7 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.findByIdVehicle(id);
     }
 
-    private VehicleForDetailDTO convertToDto(Vehicle vehicle) {
-        ModelMapper modelMapper = new ModelMapper();
-        VehicleForDetailDTO dto = modelMapper.map(vehicle, VehicleForDetailDTO.class);
 
-        return dto;
-    }
 
 
     @Override
@@ -70,6 +66,18 @@ public class VehicleServiceImpl implements VehicleService {
 
         return vehicleRepository.findByStatus(status, weight);
     }
+
+    @Override
+    public List<Vehicle> findByWeight(double weight) {
+        List<Vehicle> vehicles = vehicleRepository.findByWeight(weight);
+        List<Vehicle> result =new ArrayList<>();
+        for(int i = 0; i< vehicles.size(); i ++){
+            if(vehicles.get(i).getStatus() != VehicleStatusEnum.SOLD.getValue()){
+                result.add(vehicles.get(i));
+            }
+        }
+        return result;
+    }
 //    public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate) {
 //        return vehicleRepository.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
 //
@@ -82,14 +90,9 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public void updateStatus(int status, int id) {
-//        Vehicle vehicle = new Vehicle();
-//        vehicle.setStatus(status);
-//        vehicle.setId(id);
+
          vehicleRepository.updateStatusVehicle(status, id);
-//        if(vehicle != null){
-//            System.out.println(vehicle);
-//        }
-//        return statuss;
+
     }
 }
 

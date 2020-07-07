@@ -64,7 +64,8 @@ public class VehicleController {
     @GetMapping("/detail/{licensePlates}")
     public ResponseEntity<VehicleForDetailDTO> getDetailVehicleByLicensePlates(@PathVariable String licensePlates) {
         Vehicle vehicle = vehicleService.findVehicleByLicensePlates(licensePlates);
-        VehicleForDetailDTO vehicleForDetailDTO = convertToVehicleDTO(vehicle);
+        VehicleForDetailDTO vehicleForDetailDTO =new VehicleForDetailDTO();
+        vehicleForDetailDTO = vehicleForDetailDTO.convertToDto(vehicle);
         if (vehicle == null) {
             return ResponseEntity.noContent().build();
         }
@@ -108,11 +109,7 @@ public class VehicleController {
         return vehicle;
     }
 
-    private VehicleForDetailDTO convertToVehicleDTO(Vehicle vehicle) {
-        ModelMapper modelMapper = new ModelMapper();
-        VehicleForDetailDTO vehicleForDetailDTO = modelMapper.map(vehicle, VehicleForDetailDTO.class);
-        return vehicleForDetailDTO;
-    }
+
 
     @GetMapping(value = "/report-inspection")
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspection

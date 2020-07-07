@@ -137,25 +137,25 @@ public class ConsignmentController {
     }
 
     @PostMapping
-    public ResponseEntity<Consignment> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
+    public ResponseEntity<ScheduleToConfirmDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
         try {
             Consignment consignment = new Consignment();
 //            ScheduleForConsignment scheduleForConsignment = new ScheduleForConsignment();
-
+            ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
                 consignmentRequestDTO.setImageConsignment("sdsaas");
                 consignment = consignmentService.save(consignmentRequestDTO);
 //                if(consignment!=null){
 //
 //                    System.out.println(scheduleService.findVehicleForSchedule(consignment));
 //                }
-            Vehicle vehicle = scheduleService.findVehicleForSchedule(consignment);
-            Driver driver = new Driver();
+            List<Vehicle> vehicles = scheduleService.findVehicleForSchedule(consignment);
+            List<Driver> drivers = new ArrayList<>();
             Schedule schedule = new Schedule();
-            if(vehicle.getId() != null){
-                driver = scheduleService.findDriverForSchedule(vehicle, consignment);
-                if( driver !=null){
-
-
+            if(vehicles.size() >0){
+                Vehicle vehicle = vehicleService.getVehicleByKmRunning(vehicles);
+                drivers = scheduleService.findDriverForSchedule(vehicle, consignment);
+                if( drivers.size()>0){
+                    Driver driver =  Collections.min(drivers, Comparator.comparing(s -> s.getWorkingHour()));
                     schedule.setConsignment(consignment);
                     schedule.setDriver(driver);
                     schedule.setVehicle(vehicle);
@@ -166,9 +166,21 @@ public class ConsignmentController {
                     schedule = scheduleService.createSchedule(schedule);
                     if(schedule !=null){
 
+                        VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
+                        List<VehicleForDetailDTO> vehicleForDetailDTOS = vehicleForDetailDTO.mapToListResponse(vehicles);
+
+                        DriverForScheduleDTO driverForScheduleDTO = new DriverForScheduleDTO();
+                        List<DriverForScheduleDTO> driverForScheduleDTOS= driverForScheduleDTO.mapToListResponse(drivers);
+                        vehicleForDetailDTO = vehicleForDetailDTO.convertToDto(vehicle);
+                        driverForScheduleDTO = driverForScheduleDTO.convertToDto(driver);
+                        scheduleToConfirmDTO = scheduleToConfirmDTO.convertSchedule(schedule);
+                        scheduleToConfirmDTO.setDriverForScheduleDTOS(driverForScheduleDTOS);
+                        scheduleToConfirmDTO.setVehicleForDetailDTOS(vehicleForDetailDTOS);
+                        scheduleToConfirmDTO.setVehicle(vehicleForDetailDTO);
+                        scheduleToConfirmDTO.setDriver(driverForScheduleDTO);
+
                         vehicleService.updateStatus(VehicleStatusEnum.SCHEDULED.getValue(), vehicle.getId());
                         driverService.updateStatus(DriverStatusEnum.SCHEDULED.getValue(), driver.getId());
-
                     }else{
 
                     }
@@ -180,7 +192,7 @@ public class ConsignmentController {
             }
 
 
-            return ResponseEntity.ok().body(consignment);
+            return ResponseEntity.ok().body(scheduleToConfirmDTO);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
