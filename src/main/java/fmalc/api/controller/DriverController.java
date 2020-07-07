@@ -22,8 +22,8 @@ public class DriverController {
     DriverService driverService;
 
     @GetMapping
-    public ResponseEntity<List<DriverResponseDTO>> getAllDriver() {
-        List<Driver> drivers = driverService.findAll();
+    public ResponseEntity<List<DriverResponseDTO>> getAllDriver(@RequestParam(value = "searchPhone", defaultValue = "") String searchPhone) {
+        List<Driver> drivers = driverService.findAllAndSearch(searchPhone);
         if (drivers.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

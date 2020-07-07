@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface DriverService {
 
-    List<Driver> findAll();
+    List<Driver> findAllAndSearch(String searchPhone);
 
     Driver findById(Integer id);
 
