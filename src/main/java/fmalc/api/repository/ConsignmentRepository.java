@@ -15,9 +15,8 @@ import java.util.List;
 public interface ConsignmentRepository
         extends JpaRepository<Consignment, Integer>, JpaSpecificationExecutor<Consignment> {
 
-    @Query("Select c From Consignment c, Schedule s, Account a, Driver d" +
-            " Where d.account.id = a.id and s.driver.id = d.id and s.consignment.id = c.id" +
-            " and c.status IN :status and a.username = :username" +
+    @Query("Select c From Consignment c" +
+            " Where c.status IN :status and c.schedule.driver.account.username = :username" +
             " and c.schedule.isApprove = true")
     List<Consignment> findByConsignmentStatusAndUsernameForDriver(@Param("status") List<Integer> status, @Param("username") String username);
 

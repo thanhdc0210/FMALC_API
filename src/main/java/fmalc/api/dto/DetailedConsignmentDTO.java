@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 public class DetailedConsignmentDTO {
     private Integer consignmentId;
-    private List<PlaceDTO> places;
+    private List<PlaceResponeDTO> places;
     private String licensePlates; // Biển số xe
     private String status;
     private String ownerNote;
@@ -33,7 +33,7 @@ public class DetailedConsignmentDTO {
         this.consignmentId = consignment.getId();
         this.ownerNote = consignment.getOwnerNote();
         for(Place place : consignment.getPlaces()){
-            places.add(new PlaceDTO(place));
+            places.add(new PlaceResponeDTO().convertPlace(place));
         }
 
         licensePlates = consignment.getSchedule().getVehicle().getLicensePlates();

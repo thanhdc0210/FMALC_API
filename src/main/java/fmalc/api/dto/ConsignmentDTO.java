@@ -35,9 +35,7 @@ public class ConsignmentDTO {
         this.driverName = schedule.getDriver().getName();
         this.weight = consignment.getWeight();
         this.status = ConsignmentStatusEnum.getValueEnumToShow(consignment.getStatus());
-        for(Place place : consignment.getPlaces()){
-            places.add(new PlaceResponeDTO().convertPlace(place));
-        }
+        this.places = new PlaceResponeDTO().mapToListResponse(List.copyOf(consignment.getPlaces()));
 
         this.status = ConsignmentStatusEnum.getValueEnumToShow(consignment.getStatus());
     }
