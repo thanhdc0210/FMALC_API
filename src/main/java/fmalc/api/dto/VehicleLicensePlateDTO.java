@@ -1,22 +1,17 @@
-package fmalc.api.dto;
-
-import fmalc.api.entity.Consignment;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-@Getter
-@Setter
-@NoArgsConstructor
-public class VehicleLicensePlateDTO {
-    private String driverLicensePlate;
-
-    public VehicleLicensePlateDTO(Consignment consignment) {
-        driverLicensePlate = consignment.getSchedule().getVehicle().getLicensePlates();
-    }
-}
+//package fmalc.api.dto;
+//
+//import fmalc.api.entity.Schedule;
+//import lombok.Getter;
+//import lombok.NoArgsConstructor;
+//import lombok.Setter;
+//
+//@Getter
+//@Setter
+//@NoArgsConstructor
+//public class VehicleLicensePlateDTO {
+//    private String vehicleLicensePlate;
+//
+//    public VehicleLicensePlateDTO(Schedule schedule) {
+//        vehicleLicensePlate = schedule.getVehicle().getLicensePlates();
+//    }
+//}

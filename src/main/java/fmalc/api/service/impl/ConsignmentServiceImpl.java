@@ -21,16 +21,10 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     @Autowired
     PlaceRepository placeRepository;
 
-    @Override
-    public List<Consignment> findByConsignmentStatusAndUsernameForDriver(List<Integer> status, String username){
-
-        return consignmentRepository.findByConsignmentStatusAndUsernameForDriver(status, username);
-    }
-
-    @Override
-    public List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(List<Integer> status, String username) {
-        return consignmentRepository.findByConsignmentStatusAndUsernameForFleetManager(status, username);
-    }
+//    @Override
+//    public List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(List<Integer> status, String username) {
+//        return consignmentRepository.findByConsignmentStatusAndUsernameForFleetManager(status, username);
+//    }
 
     @Override
     public Consignment findById(int consignment_id) {

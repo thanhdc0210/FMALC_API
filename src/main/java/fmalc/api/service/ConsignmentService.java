@@ -7,9 +7,7 @@ import java.util.List;
 
 public interface ConsignmentService {
 
-    List<Consignment> findByConsignmentStatusAndUsernameForDriver(List<Integer> status, String username);
-
-    List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(List<Integer> status, String username);
+//    List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(List<Integer> status, String username);
 
     Consignment findById(int consignment_id);
 
