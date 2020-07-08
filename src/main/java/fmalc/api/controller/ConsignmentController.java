@@ -52,40 +52,29 @@ public class ConsignmentController {
         return ResponseEntity.ok().body(placeResponeDTOs);
     }
 
-    @GetMapping(value = "driver")
-    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
-        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForDriver(status, username);
+//    @GetMapping(value = "driver")
+//    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
+//        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForDriver(status, username);
+//
+//        if (consignments == null){
+//            return ResponseEntity.noContent().build();
+//        }
+//        List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
+//
+//        return ResponseEntity.ok().body(consignmentResponses);
+//    }
 
-        if (consignments == null){
-            return ResponseEntity.noContent().build();
-        }
-        List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
-
-        return ResponseEntity.ok().body(consignmentResponses);
-    }
-
-    @GetMapping(value = "fleetManager")
-    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForFleetManager(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
-        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForFleetManager(status, username);
-
-        if (consignments == null){
-            return ResponseEntity.noContent().build();
-        }
-        List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
-        System.out.println(consignmentResponses.size());
-        return ResponseEntity.ok().body(consignmentResponses);
-    }
-
-    @GetMapping(value = "id/{id}")
-    public ResponseEntity<DetailedConsignmentDTO> findById(@PathVariable("id") Integer id){
-        Consignment consignment = consignmentService.findById(id);
-        if (consignment == null || consignment.equals("")){
-            return ResponseEntity.noContent().build();
-        }
-        DetailedConsignmentDTO detailedConsignmentDTO = new DetailedConsignmentDTO(consignment);
-
-        return ResponseEntity.ok().body(detailedConsignmentDTO);
-    }
+//    @GetMapping(value = "fleetManager")
+//    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForFleetManager(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
+//        List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForFleetManager(status, username);
+//
+//        if (consignments == null){
+//            return ResponseEntity.noContent().build();
+//        }
+//        List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
+//        System.out.println(consignmentResponses.size());
+//        return ResponseEntity.ok().body(consignmentResponses);
+//    }
 
     @GetMapping(value = "status")
     public ResponseEntity<List<ConsignmentListDTO>> getAllByStatus(@RequestParam("status") Integer status) {

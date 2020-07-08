@@ -123,6 +123,12 @@ public class DriverServiceImpl implements DriverService {
         return driverRepository.findById(id).get();
     }
 
+    @Override
+    public Integer findIdByUsername(String username) {
+
+        return driverRepository.findIdByUsername(username);
+    }
+
 }
 
 

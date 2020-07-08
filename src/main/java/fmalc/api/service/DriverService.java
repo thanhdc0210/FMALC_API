@@ -22,4 +22,6 @@ public interface DriverService {
     int updateStatus(int status, int id);
 
     Driver updateAvatar(Integer id, MultipartFile file) throws IOException;
+
+    Integer findIdByUsername(String username);
 }

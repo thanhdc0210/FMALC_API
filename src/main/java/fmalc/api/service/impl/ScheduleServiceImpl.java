@@ -421,5 +421,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         return result;
     }
 
+    @Override
+    public List<Schedule> findByConsignmentStatusAndUsernameForDriver(List<Integer> status, String username){
+
+        return scheduleRepository.findByConsignmentStatusAndUsernameForDriver(status, username);
+    }
+
+    @Override
+    public Schedule findById(Integer id) {
+        return scheduleRepository.findById(id).get();
+    }
+
 }
 

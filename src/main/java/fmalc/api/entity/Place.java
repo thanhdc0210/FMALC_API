@@ -51,4 +51,10 @@ public class Place implements Serializable {
 
     @Column(name = "priority", nullable = false)
     private Integer priority;
+
+    @Column(name = "contact_name")
+    private String contactName;
+
+    @Column(name = "contact_phone")
+    private String contactPhone;
 }

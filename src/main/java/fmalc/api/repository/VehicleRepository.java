@@ -21,6 +21,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
         @Query("SELECT v FROM Vehicle v WHERE v.licensePlates = ?1")
         Vehicle findByLicensePlates(String license);
+
         @Query("SELECT v FROM Vehicle v WHERE v.status = ?1 and v.weight >= ?2")
         List<Vehicle> findByStatus(int status, double weight);
 
@@ -32,11 +33,17 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
         @Query(value = "UPDATE Vehicle v set v.status = ?1 where v.id = ?2", nativeQuery = true)
         void updateStatusVehicle(int status, int id);
 
-    @Query("Select DISTINCT v.licensePlates " +
-            "From Consignment c, Account a, Schedule s, Driver d, Place p, Vehicle v " +
-            "Where a.id = d.account.id " +
-            "AND c.id = s.consignment.id AND d.id = s.driver.id AND v.id = s.vehicle.id " +
-            "AND c.status IN :status AND a.username = :username  AND p.plannedTime <= :currentDate")
-    List<String> findVehicleLicensePlatesForReportInspection(@Param("status") List<Integer> status, @Param("username") String username, @Param("currentDate") Timestamp currentDate);
+//    @Query("Select DISTINCT v.licensePlates " +
+//            "From Consignment c, Schedule s, Driver d, Place p, Vehicle v " +
+//            "Where c.id = s.consignment.id AND d.id = s.driver.id AND v.id = s.vehicle.id " +
+//            "AND c.status IN :status AND d.id = :id  AND p.plannedTime <= :currentDate")
+//    List<String> findVehicleLicensePlatesForReportInspection(@Param("status") List<Integer> status, @Param("id") Integer driver_id, @Param("currentDate") Timestamp currentDate);
+
+        @Query("Select DISTINCT v.licensePlates " +
+                "From Consignment c, Schedule s, Driver d, Place p, Vehicle v, Account a " +
+                "Where c.id = s.consignment.id AND d.id = s.driver.id AND v.id = s.vehicle.id " +
+                "AND a.id = d.account.id "+
+                "AND c.status IN :status AND a.username = :username and s.isApprove = true")
+        List<String> findVehicleLicensePlatesForReportInspection(@Param("status") List<Integer> status, @Param("username") String username);
 
 }

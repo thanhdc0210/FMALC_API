@@ -45,4 +45,7 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     int updateImageById(@Param("id") Integer id,@Param("image") String image);
 
     List<Driver> findByPhoneNumberContainingIgnoreCase(String searchPhone);
+
+    @Query("Select d.id from Driver d Where d.account.username = :username")
+    Integer findIdByUsername(@Param("username") String username);
 }

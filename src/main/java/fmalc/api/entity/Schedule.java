@@ -29,7 +29,7 @@ public class Schedule implements Serializable {
     @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
     private Driver driver;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
     private Consignment consignment;
 
