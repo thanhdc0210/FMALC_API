@@ -79,6 +79,16 @@ public class DriverController {
         }
     }
 
+    @GetMapping(value = "fleet-manager/{id}")
+    public ResponseEntity<List<DriverResponseDTO>> getAllDriver(@PathVariable("id") Integer id) {
+        List<Driver> drivers = driverService.findAllByFleetManager(id);
+        if (drivers.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<DriverResponseDTO> result = new ArrayList<>(new DriverResponseDTO().mapToListResponse(drivers));
+        return ResponseEntity.ok().body(result);
+    }
+
 }
 
 
