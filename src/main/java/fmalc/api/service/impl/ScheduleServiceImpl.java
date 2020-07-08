@@ -83,19 +83,17 @@ public class ScheduleServiceImpl implements ScheduleService {
         List<Vehicle> result = new ArrayList<>();
         for(int i = 0 ; i<vehicleConsignmentDTOS.size();i++){
             double weight =Double.parseDouble(vehicleConsignmentDTOS.get(i).getWeight());
-            vehiclesScheduled  = vehicleService.findByStatus(VehicleStatusEnum.SCHEDULED.getValue(), consignment.getWeight());
+//            vehiclesScheduled  = vehicleService.findByStatus(VehicleStatusEnum.SCHEDULED.getValue(), consignment.getWeight());
 
             int size = Integer.parseInt(vehicleConsignmentDTOS.get(i).getQuantity());
             vehicles = vehicleService.findByWeight(weight);
 //        if(vehicles.contains())
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-            if(vehiclesScheduled. size() > 0){
-
-            }else {
-                {
-                    result.addAll(vehicles);
-                }
-            }}
+            if(vehicles. size() > 0){
+                    
+            }else{{
+            result.addAll(vehicles);
+        }}}
         return result;
     }
 
