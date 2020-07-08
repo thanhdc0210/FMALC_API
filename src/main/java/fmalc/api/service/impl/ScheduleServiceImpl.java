@@ -76,55 +76,26 @@ public class ScheduleServiceImpl implements ScheduleService {
         boolean flag = true;
 //        List<Vehicle> vehiclesAvailable = vehicleService.findByStatus(VehicleStatusEnum.AVAILABLE.getValue(), consignment.getWeight());
 //
-//        List<Vehicle> vehiclesScheduled = vehicleService.findByStatus(VehicleStatusEnum.SCHEDULED.getValue(), consignment.getWeight());
 
         List<VehicleConsignmentDTO> vehicleConsignmentDTOS = consignmentRequestDTO.getVehicles();
         List<Vehicle> vehicles = new ArrayList<>();
+        List<Vehicle> vehiclesScheduled;
         List<Vehicle> result = new ArrayList<>();
         for(int i = 0 ; i<vehicleConsignmentDTOS.size();i++){
             double weight =Double.parseDouble(vehicleConsignmentDTOS.get(i).getWeight());
+            vehiclesScheduled  = vehicleService.findByStatus(VehicleStatusEnum.SCHEDULED.getValue(), consignment.getWeight());
 
             int size = Integer.parseInt(vehicleConsignmentDTOS.get(i).getQuantity());
             vehicles = vehicleService.findByWeight(weight);
 //        if(vehicles.contains())
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-            if (vehicles.size() > 0) {
-                vehicles = checkMaintainForVehicle(vehicles, consignment);
-                vehicles = checkScheduledForVehicle(vehicles, consignment);
-                if(vehicles.size()>= size){
-//                    result.addAll(vehicles);
-                }else{
-                    List<Vehicle> vehiclesBigger = vehicleService.findByWeightBigger(weight);
-                    if(vehiclesBigger.size()>0){
-                        vehiclesBigger = checkMaintainForVehicle(vehiclesBigger, consignment);
-                        vehiclesBigger = checkScheduledForVehicle(vehiclesBigger, consignment);
-                        if( vehiclesBigger.size()>= (size - vehicles.size())){
-//                            result.addAll(vehicles);
-                            vehicles.addAll(vehiclesBigger);
-                            for( int big =0; big < vehiclesBigger.size();big++){
-                                if(vehicles.contains(vehiclesBigger.get(big))){
+            if(vehiclesScheduled. size() > 0){
 
-                                }else{
-                                    vehicles.add(vehiclesBigger.get(big));
-                                }
-                            }
-                        }else{
-
-                        }
-                    }
+            }else {
+                {
+                    result.addAll(vehicles);
                 }
-            }else{
-                vehicles = vehicleService.findByWeightBigger(weight);
-                if(vehicles.size()>0){
-                    vehicles = checkMaintainForVehicle(vehicles, consignment);
-                    vehicles = checkScheduledForVehicle(vehicles, consignment);
-                    if( vehicles.size()>= size){
-
-                    }
-                }
-            }
-            result.addAll(vehicles);
-        }
+            }}
         return result;
     }
 
@@ -457,6 +428,17 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         return result;
+    }
+
+    @Override
+    public List<Schedule> findByConsignmentStatusAndUsernameForDriver(List<Integer> status, String username){
+
+        return scheduleRepository.findByConsignmentStatusAndUsernameForDriver(status, username);
+    }
+
+    @Override
+    public Schedule findById(Integer id) {
+        return scheduleRepository.findById(id).get();
     }
 
 }

@@ -117,7 +117,8 @@ public class VehicleController {
 
         Timestamp currentDate = new Timestamp(System.currentTimeMillis());
 
-        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
+//        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspection(status, driver_id, currentDate);
+        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspection(status, username);
 
         if (vehiclePlates == null) {
             return ResponseEntity.noContent().build();

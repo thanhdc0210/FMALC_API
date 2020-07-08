@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface DriverService {
 
-    List<Driver> findAll();
+    List<Driver> findAllAndSearch(String searchPhone);
 
     Driver findById(Integer id);
 
@@ -22,4 +22,6 @@ public interface DriverService {
     int updateStatus(int status, int id);
 
     Driver updateAvatar(Integer id, MultipartFile file) throws IOException;
+
+    Integer findIdByUsername(String username);
 }

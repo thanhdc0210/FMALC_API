@@ -25,8 +25,14 @@ public class VehicleServiceImpl implements VehicleService {
     VehicleRepository vehicleRepository;
 
 
-    public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate) {
-        return vehicleRepository.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
+//    public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, Integer driver_id, Timestamp currentDate) {
+//        return vehicleRepository.findVehicleLicensePlatesForReportInspection(status, driver_id, currentDate);
+//
+//    }
+
+    @Override
+    public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username) {
+        return vehicleRepository.findVehicleLicensePlatesForReportInspection(status, username);
 
     }
 
@@ -107,6 +113,11 @@ public class VehicleServiceImpl implements VehicleService {
             }
         }
         return result;
+    }
+
+    @Override
+    public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate) {
+        return null;
     }
 //    public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate) {
 //        return vehicleRepository.findVehicleLicensePlatesForReportInspection(status, username, currentDate);

@@ -25,8 +25,8 @@ public class DriverServiceImpl implements DriverService {
     private DriverRepository driverRepository;
 
     @Override
-    public List<Driver> findAll() {
-        return driverRepository.findAll();
+    public List<Driver> findAllAndSearch(String searchPhone) {
+        return driverRepository.findByPhoneNumberContainingIgnoreCase(searchPhone);
     }
 
     @Autowired
@@ -121,6 +121,12 @@ public class DriverServiceImpl implements DriverService {
         String image = uploaderService.upload(file);
         driverRepository.updateImageById(id, image);
         return driverRepository.findById(id).get();
+    }
+
+    @Override
+    public Integer findIdByUsername(String username) {
+
+        return driverRepository.findIdByUsername(username);
     }
 
 }
