@@ -13,5 +13,6 @@ public class ConsignmentRequestDTO {
     private Double weight;
     private Integer status;
     private String imageConsignment;
+    private List<VehicleConsignmentDTO> vehicles;
     private List<PlaceRequestDTO> place;
 }

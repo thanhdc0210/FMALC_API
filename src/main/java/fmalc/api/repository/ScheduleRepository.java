@@ -18,4 +18,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     List<Schedule> checkVehicleInScheduled(int idVehicle);
     @Query("select  s from Schedule s where s.driver.id =?1")
     List<Schedule> checkDriverInScheduled(int idDriver);
+
+//    @Query("select s from Schedule s where s.consignment")
+//    List<Schedule> getAll();
+
 }

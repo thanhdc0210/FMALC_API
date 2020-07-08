@@ -84,6 +84,30 @@ public class VehicleServiceImpl implements VehicleService {
         }
         return result;
     }
+
+    @Override
+    public List<Vehicle> findByWeightBigger(double weight) {
+        List<Vehicle> vehicles = vehicleRepository.findByWeightBigger(weight);
+        List<Vehicle> result =new ArrayList<>();
+        for(int i = 0; i< vehicles.size(); i ++){
+            if(vehicles.get(i).getStatus() != VehicleStatusEnum.SOLD.getValue()){
+                result.add(vehicles.get(i));
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Vehicle> findByWeightSmaller(double weight) {
+        List<Vehicle> vehicles = vehicleRepository.findByWeightSmaller(weight);
+        List<Vehicle> result =new ArrayList<>();
+        for(int i = 0; i< vehicles.size(); i ++){
+            if(vehicles.get(i).getStatus() != VehicleStatusEnum.SOLD.getValue()){
+                result.add(vehicles.get(i));
+            }
+        }
+        return result;
+    }
 //    public List<String> findVehicleLicensePlatesForReportInspection(List<Integer> status, String username, Timestamp currentDate) {
 //        return vehicleRepository.findVehicleLicensePlatesForReportInspection(status, username, currentDate);
 //

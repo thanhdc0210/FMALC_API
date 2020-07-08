@@ -36,20 +36,18 @@ public class ConsignmentController {
     PlaceService placeService;
 
 
-
-//    @GetMapping("test/{id}")
-//    public ResponseEntity<List<PlaceResponeDTO>> test(@PathVariable int id){
-//        Consignment consignment = new Consignment();
-//        List<PlaceResponeDTO> placeResponeDTOs = new ArrayList<>();
+    @GetMapping("test")
+    public ResponseEntity<List<ScheduleForLocationDTO>> test(){
+        List<ScheduleForLocationDTO> scheduleForLocationDTOS= scheduleService.getScheduleToCheck();
 //        placeResponeDTOs = placeService.getPlaceOfConsignment(id);
-//        return ResponseEntity.ok().body(placeResponeDTOs);
-//    }
+        return ResponseEntity.ok().body(scheduleForLocationDTOS);
+    }
 
     @GetMapping(value = "driver")
-    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
+    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
         List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForDriver(status, username);
 
-        if (consignments == null){
+        if (consignments == null) {
             return ResponseEntity.noContent().build();
         }
         List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
@@ -58,10 +56,10 @@ public class ConsignmentController {
     }
 
     @GetMapping(value = "fleetManager")
-    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForFleetManager(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
+    public ResponseEntity<List<ConsignmentDTO>> findByConsignmentStatusAndUsernameForFleetManager(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
         List<Consignment> consignments = consignmentService.findByConsignmentStatusAndUsernameForFleetManager(status, username);
 
-        if (consignments == null){
+        if (consignments == null) {
             return ResponseEntity.noContent().build();
         }
         List<ConsignmentDTO> consignmentResponses = new ArrayList<>(new ConsignmentDTO().mapToListResponse(consignments));
@@ -70,9 +68,9 @@ public class ConsignmentController {
     }
 
     @GetMapping(value = "id/{id}")
-    public ResponseEntity<DetailedConsignmentDTO> findById(@PathVariable("id") Integer id){
+    public ResponseEntity<DetailedConsignmentDTO> findById(@PathVariable("id") Integer id) {
         Consignment consignment = consignmentService.findById(id);
-        if (consignment == null || consignment.equals("")){
+        if (consignment == null || consignment.equals("")) {
             return ResponseEntity.noContent().build();
         }
         DetailedConsignmentDTO detailedConsignmentDTO = new DetailedConsignmentDTO(consignment);
@@ -90,13 +88,12 @@ public class ConsignmentController {
         }
 
 
-
-        for (int i=0; i< consignmentListDTOS.size();i++){
+        for (int i = 0; i < consignmentListDTOS.size(); i++) {
             List<ScheduleForLocationDTO> schedules = new ArrayList<>();
             schedules = scheduleService.getScheduleByConsignmentId(consignmentListDTOS.get(i).getId());
-            if(schedules.size() >0){
-                for(int j=0; j<schedules.size();j++){
-                    if(schedules.get(j).isApprove()){
+            if (schedules.size() > 0) {
+                for (int j = 0; j < schedules.size(); j++) {
+                    if (schedules.get(j).isApprove()) {
                         VehicleForDetailDTO vehicleForDetailDTO;
                         List<VehicleForDetailDTO> vehicleForDetailDTOS = new ArrayList<>();
 
@@ -126,29 +123,22 @@ public class ConsignmentController {
     }
 
     @PostMapping
-    public ResponseEntity<ScheduleToConfirmDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO){
+    public ResponseEntity<List<ScheduleToConfirmDTO>> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO) {
         try {
             Consignment consignment = new Consignment();
 //            ScheduleForConsignment scheduleForConsignment = new ScheduleForConsignment();
-
             ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
-                consignmentRequestDTO.setImageConsignment("sdsaas");
-                consignment = consignmentService.save(consignmentRequestDTO);
-
-
-//                if(consignment!=null){
-//
-//                    System.out.println(scheduleService.findVehicleForSchedule(consignment));
-//                }
-            List<Vehicle> vehicles = scheduleService.findVehicleForSchedule(consignment);
+            List<ScheduleToConfirmDTO> scheduleToConfirmDTOS = new ArrayList<>();
+            consignmentRequestDTO.setImageConsignment("sdsaas");
+            consignment = consignmentService.save(consignmentRequestDTO);
+            List<Vehicle> vehicles = scheduleService.findVehicleForSchedule(consignment, consignmentRequestDTO);
             List<Driver> drivers = new ArrayList<>();
             Schedule schedule = new Schedule();
-            if(vehicles.size() >0){
+            if (vehicles.size() > 0) {
                 Vehicle vehicle = vehicleService.getVehicleByKmRunning(vehicles);
                 drivers = scheduleService.findDriverForSchedule(vehicle, consignment);
-                if( drivers.size()>0){
-                    Driver driver =  Collections.min(drivers, Comparator.comparing(s -> s.getWorkingHour()));
-
+                if (drivers.size() > 0) {
+                    Driver driver = Collections.min(drivers, Comparator.comparing(s -> s.getWorkingHour()));
                     schedule.setConsignment(consignment);
                     schedule.setDriver(driver);
                     schedule.setVehicle(vehicle);
@@ -157,13 +147,11 @@ public class ConsignmentController {
                     schedule.setId(null);
                     schedule.setIsApprove(false);
                     schedule = scheduleService.createSchedule(schedule);
-                    if(schedule !=null){
-
+                    if (schedule != null) {
                         VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
                         List<VehicleForDetailDTO> vehicleForDetailDTOS = vehicleForDetailDTO.mapToListResponse(vehicles);
-
                         DriverForScheduleDTO driverForScheduleDTO = new DriverForScheduleDTO();
-                        List<DriverForScheduleDTO> driverForScheduleDTOS= driverForScheduleDTO.mapToListResponse(drivers);
+                        List<DriverForScheduleDTO> driverForScheduleDTOS = driverForScheduleDTO.mapToListResponse(drivers);
                         vehicleForDetailDTO = vehicleForDetailDTO.convertToDto(vehicle);
                         driverForScheduleDTO = driverForScheduleDTO.convertToDto(driver);
                         scheduleToConfirmDTO = scheduleToConfirmDTO.convertSchedule(schedule);
@@ -171,21 +159,21 @@ public class ConsignmentController {
                         scheduleToConfirmDTO.setVehicleForDetailDTOS(vehicleForDetailDTOS);
                         scheduleToConfirmDTO.setVehicle(vehicleForDetailDTO);
                         scheduleToConfirmDTO.setDriver(driverForScheduleDTO);
-
+                        scheduleToConfirmDTOS.add(scheduleToConfirmDTO);
                         vehicleService.updateStatus(VehicleStatusEnum.SCHEDULED.getValue(), vehicle.getId());
                         driverService.updateStatus(DriverStatusEnum.SCHEDULED.getValue(), driver.getId());
-                    }else{
+                    } else {
 
                     }
-                }else{
+                } else {
 //                    return ResponseEntity.badRequest().body("Lô hàng đã được tạo nhưng không có tài xế phù hợp. Vui lòng thêm tài xế sau");
                 }
-            }else{
+            } else {
 //                return ResponseEntity.badRequest().body("Lô hàng đã được tạo nhưng không có xe phù hợp. Vui lòng thêm xe sau");
             }
 
 
-            return ResponseEntity.ok().body(scheduleToConfirmDTO);
+            return ResponseEntity.ok().body(scheduleToConfirmDTOS);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
