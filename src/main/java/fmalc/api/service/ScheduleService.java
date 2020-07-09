@@ -19,7 +19,7 @@ public interface ScheduleService {
     Schedule createSchedule(Schedule schedule);
 
      List<Vehicle> findVehicleForSchedule(Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO) throws ParseException;
-    List<Driver> findDriverForSchedule(Vehicle vehicle, Consignment consignment);
+    List<Driver> findDriverForSchedule(double weight, Consignment consignment);
 
     List<ScheduleForLocationDTO> checkScheduleForVehicle(int idVehicle) ;
     List<ScheduleForLocationDTO> checkScheduleForDriver( int idDriver);
@@ -29,5 +29,7 @@ public interface ScheduleService {
 
     List<Schedule> findByConsignmentStatusAndUsernameForDriver(List<Integer> status, String username);
     Schedule findById(Integer id);
+
+    List<ScheduleForLocationDTO> findScheduleForFuture(List<Vehicle> vehicles, Consignment consignment,ConsignmentRequestDTO consignmentRequestDTO);
 
 }

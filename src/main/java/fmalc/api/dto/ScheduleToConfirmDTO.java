@@ -11,8 +11,8 @@ import java.util.*;
 @Data
 public class ScheduleToConfirmDTO {
     private Integer id;
-    private VehicleForDetailDTO vehicle;
-    private DriverForScheduleDTO driver;
+    private List<VehicleForDetailDTO> vehicles;
+    private List<DriverForScheduleDTO> drivers;
     private List<VehicleForDetailDTO> vehicleForDetailDTOS;
     private List<DriverForScheduleDTO> driverForScheduleDTOS;
     private ConsignmentResponseDTO consignment;

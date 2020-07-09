@@ -40,19 +40,18 @@ public class MaintainanceServiceImpl implements MaintainanceService {
                         id.add(maintainCheckDTOs.get(i).getId());
                     }
                 }
-                maintainCheckDTOs.removeIf(x -> id.contains(x.getId()));
-//                for (int j = 0; j < id.size(); j++) {
-//                    flag = true;
-//                    for (int i = 0; i < maintainCheckDTOs.size(); i++) {
-//                        if(flag){
-//                            if (maintainCheckDTOs.get(i).getId() == id.get(j)) {
-//                                maintainCheckDTOs.remove(maintainCheckDTOs.get(i));
-//                                flag = false;
-//                            }
-//                        }
-//                    }
-//
-//                }
+                for (int j = 0; j < id.size(); j++) {
+                    flag = true;
+                    for (int i = 0; i < maintainCheckDTOs.size(); i++) {
+                        if(flag){
+                            if (maintainCheckDTOs.get(i).getId() == id.get(j)) {
+                                maintainCheckDTOs.remove(maintainCheckDTOs.get(i));
+                                flag = false;
+                            }
+                        }
+                    }
+
+                }
                 if(maintainCheckDTOs.size()>0){
                     maintainCheckDTO = maintainCheckDTOs.get(0);
                 }

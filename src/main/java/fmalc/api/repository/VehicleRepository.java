@@ -27,13 +27,10 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
         @Query("SELECT v FROM Vehicle v where  v.weight = ?1")
         List<Vehicle> findByWeight( double weight);
-
         @Query("SELECT v FROM Vehicle v where  v.weight > ?1")
         List<Vehicle> findByWeightBigger( double weight);
-
         @Query("SELECT v FROM Vehicle v where  v.weight < ?1")
         List<Vehicle> findByWeightSmaller( double weight);
-
 
         @Modifying(clearAutomatically = true)
         @Transactional
