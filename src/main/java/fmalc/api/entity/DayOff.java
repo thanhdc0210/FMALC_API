@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
 
 @Entity
 @Getter
@@ -24,11 +24,11 @@ public class DayOff {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "start_day", nullable = false)
-    private Date startDay;
+    @Column(name = "start_date", nullable = false)
+    private Date startDate;
 
-    @Column(name = "end_day", nullable = false)
-    private Date endDay;
+    @Column(name = "end_date", nullable = false)
+    private Date endDate;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "fleet_manager_id", referencedColumnName = "id", nullable = false)

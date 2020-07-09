@@ -27,12 +27,12 @@ public class ReportIssue implements Serializable {
     private Vehicle vehicle;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "create_by", referencedColumnName = "id", nullable = false)
-    private Driver createBy;
+    @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
+    private Driver createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "update_by", referencedColumnName = "id", nullable = false)
-    private Driver updateBy;
+    @JoinColumn(name = "updated_by", referencedColumnName = "id")
+    private Driver updatedBy;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "inspection_id", referencedColumnName = "id", nullable = false)
@@ -41,13 +41,13 @@ public class ReportIssue implements Serializable {
     @Column(name = "create_time", nullable = false)
     private Timestamp createTime;
 
-    @Column(name = "update_time", nullable = false)
+    @Column(name = "update_time")
     private Timestamp updateTime;
 
     @Column(name = "content")
     private String content;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private Boolean status;
 
     @Column(name = "image")

@@ -30,7 +30,7 @@ public class Fuel implements Serializable {
     private Vehicle vehicle;
 
     @Column(name = "unit_price_at_filling_time", nullable = false)
-    private Double unitPriceAtFillingTime;
+    private Float unitPriceAtFillingTime;
 
     @Column(name = "volume", nullable = false)
     private Double volume;

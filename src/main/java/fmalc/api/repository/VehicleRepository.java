@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.*;
 
 @Repository
@@ -43,7 +43,18 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "From Consignment c, Schedule s, Driver d, Place p, Vehicle v, Account a " +
                 "Where c.id = s.consignment.id AND d.id = s.driver.id AND v.id = s.vehicle.id " +
                 "AND a.id = d.account.id "+
-                "AND c.status IN :status AND a.username = :username and s.isApprove = true")
-        List<String> findVehicleLicensePlatesForReportInspection(@Param("status") List<Integer> status, @Param("username") String username);
+                "AND c.status IN :status AND a.username = :username and s.isApprove = true " +
+                "AND DATE(p.plannedTime) = :currentDate")
+        List<String> findVehicleLicensePlatesForReportInspectionBeforeDelivery(
+                @Param("status") List<Integer> status, @Param("username") String username
+                , @Param("currentDate") Date currentDate);
+
+        @Query("Select DISTINCT v.licensePlates " +
+                "From Consignment c, Schedule s, Driver d, Place p, Vehicle v, Account a " +
+                "Where c.id = s.consignment.id AND d.id = s.driver.id AND v.id = s.vehicle.id " +
+                "AND a.id = d.account.id "+
+                "AND c.status IN :status AND a.username = :username and s.isApprove = true " +
+                "AND p.actualTime <= :currentDate")
+        List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(@Param("status") List<Integer> status, @Param("username") String username, @Param("currentDate") Date currentDate);
 
 }

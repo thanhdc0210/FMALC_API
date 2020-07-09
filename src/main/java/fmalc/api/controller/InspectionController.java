@@ -5,10 +5,12 @@ import fmalc.api.dto.DriverResponseDTO;
 import fmalc.api.entity.Driver;
 import fmalc.api.entity.Inspection;
 import fmalc.api.service.InspectionService;
+import fmalc.api.service.UploaderService;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,6 +19,8 @@ import java.util.List;
 public class InspectionController {
     @Autowired
     InspectionService inspectionService;
+    @Autowired
+    UploaderService uploaderService;
 
     @GetMapping
     public ResponseEntity<List<Inspection>> getAllInspection() {
@@ -51,6 +55,19 @@ public class InspectionController {
         try {
             inspection = inspectionService.update(id, inspection);
             return ResponseEntity.ok().body(inspection);
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping(value = "upload-image")
+    public ResponseEntity uploadImage( @RequestPart(value = "file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            String imageLink = uploaderService.upload(file);
+            return ResponseEntity.ok().body(imageLink);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
