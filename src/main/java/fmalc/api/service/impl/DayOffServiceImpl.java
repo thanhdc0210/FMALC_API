@@ -34,7 +34,7 @@ public class DayOffServiceImpl implements DayOffService {
             dayOffs = dayOffRepository.checkDayOffOfDriver(idDriver.get(i).getId());
             if(dayOffs.size()>0){
                 for (int j = 0; j< dayOffs.size(); j++){
-                    String dateOff = sdf.format(dayOffs.get(j).getStartDay());
+                    String dateOff = sdf.format(dayOffs.get(j).getStartDate());
 
                     PlaceResponeDTO placeSchedulePriorityRecei =
                             placeService.getPlaceByTypePlaceAndPriority(consignment.getId(), 1, TypeLocationEnum.RECEIVED_PLACE.getValue());
@@ -59,7 +59,7 @@ public class DayOffServiceImpl implements DayOffService {
                             }
 
                         }else if(dateOff.compareTo(dateReceiOfConsignment)<=-1){
-                            String dateEnd = sdf.format(dayOffs.get(j).getEndDay());
+                            String dateEnd = sdf.format(dayOffs.get(j).getEndDate());
                             if(dateEnd.compareTo(dateReceiOfConsignment) >= 1){
                                 flag = false;
                             }
