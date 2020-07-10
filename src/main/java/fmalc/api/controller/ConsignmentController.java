@@ -36,16 +36,14 @@ public class ConsignmentController {
     PlaceService placeService;
 
 
-//    @GetMapping("test")
-//    public ResponseEntity<String> test() {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-////        Long plannedTime = finishPlace.getPlannedTime().getTime();
-//        String s ="";
-//
-//
-//        List<ScheduleForLocationDTO> scheduleForLocationDTOS = scheduleService.getScheduleToCheck();
-//        return ResponseEntity.ok().body(scheduleForLocationDTOS);
-//    }
+    @GetMapping("test")
+    public ResponseEntity< List<ScheduleForLocationDTO>> test() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//        Long plannedTime = finishPlace.getPlannedTime().getTime();
+        String s ="";
+        List<ScheduleForLocationDTO> scheduleForLocationDTOS = scheduleService.getScheduleToCheck();
+        return ResponseEntity.ok().body(scheduleForLocationDTOS);
+    }
 
 
     @GetMapping(value = "status")
@@ -99,12 +97,16 @@ public class ConsignmentController {
 //            ScheduleForConsignment scheduleForConsignment = new ScheduleForConsignment();
             ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
             List<ScheduleToConfirmDTO> scheduleToConfirmDTOS = new ArrayList<>();
+            ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
             consignmentRequestDTO.setImageConsignment("sdsaas");
             consignment = consignmentService.save(consignmentRequestDTO);
-
+            ScheduleForLocationDTO scheduleForLocationDTO = new ScheduleForLocationDTO();
             List<Vehicle> vehicles = scheduleService.findVehicleForSchedule(consignment, consignmentRequestDTO);
             List<ScheduleForLocationDTO> scheduleForLocationDTOS = scheduleService.findScheduleForFuture(vehicles, consignment, consignmentRequestDTO);
 //            scheduleToConfirmDTOS = scheduleReturn(vehicles, consignment, consignmentRequestDTO);
+            consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
+            scheduleForLocationDTO.setConsignment(consignmentResponseDTO);
+            scheduleForLocationDTOS.add(scheduleForLocationDTO);
             if (consignmentRequestDTO.getVehicles().size() <= scheduleForLocationDTOS.size()) {
 
             } else {

@@ -20,16 +20,16 @@ public class ConsignmentResponseDTO {
     private Double weight;
     private Integer status;
     private String statusStr;
-    private List<PlaceResponseDTO> places;
+    private List<PlaceResponeDTO> places;
 
     public ConsignmentResponseDTO mapToResponse(Consignment baseEntitie) {
         ModelMapper modelMapper = new ModelMapper();
         ConsignmentResponseDTO consignmentResponseDTO = modelMapper.map(baseEntitie, ConsignmentResponseDTO.class);
         consignmentResponseDTO.setStatusStr(ConsignmentStatusEnum.getValueEnumToShow(consignmentResponseDTO.getStatus()));
 
-        List<PlaceResponseDTO> deliveryDetailResponseDTOs = new ArrayList<>();
+        List<PlaceResponeDTO> deliveryDetailResponseDTOs = new ArrayList<>();
         for (Place deliveryDetail: baseEntitie.getPlaces()) {
-            PlaceResponseDTO deliveryDetailResponseDTO = modelMapper.map(deliveryDetail, PlaceResponseDTO.class);
+            PlaceResponeDTO deliveryDetailResponseDTO = modelMapper.map(deliveryDetail, PlaceResponeDTO.class);
 
             deliveryDetailResponseDTOs.add(deliveryDetailResponseDTO);
         }

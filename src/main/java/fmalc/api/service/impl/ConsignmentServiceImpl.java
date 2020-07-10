@@ -82,7 +82,8 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 //               List<Place> placesReceis  = placesRecei.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
 //            }
         }
-        return consignmentRepository.save(consignment);
+        consignment.setPlaces(places);
+        return consignment;
     }
 
     @Override
