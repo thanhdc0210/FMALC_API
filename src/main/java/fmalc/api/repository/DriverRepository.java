@@ -44,6 +44,6 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     @Query(value = "Update driver d set d.image =:image where d.id =:id", nativeQuery = true)
     int updateImageById(@Param("id") Integer id,@Param("image") String image);
 
-    @Query("Select d.id from Driver d Where d.account.username = :username")
-    Integer findIdByUsername(@Param("username") String username);
+    @Query("Select d from Driver d Where d.account.username = :username")
+    Driver findDriverByUsername(@Param("username") String username);
 }

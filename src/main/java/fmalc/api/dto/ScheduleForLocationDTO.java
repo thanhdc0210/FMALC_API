@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 @Data
 public class ScheduleForLocationDTO {
     private Integer id;
-    private int vehicle_id;
-    private int driver_id;
+    private Integer vehicle_id;
+    private Integer driver_id;
     private ConsignmentResponseDTO consignment;
     private String imageConsignment;
     private String note;

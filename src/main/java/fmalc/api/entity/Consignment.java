@@ -2,6 +2,7 @@ package fmalc.api.entity;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
 
 import javax.persistence.*;
 

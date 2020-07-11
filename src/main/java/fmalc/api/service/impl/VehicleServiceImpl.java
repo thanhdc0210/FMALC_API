@@ -7,8 +7,7 @@ import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -21,12 +20,12 @@ public class VehicleServiceImpl implements VehicleService {
     VehicleRepository vehicleRepository;
 
     @Override
-    public List<String> findVehicleLicensePlatesForReportInspectionBeforeDelivery(List<Integer> status, String username, Date currentDate) {
-        return vehicleRepository.findVehicleLicensePlatesForReportInspectionBeforeDelivery(status, username, currentDate);
+    public List<String> findVehicleLicensePlatesForReportInspectionBeforeDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp endDate) {
+        return vehicleRepository.findVehicleLicensePlatesForReportInspectionBeforeDelivery(status, username, startDate, endDate);
     }
 
     @Override
-    public List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(List<Integer> status, String username, Date currentDate) {
+    public List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(List<Integer> status, String username, Timestamp currentDate) {
         return vehicleRepository.findVehicleLicensePlatesForReportInspectionAfterDelivery(status, username, currentDate);
     }
 

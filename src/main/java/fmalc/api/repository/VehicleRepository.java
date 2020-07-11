@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.*;
 
 @Repository
@@ -33,21 +33,19 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
         @Query(value = "UPDATE Vehicle v set v.status = ?1 where v.id = ?2", nativeQuery = true)
         void updateStatusVehicle(int status, int id);
 
-//    @Query("Select DISTINCT v.licensePlates " +
-//            "From Consignment c, Schedule s, Driver d, Place p, Vehicle v " +
-//            "Where c.id = s.consignment.id AND d.id = s.driver.id AND v.id = s.vehicle.id " +
-//            "AND c.status IN :status AND d.id = :id  AND p.plannedTime <= :currentDate")
-//    List<String> findVehicleLicensePlatesForReportInspection(@Param("status") List<Integer> status, @Param("id") Integer driver_id, @Param("currentDate") Timestamp currentDate);
-
-        @Query("Select DISTINCT v.licensePlates " +
-                "From Consignment c, Schedule s, Driver d, Place p, Vehicle v, Account a " +
-                "Where c.id = s.consignment.id AND d.id = s.driver.id AND v.id = s.vehicle.id " +
-                "AND a.id = d.account.id "+
-                "AND c.status IN :status AND a.username = :username and s.isApprove = true " +
-                "AND DATE(p.plannedTime) = :currentDate")
+        @Query("SELECT v.licensePlates " +
+                "FROM Vehicle v " +
+                "INNER JOIN Schedule s ON v.id = s.vehicle.id " +
+                "INNER JOIN Consignment c ON c.id = s.consignment.id " +
+                "INNER JOIN Place p ON p.consignment.id = c.id " +
+                "INNER JOIN Driver d ON d.id = s.driver.id " +
+                "INNER JOIN Account a ON a.id = d.account.id " +
+                "AND a.username = :username AND s.isApprove = true AND c.status IN :status " +
+                "GROUP BY v.id " +
+                "HAVING MIN(p.plannedTime) BETWEEN :startDate AND :endDate")
         List<String> findVehicleLicensePlatesForReportInspectionBeforeDelivery(
-                @Param("status") List<Integer> status, @Param("username") String username
-                , @Param("currentDate") Date currentDate);
+                @Param("status") List<Integer> status, @Param("username") String username,
+                @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 
         @Query("Select DISTINCT v.licensePlates " +
                 "From Consignment c, Schedule s, Driver d, Place p, Vehicle v, Account a " +
@@ -55,6 +53,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "AND a.id = d.account.id "+
                 "AND c.status IN :status AND a.username = :username and s.isApprove = true " +
                 "AND p.actualTime <= :currentDate")
-        List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(@Param("status") List<Integer> status, @Param("username") String username, @Param("currentDate") Date currentDate);
+        List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(@Param("status") List<Integer> status, @Param("username") String username, @Param("currentDate") Timestamp currentDate);
 
 }

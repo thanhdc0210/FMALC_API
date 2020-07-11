@@ -124,9 +124,9 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Integer findIdByUsername(String username) {
+    public Driver findDriverByUsername(String username) {
 
-        return driverRepository.findIdByUsername(username);
+        return driverRepository.findDriverByUsername(username);
     }
 
 }
