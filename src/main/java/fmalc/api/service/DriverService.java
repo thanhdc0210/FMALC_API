@@ -23,5 +23,9 @@ public interface DriverService {
 
     Driver updateAvatar(Integer id, MultipartFile file) throws IOException;
 
+    Integer findIdByUsername(String username);
+
+    List<Driver> findAllByFleetManager(Integer id);
+  
     Driver findDriverByUsername(String username);
 }
