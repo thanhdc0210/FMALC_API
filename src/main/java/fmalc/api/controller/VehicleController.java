@@ -3,7 +3,6 @@ package fmalc.api.controller;
 
 import fmalc.api.dto.*;
 
-import fmalc.api.entity.Location;
 import fmalc.api.entity.Vehicle;
 
 import fmalc.api.enums.VehicleStatusEnum;
@@ -15,9 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -111,14 +115,11 @@ public class VehicleController {
 
 
 
-    @GetMapping(value = "/report-inspection")
+    @GetMapping(value = "/report-inspection-before-delivery")
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspection
             (@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
 
-        Timestamp currentDate = new Timestamp(System.currentTimeMillis());
-
-//        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspection(status, driver_id, currentDate);
-        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspection(status, username);
+        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionBeforeDelivery(status, username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
 
         if (vehiclePlates == null) {
             return ResponseEntity.noContent().build();
@@ -129,7 +130,6 @@ public class VehicleController {
         inspectionResponseDTO.setInspections(inspectionService.findAll());
 
         return ResponseEntity.ok().body(inspectionResponseDTO);
-
     }
 }
 

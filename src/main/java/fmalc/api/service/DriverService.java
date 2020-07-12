@@ -26,4 +26,6 @@ public interface DriverService {
     Integer findIdByUsername(String username);
 
     List<Driver> findAllByFleetManager(Integer id);
+  
+    Driver findDriverByUsername(String username);
 }

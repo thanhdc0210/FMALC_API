@@ -5,8 +5,6 @@ import java.sql.Date;
 import java.util.Collection;
 
 import javax.persistence.*;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
