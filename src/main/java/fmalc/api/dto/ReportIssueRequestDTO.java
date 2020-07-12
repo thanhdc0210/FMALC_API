@@ -16,5 +16,5 @@ public class ReportIssueRequestDTO {
     private String username;
     private String vehicleLicensePlates;
     private Map<Integer, ReportIssueContentRequestDTO> reportIssueContentRequests;
-    
+    private Integer type;
 }

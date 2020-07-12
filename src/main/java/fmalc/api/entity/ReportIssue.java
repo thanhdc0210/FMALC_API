@@ -53,4 +53,8 @@ public class ReportIssue implements Serializable {
 
     @Column(name = "image")
     private String image;
+
+    // Báo cáo trước khi chạy hay sau khi chạy hoàn thành đơn hàng
+    @Column(name = "type", nullable = false)
+    private Integer type;
 }
