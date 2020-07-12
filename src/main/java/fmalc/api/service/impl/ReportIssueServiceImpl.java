@@ -47,7 +47,7 @@ public class ReportIssueServiceImpl implements ReportIssueService {
             reportIssue.setContent(reportIssueContentRequestDTO.getContent());
             reportIssue.setImage(reportIssueContentRequestDTO.getImageUrl());
             reportIssue.setCreateTime(new Timestamp(System.currentTimeMillis()));
-            reportIssue.setInspection(inspectionRepository.findById(entry.getKey()).get());
+            reportIssue.setInspection(inspectionRepository.findById(reportIssueContentRequestDTO.getInspectionId()).get());
             reportIssue.setStatus(true);
             reportIssues.add(reportIssue);
         }

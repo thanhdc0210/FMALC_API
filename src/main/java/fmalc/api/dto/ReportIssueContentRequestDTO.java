@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReportIssueContentRequestDTO {
+    private Integer inspectionId;
     private String content;
     private String imageUrl;
 }
