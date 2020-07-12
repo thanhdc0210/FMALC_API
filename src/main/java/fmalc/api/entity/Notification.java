@@ -44,4 +44,8 @@ public class Notification implements Serializable {
     @Column(name = "status", nullable = false)
     private Boolean status;
 
+    // Phân biệt 2 loại notification.
+    // Odd-hours alert và Long Idle Times
+    @Column(name = "type", nullable = false)
+    private Integer type;
 }

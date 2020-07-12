@@ -472,7 +472,7 @@ CREATE TABLE `place` (
 
 LOCK TABLES `place` WRITE;
 /*!40000 ALTER TABLE `place` DISABLE KEYS */;
-INSERT INTO `place` VALUES (1,NULL,'Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-09 00:00:00.000000',1,0,1),(2,NULL,'Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-09 00:00:00.000000',2,0,1),(3,NULL,'Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house','2020-07-09 00:00:00.000000',3,1,1),(4,NULL,'Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-09 00:00:00.000000',4,1,1),(5,NULL,'Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-09 00:00:00.000000',1,0,2),(6,NULL,'Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-09 00:00:00.000000',2,0,2),(7,NULL,'Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house','2020-07-09 00:00:00.000000',3,1,2),(8,NULL,'Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-09 00:00:00.000000',4,1,2),(9,'2020-07-09 00:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-09 00:00:00.000000',1,0,3),(10,'2020-07-09 00:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-09 00:00:00.000000',2,0,3),(11,'2020-07-09 00:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house','2020-07-09 00:00:00.000000',3,1,3),(12,'2020-07-09 00:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-09 00:00:00.000000',4,1,3);
+INSERT INTO `place` VALUES (1,NULL,'Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-09 00:00:00.000000',1,0,1),(2,NULL,'Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-09 00:00:00.000000',2,0,1),(3,NULL,'Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house','2020-07-09 00:00:00.000000',3,1,1),(4,NULL,'Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-09 00:00:00.000000',4,1,1),(5,NULL,'Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-12 00:00:00.000000',1,0,2),(6,NULL,'Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-12 00:00:00.000000',2,0,2),(7,NULL,'Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house','2020-07-12 00:00:00.000000',3,1,2),(8,NULL,'Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-12 00:00:00.000000',4,1,2),(9,'2020-07-09 00:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-12 00:00:00.000000',1,0,3),(10,'2020-07-09 00:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-12 00:00:00.000000',2,0,3),(11,'2020-07-09 00:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house','2020-07-12 00:00:00.000000',3,1,3),(12,'2020-07-09 00:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-12 00:00:00.000000',4,1,3);
 /*!40000 ALTER TABLE `place` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -494,6 +494,7 @@ CREATE TABLE `report_issue` (
   `inspection_id` int(11) NOT NULL,
   `updated_by` int(11) DEFAULT NULL,
   `vehicle_id` int(11) NOT NULL,
+  `type` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKde004w754bpd7k47b5df34k6l` (`created_by`),
   KEY `FK4kahp60iq5kenmd1qhb0ry7qs` (`inspection_id`),
@@ -620,4 +621,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-09 23:42:15
+-- Dump completed on 2020-07-12 21:58:45
