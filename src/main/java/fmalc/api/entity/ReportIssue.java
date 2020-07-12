@@ -12,6 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Setter
 // Báo cáo tình trạng bên ngoài xe trước và sau khi chạy
 public class ReportIssue implements Serializable {
     private static final long serialVersionUID = 1L;
