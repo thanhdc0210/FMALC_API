@@ -50,4 +50,6 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
 
     @Query("Select d from Driver d Where d.account.username = :username")
     Driver findDriverByUsername(@Param("username") String username);
+
+    Driver findByAccount_Username(String username);
 }

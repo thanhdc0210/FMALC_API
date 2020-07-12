@@ -15,13 +15,6 @@ public class LoginResponseDTO implements Serializable {
     private String username;
     private String token;
     private String role;
-
-    @Override
-    public String toString() {
-        return "{" +
-                "username='" + username + '\'' +
-                ", token='" + token + '\'' +
-                ", role='" + role + '\'' +
-                '}';
-    }
+    private String avatar;
+    private String name;
 }
