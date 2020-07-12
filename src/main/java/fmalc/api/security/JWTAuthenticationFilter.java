@@ -3,11 +3,13 @@ package fmalc.api.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import fmalc.api.dto.LoginResponseDTO;
 import fmalc.api.entity.Account;
-import fmalc.api.service.DriverService;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
+import fmalc.api.entity.Driver;
+import fmalc.api.entity.FleetManager;
+import fmalc.api.repository.DriverRepository;
+import fmalc.api.repository.FleetManagerRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,8 +33,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private AuthenticationManager authenticationManager;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    private FleetManagerRepository fleetManagerRepository;
+
+    private DriverRepository driverRepository;
+
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, FleetManagerRepository fleetManagerRepository, DriverRepository driverRepository) {
         this.authenticationManager = authenticationManager;
+        this.fleetManagerRepository = fleetManagerRepository;
+        this.driverRepository = driverRepository;
     }
 
     @Override
@@ -70,15 +78,21 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME)).sign(alg);
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
         res.addHeader("Access-Control-Expose-Headers", "Access-Token, Uid");
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("token", TOKEN_PREFIX + token);
-//        jsonObject.put("role", roles.get(0));
-//        jsonObject.put("username", ((UserDetails) auth.getPrincipal()).getUsername());
         String username = ((UserDetails) auth.getPrincipal()).getUsername();
         LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
         loginResponseDTO.setUsername(username);
         loginResponseDTO.setToken(TOKEN_PREFIX + token);
         loginResponseDTO.setRole(roles.get(0));
-        res.getWriter().write(loginResponseDTO.toString());
+        if (roles.get(0).equals("ROLE_FLEET_MANAGER")) {
+            FleetManager fleetManager = fleetManagerRepository.findByAccount_Username(username);
+            loginResponseDTO.setAvatar(fleetManager.getImage());
+            loginResponseDTO.setName(fleetManager.getName());
+        } else if (roles.get(0).equals("ROLE_DRIVER")) {
+            Driver driver = driverRepository.findByAccount_Username(username);
+            loginResponseDTO.setAvatar(driver.getImage());
+            loginResponseDTO.setName(driver.getName());
+        }
+        Gson gson = new Gson();
+        res.getWriter().write(gson.toJson(loginResponseDTO));
     }
 }
