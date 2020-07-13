@@ -34,8 +34,8 @@ public class Location implements Serializable {
     private Timestamp time;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
-    private Consignment consignment;
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id", nullable = false)
+    private Schedule schedule;
 
     @Column(name = "address", nullable = false)
     private String address;
