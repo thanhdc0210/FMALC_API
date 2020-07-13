@@ -19,7 +19,7 @@ public class ReportIssueController {
     @Autowired
     ReportIssueService reportIssueService;
 
-    @PostMapping
+    @PostMapping(value = "report")
     public ResponseEntity<ReportIssueRequestDTO> createReportIssue(@RequestBody ReportIssueRequestDTO reportIssueRequestDTO){
         List<ReportIssue> reportIssues = reportIssueService.save(reportIssueRequestDTO);
 
