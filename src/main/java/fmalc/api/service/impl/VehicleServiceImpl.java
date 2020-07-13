@@ -25,8 +25,8 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(List<Integer> status, String username, Timestamp currentDate) {
-        return vehicleRepository.findVehicleLicensePlatesForReportInspectionAfterDelivery(status, username, currentDate);
+    public List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp endDate) {
+        return vehicleRepository.findVehicleLicensePlatesForReportInspectionAfterDelivery(status, username, startDate, endDate);
     }
 
     @Override
