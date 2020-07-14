@@ -1,6 +1,7 @@
 package fmalc.api.entity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.*;
 
 import lombok.*;
@@ -42,6 +43,9 @@ public class Schedule implements Serializable {
     @Column(name = "note")
     private String note;
 
-    @Column(name = "is_approve")
+    @Column(name = "is_approve", nullable = false)
     private Boolean isApprove;
+
+    @OneToMany(mappedBy = "schedule", cascade = { CascadeType.MERGE })
+    private Collection<Location> locations;
 }

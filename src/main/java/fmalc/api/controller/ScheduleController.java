@@ -1,13 +1,15 @@
 package fmalc.api.controller;
 
+
 import fmalc.api.dto.*;
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Driver;
+
+import fmalc.api.dto.DetailedScheduleDTO;
+import fmalc.api.dto.ScheduleResponseDTO;
+
 import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
-import fmalc.api.enums.DriverStatusEnum;
-import fmalc.api.enums.VehicleStatusEnum;
-import fmalc.api.schedule.ScheduleForConsignment;
 import fmalc.api.service.ConsignmentService;
 import fmalc.api.service.DriverService;
 import fmalc.api.service.ScheduleService;
@@ -39,8 +41,10 @@ public class ScheduleController {
     ConsignmentService consignmentService;
 
     @GetMapping(value = "driver")
-    public ResponseEntity<List<ScheduleResponseDTO>> findByConsignmentStatusAndUsernameForDriver(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
-        List<Schedule> schedules = scheduleService.findByConsignmentStatusAndUsernameForDriver(status, username);
+
+    public ResponseEntity<List<ScheduleResponseDTO>> findByConsignmentStatusAndUsername(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username){
+        List<Schedule> schedules = scheduleService.findByConsignmentStatusAndUsername(status, username);
+
 
         if (schedules == null) {
             return ResponseEntity.noContent().build();

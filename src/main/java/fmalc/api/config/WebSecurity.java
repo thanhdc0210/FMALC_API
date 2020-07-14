@@ -1,5 +1,7 @@
 package fmalc.api.config;
 
+import fmalc.api.repository.DriverRepository;
+import fmalc.api.repository.FleetManagerRepository;
 import fmalc.api.security.JWTAuthenticationFilter;
 import fmalc.api.security.JWTAuthorizationFilter;
 import fmalc.api.service.MyUserDetailsService;
@@ -24,6 +26,12 @@ import static fmalc.api.constant.SecurityConstant.AUTH_LOGIN_URL;
 public class WebSecurity extends WebSecurityConfigurerAdapter {
     private final MyUserDetailsService userDetailsService;
 
+    @Autowired
+    private FleetManagerRepository fleetManagerRepository;
+
+    @Autowired
+    private DriverRepository driverRepository;
+
     public WebSecurity(MyUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
@@ -44,7 +52,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JWTAuthenticationFilter authenticationFilter = new JWTAuthenticationFilter(authenticationManager());
+        JWTAuthenticationFilter authenticationFilter = new JWTAuthenticationFilter(authenticationManager(), fleetManagerRepository, driverRepository);
         authenticationFilter.setFilterProcessesUrl(AUTH_LOGIN_URL);
 
         http.cors().and().csrf().disable().authorizeRequests()

@@ -3,9 +3,7 @@ package fmalc.api.service.impl;
 
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
-import fmalc.api.enums.DriverStatusEnum;
 import fmalc.api.enums.TypeLocationEnum;
-import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.repository.ScheduleRepository;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -575,13 +573,18 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<Schedule> findByConsignmentStatusAndUsernameForDriver(List<Integer> status, String username) {
 
-        return scheduleRepository.findByConsignmentStatusAndUsernameForDriver(status, username);
+    public List<Schedule> findByConsignmentStatusAndUsername(List<Integer> status, String username){
+
+
+        return scheduleRepository.findByConsignmentStatusAndUsername(status, username);
     }
 
     @Override
     public Schedule findById(Integer id) {
+        if (!scheduleRepository.existsById(id)){
+            return null;
+        }
         return scheduleRepository.findById(id).get();
     }
 

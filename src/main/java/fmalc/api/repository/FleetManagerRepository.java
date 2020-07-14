@@ -21,4 +21,6 @@ public interface FleetManagerRepository extends JpaRepository<FleetManager, Inte
     @Transactional
     @Query(value = "Update fleet_manager f set f.image =:image where f.id =:id", nativeQuery = true)
     int updateImageById(@Param("id") Integer id, @Param("image") String image);
+
+    FleetManager findByAccount_Username(String username);
 }

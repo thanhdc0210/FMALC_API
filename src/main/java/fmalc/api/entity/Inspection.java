@@ -24,4 +24,6 @@ public class Inspection implements Serializable {
     @Column(name = "inspection_name", nullable = false, unique = true)
     private String inspectionName;
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 }

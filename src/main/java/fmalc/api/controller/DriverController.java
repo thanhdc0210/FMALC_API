@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +76,16 @@ public class DriverController {
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping(value = "fleet-manager/{id}")
+    public ResponseEntity<List<DriverResponseDTO>> getAllDriver(@PathVariable("id") Integer id) {
+        List<Driver> drivers = driverService.findAllByFleetManager(id);
+        if (drivers.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<DriverResponseDTO> result = new ArrayList<>(new DriverResponseDTO().mapToListResponse(drivers));
+        return ResponseEntity.ok().body(result);
     }
 
 }

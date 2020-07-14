@@ -85,7 +85,7 @@ public class DriverServiceImpl implements DriverService {
         if (!driverRepository.existsById(id)) {
             throw new Exception();
         }
-        driverRepository.updateDriver(id,driverRequest.getName(), driverRequest.getIdentityNo(), driverRequest.getNo(), driverRequest.getLicenseExpires(), driverRequest.getDateOfBirth());
+        driverRepository.updateDriver(id,driverRequest.getName(), driverRequest.getIdentityNo(), driverRequest.getNo(), driverRequest.getLicenseExpires(), driverRequest.getDateOfBirth(), driverRequest.getDriverLicense());
         return driverRepository.findById(id).get();
     }
 
@@ -124,9 +124,14 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Integer findIdByUsername(String username) {
+    public Driver findDriverByUsername(String username) {
 
-        return driverRepository.findIdByUsername(username);
+        return driverRepository.findDriverByUsername(username);
+    }
+
+    @Override
+    public List<Driver> findAllByFleetManager(Integer id) {
+        return driverRepository.findAllByFleetManager_Id(id);
     }
 
 }

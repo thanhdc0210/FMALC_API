@@ -25,7 +25,7 @@ public interface ScheduleService {
 
     List<ScheduleForLocationDTO> getScheduleToCheck();
 
-    List<Schedule> findByConsignmentStatusAndUsernameForDriver(List<Integer> status, String username);
+    List<Schedule> findByConsignmentStatusAndUsername(List<Integer> status, String username);
     Schedule findById(Integer id);
     Schedule findScheduleByVehDriCon(ObejctScheDTO obejctScheDTO);
     List<ScheduleForConsignmentDTO> findScheduleForFuture(List<Vehicle> vehicles, Consignment consignment,ConsignmentRequestDTO consignmentRequestDTO);

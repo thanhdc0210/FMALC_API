@@ -3,7 +3,6 @@ package fmalc.api.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import javax.persistence.*;
-
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
