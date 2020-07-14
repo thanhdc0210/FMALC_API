@@ -16,8 +16,9 @@ public interface VehicleService {
     Vehicle findVehicleByLicensePlates (String licensePlates);
     List<Vehicle> findByStatus(int status, double weight);
     List<Vehicle> findByWeight( double weight);
-    List<String> findVehicleLicensePlatesForReportInspectionBeforeDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp endDate);
-    List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp endDate);
+    List<String> findVehicleLicensePlatesForReportInspectionBeforeDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp current);
+    List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp current);
     Vehicle getVehicleByKmRunning(List<Vehicle> vehicles);
     void updateStatus(int status, int id);
+    Vehicle findVehicleByUsernameAndTime(String username, Timestamp startDate, Timestamp current);
 }

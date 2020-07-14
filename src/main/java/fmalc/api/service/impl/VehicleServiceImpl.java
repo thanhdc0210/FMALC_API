@@ -20,13 +20,13 @@ public class VehicleServiceImpl implements VehicleService {
     VehicleRepository vehicleRepository;
 
     @Override
-    public List<String> findVehicleLicensePlatesForReportInspectionBeforeDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp endDate) {
-        return vehicleRepository.findVehicleLicensePlatesForReportInspectionBeforeDelivery(status, username, startDate, endDate);
+    public List<String> findVehicleLicensePlatesForReportInspectionBeforeDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp current) {
+        return vehicleRepository.findVehicleLicensePlatesForReportInspectionBeforeDelivery(status, username, startDate, current);
     }
 
     @Override
-    public List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp endDate) {
-        return vehicleRepository.findVehicleLicensePlatesForReportInspectionAfterDelivery(status, username, startDate, endDate);
+    public List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp current) {
+        return vehicleRepository.findVehicleLicensePlatesForReportInspectionAfterDelivery(status, username, startDate, current);
     }
 
     @Override
@@ -78,5 +78,11 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public void updateStatus(int status, int id) {
          vehicleRepository.updateStatusVehicle(status, id);
+    }
+
+
+    @Override
+    public Vehicle findVehicleByUsernameAndTime(String username, Timestamp startDate, Timestamp current) {
+        return vehicleRepository.findVehicleByUsernameAndTime(username, startDate, current);
     }
 }

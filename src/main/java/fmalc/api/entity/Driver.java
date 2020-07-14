@@ -24,7 +24,7 @@ public class Driver implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @OneToMany(mappedBy = "createdBy", cascade = { CascadeType.MERGE })
+    @OneToMany(mappedBy = "createdBy", cascade = { CascadeType.MERGE }, fetch=FetchType.EAGER)
     private Collection<ReportIssue> reportIssues;
 
     @OneToMany(mappedBy = "updatedBy", cascade = { CascadeType.MERGE })
