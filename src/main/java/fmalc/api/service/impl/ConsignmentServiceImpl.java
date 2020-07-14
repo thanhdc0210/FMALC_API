@@ -11,10 +11,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,10 +38,11 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     }
 
     @Override
-    public Consignment save(ConsignmentRequestDTO consignmentRequestDTO) {
+    public Consignment save(ConsignmentRequestDTO consignmentRequestDTO) throws ParseException {
         ModelMapper modelMapper = new ModelMapper();
         Consignment consignment = modelMapper.map(consignmentRequestDTO, Consignment.class);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getTimeZone(""));
         List<Place> place = consignmentRequestDTO.getPlace().stream()
                 .map(x -> modelMapper.map(x, Place.class))
                 .collect(Collectors.toList());
@@ -53,6 +55,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 
                 if(place.get(i).getType() == TypeLocationEnum.RECEIVED_PLACE.getValue()){
                     placesRecei.add(place.get(i));
+
                 }else if(place.get(i).getType() == TypeLocationEnum.DELIVERED_PLACE.getValue()){
                     placesDeli.add(place.get(i));
                 }
@@ -60,9 +63,9 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 //                place.get(i).setPriority(1);
 //                placeRepository.save(place.get(i));
             }
-            String dateTemp = sdf.format(placesRecei.get(0).getPlannedTime());
-            placesRecei.sort((Place s1, Place s2)-> sdf.format(s2.getPlannedTime()).compareTo(sdf.format(s1.getPlannedTime())));
-            placesDeli.sort((Place s1, Place s2)-> sdf.format(s2.getPlannedTime()).compareTo(sdf.format(s1.getPlannedTime())));
+
+            placesRecei.sort((Place s1, Place s2)-> (s2.getPlannedTime()).compareTo((s1.getPlannedTime())));
+            placesDeli.sort((Place s1, Place s2)-> (s2.getPlannedTime()).compareTo((s1.getPlannedTime())));
 
            for(int i = 0 ; i< placesRecei.size() ;i++){
                placesRecei.get(i).setPriority(placesRecei.size() -i);
@@ -75,6 +78,11 @@ public class ConsignmentServiceImpl implements ConsignmentService {
             places.addAll(placesRecei);
             places.addAll(placesDeli);
             for(int i =0; i< places.size();i++){
+                String dateTemp = sdf.format(places.get(i).getPlannedTime());
+                dateTemp = dateTemp.replace("T", " ");
+//                dateTemp = dateTemp.replace("+", "");
+                dateTemp =dateTemp.substring(0, dateTemp.indexOf("+"));
+                places.get(i).setPlannedTime(Timestamp.valueOf(dateTemp));
                 placeRepository.save(places.get(i));
             }
 //            consignment.setPlaces(places);

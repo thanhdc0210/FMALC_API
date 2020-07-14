@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,10 +38,10 @@ public class ConsignmentController {
 
 
     @GetMapping("test")
-    public ResponseEntity< List<ScheduleForLocationDTO>> test() {
+    public ResponseEntity<List<ScheduleForLocationDTO>> test() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 //        Long plannedTime = finishPlace.getPlannedTime().getTime();
-        String s ="";
+        String s = "";
         List<ScheduleForLocationDTO> scheduleForLocationDTOS = scheduleService.getScheduleToCheck();
         return ResponseEntity.ok().body(scheduleForLocationDTOS);
     }
@@ -91,20 +92,40 @@ public class ConsignmentController {
     }
 
     @PostMapping
-    public ResponseEntity<List<ScheduleForLocationDTO>> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO) {
+    public ResponseEntity<List<ScheduleForConsignmentDTO>> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO) {
         try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", Locale.getDefault());
             Consignment consignment = new Consignment();
-//            ScheduleForConsignment scheduleForConsignment = new ScheduleForConsignment();
             ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
             List<ScheduleToConfirmDTO> scheduleToConfirmDTOS = new ArrayList<>();
             ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
             consignmentRequestDTO.setImageConsignment("sdsaas");
             consignment = consignmentService.save(consignmentRequestDTO);
-            ScheduleForLocationDTO scheduleForLocationDTO = new ScheduleForLocationDTO();
-            List<Vehicle> vehicles = scheduleService.findVehicleForSchedule(consignment, consignmentRequestDTO);
-            List<ScheduleForLocationDTO> scheduleForLocationDTOS = scheduleService.findScheduleForFuture(vehicles, consignment, consignmentRequestDTO);
-//            scheduleToConfirmDTOS = scheduleReturn(vehicles, consignment, consignmentRequestDTO);
+            ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
+            List<Vehicle> vehicles =
+                    scheduleService.findVehicleForSchedule(consignment, consignmentRequestDTO);
+            List<ScheduleForConsignmentDTO> scheduleForLocationDTOS =
+                    scheduleService.findScheduleForFuture(vehicles, consignment, consignmentRequestDTO);
+            for (int i = 0; i < scheduleForLocationDTOS.size(); i++) {
+                List<PlaceResponeDTO> placeResponeDTOS = scheduleForLocationDTOS.get(i).getConsignment().getPlaces();
+                for (int j = 0; j < placeResponeDTOS.size(); j++) {
+                    String dateTemp = sdf.format(placeResponeDTOS.get(j).getPlannedTime());
+                    dateTemp = dateTemp.replace("T", " ");
+//                dateTemp = dateTemp.replace("+", "");
+                    dateTemp = dateTemp.substring(0, dateTemp.indexOf("+"));
+                    placeResponeDTOS.get(j).setPlannedTime(Timestamp.valueOf(dateTemp));
+                }
+                scheduleForLocationDTOS.get(i).getConsignment().setPlaces(placeResponeDTOS);
+            }
             consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
+            for (int j = 0; j < consignmentResponseDTO.getPlaces().size(); j++) {
+                String dateTemp = sdf.format(consignmentResponseDTO.getPlaces().get(j).getPlannedTime());
+                dateTemp = dateTemp.replace("T", " ");
+//                dateTemp = dateTemp.replace("+", "");
+                dateTemp = dateTemp.substring(0, dateTemp.indexOf("+"));
+                consignmentResponseDTO.getPlaces().get(j).setPlannedTime(Timestamp.valueOf(dateTemp));
+            }
+
             scheduleForLocationDTO.setConsignment(consignmentResponseDTO);
             scheduleForLocationDTOS.add(scheduleForLocationDTO);
             if (consignmentRequestDTO.getVehicles().size() <= scheduleForLocationDTOS.size()) {
@@ -119,87 +140,5 @@ public class ConsignmentController {
         }
     }
 
-    private List<ScheduleToConfirmDTO> scheduleReturn(List<Vehicle> vehicles, Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO) {
-        int sizeVehicle = 0;
-        for (int i = 0; i < consignmentRequestDTO.getVehicles().size(); i++) {
-            String quantity = consignmentRequestDTO.getVehicles().get(i).getQuantity();
-            sizeVehicle += Integer.parseInt(quantity);
-        }
-        List<Vehicle> vehiclesSave = new ArrayList<>();
-        List<Driver> driversSave = new ArrayList<>();
-        List<ScheduleToConfirmDTO> scheduleToConfirmDTOS = new ArrayList<>();
-        ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
-        Schedule schedule = new Schedule();
-        List<VehicleForDetailDTO> vehicleForDetailDTOS = new ArrayList<>();
-        VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
-        List<Driver> drivers = new ArrayList<>();
-        if (vehicles.size() > 0 && vehicles.size() >= sizeVehicle) {
 
-
-            Collections.sort(vehicles, new Comparator<Vehicle>() {
-                @Override
-                public int compare(Vehicle o1, Vehicle o2) {
-                    return o1.getKilometerRunning().compareTo(o2.getKilometerRunning());
-                }
-            });
-            for (int i = 0; i < consignmentRequestDTO.getVehicles().size(); i++) {
-                vehiclesSave.add(vehicles.get(i));
-            }
-            scheduleToConfirmDTO.setVehicles(vehicleForDetailDTO.mapToListResponse(vehiclesSave));
-            scheduleToConfirmDTO.setVehicleForDetailDTOS(vehicleForDetailDTO.mapToListResponse(vehicles));
-        } else if (vehicles.size() > 0 && vehicles.size() < sizeVehicle) {
-            vehicleForDetailDTOS = vehicleForDetailDTO.mapToListResponse(vehicles);
-            scheduleToConfirmDTO.setVehicleForDetailDTOS(vehicleForDetailDTOS);
-        }
-
-///////////////////////////////////////////////////////////////////////
-        DriverForScheduleDTO driverForScheduleDTO = new DriverForScheduleDTO();
-        if (vehicles.size() > 0 && vehicles.size() >= sizeVehicle) {
-            for (int i = 0; i < consignmentRequestDTO.getVehicles().size(); i++) {
-                double weight = Double.parseDouble(consignmentRequestDTO.getVehicles().get(i).getWeight());
-                drivers = scheduleService.findDriverForSchedule(weight, consignment);
-            }
-        } else {
-
-        }
-        if (drivers.size() > 0 && drivers.size() >= sizeVehicle) {
-            Collections.sort(drivers, new Comparator<Driver>() {
-                @Override
-                public int compare(Driver o1, Driver o2) {
-                    return o1.getWorkingHour().compareTo(o2.getWorkingHour());
-                }
-            });
-            for (int i = 0; i < consignmentRequestDTO.getVehicles().size(); i++) {
-                driversSave.add(drivers.get(i));
-                schedule.setConsignment(consignment);
-                schedule.setImageConsignment("no");
-                schedule.setNote("khong co");
-                schedule.setId(null);
-                schedule.setDriver(drivers.get(i));
-                schedule.setVehicle(vehiclesSave.get(i));
-                schedule.setIsApprove(false);
-                schedule = scheduleService.createSchedule(schedule);
-                List<DriverForScheduleDTO> driverForScheduleDTOS = driverForScheduleDTO.mapToListResponse(drivers);
-                scheduleToConfirmDTO.setDriverForScheduleDTOS(driverForScheduleDTOS);
-//            scheduleToConfirmDTO.setVehicleForDetailDTOS(vehicleForDetailDTOS);
-                scheduleToConfirmDTO.setDrivers(driverForScheduleDTO.mapToListResponse(driversSave));
-
-                if (schedule != null) {
-                    scheduleToConfirmDTO = scheduleToConfirmDTO.convertSchedule(schedule);
-                    scheduleToConfirmDTOS.add(scheduleToConfirmDTO);
-                    vehicleService.updateStatus(VehicleStatusEnum.SCHEDULED.getValue(), vehiclesSave.get(i).getId());
-                    driverService.updateStatus(DriverStatusEnum.SCHEDULED.getValue(), driversSave.get(i).getId());
-                } else {
-                    scheduleToConfirmDTO.setDriverForScheduleDTOS(driverForScheduleDTO.mapToListResponse(drivers));
-                }
-
-            }
-
-
-        } else if (drivers.size() > 0 && drivers.size() <= sizeVehicle) {
-            scheduleToConfirmDTO.setDriverForScheduleDTOS(driverForScheduleDTO.mapToListResponse(drivers));
-        }
-        scheduleToConfirmDTOS.add(scheduleToConfirmDTO);
-        return scheduleToConfirmDTOS;
-    }
 }

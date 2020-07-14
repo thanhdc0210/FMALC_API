@@ -2,7 +2,8 @@ package fmalc.api.dto;
 
 import lombok.Data;
 
-import java.util.Date;
+
+import java.sql.Timestamp;
 
 @Data
 public class PlaceRequestDTO {
@@ -10,7 +11,7 @@ public class PlaceRequestDTO {
     private Double longitude;
     private String address;
     private String name;
-    private Date plannedTime;
-    private Date actualTime;
+    private Timestamp plannedTime;
+    private Timestamp actualTime;
     private Integer type;
 }

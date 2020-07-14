@@ -163,12 +163,12 @@ public class ScheduleForConsignment {
     public List<Vehicle> checkScheduledForVehicle(List<Vehicle> vehicles, Consignment consignment) {
 
         boolean flag = true;
-        List<ScheduleForLocationDTO> scheduleForLocationDTOS = new ArrayList<>();
+        List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();
         List<Integer> id = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         List<String> dateConsignmentSchedule = new ArrayList<>();
         List<String> dateConsignmentNew = new ArrayList<>();
-        ScheduleForLocationDTO scheduleForLocationDTO = new ScheduleForLocationDTO();
+        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
         for (int i = 0; i < vehicles.size(); i++) {
             flag = true;
             double weight = consignment.getWeight();

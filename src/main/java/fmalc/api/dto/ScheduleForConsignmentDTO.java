@@ -1,19 +1,21 @@
 package fmalc.api.dto;
 
-import fmalc.api.entity.Driver;
 import fmalc.api.entity.Schedule;
-import fmalc.api.entity.Vehicle;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class ScheduleToConfirmDTO {
-    private List<VehicleForDetailDTO> vehicleForDetailDTOS;
-    private List<DriverForScheduleDTO> driverForScheduleDTOS;
-    private List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS;
+public class ScheduleForConsignmentDTO {
+    private Integer id;
+    private VehicleForDetailDTO vehicle;
+    private DriverForScheduleDTO driver;
+    private boolean isApprove;
+    private ConsignmentResponseDTO consignment;
+    private String imageConsignment;
+    private String note;
 
     public ScheduleForConsignmentDTO convertSchedule(Schedule schedule){
         ModelMapper modelMapper = new ModelMapper();

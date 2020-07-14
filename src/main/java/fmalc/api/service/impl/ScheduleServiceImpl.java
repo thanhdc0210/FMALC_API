@@ -84,55 +84,60 @@ public class ScheduleServiceImpl implements ScheduleService {
 //        List<Vehicle> vehiclesScheduled;
         List<Vehicle> result = new ArrayList<>();
         for (int i = 0; i < vehicleConsignmentDTOS.size(); i++) {
-            double weight = Double.parseDouble(vehicleConsignmentDTOS.get(i).getWeight());
-//            vehiclesScheduled  = vehicleService.findByStatus(VehicleStatusEnum.SCHEDULED.getValue(), consignment.getWeight());
-
             int size = Integer.parseInt(vehicleConsignmentDTOS.get(i).getQuantity());
-            vehicles = vehicleService.findByWeight(weight);
+            if (size > 0) {
+                double weight = Double.parseDouble(vehicleConsignmentDTOS.get(i).getWeight());
+//            vehiclesScheduled  = vehicleService.findByStatus(VehicleStatusEnum.SCHEDULED.getValue(), consignment.getWeight());
+                vehicles = vehicleService.findByWeight(weight);
 //        if(vehicles.contains())
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-            if (vehicles.size() > 0) {
-                vehicles = checkMaintainForVehicle(vehicles, consignment);
-//                vehicles = checkScheduledForVehicle(vehicles, consignment);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
                 if (vehicles.size() > 0) {
-                    if (vehicles.size() >= size) {
-                        result.addAll(vehicles);
-                    } else {
-                        List<Vehicle> vehicleBigger = vehicleService.findByWeightBigger(weight);
-                        if (vehicleBigger.size() > 0) {
-                            vehicleBigger = checkMaintainForVehicle(vehicleBigger, consignment);
-//                            vehicleBigger = checkScheduledForVehicle(vehicleBigger, consignment);
-                            if (vehicleBigger.size() > 0 && vehicleBigger.size() >= (size - vehicles.size())) {
-                                vehicles.addAll(vehicleBigger);
-                                result.addAll(vehicles);
-                            } else {
-                                vehicles.addAll(vehicleBigger);
-                                result.addAll(vehicles);
-                            }
+                    vehicles = checkMaintainForVehicle(vehicles, consignment);
+                    vehicles = checkScheduledForVehicle(vehicles, consignment);
+                    if (vehicles.size() > 0) {
+                        if (vehicles.size() >= size) {
+                            result.addAll(vehicles);
                         } else {
-                            //vehicleBigger size = 0
+                            List<Vehicle> vehicleBigger = vehicleService.findByWeightBigger(weight);
+                            if (vehicleBigger.size() > 0) {
+                                vehicleBigger = checkMaintainForVehicle(vehicleBigger, consignment);
+                                vehicleBigger = checkScheduledForVehicle(vehicleBigger, consignment);
+                                if (vehicleBigger.size() > 0 && vehicleBigger.size() >= (size - vehicles.size())) {
+                                    vehicles.addAll(vehicleBigger);
+                                    result.addAll(vehicles);
+                                } else {
+                                    vehicles.addAll(vehicleBigger);
+                                    result.addAll(vehicles);
+                                }
+                            } else {
+                                //vehicleBigger size = 0
+                            }
                         }
-                    }
-                } else {
-                    //vehicles size =0
-                }
-
-            } else {
-                List<Vehicle> vehicleBigger = vehicleService.findByWeightBigger(weight);
-                if (vehicleBigger.size() > 0) {
-                    vehicleBigger = checkMaintainForVehicle(vehicleBigger, consignment);
-//                            vehicleBigger = checkScheduledForVehicle(vehicleBigger, consignment);
-                    if (vehicleBigger.size() > 0 && vehicleBigger.size() >= (size - vehicles.size())) {
-                        vehicles.addAll(vehicleBigger);
-                        result.addAll(vehicles);
                     } else {
-                        vehicles.addAll(vehicleBigger);
-                        result.addAll(vehicles);
+                        //vehicles size =0
                     }
+
                 } else {
-                    //vehicleBigger size = 0
+                    if (result.size() > 0) {
+                        result = new ArrayList<>();
+                    }
+                    List<Vehicle> vehicleBigger = vehicleService.findByWeightBigger(weight);
+                    if (vehicleBigger.size() > 0) {
+                        vehicleBigger = checkMaintainForVehicle(vehicleBigger, consignment);
+                            vehicleBigger = checkScheduledForVehicle(vehicleBigger, consignment);
+                        if (vehicleBigger.size() > 0 && vehicleBigger.size() >= (size - vehicles.size())) {
+                            vehicles.addAll(vehicleBigger);
+                            result.addAll(vehicles);
+                        } else {
+                            vehicles.addAll(vehicleBigger);
+                            result.addAll(vehicles);
+                        }
+                    } else {
+                        //vehicleBigger size = 0
+                    }
                 }
             }
+
         }
         return result;
     }
@@ -155,10 +160,10 @@ public class ScheduleServiceImpl implements ScheduleService {
      * Trả về danh sách chạy trong tương lai của xe
      * */
     @Override
-    public List<ScheduleForLocationDTO> checkScheduleForVehicle(int idVehicle) {
-        List<ScheduleForLocationDTO> scheduleForLocationDTOS = new ArrayList<>();
-        ScheduleForLocationDTO scheduleForLocationDTO = new ScheduleForLocationDTO();
-        List<ScheduleForLocationDTO> result = new ArrayList<>();
+    public List<ScheduleForConsignmentDTO> checkScheduleForVehicle(int idVehicle) {
+        List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();
+        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
+        List<ScheduleForConsignmentDTO> result = new ArrayList<>();
         boolean flag;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -191,11 +196,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<ScheduleForLocationDTO> checkScheduleForDriver(int idDriver) {
+    public List<ScheduleForConsignmentDTO> checkScheduleForDriver(int idDriver) {
 //        boolean flag =true;
-        List<ScheduleForLocationDTO> scheduleForLocationDTOS = new ArrayList<>();
-        ScheduleForLocationDTO scheduleForLocationDTO = new ScheduleForLocationDTO();
-        List<ScheduleForLocationDTO> result = new ArrayList<>();
+        List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();
+        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
+        List<ScheduleForConsignmentDTO> result = new ArrayList<>();
         boolean flag = true;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<Schedule> Schedules = scheduleRepository.checkDriverInScheduled(idDriver);
@@ -265,6 +270,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         for (int i = 0; i < vehicles.size(); i++) {
             flag = true;
+            maintainCheckDTO = new MaintainCheckDTO();
 //            double weight = consignment.getWeight();
 //            VehicleForDetailDTO vehicle = vehicleService.findVehicleById(vehicles.get(i).getId());
             //check xe co lich bao tri trong tuong lai
@@ -344,11 +350,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     private List<Vehicle> checkScheduledForVehicle(List<Vehicle> vehicles, Consignment consignment) {
 
         boolean flag = true;
-        List<ScheduleForLocationDTO> scheduleForLocationDTOS = new ArrayList<>();
+        List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();
         List<Vehicle> result = new ArrayList<>();
 
 
-        ScheduleForLocationDTO scheduleForLocationDTO = new ScheduleForLocationDTO();
+        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
         for (int i = 0; i < vehicles.size(); i++) {
             flag = true;
 //            double weight = consignment.getWeight();
@@ -379,7 +385,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         return result;
     }
 
-    private boolean checkDateConsignmentAndSchedule(ScheduleForLocationDTO scheduleForLocationDTO, Consignment consignment, boolean flag) {
+    private boolean checkDateConsignmentAndSchedule(ScheduleForConsignmentDTO scheduleForLocationDTO, Consignment consignment, boolean flag) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         List<PlaceResponeDTO> listScheduleDeli =
                 placeService.getPlaceByTypePlace(scheduleForLocationDTO.getConsignment().getId(), TypeLocationEnum.DELIVERED_PLACE.getValue());
@@ -438,7 +444,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     }
 
-    private boolean checkVehicleSchedule(ScheduleForLocationDTO scheduleForLocationDTO, Consignment consignment, boolean flag) {
+    private boolean checkVehicleSchedule(ScheduleForConsignmentDTO scheduleForLocationDTO, Consignment consignment, boolean flag) {
         Long nowTime = new Date().getTime();
         long diff;
         flag = true;
@@ -505,7 +511,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     }
 
-    private int checkVehicleScheduleDeli(ScheduleForLocationDTO scheduleForLocationDTO, Consignment consignment) {
+    private int checkVehicleScheduleDeli(ScheduleForConsignmentDTO scheduleForLocationDTO, Consignment consignment) {
         long diff;
         int result = 0;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
@@ -533,12 +539,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private List<Driver> checkScheduledForDriver(List<Driver> drivers, Consignment consignment) {
         boolean flag = true;
-        List<ScheduleForLocationDTO> scheduleForLocationDTOS = new ArrayList<>();
+        List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();
         List<Driver> result = new ArrayList<>();
 
         List<String> dateConsignmentSchedule = new ArrayList<>();
         List<String> dateConsignmentNew = new ArrayList<>();
-        ScheduleForLocationDTO scheduleForLocationDTO = new ScheduleForLocationDTO();
+        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
         for (int i = 0; i < drivers.size(); i++) {
             flag = true;
             double weight = consignment.getWeight();
@@ -579,17 +585,23 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.findById(id).get();
     }
 
+    @Override
+    public Schedule findScheduleByVehDriCon(ObejctScheDTO obejctScheDTO) {
+        return scheduleRepository.
+                findScheduleByVeDriCons(obejctScheDTO.getDriver_id(), obejctScheDTO.getVehicle_id(), obejctScheDTO.getConsignment_id());
+    }
+
 
     // ----------------------------------------------
     @Override
-    public List<ScheduleForLocationDTO> findScheduleForFuture(List<Vehicle> vehicles, Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO) {
+    public List<ScheduleForConsignmentDTO> findScheduleForFuture(List<Vehicle> vehicles, Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO) {
         List<Schedule> schedules = scheduleRepository.findAll();
         boolean flag = true;
-        List<ScheduleForLocationDTO> scheduleForLocationDTOS = new ArrayList<>();
+        List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();
         List<Vehicle> result = new ArrayList<>();
-        List<ScheduleForLocationDTO> scheduleResult = new ArrayList<>();
+        List<ScheduleForConsignmentDTO> scheduleResult = new ArrayList<>();
 
-        ScheduleForLocationDTO scheduleForLocationDTO = new ScheduleForLocationDTO();
+        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
         for (int i = 0; i < vehicles.size(); i++) {
             flag = true;
             scheduleForLocationDTOS = checkScheduleForVehicle(vehicles.get(i).getId());
@@ -618,7 +630,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                         }
 
                     }
-                    scheduleForLocationDTO.setVehicle_id(vehicles.get(i).getId());
+//                    scheduleForLocationDTO.setVehicle_id(vehicles.get(i).getId());
                     scheduleResult.add(scheduleForLocationDTO);
                 }
 

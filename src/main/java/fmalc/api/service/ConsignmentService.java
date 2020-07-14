@@ -3,6 +3,7 @@ package fmalc.api.service;
 import fmalc.api.dto.ConsignmentRequestDTO;
 import fmalc.api.entity.Consignment;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface ConsignmentService {
@@ -11,7 +12,7 @@ public interface ConsignmentService {
 
     Consignment findById(int consignment_id);
 
-    Consignment save(ConsignmentRequestDTO consignmentRequestDTO);
+    Consignment save(ConsignmentRequestDTO consignmentRequestDTO) throws ParseException;
 
     List<Consignment> findAll();
 
