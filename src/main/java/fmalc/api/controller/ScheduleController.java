@@ -68,7 +68,15 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity<ScheduleToConfirmDTO> createSchedule(@RequestBody RequestObjectDTO requestObjectDTO) throws ParseException {
         ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
-        scheduleToConfirmDTO =schedulesConfirm(requestObjectDTO);
+        if(requestObjectDTO.getSchedule().size()>0){
+            scheduleToConfirmDTO =schedulesConfirm(requestObjectDTO);
+        }else{
+            List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = new ArrayList<>();
+            Consignment consignment = consignmentService.findById(requestObjectDTO.getNewConsignment());
+            ConsignmentRequestDTO consignmentRequestDTO = requestObjectDTO.getConsignmentRequest();
+            scheduleToConfirmDTO= scheduleReturn(consignment, consignmentRequestDTO,scheduleForConsignmentDTOS);
+        }
+
 
 //        scheduleForConsignment
         return ResponseEntity.ok().body(scheduleToConfirmDTO);
@@ -250,6 +258,11 @@ public class ScheduleController {
                         }
                     }
 
+                }else{
+                    if ( !vehiclesSave.contains(vehicles.get(i))) {
+                        vehiclesSave.add(vehicles.get(i));
+                    }
+
                 }
 
             }
@@ -279,6 +292,10 @@ public class ScheduleController {
                                 }
                             }
 
+                        }else{
+                            if ( !drivers.contains(resultDriver.get(j))) {
+                                drivers.add(resultDriver.get(j));
+                            }
                         }
 
                     }
@@ -293,10 +310,11 @@ public class ScheduleController {
 
             for (int v = 0; v < vehiclesSave.size(); v++) {
                 for (int k = 0; k < drivers.size(); k++) {
+                    schedule = new Schedule();
                     if (!driversSave.contains(drivers.get(k))) {
+                        driversSave.add(drivers.get(k));
                         int license = drivers.get(k).getDriverLicense();
                         if (license == 0 && vehiclesSave.get(v).getWeight() < 3.5) {
-                            driversSave.add(drivers.get(k));
                             schedule.setConsignment(consignment);
                             schedule.setImageConsignment("no");
                             schedule.setNote("khong co");
@@ -311,7 +329,8 @@ public class ScheduleController {
                             scheduleToConfirmDTO.setDriverForScheduleDTOS(driverForScheduleDTO.mapToListResponse(drivers));
                             k = drivers.size();
                         } else if (license > 0 && vehiclesSave.get(v).getWeight() >= 3.5) {
-                            driversSave.add(drivers.get(k));
+
+
                             schedule.setConsignment(consignment);
                             schedule.setImageConsignment("no");
                             schedule.setNote("khong co");

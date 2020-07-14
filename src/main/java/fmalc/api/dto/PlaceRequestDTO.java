@@ -3,6 +3,7 @@ package fmalc.api.dto;
 import lombok.Data;
 
 
+import javax.persistence.Column;
 import java.sql.Timestamp;
 
 @Data
@@ -14,4 +15,6 @@ public class PlaceRequestDTO {
     private Timestamp plannedTime;
     private Timestamp actualTime;
     private Integer type;
+    private String contactName;
+    private String contactPhone;
 }

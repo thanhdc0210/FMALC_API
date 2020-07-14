@@ -134,6 +134,8 @@ public class ConsignmentController {
 
             }
 
+
+
             return ResponseEntity.ok().body(scheduleForLocationDTOS);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();

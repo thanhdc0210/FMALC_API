@@ -60,7 +60,19 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Schedule createSchedule(Schedule schedule) {
-        return scheduleRepository.save(schedule);
+
+        Schedule schedule1 = new Schedule();
+        schedule1.setNote(schedule.getNote());
+        schedule1.setImageConsignment(schedule.getImageConsignment());
+        schedule1.setConsignment(schedule.getConsignment());
+        schedule1.setDriver(schedule.getDriver());
+        schedule1.setVehicle(schedule.getVehicle());
+        schedule1.setIsApprove(schedule.getIsApprove());
+        schedule1.setId(null);
+        schedule1 = scheduleRepository.save(schedule1);
+
+
+        return schedule1;
     }
 
     /*
@@ -113,6 +125,23 @@ public class ScheduleServiceImpl implements ScheduleService {
                         }
                     } else {
                         //vehicles size =0
+                        if (result.size() > 0) {
+                            result = new ArrayList<>();
+                        }
+                        List<Vehicle> vehicleBigger = vehicleService.findByWeightBigger(weight);
+                        if (vehicleBigger.size() > 0) {
+                            vehicleBigger = checkMaintainForVehicle(vehicleBigger, consignment);
+                            vehicleBigger = checkScheduledForVehicle(vehicleBigger, consignment);
+                            if (vehicleBigger.size() > 0 && vehicleBigger.size() >= (size - vehicles.size())) {
+                                vehicles.addAll(vehicleBigger);
+                                result.addAll(vehicles);
+                            } else {
+                                vehicles.addAll(vehicleBigger);
+                                result.addAll(vehicles);
+                            }
+                        } else {
+                            //vehicleBigger size = 0
+                        }
                     }
 
                 } else {
@@ -345,7 +374,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     // lấy những xe có lich chạy để kiểm tra có trùng lịch sắp tạo không
-    private List<Vehicle> checkScheduledForVehicle(List<Vehicle> vehicles, Consignment consignment) {
+    private List<Vehicle> getVehiclesNoSchedule(List<Vehicle> vehicles, Consignment consignment) {
 
         boolean flag = true;
         List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();
@@ -355,8 +384,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
         for (int i = 0; i < vehicles.size(); i++) {
             flag = true;
-//            double weight = consignment.getWeight();
-            //check xe co lich bao tri trong tuong lai
+
             scheduleForLocationDTOS = checkScheduleForVehicle(vehicles.get(i).getId());
             if (scheduleForLocationDTOS.size() > 0) {
                 for (int j = 0; j < scheduleForLocationDTOS.size(); j++) {
@@ -383,8 +411,44 @@ public class ScheduleServiceImpl implements ScheduleService {
         return result;
     }
 
+    private List<Vehicle> checkScheduledForVehicle(List<Vehicle> vehicles, Consignment consignment) {
+
+        boolean flag = true;
+        List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();
+        List<Vehicle> result = new ArrayList<>();
+
+
+        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
+        for (int i = 0; i < vehicles.size(); i++) {
+            flag = true;
+//            double weight = consignment.getWeight();
+            //check xe co lich bao tri trong tuong lai
+            scheduleForLocationDTOS = checkScheduleForVehicle(vehicles.get(i).getId());
+            if (scheduleForLocationDTOS.size() > 0) {
+                for (int j = 0; j < scheduleForLocationDTOS.size(); j++) {
+
+                    scheduleForLocationDTO = scheduleForLocationDTOS.get(j);
+                    flag = checkDateConsignmentAndSchedule(scheduleForLocationDTO, consignment, flag);
+
+                    if (flag) {
+                        j = scheduleForLocationDTOS.size();
+                    }
+                }
+                if (!flag) {
+                    result.add(vehicles.get(i));
+
+                }
+            } else {
+                result.add(vehicles.get(i));
+            }
+
+        }
+        return result;
+    }
+
     private boolean checkDateConsignmentAndSchedule(ScheduleForConsignmentDTO scheduleForLocationDTO, Consignment consignment, boolean flag) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        flag = true;
         List<PlaceResponeDTO> listScheduleDeli =
                 placeService.getPlaceByTypePlace(scheduleForLocationDTO.getConsignment().getId(), TypeLocationEnum.DELIVERED_PLACE.getValue());
 //

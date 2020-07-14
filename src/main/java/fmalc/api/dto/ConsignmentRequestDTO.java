@@ -15,5 +15,4 @@ public class ConsignmentRequestDTO {
     private String imageConsignment;
     private List<PlaceRequestDTO> place;
     private List<VehicleConsignmentDTO> vehicles;
-    private int numberDriver;
 }

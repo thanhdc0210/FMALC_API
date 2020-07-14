@@ -22,6 +22,8 @@ public class PlaceResponeDTO {
     private Timestamp actualTime;
     private Integer type;
     private Integer priority;
+    private String contactName;
+    private String contactPhone;
     private String typeStr;
 
     public void setType(Integer type) {
