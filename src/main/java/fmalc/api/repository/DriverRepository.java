@@ -29,6 +29,8 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
 
     Driver findById(int id);
 
+    List<Driver> findAllByFleetManager_Id(Integer id);
+
     @Modifying
     @Transactional
     @Query(value = "Update Driver d set d.status =:status where d.id =:id", nativeQuery = true)
@@ -36,8 +38,8 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
 
     @Modifying
     @Transactional
-    @Query(value = "Update driver d set d.name = :name, d.identity_no = :identityNo, d.no = :no, d.license_expires =:licenseExpires, d.date_of_birth = :dateOfBirth where d.id =:id", nativeQuery = true)
-    int updateDriver(Integer id, String name, String identityNo, String no, Date licenseExpires, Date dateOfBirth);
+    @Query(value = "Update driver d set d.name = :name, d.identity_no = :identityNo, d.no = :no, d.license_expires =:licenseExpires, d.date_of_birth = :dateOfBirth, d.driver_license = :driverLicense where d.id =:id", nativeQuery = true)
+    int updateDriver(Integer id, String name, String identityNo, String no, Date licenseExpires, Date dateOfBirth, Integer driverLicense);
 
     @Modifying
     @Transactional
@@ -48,4 +50,6 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
 
     @Query("Select d from Driver d Where d.account.username = :username")
     Driver findDriverByUsername(@Param("username") String username);
+
+    Driver findByAccount_Username(String username);
 }

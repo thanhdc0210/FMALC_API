@@ -21,4 +21,6 @@ public interface VehicleService {
     Vehicle getVehicleByKmRunning(List<Vehicle> vehicles);
     void updateStatus(int status, int id);
     Vehicle findVehicleByUsernameAndTime(String username, Timestamp startDate, Timestamp current);
+    List<Vehicle> findByWeightBigger( double weight);
+    List<Vehicle> findByWeightSmaller( double weight);
 }

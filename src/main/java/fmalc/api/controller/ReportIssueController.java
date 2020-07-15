@@ -1,5 +1,6 @@
 package fmalc.api.controller;
 
+import fmalc.api.dto.ReportIssueInformationForUpdatingDTO;
 import fmalc.api.dto.ReportIssueRequestDTO;
 import fmalc.api.dto.ReportIssueResponseDTO;
 import fmalc.api.entity.ReportIssue;
@@ -24,9 +25,9 @@ public class ReportIssueController {
     @Autowired
     VehicleService vehicleService;
 
-    @PostMapping(value = "report")
+    @PostMapping(value = "report-issue")
     public ResponseEntity<ReportIssueRequestDTO> createReportIssue(@RequestBody ReportIssueRequestDTO reportIssueRequestDTO){
-        boolean result = reportIssueService.save(reportIssueRequestDTO);
+        boolean result = reportIssueService.saveReportIssue(reportIssueRequestDTO);
 
         if (result == false){
             return ResponseEntity.noContent().build();
@@ -35,7 +36,8 @@ public class ReportIssueController {
         }
     }
 
-    @GetMapping(value = "information")
+    // Lấy vehicle tài xế sắp chạy --> get report-issue của xe đó
+    @GetMapping(value = "information-report-issue")
     public ResponseEntity<ReportIssueResponseDTO> getIssueInformationOfAVehicle(@RequestParam(value = "username") String username){
 
         Vehicle vehicle = vehicleService.findVehicleByUsernameAndTime(username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), new Timestamp(System.currentTimeMillis()));
@@ -44,6 +46,16 @@ public class ReportIssueController {
             return ResponseEntity.noContent().build();
         }else {
             return ResponseEntity.ok().body(new ReportIssueResponseDTO(vehicle));
+        }
+    }
+
+    @PutMapping(value = "/report-issue")
+    public ResponseEntity updateReportIssue(@RequestBody ReportIssueInformationForUpdatingDTO reportIssueInformationForUpdatingDTO){
+        boolean result = reportIssueService.updateReportIssue(reportIssueInformationForUpdatingDTO);
+        if (result == false){
+            return ResponseEntity.noContent().build();
+        }else{
+            return ResponseEntity.ok().body(reportIssueInformationForUpdatingDTO);
         }
     }
 }

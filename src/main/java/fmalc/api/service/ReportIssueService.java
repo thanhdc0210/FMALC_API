@@ -10,6 +10,6 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface ReportIssueService {
-    boolean save(ReportIssueRequestDTO reportIssueRequestDTO);
-    void update(ReportIssueInformationForUpdatingDTO reportIssueInformationForUpdatingDTO);
+    boolean saveReportIssue(ReportIssueRequestDTO reportIssueRequestDTO);
+    boolean updateReportIssue(ReportIssueInformationForUpdatingDTO reportIssueInformationForUpdatingDTO);
 }

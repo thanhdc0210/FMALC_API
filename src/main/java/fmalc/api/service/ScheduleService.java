@@ -1,8 +1,7 @@
 
 package fmalc.api.service;
 
-import fmalc.api.dto.MaintainCheckDTO;
-import fmalc.api.dto.ScheduleForLocationDTO;
+import fmalc.api.dto.*;
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Driver;
 import fmalc.api.entity.Schedule;
@@ -17,12 +16,18 @@ public interface ScheduleService {
     List<ScheduleForLocationDTO> getScheduleByConsignmentId(int id);
     Schedule createSchedule(Schedule schedule);
 
-     List<Vehicle> findVehicleForSchedule(Consignment consignment) throws ParseException;
-    List<Driver> findDriverForSchedule(Vehicle vehicle, Consignment consignment);
+     List<Vehicle> findVehicleForSchedule(Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO) throws ParseException;
+    List<Driver> findDriverForSchedule(double weight, Consignment consignment);
 
-    List<ScheduleForLocationDTO> checkScheduleForVehicle(int idVehicle) ;
-    List<ScheduleForLocationDTO> checkScheduleForDriver( int idDriver);
+    List<ScheduleForConsignmentDTO> checkScheduleForVehicle(int idVehicle) ;
+    List<ScheduleForConsignmentDTO> checkScheduleForDriver( int idDriver);
+
+
+    List<ScheduleForLocationDTO> getScheduleToCheck();
 
     List<Schedule> findByConsignmentStatusAndUsername(List<Integer> status, String username);
     Schedule findById(Integer id);
+    Schedule findScheduleByVehDriCon(ObejctScheDTO obejctScheDTO);
+    List<ScheduleForConsignmentDTO> findScheduleForFuture(List<Vehicle> vehicles, Consignment consignment,ConsignmentRequestDTO consignmentRequestDTO);
+
 }

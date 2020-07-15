@@ -7,21 +7,24 @@ import lombok.Data;
 import org.modelmapper.ModelMapper;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 public class ScheduleToConfirmDTO {
-    private Integer id;
-    private VehicleForDetailDTO vehicle;
-    private DriverForScheduleDTO driver;
     private List<VehicleForDetailDTO> vehicleForDetailDTOS;
     private List<DriverForScheduleDTO> driverForScheduleDTOS;
-    private ConsignmentResponseDTO consignment;
-    private String imageConsignment;
-    private String note;
+    private List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS;
 
-    public ScheduleToConfirmDTO convertSchedule(Schedule schedule){
+    public ScheduleForConsignmentDTO convertSchedule(Schedule schedule){
         ModelMapper modelMapper = new ModelMapper();
-        ScheduleToConfirmDTO scheduleForLocationDTO = modelMapper.map(schedule, ScheduleToConfirmDTO.class);
+        ScheduleForConsignmentDTO scheduleForLocationDTO = modelMapper.map(schedule, ScheduleForConsignmentDTO.class);
         return  scheduleForLocationDTO;
+    }
+    public List<ScheduleForConsignmentDTO> mapToListResponse(List<Schedule> baseEntities) {
+        List<ScheduleForConsignmentDTO> result = baseEntities
+                .stream()
+                .map(driver -> convertSchedule(driver))
+                .collect(Collectors.toList());
+        return result;
     }
 }

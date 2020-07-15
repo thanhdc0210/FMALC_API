@@ -62,7 +62,7 @@ public class NotificationController {
                     notificationResponeDTOS.add(notificationResponeDTO);
 //
                     intervals.subscribe((i) -> notifyForManagerWorkingHours());
-                    closeInterval();
+//                    closeInterval();
 //
 //                    closeInterval();
 //                    System.out.println("LIST" + notificationResponeDTOS.size());
@@ -92,12 +92,10 @@ public class NotificationController {
     // send notify for fleet manager
     @GetMapping(value = "/notificationworking", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<List<NotificationResponeDTO>> notifyForManagerWorkingHours() {
-
+        closeInterval();
         intervals.subscribe((i) -> returnResponeFor());
         Flux<List<NotificationResponeDTO>> monoTransaction = Flux.fromStream(Stream.generate(() -> returnResponeFor()));
         Flux<List<NotificationResponeDTO>> flux = Flux.zip(intervals, monoTransaction).map(Tuple2::getT2);
-
-        closeInterval();
 
         return flux;
 
@@ -112,7 +110,6 @@ public class NotificationController {
 //        System.out.println("AAAAAAAAAAA");
         notificationResponeDTOS = new ArrayList<>();
         String result = "OK";
-
         return ResponseEntity.ok().body(result);
     }
 

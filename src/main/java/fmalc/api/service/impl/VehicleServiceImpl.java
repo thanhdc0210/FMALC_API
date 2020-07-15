@@ -8,6 +8,7 @@ import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -68,6 +69,31 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicles.stream()
                 .filter(x -> x.getStatus() != VehicleStatusEnum.SOLD.getValue())
                 .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<Vehicle> findByWeightBigger(double weight) {
+        List<Vehicle> vehicles = vehicleRepository.findByWeightBigger(weight);
+        List<Vehicle> result =new ArrayList<>();
+        for(int i = 0; i< vehicles.size(); i ++){
+            if(vehicles.get(i).getStatus() != VehicleStatusEnum.SOLD.getValue()){
+                result.add(vehicles.get(i));
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Vehicle> findByWeightSmaller(double weight) {
+        List<Vehicle> vehicles = vehicleRepository.findByWeightSmaller(weight);
+        List<Vehicle> result =new ArrayList<>();
+        for(int i = 0; i< vehicles.size(); i ++){
+            if(vehicles.get(i).getStatus() != VehicleStatusEnum.SOLD.getValue()){
+                result.add(vehicles.get(i));
+            }
+        }
+        return result;
     }
 
     @Override

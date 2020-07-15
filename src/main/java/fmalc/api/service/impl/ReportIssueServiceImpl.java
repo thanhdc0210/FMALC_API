@@ -36,7 +36,7 @@ public class ReportIssueServiceImpl implements ReportIssueService {
     ReportIssueRepository reportIssueRepository;
 
     @Override
-    public boolean save(ReportIssueRequestDTO reportIssueRequestDTO) {
+    public boolean saveReportIssue(ReportIssueRequestDTO reportIssueRequestDTO) {
 
         // Danh sách report issue có sẵn trong DB
         ArrayList<ReportIssue> reportIssueList = reportIssueRepository.findByUsernameAndLicensePlates(
@@ -114,7 +114,8 @@ public class ReportIssueServiceImpl implements ReportIssueService {
     }
 
     @Override
-    public void update(ReportIssueInformationForUpdatingDTO reportIssueInformationForUpdatingDTO) {
+    public boolean updateReportIssue(ReportIssueInformationForUpdatingDTO reportIssueInformationForUpdatingDTO) {
+        boolean flag = false;
         String username = reportIssueInformationForUpdatingDTO.getUsername();
         List<Integer> reportIssueIdList = reportIssueInformationForUpdatingDTO.getReportIssueIdList();
         if (reportIssueIdList != null){
@@ -125,9 +126,15 @@ public class ReportIssueServiceImpl implements ReportIssueService {
                 reportIssue.setUpdatedBy(driverRepository.findDriverByUsername(username));
                 reportIssue.setUpdateTime(new Timestamp(System.currentTimeMillis()));
                 reportIssue.setStatus(false);
-                reportIssueRepository.save(reportIssue);
+                if(reportIssueRepository.save(reportIssue)!=null){
+                    flag = true;
+                }else{
+                    return flag = false;
+                }
+
             }
         }
+        return flag;
     }
 
 }

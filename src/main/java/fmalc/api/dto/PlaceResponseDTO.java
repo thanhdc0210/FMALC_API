@@ -15,6 +15,8 @@ public class PlaceResponseDTO {
     private Date plannedTime;
     private Date actualTime;
     private Integer type;
+    private String contactName;
+    private String contactPhone;
     private String typeStr;
 
     public void setType(Integer type) {

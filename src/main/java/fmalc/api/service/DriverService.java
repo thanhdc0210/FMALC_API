@@ -16,6 +16,7 @@ public interface DriverService {
     Driver save(DriverRequestDTO driverRequest, MultipartFile file) throws IOException;
 
     Driver update(Integer id, DriverRequestDTO driverRequest) throws Exception;
+
     List<Driver> findDriverByLicense(double weight);
 
     List<Driver> getListDriverByLicense(double weight, int status);
@@ -23,5 +24,7 @@ public interface DriverService {
 
     Driver updateAvatar(Integer id, MultipartFile file) throws IOException;
 
+    List<Driver> findAllByFleetManager(Integer id);
+  
     Driver findDriverByUsername(String username);
 }
