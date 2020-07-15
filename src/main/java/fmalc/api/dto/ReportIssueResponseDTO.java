@@ -8,10 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @Setter
@@ -19,25 +16,23 @@ import java.util.Map;
 @AllArgsConstructor
 public class ReportIssueResponseDTO{
     private String vehicleLicensePlates;
-    private Map<Integer, ReportIssueContentResponseDTO> reportIssueContentResponses;
+    private List<ReportIssueContentResponseDTO> reportIssueContentResponses;
 
     public ReportIssueResponseDTO(Vehicle vehicle){
         vehicleLicensePlates = vehicle.getLicensePlates();
         Collection<ReportIssue> reportIssues = vehicle.getReportIssues();
-        for(ReportIssue reportIssue : reportIssues){
-            System.out.println(reportIssue.getContent());
-        }
         if (reportIssueContentResponses == null){
-            reportIssueContentResponses = new HashMap<>();
+            reportIssueContentResponses = new ArrayList<>();
         }
         for(ReportIssue reportIssue : reportIssues){
             if (reportIssue.getStatus().equals(true)){
                 ReportIssueContentResponseDTO reportIssueContentResponseDTO = new ReportIssueContentResponseDTO();
                 reportIssueContentResponseDTO.setContent(reportIssue.getContent());
-                reportIssueContentResponseDTO.setImageUrl(reportIssue.getImage());
+                reportIssueContentResponseDTO.setImage(reportIssue.getImage());
                 reportIssueContentResponseDTO.setInspectionId(reportIssue.getInspection().getId());
                 reportIssueContentResponseDTO.setInspectionName(reportIssue.getInspection().getInspectionName());
-                reportIssueContentResponses.put(reportIssue.getInspection().getId(), reportIssueContentResponseDTO);
+                reportIssueContentResponseDTO.setReportIssueId(reportIssue.getId());
+                reportIssueContentResponses.add(reportIssueContentResponseDTO);
             }
         }
     }

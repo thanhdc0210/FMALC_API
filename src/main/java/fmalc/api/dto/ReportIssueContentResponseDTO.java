@@ -15,5 +15,6 @@ public class ReportIssueContentResponseDTO{
     private Integer inspectionId;
     private String inspectionName;
     private String content;
-    private String imageUrl;
+    private String image;
+    private Integer reportIssueId;
 }

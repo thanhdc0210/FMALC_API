@@ -1,6 +1,7 @@
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.ReportIssueContentRequestDTO;
+import fmalc.api.dto.ReportIssueInformationForUpdatingDTO;
 import fmalc.api.dto.ReportIssueRequestDTO;
 import fmalc.api.dto.ReportIssueResponseDTO;
 import fmalc.api.entity.Driver;
@@ -102,13 +103,30 @@ public class ReportIssueServiceImpl implements ReportIssueService {
             Set<ReportIssue> set = new LinkedHashSet<>(reportIssueList);
             set.addAll(arrayList);
             List<ReportIssue> combinedList = new ArrayList<>(set);
-
-            Driver driver = driverRepository.findDriverByUsername(reportIssueRequestDTO.getUsername());
-            driver.setReportIssues(reportIssueList);
+//
+//            Driver driver = driverRepository.findDriverByUsername(reportIssueRequestDTO.getUsername());
+//            driver.setReportIssues(reportIssueList);
             for (ReportIssue reportIssue:combinedList){
                 reportIssueRepository.save(reportIssue);
             }
             return true;
+        }
+    }
+
+    @Override
+    public void update(ReportIssueInformationForUpdatingDTO reportIssueInformationForUpdatingDTO) {
+        String username = reportIssueInformationForUpdatingDTO.getUsername();
+        List<Integer> reportIssueIdList = reportIssueInformationForUpdatingDTO.getReportIssueIdList();
+        if (reportIssueIdList != null){
+//            List<ReportIssue> reportIssues = reportIssueRepository.findAllById(reportIssueIdList);
+            for (int i=0; i<reportIssueIdList.size(); i++){
+                ReportIssue reportIssue = new ReportIssue();
+                reportIssue.setId(reportIssueIdList.get(i));
+                reportIssue.setUpdatedBy(driverRepository.findDriverByUsername(username));
+                reportIssue.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                reportIssue.setStatus(false);
+                reportIssueRepository.save(reportIssue);
+            }
         }
     }
 
