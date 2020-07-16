@@ -121,17 +121,20 @@ public class ReportIssueServiceImpl implements ReportIssueService {
         if (reportIssueIdList != null){
 //            List<ReportIssue> reportIssues = reportIssueRepository.findAllById(reportIssueIdList);
             for (int i=0; i<reportIssueIdList.size(); i++){
-                ReportIssue reportIssue = new ReportIssue();
-                reportIssue.setId(reportIssueIdList.get(i));
-                reportIssue.setUpdatedBy(driverRepository.findDriverByUsername(username));
-                reportIssue.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-                reportIssue.setStatus(false);
-                if(reportIssueRepository.save(reportIssue)!=null){
-                    flag = true;
+                if (reportIssueRepository.existsById(reportIssueIdList.get(i))) {
+                    ReportIssue reportIssue = reportIssueRepository.findById(reportIssueIdList.get(i)).get();
+                    reportIssue.setId(reportIssueIdList.get(i));
+                    reportIssue.setUpdatedBy(driverRepository.findDriverByUsername(username));
+                    reportIssue.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                    reportIssue.setStatus(false);
+                    if (reportIssueRepository.save(reportIssue) != null) {
+                        flag = true;
+                    } else {
+                        return false;
+                    }
                 }else{
-                    return flag = false;
+                    return false;
                 }
-
             }
         }
         return flag;

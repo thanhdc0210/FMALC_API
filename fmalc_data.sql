@@ -474,7 +474,7 @@ CREATE TABLE `place` (
 
 LOCK TABLES `place` WRITE;
 /*!40000 ALTER TABLE `place` DISABLE KEYS */;
-INSERT INTO `place` VALUES (1,'2020-07-14 08:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-14 00:00:00.000000',1,0,1),(2,'2020-07-14 08:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-14 00:00:00.000000',2,0,1),(3,'2020-07-14 08:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-14 00:00:00.000000',3,1,1),(4,'2020-07-14 08:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house ','2020-07-14 00:00:00.000000',4,1,1),(5,'2020-07-14 08:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-14 00:00:00.000000',1,0,2),(6,'2020-07-14 08:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-14 00:00:00.000000',2,0,2),(7,'2020-07-14 08:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-14 00:00:00.000000',3,1,2),(8,'2020-07-14 08:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house ','2020-07-14 00:00:00.000000',4,1,2),(9,'2020-07-14 08:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-14 00:00:00.000000',1,0,3),(10,'2020-07-14 08:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-14 00:00:00.000000',2,0,3),(11,'2020-07-14 08:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-14 00:00:00.000000',3,1,3),(12,'2020-07-14 08:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house ','2020-07-14 00:00:00.000000',4,1,3);
+INSERT INTO `place` VALUES (1,'2020-07-14 08:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-16 00:00:00.000000',1,0,1),(2,'2020-07-14 08:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-16 00:00:00.000000',2,0,1),(3,'2020-07-14 08:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-16 00:00:00.000000',3,1,1),(4,'2020-07-14 08:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house ','2020-07-16 00:00:00.000000',4,1,1),(5,'2020-07-14 08:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-16 15:00:00.000000',1,0,2),(6,'2020-07-14 08:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-16 15:00:00.000000',2,0,2),(7,'2020-07-14 08:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-16 15:00:00.000000',3,1,2),(8,'2020-07-14 08:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house ','2020-07-16 15:00:00.000000',4,1,2),(9,'2020-07-14 08:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-17 05:00:00.000000',1,0,3),(10,'2020-07-14 08:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-17 05:00:00.000000',2,0,3),(11,'2020-07-14 08:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-17 05:00:00.000000',3,1,3),(12,'2020-07-14 08:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house ','2020-07-17 05:00:00.000000',4,1,3);
 /*!40000 ALTER TABLE `place` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -490,7 +490,7 @@ CREATE TABLE `report_issue` (
   `content` varchar(255) DEFAULT NULL,
   `create_time` datetime(6) NOT NULL,
   `image` varchar(255) DEFAULT NULL,
-  `status` bit(1) NOT NULL,
+  `status` bit(1) NOT NULL DEFAULT b'1',
   `type` int(11) NOT NULL,
   `update_time` datetime(6) DEFAULT NULL,
   `created_by` int(11) NOT NULL,
@@ -506,7 +506,7 @@ CREATE TABLE `report_issue` (
   CONSTRAINT `FK5qaqj68iv6peccwu8j1atfg16` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicle` (`id`),
   CONSTRAINT `FKbo6rnbmocei2uqua8qx6jdtdc` FOREIGN KEY (`updated_by`) REFERENCES `driver` (`id`),
   CONSTRAINT `FKde004w754bpd7k47b5df34k6l` FOREIGN KEY (`created_by`) REFERENCES `driver` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -515,6 +515,7 @@ CREATE TABLE `report_issue` (
 
 LOCK TABLES `report_issue` WRITE;
 /*!40000 ALTER TABLE `report_issue` DISABLE KEYS */;
+INSERT INTO `report_issue` VALUES (1,'recheck','2020-07-14 22:40:58.278000',NULL,_binary '',0,NULL,1,6,NULL,1),(2,'recheck','2020-07-14 22:40:58.288000',NULL,_binary '',0,NULL,1,5,NULL,1),(3,'recheck','2020-07-14 22:40:58.240000',NULL,_binary '',0,NULL,1,7,NULL,1),(4,'checked','2020-07-15 22:44:38.274000',NULL,_binary '',0,NULL,1,8,NULL,1),(5,'checked','2020-07-15 22:44:38.289000',NULL,_binary '',0,NULL,1,7,NULL,1),(6,'checked','2020-07-15 22:44:38.316000',NULL,_binary '',0,NULL,1,5,NULL,1),(7,'checked','2020-07-15 22:44:38.327000',NULL,_binary '',0,NULL,1,6,NULL,1),(8,'new','2020-07-15 22:44:38.301000',NULL,_binary '',0,NULL,1,9,NULL,1),(9,'ahihi','2020-07-16 01:49:43.935000','https://fmalc-img.s3.ap-southeast-1.amazonaws.com/1594839108695-FMALC_ACTIVITY_DIAGRAM-Route_Optimization_and_Scheduling.png',_binary '',0,NULL,1,18,NULL,1);
 /*!40000 ALTER TABLE `report_issue` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -623,4 +624,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-13 23:59:15
+-- Dump completed on 2020-07-16  2:21:45
