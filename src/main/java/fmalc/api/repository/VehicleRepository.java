@@ -96,9 +96,9 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "INNER JOIN Place p ON p.consignment.id = c.id " +
                 "INNER JOIN Driver d ON d.id = s.driver.id " +
                 "INNER JOIN Account a ON a.id = d.account.id " +
-                "AND a.username = :username AND s.isApprove = true AND c.status = 0 " +
+                "AND a.username = :username AND s.isApprove = true AND c.status IN :status " +
                 "GROUP BY v.id " +
                 "HAVING MIN(p.plannedTime) BETWEEN :startDate AND :current")
-        Vehicle findVehicleByUsernameAndTime(@Param("username") String username,
+        Vehicle findVehicleByUsernameAndTimeAndStatus(@Param("username") String username, @Param("status") List<Integer> status,
                                              @Param("startDate") Timestamp startDate, @Param("current") Timestamp current);
 }

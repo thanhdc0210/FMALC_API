@@ -108,7 +108,7 @@ public class VehicleServiceImpl implements VehicleService {
 
 
     @Override
-    public Vehicle findVehicleByUsernameAndTime(String username, Timestamp startDate, Timestamp current) {
-        return vehicleRepository.findVehicleByUsernameAndTime(username, startDate, current);
+    public Vehicle findVehicleByUsernameAndTimeAndStatus(String username, List<Integer> status, Timestamp startDate, Timestamp current) {
+        return vehicleRepository.findVehicleByUsernameAndTimeAndStatus(username, status, startDate, current);
     }
 }

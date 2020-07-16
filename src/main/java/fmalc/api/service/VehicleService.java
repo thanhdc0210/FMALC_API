@@ -20,7 +20,7 @@ public interface VehicleService {
     List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp current);
     Vehicle getVehicleByKmRunning(List<Vehicle> vehicles);
     void updateStatus(int status, int id);
-    Vehicle findVehicleByUsernameAndTime(String username, Timestamp startDate, Timestamp current);
+    Vehicle findVehicleByUsernameAndTimeAndStatus(String username, List<Integer> status, Timestamp startDate, Timestamp current);
     List<Vehicle> findByWeightBigger( double weight);
     List<Vehicle> findByWeightSmaller( double weight);
 }

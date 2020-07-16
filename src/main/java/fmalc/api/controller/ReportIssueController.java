@@ -3,18 +3,17 @@ package fmalc.api.controller;
 import fmalc.api.dto.ReportIssueInformationForUpdatingDTO;
 import fmalc.api.dto.ReportIssueRequestDTO;
 import fmalc.api.dto.ReportIssueResponseDTO;
-import fmalc.api.entity.ReportIssue;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.service.ReportIssueService;
 import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1.0/report-issues")
@@ -38,9 +37,9 @@ public class ReportIssueController {
 
     // Lấy vehicle tài xế sắp chạy --> get report-issue của xe đó
     @GetMapping(value = "information-report-issue")
-    public ResponseEntity<ReportIssueResponseDTO> getIssueInformationOfAVehicle(@RequestParam(value = "username") String username){
+    public ResponseEntity<ReportIssueResponseDTO> getIssueInformationOfAVehicle(@RequestParam(value = "username") String username, @RequestParam(value = "status") List<Integer> status){
 
-        Vehicle vehicle = vehicleService.findVehicleByUsernameAndTime(username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), new Timestamp(System.currentTimeMillis()));
+        Vehicle vehicle = vehicleService.findVehicleByUsernameAndTimeAndStatus(username, status, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), new Timestamp(System.currentTimeMillis()));
 
         if (vehicle == null){
             return ResponseEntity.noContent().build();
