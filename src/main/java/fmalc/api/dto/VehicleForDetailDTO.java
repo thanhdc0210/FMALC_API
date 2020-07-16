@@ -20,13 +20,19 @@ public class VehicleForDetailDTO {
     private Integer kilometerRunning;
     private String licensePlates;
     private double weight;
-    private int vehicleType;
     private double averageFuel;
     private double maximumCapacity;
 
     public VehicleForDetailDTO convertToDto(Vehicle vehicle) {
         ModelMapper modelMapper = new ModelMapper();
         VehicleForDetailDTO dto = modelMapper.map(vehicle, VehicleForDetailDTO.class);
+
+        return dto;
+    }
+
+    public Vehicle convertToEnity(VehicleForDetailDTO vehicle) {
+        ModelMapper modelMapper = new ModelMapper();
+        Vehicle dto = modelMapper.map(vehicle, Vehicle.class);
 
         return dto;
     }

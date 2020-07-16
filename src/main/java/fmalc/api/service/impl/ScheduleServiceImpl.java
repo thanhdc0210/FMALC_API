@@ -3,6 +3,7 @@ package fmalc.api.service.impl;
 
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
+import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.ScheduleRepository;
 import fmalc.api.service.*;
@@ -84,7 +85,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 
     @Override
-    public List<Vehicle> findVehicleForSchedule(Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO) {
+    public List<Vehicle> findVehicleForSchedule(Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO, int sche) {
         boolean flag = true;
 //        List<Vehicle> vehiclesAvailable = vehicleService.findByStatus(VehicleStatusEnum.AVAILABLE.getValue(), consignment.getWeight());
 //
@@ -103,21 +104,27 @@ public class ScheduleServiceImpl implements ScheduleService {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
                 if (vehicles.size() > 0) {
                     vehicles = checkMaintainForVehicle(vehicles, consignment);
-                    vehicles = checkScheduledForVehicle(vehicles, consignment);
+                    if (sche == ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue()) {
+                        vehicles = checkScheduledForVehicle(vehicles, consignment);
+                    }
+
                     if (vehicles.size() > 0) {
                         if (vehicles.size() >= size) {
-                            result.addAll(vehicles);
+                            result = checkDuplicate(result, vehicles);
                         } else {
                             List<Vehicle> vehicleBigger = vehicleService.findByWeightBigger(weight);
                             if (vehicleBigger.size() > 0) {
                                 vehicleBigger = checkMaintainForVehicle(vehicleBigger, consignment);
-                                vehicleBigger = checkScheduledForVehicle(vehicleBigger, consignment);
+                                if (sche == ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue()) {
+                                    vehicleBigger = checkScheduledForVehicle(vehicleBigger, consignment);
+                                }
+
                                 if (vehicleBigger.size() > 0 && vehicleBigger.size() >= (size - vehicles.size())) {
                                     vehicles.addAll(vehicleBigger);
-                                    result.addAll(vehicles);
+                                    result = checkDuplicate(result, vehicles);
                                 } else {
                                     vehicles.addAll(vehicleBigger);
-                                    result.addAll(vehicles);
+                                    result = checkDuplicate(result, vehicles);
                                 }
                             } else {
                                 //vehicleBigger size = 0
@@ -131,13 +138,15 @@ public class ScheduleServiceImpl implements ScheduleService {
                         List<Vehicle> vehicleBigger = vehicleService.findByWeightBigger(weight);
                         if (vehicleBigger.size() > 0) {
                             vehicleBigger = checkMaintainForVehicle(vehicleBigger, consignment);
-                            vehicleBigger = checkScheduledForVehicle(vehicleBigger, consignment);
+                            if (sche == ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue()) {
+                                vehicleBigger = checkScheduledForVehicle(vehicleBigger, consignment);
+                            }
                             if (vehicleBigger.size() > 0 && vehicleBigger.size() >= (size - vehicles.size())) {
-                                vehicles.addAll(vehicleBigger);
-                                result.addAll(vehicles);
+//                                vehicles.addAll(vehicleBigger);
+                                result = checkDuplicate(result, vehicles);
                             } else {
-                                vehicles.addAll(vehicleBigger);
-                                result.addAll(vehicles);
+//                                vehicles.addAll(vehicleBigger);
+                                result = checkDuplicate(result, vehicles);
                             }
                         } else {
                             //vehicleBigger size = 0
@@ -145,19 +154,19 @@ public class ScheduleServiceImpl implements ScheduleService {
                     }
 
                 } else {
-                    if (result.size() > 0) {
-                        result = new ArrayList<>();
-                    }
+
                     List<Vehicle> vehicleBigger = vehicleService.findByWeightBigger(weight);
                     if (vehicleBigger.size() > 0) {
                         vehicleBigger = checkMaintainForVehicle(vehicleBigger, consignment);
+                        if (sche == ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue()) {
                             vehicleBigger = checkScheduledForVehicle(vehicleBigger, consignment);
+                        }
                         if (vehicleBigger.size() > 0 && vehicleBigger.size() >= (size - vehicles.size())) {
                             vehicles.addAll(vehicleBigger);
-                            result.addAll(vehicles);
+                            result = checkDuplicate(result, vehicles);
                         } else {
                             vehicles.addAll(vehicleBigger);
-                            result.addAll(vehicles);
+                            result = checkDuplicate(result, vehicles);
                         }
                     } else {
                         //vehicleBigger size = 0
@@ -165,6 +174,16 @@ public class ScheduleServiceImpl implements ScheduleService {
                 }
             }
 
+        }
+        Collections.sort(result, (Vehicle v1, Vehicle v2) -> v1.getWeight().compareTo(v2.getWeight()));
+        return result;
+    }
+
+    private List<Vehicle> checkDuplicate(List<Vehicle> result, List<Vehicle> vehicles) {
+        for (int i = 0; i < vehicles.size(); i++) {
+            if (!result.contains(vehicles.get(i))) {
+                result.add(vehicles.get(i));
+            }
         }
         return result;
     }
@@ -272,6 +291,19 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         }
         return scheduleForLocationDTOS;
+    }
+
+    @Override
+    public List<ScheduleForConsignmentDTO> getScheduleForVehicle(int idVehicle) {
+        List<Schedule> schedules = scheduleRepository.checkDriverInScheduled(idVehicle);
+        ScheduleForConsignmentDTO sc = new ScheduleForConsignmentDTO();
+        List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = sc.mapToListResponse(schedules);
+        return scheduleForConsignmentDTOS;
+    }
+
+    @Override
+    public boolean updateStatusSchedule(ObejctScheDTO requestObjectDTO) {
+        return (scheduleRepository.updateStatusSchedule(requestObjectDTO.getVehicle_id(), requestObjectDTO.getDriver_id(), 1, requestObjectDTO.getConsignment_id()) > 0);
     }
 
     @Override
@@ -475,22 +507,13 @@ public class ScheduleServiceImpl implements ScheduleService {
             String dateReceiConsignment = sdf.format(placeConsignmentRecei.getPlannedTime());
             String dateScheduleRecei = sdf.format(placeScheduleRecei.getPlannedTime());
             if (dateReceiConsignment.compareTo(dateScheduleRecei) >= 1) {
-//                        PlaceResponeDTO placeSchedulePriorityDeli =
-//                                placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), placeSchedulesPriorityDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
-
-
                 if (placeScheduleDeli.getAddress() != null) {
                     String dateScheduleDe = sdf.format(placeScheduleDeli.getPlannedTime());
                     if (dateReceiConsignment.compareTo(dateScheduleDe) >= 1) {
                         flag = false;
-//                                    l = placeConsignmentPriority.size();// out for check time
-                        //xe pass 1 schedule;
                     }
                 }
-
             } else if (dateReceiConsignment.compareTo(dateScheduleRecei) <= -1) {
-//                        PlaceResponeDTO placeConsignmentPriorityDeli =
-//                                placeService.getPlaceByTypePlaceAndPriority(consignment.getId(), placeConsgimentsPriorityDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
                 if (placeConsignmentDeli != null) {
                     String dateConsignmentDeli = sdf.format(placeConsignmentDeli.getPlannedTime());
                     if (dateConsignmentDeli.compareTo(dateScheduleRecei) <= -1) {
@@ -506,10 +529,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     }
 
-    private boolean checkVehicleSchedule(ScheduleForConsignmentDTO scheduleForLocationDTO, Consignment consignment, boolean flag) {
+    private int checkVehicleSchedule(ScheduleForConsignmentDTO scheduleForLocationDTO, Consignment consignment, boolean flag) {
         Long nowTime = new Date().getTime();
         long diff;
-        flag = true;
+        int flagInt = 0;
+//        flag = true;
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         List<PlaceResponeDTO> listScheduleDeli =
@@ -521,10 +545,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         PlaceResponeDTO placeConsignmentRecei =
                 placeService.getPlaceByTypePlaceAndPriority(consignment.getId(), 1, TypeLocationEnum.RECEIVED_PLACE.getValue());
 
-
-        // Schedule
-        // lấy thời gian consignment  lấy hàng có độ ưu tiên 1
-        // lấy thằng thời gian giao hàng sau cùng
         PlaceResponeDTO placeScheduleDeli =
                 placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), listScheduleDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
 
@@ -534,9 +554,10 @@ public class ScheduleServiceImpl implements ScheduleService {
             int diffHours = (int) diff / (60 * 60 * 1000) % 24;
             if (diffDays == 0) {
                 if (diffHours >= 1) {
-//                    checkVehicleScheduleDeli(sc)
-                    flag = false;
+                    flagInt = 1;
+//                    flag = false;
                 } else if (diffHours <= -1) {
+
                     List<PlaceResponeDTO> listConsignmentDeli =
                             placeService.getPlaceByTypePlace(consignment.getId(), TypeLocationEnum.DELIVERED_PLACE.getValue());
 //
@@ -558,7 +579,11 @@ public class ScheduleServiceImpl implements ScheduleService {
                         diffHours = (int) diff / (60 * 60 * 1000) % 24;
                         if (diffDays == 0) {
                             if (diffHours >= 1) {
-                                flag = false;
+//                                flag = false;
+                                flagInt = 1;
+                            } else {
+                                flagInt = -1;
+//                                flag = true;
                             }
                         } else {
 
@@ -566,10 +591,14 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 
                     }
+                } else {
+                    flagInt = -1; //trung'
                 }
+            } else {
+                flagInt = 0;
             }
         }
-        return flag;
+        return flagInt;
 
     }
 
@@ -590,7 +619,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
             int diffHours = (int) diff / (60 * 60 * 1000) % 24;
 
-            if (diffHours >= 1) {
+            if (diffHours >= 1 ) {
+                result = diffHours;
+            }else if(diffHours<=-1){
                 result = diffHours;
             }
 
@@ -638,7 +669,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
 
-    public List<Schedule> findByConsignmentStatusAndUsername(List<Integer> status, String username){
+    public List<Schedule> findByConsignmentStatusAndUsername(List<Integer> status, String username) {
 
 
         return scheduleRepository.findByConsignmentStatusAndUsername(status, username);
@@ -646,7 +677,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Schedule findById(Integer id) {
-        if (!scheduleRepository.existsById(id)){
+        if (!scheduleRepository.existsById(id)) {
             return null;
         }
         return scheduleRepository.findById(id).get();
@@ -662,8 +693,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     // ----------------------------------------------
     @Override
     public List<ScheduleForConsignmentDTO> findScheduleForFuture(List<Vehicle> vehicles, Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO) {
-        List<Schedule> schedules = scheduleRepository.findAll();
+//        List<Schedule> schedules = scheduleRepository.findAll();
         boolean flag = true;
+        int flagInt;
         List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();
         List<Vehicle> result = new ArrayList<>();
         List<ScheduleForConsignmentDTO> scheduleResult = new ArrayList<>();
@@ -676,29 +708,49 @@ public class ScheduleServiceImpl implements ScheduleService {
                 for (int j = 0; j < scheduleForLocationDTOS.size(); j++) {
 
                     scheduleForLocationDTO = scheduleForLocationDTOS.get(j);
-                    flag = checkVehicleSchedule(scheduleForLocationDTO, consignment, flag);
-                    if (!flag) {
-                        if (j == scheduleForLocationDTOS.size()) {
-//                            scheduleForLocationDTO.setVehicle_id(vehicles.get(i).getId());
-//                            scheduleResult.addAll(scheduleForLocationDTOS);
-                        }
-                    } else {
+                    flagInt = checkVehicleSchedule(scheduleForLocationDTO, consignment, flag);
+                    if (flagInt == 1) {
+//                        for(int f = j; f<scheduleForLocationDTOS.size();f++){
+//                            int flagTmp = checkVehicleSchedule(scheduleForLocationDTO, consignment, flag);
+//                            if(flagTmp == -1)
+//                        }
+//                        scheduleResult.add(scheduleForLocationDTO);
+                        flag = false;
+                    } else if (flagInt == 0) {
+                        flag = false;
+//                        j = scheduleForLocationDTOS.size();
+                    } else if (flagInt == -1) {
                         j = scheduleForLocationDTOS.size();
+                        flag = true;
                     }
                 }
                 if (!flag) {
+                    int count  = 0;
                     int min = checkVehicleScheduleDeli(scheduleForLocationDTOS.get(0), consignment);
                     scheduleForLocationDTO = scheduleForLocationDTOS.get(0);
+                    int max = checkVehicleScheduleDeli(scheduleForLocationDTOS.get(0), consignment);
+                   ScheduleForConsignmentDTO scheduleForConsignmentDTOMAX = scheduleForLocationDTOS.get(0);
                     for (int j = 1; j < scheduleForLocationDTOS.size(); j++) {
                         int tmp = checkVehicleScheduleDeli(scheduleForLocationDTOS.get(j), consignment);
-                        if (min > tmp) {
-                            min = tmp;
-                            scheduleForLocationDTO = scheduleForLocationDTOS.get(j);
+                        if (tmp > 0) {
+                            if (min > tmp) {
+                                min = tmp;
+                                scheduleForLocationDTO = scheduleForLocationDTOS.get(j);
+                            }
+//                            flag = false;
+                            count++;
+                        }else if( tmp <0){
+                            max = tmp;
+                            scheduleForConsignmentDTOMAX = scheduleForLocationDTOS.get(j);
                         }
-
+                    }
+                    if (count >0) {
+                        scheduleResult.add(scheduleForLocationDTO);
+                    }else{
+                        scheduleResult.add(scheduleForConsignmentDTOMAX);
                     }
 //                    scheduleForLocationDTO.setVehicle_id(vehicles.get(i).getId());
-                    scheduleResult.add(scheduleForLocationDTO);
+
                 }
 
             }

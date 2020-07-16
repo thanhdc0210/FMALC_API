@@ -39,6 +39,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public VehicleForDetailDTO findVehicleById(int id) {
         Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
+
         return new VehicleForDetailDTO().convertToDto(vehicle);
     }
 

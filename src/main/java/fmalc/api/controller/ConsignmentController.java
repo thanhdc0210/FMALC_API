@@ -3,6 +3,7 @@ package fmalc.api.controller;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.DriverStatusEnum;
+import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class ConsignmentController {
 
     @Autowired
     PlaceService placeService;
+
+    @Autowired
+    ParkingService parkingService;
 
 
     @GetMapping("test")
@@ -92,8 +96,9 @@ public class ConsignmentController {
     }
 
     @PostMapping
-    public ResponseEntity<List<ScheduleForConsignmentDTO>> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO) {
+    public ResponseEntity<NewScheduleDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO) {
         try {
+            NewScheduleDTO newScheduleDTO = new NewScheduleDTO();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", Locale.getDefault());
             Consignment consignment = new Consignment();
             ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
@@ -103,7 +108,7 @@ public class ConsignmentController {
             consignment = consignmentService.save(consignmentRequestDTO);
             ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
             List<Vehicle> vehicles =
-                    scheduleService.findVehicleForSchedule(consignment, consignmentRequestDTO);
+                    scheduleService.findVehicleForSchedule(consignment, consignmentRequestDTO, ScheduleConsginmentEnum.SCHEDULE_NOT_CHECK.getValue());
             List<ScheduleForConsignmentDTO> scheduleForLocationDTOS =
                     scheduleService.findScheduleForFuture(vehicles, consignment, consignmentRequestDTO);
             for (int i = 0; i < scheduleForLocationDTOS.size(); i++) {
@@ -134,9 +139,10 @@ public class ConsignmentController {
 
             }
 
-
-
-            return ResponseEntity.ok().body(scheduleForLocationDTOS);
+            ParkingDTO parkingDTO = parkingService.getParking();
+            newScheduleDTO.setParkingDTO(parkingDTO);
+            newScheduleDTO.setScheduleForConsignmentDTOS(scheduleForLocationDTOS);
+            return ResponseEntity.ok().body(newScheduleDTO);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }

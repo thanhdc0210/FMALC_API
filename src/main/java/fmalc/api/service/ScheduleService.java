@@ -16,12 +16,15 @@ public interface ScheduleService {
     List<ScheduleForLocationDTO> getScheduleByConsignmentId(int id);
     Schedule createSchedule(Schedule schedule);
 
-     List<Vehicle> findVehicleForSchedule(Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO) throws ParseException;
+     List<Vehicle> findVehicleForSchedule(Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO, int schedule) throws ParseException;
     List<Driver> findDriverForSchedule(double weight, Consignment consignment);
 
     List<ScheduleForConsignmentDTO> checkScheduleForVehicle(int idVehicle) ;
     List<ScheduleForConsignmentDTO> checkScheduleForDriver( int idDriver);
 
+    List<ScheduleForConsignmentDTO> getScheduleForVehicle(int idVehicle) ;
+
+    boolean updateStatusSchedule(ObejctScheDTO requestObjectDTO);
 
     List<ScheduleForLocationDTO> getScheduleToCheck();
 
