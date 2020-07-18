@@ -116,10 +116,27 @@ public class VehicleController {
 
 
     @GetMapping(value = "/report-inspection-before-delivery")
-    public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspection
+    public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionBeforeDelivery
             (@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
 
-        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionBeforeDelivery(status, username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
+        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionBeforeDelivery(status, username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), new Timestamp(System.currentTimeMillis()));
+
+        if (vehiclePlates == null) {
+            return ResponseEntity.noContent().build();
+        }
+
+        InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+        inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
+        inspectionResponseDTO.setInspections(inspectionService.findAll());
+
+        return ResponseEntity.ok().body(inspectionResponseDTO);
+    }
+
+    @GetMapping(value = "/report-inspection-after-delivery")
+    public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionAfterDelivery
+            (@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
+
+        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionAfterDelivery(status, username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), new Timestamp(System.currentTimeMillis()));
 
         if (vehiclePlates == null) {
             return ResponseEntity.noContent().build();

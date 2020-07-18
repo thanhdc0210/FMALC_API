@@ -1,18 +1,19 @@
 package fmalc.api.entity;
 
+import java.awt.print.Book;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Objects;
 import javax.persistence.*;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "report_issue")
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Setter
+@Data
 // Báo cáo tình trạng bên ngoài xe trước và sau khi chạy
 public class ReportIssue implements Serializable {
     private static final long serialVersionUID = 1L;

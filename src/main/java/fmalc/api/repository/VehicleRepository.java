@@ -25,29 +25,71 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
         @Query("SELECT v FROM Vehicle v WHERE v.status = ?1 and v.weight >= ?2")
         List<Vehicle> findByStatus(int status, double weight);
 
-        @Query("SELECT v FROM Vehicle v where  v.weight >= ?1")
+        @Query("SELECT v FROM Vehicle v where  v.weight = ?1")
         List<Vehicle> findByWeight( double weight);
+
+        @Query("SELECT v FROM Vehicle v where  v.weight > ?1")
+        List<Vehicle> findByWeightBigger( double weight);
+
+        @Query("SELECT v FROM Vehicle v where  v.weight < ?1")
+        List<Vehicle> findByWeightSmaller( double weight);
 
         @Modifying(clearAutomatically = true)
         @Transactional
         @Query(value = "UPDATE Vehicle v set v.status = ?1 where v.id = ?2", nativeQuery = true)
         void updateStatusVehicle(int status, int id);
 
-        @Query("SELECT v.licensePlates  " +
-                "FROM Vehicle v " +
-                "INNER JOIN Schedule s ON v.id = s.vehicle.id " +
-                "INNER JOIN Consignment c ON c.id = s.consignment.id " +
-                "INNER JOIN Place p ON p.consignment.id = c.id " +
-                "INNER JOIN Driver d ON d.id = s.driver.id " +
-                "INNER JOIN Account a ON a.id = d.account.id " +
-                "AND a.username = :username AND s.isApprove = true AND c.status IN :status " +
-                "GROUP BY v.id " +
-                "HAVING MIN(p.plannedTime) BETWEEN :startDate AND :endDate")
+        @Query(value = "SELECT v.license_plates " +
+        "                FROM Vehicle v " +
+        "                WHERE " +
+        "                v.id IN ( " +
+        "                SELECT s.vehicle_id " +
+        "                FROM Schedule s " +
+        "                WHERE s.consignment_id IN ( " +
+        "                SELECT c.id " +
+        "                FROM Place p , Consignment c " +
+        "                WHERE c.id and p.consignment_id " +
+        "                AND c.status IN :status " +
+        "                GROUP BY c.id " +
+        "                HAVING MIN(p.planned_time) BETWEEN :startDate AND :current ) " +
+        "                AND s.driver_id IN ( " +
+        "                SELECT d.id " +
+        "                FROM Driver d " +
+        "                WHERE d.account_id IN ( " +
+        "                SELECT a.id " +
+        "                FROM Account a " +
+        "                WHERE a.username = :username)) " +
+        "                and s.is_approve = true  )", nativeQuery = true)
         List<String> findVehicleLicensePlatesForReportInspectionBeforeDelivery(
                 @Param("status") List<Integer> status, @Param("username") String username,
-                @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
+                @Param("startDate") Timestamp startDate, @Param("current") Timestamp current);
 
-        @Query("SELECT v.licensePlates " +
+        @Query(value = "SELECT v.license_plates " +
+                "                FROM Vehicle v " +
+                "                WHERE " +
+                "                v.id IN ( " +
+                "                SELECT s.vehicle_id " +
+                "                FROM Schedule s " +
+                "                WHERE s.consignment_id IN ( " +
+                "                SELECT c.id " +
+                "                FROM Place p , Consignment c " +
+                "                WHERE c.id and p.consignment_id " +
+                "                AND c.status IN :status " +
+                "                GROUP BY c.id " +
+                "                HAVING MIN(p.actual_time) BETWEEN :startDate AND :current ) " +
+                "                AND s.driver_id IN ( " +
+                "                SELECT d.id " +
+                "                FROM Driver d " +
+                "                WHERE d.account_id IN ( " +
+                "                SELECT a.id " +
+                "                FROM Account a " +
+                "                WHERE a.username = :username)) " +
+                "                and s.is_approve = true  )", nativeQuery = true)
+        List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(
+                @Param("status") List<Integer> status, @Param("username") String username,
+                @Param("startDate") Timestamp startDate, @Param("current") Timestamp current);
+
+        @Query(value = "SELECT v " +
                 "FROM Vehicle v " +
                 "INNER JOIN Schedule s ON v.id = s.vehicle.id " +
                 "INNER JOIN Consignment c ON c.id = s.consignment.id " +
@@ -56,9 +98,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "INNER JOIN Account a ON a.id = d.account.id " +
                 "AND a.username = :username AND s.isApprove = true AND c.status IN :status " +
                 "GROUP BY v.id " +
-                "HAVING MIN(p.actualTime) BETWEEN :startDate AND :endDate")
-        List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(
-                @Param("status") List<Integer> status, @Param("username") String username,
-                @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
-
+                "HAVING MIN(p.plannedTime) BETWEEN :startDate AND :current")
+        Vehicle findVehicleByUsernameAndTimeAndStatus(@Param("username") String username, @Param("status") List<Integer> status,
+                                             @Param("startDate") Timestamp startDate, @Param("current") Timestamp current);
 }

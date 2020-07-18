@@ -7,11 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 
 @Repository
+@Transactional
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     List<Schedule> findByConsignment_Id(int consignmentId);
 
@@ -22,9 +24,13 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query("select  s from Schedule s where s.driver.id =?1")
     List<Schedule> checkDriverInScheduled(int idDriver);
 
+    @Query("select  s from Schedule s where s.driver.id =?1 and s.vehicle.id =?2 and  s.consignment.id = ?3")
+    Schedule findScheduleByVeDriCons(int idDriver, int idVehicle, int idConsignment);
 
     @Query("Select s From Schedule s" +
             " Where s.consignment.status IN :status and s.driver.account.username = :username" +
             " and s.isApprove = true")
+
     List<Schedule> findByConsignmentStatusAndUsername(@Param("status") List<Integer> status, @Param("username") String username);
+
 }

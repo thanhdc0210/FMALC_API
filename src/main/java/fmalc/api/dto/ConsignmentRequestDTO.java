@@ -14,4 +14,5 @@ public class ConsignmentRequestDTO {
     private Integer status;
     private String imageConsignment;
     private List<PlaceRequestDTO> place;
+    private List<VehicleConsignmentDTO> vehicles;
 }
