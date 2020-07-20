@@ -37,9 +37,10 @@ public class ReportIssueController {
 
     // Lấy vehicle tài xế sắp chạy --> get report-issue của xe đó
     @GetMapping(value = "information-report-issue")
-    public ResponseEntity<ReportIssueResponseDTO> getIssueInformationOfAVehicle(@RequestParam(value = "username") String username, @RequestParam(value = "status") List<Integer> status){
+    public ResponseEntity<ReportIssueResponseDTO> getIssueInformationOfAVehicle(@RequestParam(value = "username") String username,
+                                                                                @RequestParam(value = "status") List<Integer> status){
 
-        Vehicle vehicle = vehicleService.findVehicleByUsernameAndTimeAndStatus(username, status, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), new Timestamp(System.currentTimeMillis()));
+        Vehicle vehicle = vehicleService.findVehicleByUsernameAndConsignmentStatus(username, status);
 
         if (vehicle == null){
             return ResponseEntity.noContent().build();

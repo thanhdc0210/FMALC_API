@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InspectionResponseDTO {
-    List<String> vehicleLicensePlates;
+    String vehicleLicensePlates;
     List<Inspection> inspections;
 }

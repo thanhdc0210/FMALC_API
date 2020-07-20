@@ -7,6 +7,7 @@ import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,13 +22,13 @@ public class VehicleServiceImpl implements VehicleService {
     VehicleRepository vehicleRepository;
 
     @Override
-    public List<String> findVehicleLicensePlatesForReportInspectionBeforeDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp current) {
-        return vehicleRepository.findVehicleLicensePlatesForReportInspectionBeforeDelivery(status, username, startDate, current);
+    public String findVehicleLicensePlatesForReportInspectionBeforeDelivery(String username) {
+        return vehicleRepository.findVehicleLicensePlatesForReportInspectionBeforeDelivery(username);
     }
 
     @Override
-    public List<String> findVehicleLicensePlatesForReportInspectionAfterDelivery(List<Integer> status, String username, Timestamp startDate, Timestamp current) {
-        return vehicleRepository.findVehicleLicensePlatesForReportInspectionAfterDelivery(status, username, startDate, current);
+    public String findVehicleLicensePlatesForReportInspectionAfterDelivery(String username, Timestamp startDate) {
+        return vehicleRepository.findVehicleLicensePlatesForReportInspectionAfterDelivery(username, startDate);
     }
 
     @Override
@@ -107,8 +108,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
 
-    @Override
-    public Vehicle findVehicleByUsernameAndTimeAndStatus(String username, List<Integer> status, Timestamp startDate, Timestamp current) {
-        return vehicleRepository.findVehicleByUsernameAndTimeAndStatus(username, status, startDate, current);
+    public Vehicle findVehicleByUsernameAndConsignmentStatus(String username, List<Integer> status) {
+        return vehicleRepository.findVehicleByUsernameAndConsignmentStatus(username, status);
     }
 }
