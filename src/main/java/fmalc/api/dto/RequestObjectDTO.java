@@ -8,6 +8,6 @@ import java.util.*;
 public class RequestObjectDTO {
     private List<ObejctScheDTO> schedule;
     private ConsignmentRequestDTO consignmentRequest;
-    private int newConsignment;
+    private ConsignmentResponseDTO newConsignment;
 
 }

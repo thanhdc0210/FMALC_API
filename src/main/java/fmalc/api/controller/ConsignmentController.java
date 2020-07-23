@@ -3,6 +3,7 @@ package fmalc.api.controller;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.DriverStatusEnum;
+import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class ConsignmentController {
     @Autowired
     PlaceService placeService;
 
+    @Autowired
+    ParkingService parkingService;
+
 
     @GetMapping("test")
     public ResponseEntity<List<ScheduleForLocationDTO>> test() {
@@ -46,6 +50,41 @@ public class ConsignmentController {
         return ResponseEntity.ok().body(scheduleForLocationDTOS);
     }
 
+    @GetMapping("vehicle/{id}")
+    public ResponseEntity<List<ConsignmentResponseDTO>> getConsignmentByIdVehicle(@PathVariable("id") int id){
+        try{
+            List<Consignment> consignments = consignmentService.findConsignmentByVehicle(id);
+            if(consignments.size()>0){
+                ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
+                List<ConsignmentResponseDTO> consignmentResponseDTOS = consignmentResponseDTO.mapToListResponse(consignments);
+                return ResponseEntity.ok().body(consignmentResponseDTOS);
+            }else{
+                return ResponseEntity.noContent().build();
+            }
+        }catch (Exception e){
+            return  ResponseEntity.badRequest().build();
+        }
+    }
+
+
+    @GetMapping("{id}")
+    public ResponseEntity<ConsignmentDetailDTO> getDetailConsignment(@PathVariable("id") int id){
+        try{
+            Consignment consignment = consignmentService.findById(id);
+            if(consignment!=null){
+                ConsignmentDetailDTO consignmentDetailDTO = new ConsignmentDetailDTO();
+                consignmentDetailDTO = consignmentDetailDTO.convertToDTO(consignment);
+                return ResponseEntity.ok().body(consignmentDetailDTO);
+            }else{
+                return ResponseEntity.noContent().build();
+            }
+
+        }
+        catch (Exception e){
+          return   ResponseEntity.badRequest().build();
+        }
+
+    }
 
     @GetMapping(value = "status")
     public ResponseEntity<List<ConsignmentListDTO>> getAllByStatus(@RequestParam("status") Integer status) {
@@ -92,39 +131,42 @@ public class ConsignmentController {
     }
 
     @PostMapping
-    public ResponseEntity<List<ScheduleForConsignmentDTO>> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO) {
+    public ResponseEntity<NewScheduleDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO) {
         try {
+            NewScheduleDTO newScheduleDTO = new NewScheduleDTO();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", Locale.getDefault());
+            sdf.setTimeZone(TimeZone.getTimeZone(""));
             Consignment consignment = new Consignment();
             ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
             List<ScheduleToConfirmDTO> scheduleToConfirmDTOS = new ArrayList<>();
             ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
             consignmentRequestDTO.setImageConsignment("sdsaas");
-            consignment = consignmentService.save(consignmentRequestDTO);
+            consignment = consignmentService.consignmentConfirm(consignmentRequestDTO);
+
             ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
             List<Vehicle> vehicles =
-                    scheduleService.findVehicleForSchedule(consignment, consignmentRequestDTO);
+                    vehicleService.findVehicleForSchedule(consignment, consignmentRequestDTO, ScheduleConsginmentEnum.SCHEDULE_NOT_CHECK.getValue());
             List<ScheduleForConsignmentDTO> scheduleForLocationDTOS =
-                    scheduleService.findScheduleForFuture(vehicles, consignment, consignmentRequestDTO);
-            for (int i = 0; i < scheduleForLocationDTOS.size(); i++) {
-                List<PlaceResponeDTO> placeResponeDTOS = scheduleForLocationDTOS.get(i).getConsignment().getPlaces();
-                for (int j = 0; j < placeResponeDTOS.size(); j++) {
-                    String dateTemp = sdf.format(placeResponeDTOS.get(j).getPlannedTime());
-                    dateTemp = dateTemp.replace("T", " ");
-//                dateTemp = dateTemp.replace("+", "");
-                    dateTemp = dateTemp.substring(0, dateTemp.indexOf("+"));
-                    placeResponeDTOS.get(j).setPlannedTime(Timestamp.valueOf(dateTemp));
-                }
-                scheduleForLocationDTOS.get(i).getConsignment().setPlaces(placeResponeDTOS);
-            }
+                    vehicleService.findScheduleForFuture(vehicles, consignment, consignmentRequestDTO);
+//            for (int i = 0; i < scheduleForLocationDTOS.size(); i++) {
+//                List<PlaceResponeDTO> placeResponeDTOS = scheduleForLocationDTOS.get(i).getConsignment().getPlaces();
+//                for (int j = 0; j < placeResponeDTOS.size(); j++) {
+//                    String dateTemp = sdf.format(placeResponeDTOS.get(j).getPlannedTime());
+//                    dateTemp = dateTemp.replace("T", " ");
+////                dateTemp = dateTemp.replace("+", "");
+//                    dateTemp = dateTemp.substring(0, dateTemp.indexOf("+"));
+//                    placeResponeDTOS.get(j).setPlannedTime(Timestamp.valueOf(dateTemp));
+//                }
+//                scheduleForLocationDTOS.get(i).getConsignment().setPlaces(placeResponeDTOS);
+//            }
             consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
-            for (int j = 0; j < consignmentResponseDTO.getPlaces().size(); j++) {
-                String dateTemp = sdf.format(consignmentResponseDTO.getPlaces().get(j).getPlannedTime());
-                dateTemp = dateTemp.replace("T", " ");
-//                dateTemp = dateTemp.replace("+", "");
-                dateTemp = dateTemp.substring(0, dateTemp.indexOf("+"));
-                consignmentResponseDTO.getPlaces().get(j).setPlannedTime(Timestamp.valueOf(dateTemp));
-            }
+//            for (int j = 0; j < consignmentResponseDTO.getPlaces().size(); j++) {
+//                String dateTemp = sdf.format(consignmentResponseDTO.getPlaces().get(j).getPlannedTime());
+//                dateTemp = dateTemp.replace("T", " ");
+////                dateTemp = dateTemp.replace("+", "");
+//                dateTemp = dateTemp.substring(0, dateTemp.indexOf("+"));
+//                consignmentResponseDTO.getPlaces().get(j).setPlannedTime(Timestamp.valueOf(dateTemp));
+//            }
 
             scheduleForLocationDTO.setConsignment(consignmentResponseDTO);
             scheduleForLocationDTOS.add(scheduleForLocationDTO);
@@ -134,9 +176,10 @@ public class ConsignmentController {
 
             }
 
-
-
-            return ResponseEntity.ok().body(scheduleForLocationDTOS);
+            ParkingDTO parkingDTO = parkingService.getParking();
+            newScheduleDTO.setParkingDTO(parkingDTO);
+            newScheduleDTO.setScheduleForConsignmentDTOS(scheduleForLocationDTOS);
+            return ResponseEntity.ok().body(newScheduleDTO);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }

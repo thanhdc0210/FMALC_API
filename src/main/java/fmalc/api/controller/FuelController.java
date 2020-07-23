@@ -15,7 +15,7 @@ public class FuelController {
     @Autowired
     FuelService fuelService;
 
-    @PostMapping("fuel")
+    @PostMapping("fuel-filling")
     public ResponseEntity<Fuel> saveFuel(@RequestBody FuelRequestDTO fuelRequestDTO){
         Fuel fuel = fuelService.saveFuelFilling(fuelRequestDTO);
         if (fuel == null){

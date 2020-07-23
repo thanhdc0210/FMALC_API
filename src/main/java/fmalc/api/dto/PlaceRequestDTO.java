@@ -17,4 +17,5 @@ public class PlaceRequestDTO {
     private Integer type;
     private String contactName;
     private String contactPhone;
+    private Integer priority;
 }

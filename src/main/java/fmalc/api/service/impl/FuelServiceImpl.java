@@ -28,8 +28,8 @@ public class FuelServiceImpl implements FuelService {
         fuel.setFuelType(fuelTypeRepository.findById(fuelTypeRequestDTO.getFuelTypeId()).get());
         fuel.setKmOld(fuelTypeRequestDTO.getKmOld());
         fuel.setUnitPriceAtFillingTime(fuelTypeRequestDTO.getUnitPriceAtFillingTime());
-        fuel.setVolume(fuelTypeRequestDTO.getVolumne());
-        fuel.setVehicle(vehicleRepository.findByLicensePlates(fuelTypeRequestDTO.getVehicleLiencePlates()));
+        fuel.setVolume(fuelTypeRequestDTO.getVolume());
+        fuel.setVehicle(vehicleRepository.findByLicensePlates(fuelTypeRequestDTO.getVehicleLicensePlates()));
         return fuelRepository.save(fuel);
     }
 }

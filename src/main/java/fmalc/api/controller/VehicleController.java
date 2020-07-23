@@ -107,6 +107,34 @@ public class VehicleController {
 
     }
 
+    @PutMapping("/")
+    public ResponseEntity<Vehicle> updateVehicle( @RequestBody VehicleForDetailDTO dto) throws ParseException {
+        Vehicle vehicle = new Vehicle();
+        VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
+        vehicleForDetailDTO =dto;
+        String dateString = dto.getDateOfManufacture(); //
+
+        java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+        vehicle = vehicleForDetailDTO.convertToEnity(dto);
+        vehicle.setStatus(VehicleStatusEnum.AVAILABLE.getValue());
+        vehicle.setDateOfManufacture(sqlDate);
+        vehicle.setDriverLicense(dto.getDriverLicense());
+
+        Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
+
+
+            vehicle = vehicleService.saveVehicle(vehicle);
+
+            if (vehicle == null) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok().body(vehicle);
+
+
+
+    }
+
     private Vehicle convertToVehicleEntity(VehicleForNewDTO vehicleForNewDTO) {
         ModelMapper modelMapper = new ModelMapper();
         Vehicle vehicle = modelMapper.map(vehicleForNewDTO, Vehicle.class);
@@ -117,36 +145,46 @@ public class VehicleController {
 
     @GetMapping(value = "/report-inspection-before-delivery")
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionBeforeDelivery
-            (@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
+            (@RequestParam(value = "username") String username) {
 
-        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionBeforeDelivery(status, username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), new Timestamp(System.currentTimeMillis()));
+        String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionBeforeDelivery(username);
 
         if (vehiclePlates == null) {
-            return ResponseEntity.noContent().build();
+            InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+            inspectionResponseDTO.setVehicleLicensePlates(null);
+            inspectionResponseDTO.setInspections(inspectionService.findAll());
+
+            return ResponseEntity.ok().body(inspectionResponseDTO);
+        }else {
+
+            InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+            inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
+            inspectionResponseDTO.setInspections(inspectionService.findAll());
+
+            return ResponseEntity.ok().body(inspectionResponseDTO);
         }
-
-        InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-        inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
-        inspectionResponseDTO.setInspections(inspectionService.findAll());
-
-        return ResponseEntity.ok().body(inspectionResponseDTO);
     }
 
     @GetMapping(value = "/report-inspection-after-delivery")
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionAfterDelivery
-            (@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
+            (@RequestParam(value = "username") String username) {
 
-        List<String> vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionAfterDelivery(status, username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), new Timestamp(System.currentTimeMillis()));
+        String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionAfterDelivery(username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)));
 
         if (vehiclePlates == null) {
-            return ResponseEntity.noContent().build();
+            InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+            inspectionResponseDTO.setVehicleLicensePlates(null);
+            inspectionResponseDTO.setInspections(inspectionService.findAll());
+
+            return ResponseEntity.ok().body(inspectionResponseDTO);
+        }else {
+
+            InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+            inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
+            inspectionResponseDTO.setInspections(inspectionService.findAll());
+
+            return ResponseEntity.ok().body(inspectionResponseDTO);
         }
-
-        InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-        inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
-        inspectionResponseDTO.setInspections(inspectionService.findAll());
-
-        return ResponseEntity.ok().body(inspectionResponseDTO);
     }
 }
 

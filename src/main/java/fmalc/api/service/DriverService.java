@@ -1,6 +1,8 @@
 package fmalc.api.service;
 
 import fmalc.api.dto.DriverRequestDTO;
+import fmalc.api.dto.ScheduleForConsignmentDTO;
+import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Driver;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,4 +29,8 @@ public interface DriverService {
     List<Driver> findAllByFleetManager(Integer id);
   
     Driver findDriverByUsername(String username);
+
+    List<Driver> findDriverForSchedule(double weight, Consignment consignment);
+
+    List<ScheduleForConsignmentDTO> checkScheduleForDriver(int idDriver);
 }

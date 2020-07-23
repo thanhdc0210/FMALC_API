@@ -1,6 +1,7 @@
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.MaintainCheckDTO;
+import fmalc.api.dto.MaintainReponseDTO;
 import fmalc.api.entity.Maintenance;
 import fmalc.api.repository.MaintainanceRepository;
 import fmalc.api.service.MaintainanceService;
@@ -57,5 +58,13 @@ public class MaintainanceServiceImpl implements MaintainanceService {
 
         }
         return new MaintainCheckDTO();
+    }
+
+    @Override
+    public List<MaintainReponseDTO> getListMaintainByVehicle(int idVehicle) {
+        List<Maintenance> maintenances = maintainanceRepository.findByVehicle(idVehicle);
+        MaintainReponseDTO maintainReponseDTO = new MaintainReponseDTO();
+        List<MaintainReponseDTO> maintainReponseDTOS = maintainReponseDTO.mapToListResponse(maintenances);
+        return maintainReponseDTOS;
     }
 }

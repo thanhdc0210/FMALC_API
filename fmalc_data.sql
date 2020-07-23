@@ -249,7 +249,7 @@ CREATE TABLE `fuel` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `filling_date` date NOT NULL,
   `km_old` int(11) NOT NULL,
-  `unit_price_at_filling_time` float NOT NULL,
+  `unit_price_at_filling_time` double NOT NULL,
   `volume` double NOT NULL,
   `fuel_type_id` int(11) NOT NULL,
   `vehicle_id` int(11) NOT NULL,
@@ -258,7 +258,7 @@ CREATE TABLE `fuel` (
   KEY `FKcsj8bx4ew5bbufbsh3ad5hpx6` (`vehicle_id`),
   CONSTRAINT `FKcsj8bx4ew5bbufbsh3ad5hpx6` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicle` (`id`),
   CONSTRAINT `FKh5kakrsd8cwabdn8asusx2p8n` FOREIGN KEY (`fuel_type_id`) REFERENCES `fuel_type` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -267,6 +267,7 @@ CREATE TABLE `fuel` (
 
 LOCK TABLES `fuel` WRITE;
 /*!40000 ALTER TABLE `fuel` DISABLE KEYS */;
+INSERT INTO `fuel` VALUES (1,'2020-07-21',52000,15070,50,1,3);
 /*!40000 ALTER TABLE `fuel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -465,7 +466,7 @@ CREATE TABLE `place` (
   PRIMARY KEY (`id`),
   KEY `FK202l4yhf2qrxcptqcdy8pc6rx` (`consignment_id`),
   CONSTRAINT `FK202l4yhf2qrxcptqcdy8pc6rx` FOREIGN KEY (`consignment_id`) REFERENCES `consignment` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -474,7 +475,7 @@ CREATE TABLE `place` (
 
 LOCK TABLES `place` WRITE;
 /*!40000 ALTER TABLE `place` DISABLE KEYS */;
-INSERT INTO `place` VALUES (1,'2020-07-14 08:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-16 00:00:00.000000',1,0,1),(2,'2020-07-14 08:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-16 00:00:00.000000',2,0,1),(3,'2020-07-14 08:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-16 00:00:00.000000',3,1,1),(4,'2020-07-14 08:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house ','2020-07-16 00:00:00.000000',4,1,1),(5,'2020-07-14 08:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-16 15:00:00.000000',1,0,2),(6,'2020-07-14 08:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-16 15:00:00.000000',2,0,2),(7,'2020-07-14 08:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-16 15:00:00.000000',3,1,2),(8,'2020-07-14 08:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house ','2020-07-16 15:00:00.000000',4,1,2),(9,'2020-07-14 08:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-17 05:00:00.000000',1,0,3),(10,'2020-07-14 08:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-17 05:00:00.000000',2,0,3),(11,'2020-07-14 08:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-17 05:00:00.000000',3,1,3),(12,'2020-07-14 08:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house ','2020-07-17 05:00:00.000000',4,1,3);
+INSERT INTO `place` VALUES (1,'2020-07-22 03:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-22 03:00:00.000000',1,0,1),(2,'2020-07-22 03:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-22 03:00:00.000000',2,0,1),(3,'2020-07-22 03:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-22 03:00:00.000000',3,1,1),(4,'2020-07-22 03:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house ','2020-07-22 03:00:00.000000',4,1,1),(5,'2020-07-22 03:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-22 03:00:00.000000',1,0,2),(6,'2020-07-22 03:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-22 03:00:00.000000',2,0,2),(7,'2020-07-22 03:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-22 03:00:00.000000',3,1,2),(8,'2020-07-22 03:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house ','2020-07-22 03:00:00.000000',4,1,2),(9,'2020-07-22 03:00:00.000000','Lô D, Quận 9',NULL,NULL,1,1,'Đại học FPT','2020-07-22 03:00:00.000000',1,0,3),(10,'2020-07-22 03:00:00.000000','Xô Viết Nghệ Tĩnh, Bình Thạnh',NULL,NULL,1,1,'Cheese coffee','2020-07-22 03:00:00.000000',2,0,3),(11,'2020-07-22 03:00:00.000000','Nguyễn Thái Sơn, Gò Vấp',NULL,NULL,1,1,'Thức coffee','2020-07-22 03:00:00.000000',3,1,3),(12,'2020-07-22 03:00:00.000000','Đặng Văn Bi, Thủ Đức',NULL,NULL,1,1,'The coffee house ','2020-07-22 03:00:00.000000',4,1,3);
 /*!40000 ALTER TABLE `place` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -489,7 +490,7 @@ CREATE TABLE `report_issue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `content` varchar(255) DEFAULT NULL,
   `create_time` datetime(6) NOT NULL,
-  `image` varchar(255) DEFAULT NULL,
+  `image` varchar(500) DEFAULT NULL,
   `status` bit(1) NOT NULL DEFAULT b'1',
   `type` int(11) NOT NULL,
   `update_time` datetime(6) DEFAULT NULL,
@@ -506,7 +507,7 @@ CREATE TABLE `report_issue` (
   CONSTRAINT `FK5qaqj68iv6peccwu8j1atfg16` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicle` (`id`),
   CONSTRAINT `FKbo6rnbmocei2uqua8qx6jdtdc` FOREIGN KEY (`updated_by`) REFERENCES `driver` (`id`),
   CONSTRAINT `FKde004w754bpd7k47b5df34k6l` FOREIGN KEY (`created_by`) REFERENCES `driver` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -515,7 +516,7 @@ CREATE TABLE `report_issue` (
 
 LOCK TABLES `report_issue` WRITE;
 /*!40000 ALTER TABLE `report_issue` DISABLE KEYS */;
-INSERT INTO `report_issue` VALUES (1,'recheck','2020-07-14 22:40:58.278000',NULL,_binary '',0,NULL,1,6,NULL,1),(2,'recheck','2020-07-14 22:40:58.288000',NULL,_binary '',0,NULL,1,5,NULL,1),(3,'recheck','2020-07-14 22:40:58.240000',NULL,_binary '',0,NULL,1,7,NULL,1),(4,'checked','2020-07-15 22:44:38.274000',NULL,_binary '',0,NULL,1,8,NULL,1),(5,'checked','2020-07-15 22:44:38.289000',NULL,_binary '',0,NULL,1,7,NULL,1),(6,'checked','2020-07-15 22:44:38.316000',NULL,_binary '',0,NULL,1,5,NULL,1),(7,'checked','2020-07-15 22:44:38.327000',NULL,_binary '',0,NULL,1,6,NULL,1),(8,'new','2020-07-15 22:44:38.301000',NULL,_binary '',0,NULL,1,9,NULL,1),(9,'ahihi','2020-07-16 01:49:43.935000','https://fmalc-img.s3.ap-southeast-1.amazonaws.com/1594839108695-FMALC_ACTIVITY_DIAGRAM-Route_Optimization_and_Scheduling.png',_binary '',0,NULL,1,18,NULL,1);
+INSERT INTO `report_issue` VALUES (1,'ỵkk','2020-07-19 20:44:15.205000','https://fmalc-img.s3.ap-southeast-1.amazonaws.com/1595166241940-Screenshot_20200709-160142.jpg',_binary '\0',0,'2020-07-20 04:18:10.816000',1,5,1,1),(2,'xi nhan trái trước','2020-07-21 17:09:47.694000','',_binary '',0,NULL,2,5,NULL,2);
 /*!40000 ALTER TABLE `report_issue` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -565,7 +566,7 @@ CREATE TABLE `schedule` (
   CONSTRAINT `FK5s6sphay5edjq73mnw5gxwwaa` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicle` (`id`),
   CONSTRAINT `FKihr8fcsx7b2mygrjsh0bapdhj` FOREIGN KEY (`consignment_id`) REFERENCES `consignment` (`id`),
   CONSTRAINT `FKmjfuvpp6n6ce63ppi9j3xnntr` FOREIGN KEY (`driver_id`) REFERENCES `driver` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -624,4 +625,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-16  2:21:45
+-- Dump completed on 2020-07-22  0:52:23
