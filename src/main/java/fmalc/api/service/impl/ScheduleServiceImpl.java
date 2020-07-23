@@ -60,21 +60,25 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Schedule createSchedule(Schedule schedule) {
-
-        Schedule schedule1 = new Schedule();
-        schedule1.setNote(schedule.getNote());
-        schedule1.setImageConsignment(schedule.getImageConsignment());
-        schedule1.setConsignment(schedule.getConsignment());
-        schedule1.setDriver(schedule.getDriver());
-        schedule1.setVehicle(schedule.getVehicle());
-        schedule1.setIsApprove(schedule.getIsApprove());
-        schedule1.setId(null);
-        schedule1 = scheduleRepository.save(schedule1);
-
-
-        return schedule1;
+    public Schedule createSchedule(List<ObejctScheDTO> obejctScheDTOs, Consignment consignment) {
+        Schedule schedule= new Schedule();
+        for (int i = 0; i < obejctScheDTOs.size(); i++) {
+            VehicleForDetailDTO vehicleForDetailDTO = vehicleService.findVehicleById(obejctScheDTOs.get(i).getVehicle_id());
+            Vehicle vehicle = vehicleForDetailDTO.convertToEnity(vehicleForDetailDTO);
+            Driver driver = driverService.findById(obejctScheDTOs.get(i).getDriver_id());
+            schedule = new Schedule();
+            schedule.setNote("");
+            schedule.setImageConsignment("");
+            schedule.setConsignment(consignment);
+            schedule.setDriver(driver);
+            schedule.setVehicle(vehicle);
+            schedule.setIsApprove(true);
+            schedule.setId(null);
+            schedule = scheduleRepository.save(schedule);
+        }
+        return schedule;
     }
+
 
     /*
      * Lấy danh sách xe có trạng thái hiện tại là Available
@@ -295,7 +299,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public List<ScheduleForConsignmentDTO> getScheduleForVehicle(int idVehicle) {
-        List<Schedule> schedules = scheduleRepository.checkDriverInScheduled(idVehicle);
+        List<Schedule> schedules = scheduleRepository.checkVehicleInScheduled(idVehicle);
         ScheduleForConsignmentDTO sc = new ScheduleForConsignmentDTO();
         List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = sc.mapToListResponse(schedules);
         return scheduleForConsignmentDTOS;
@@ -317,6 +321,12 @@ public class ScheduleServiceImpl implements ScheduleService {
             scheduleForLocationDTOS.get(i).setDriver_id(schedules.get(i).getDriver().getId());
         }
         return scheduleForLocationDTOS;
+    }
+
+    @Override
+    public List<Schedule> checkVehicleInScheduled(int idVehicle) {
+        List<Schedule> schedules = scheduleRepository.checkVehicleInScheduled(idVehicle);
+        return schedules;
     }
 
 
@@ -619,9 +629,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
             int diffHours = (int) diff / (60 * 60 * 1000) % 24;
 
-            if (diffHours >= 1 ) {
+            if (diffHours >= 1) {
                 result = diffHours;
-            }else if(diffHours<=-1){
+            } else if (diffHours <= -1) {
                 result = diffHours;
             }
 
@@ -725,11 +735,11 @@ public class ScheduleServiceImpl implements ScheduleService {
                     }
                 }
                 if (!flag) {
-                    int count  = 0;
+                    int count = 0;
                     int min = checkVehicleScheduleDeli(scheduleForLocationDTOS.get(0), consignment);
                     scheduleForLocationDTO = scheduleForLocationDTOS.get(0);
                     int max = checkVehicleScheduleDeli(scheduleForLocationDTOS.get(0), consignment);
-                   ScheduleForConsignmentDTO scheduleForConsignmentDTOMAX = scheduleForLocationDTOS.get(0);
+                    ScheduleForConsignmentDTO scheduleForConsignmentDTOMAX = scheduleForLocationDTOS.get(0);
                     for (int j = 1; j < scheduleForLocationDTOS.size(); j++) {
                         int tmp = checkVehicleScheduleDeli(scheduleForLocationDTOS.get(j), consignment);
                         if (tmp > 0) {
@@ -739,14 +749,14 @@ public class ScheduleServiceImpl implements ScheduleService {
                             }
 //                            flag = false;
                             count++;
-                        }else if( tmp <0){
+                        } else if (tmp < 0) {
                             max = tmp;
                             scheduleForConsignmentDTOMAX = scheduleForLocationDTOS.get(j);
                         }
                     }
-                    if (count >0) {
+                    if (count > 0) {
                         scheduleResult.add(scheduleForLocationDTO);
-                    }else{
+                    } else {
                         scheduleResult.add(scheduleForConsignmentDTOMAX);
                     }
 //                    scheduleForLocationDTO.setVehicle_id(vehicles.get(i).getId());
@@ -757,6 +767,12 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
         return scheduleResult;
+    }
+
+    @Override
+    public List<Schedule> checkDriverInScheduled(int idDriver) {
+        List<Schedule> schedules = scheduleRepository.checkDriverInScheduled(idDriver);
+        return schedules;
     }
 
 

@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface ScheduleService {
     List<ScheduleForLocationDTO> getScheduleByConsignmentId(int id);
-    Schedule createSchedule(Schedule schedule);
+    Schedule createSchedule(List<ObejctScheDTO> obejctScheDTOs, Consignment consignment);
 
      List<Vehicle> findVehicleForSchedule(Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO, int schedule) throws ParseException;
     List<Driver> findDriverForSchedule(double weight, Consignment consignment);
@@ -28,9 +28,11 @@ public interface ScheduleService {
 
     List<ScheduleForLocationDTO> getScheduleToCheck();
 
+    List<Schedule> checkVehicleInScheduled(int idVehicle);
+
     List<Schedule> findByConsignmentStatusAndUsername(List<Integer> status, String username);
     Schedule findById(Integer id);
     Schedule findScheduleByVehDriCon(ObejctScheDTO obejctScheDTO);
     List<ScheduleForConsignmentDTO> findScheduleForFuture(List<Vehicle> vehicles, Consignment consignment,ConsignmentRequestDTO consignmentRequestDTO);
-
+    List<Schedule> checkDriverInScheduled(int idDriver);
 }

@@ -69,11 +69,12 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity<ScheduleToConfirmDTO> createSchedule(@RequestBody RequestObjectDTO requestObjectDTO) throws ParseException {
         ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
+        ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
         if(requestObjectDTO.getSchedule().size()>0){
             scheduleToConfirmDTO =schedulesConfirm(requestObjectDTO);
         }else{
             List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = new ArrayList<>();
-            Consignment consignment = consignmentService.findById(requestObjectDTO.getNewConsignment());
+            Consignment consignment = consignmentResponseDTO.mapToEntity(requestObjectDTO.getNewConsignment());
             ConsignmentRequestDTO consignmentRequestDTO = requestObjectDTO.getConsignmentRequest();
             scheduleToConfirmDTO= scheduleReturn(consignment, consignmentRequestDTO,scheduleForConsignmentDTOS);
         }
@@ -85,6 +86,7 @@ public class ScheduleController {
 
     private ScheduleToConfirmDTO schedulesConfirm(RequestObjectDTO requestObjectDTO) throws ParseException {
         List<ScheduleToConfirmDTO> scheduleToConfirmDTOS = new ArrayList<>();
+        ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
         ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
         List<ObejctScheDTO> obejctScheDTOS = new ArrayList<>();
         Schedule schedule = new Schedule();
@@ -96,7 +98,7 @@ public class ScheduleController {
         VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
         List<VehicleConsignmentDTO> vehicleConsignmentDTOS = consignmentRequestDTO.getVehicles();
         vehicleConsignmentDTOS.sort((VehicleConsignmentDTO v1, VehicleConsignmentDTO v2) -> (v1.getWeight().compareTo(v2.getWeight())));
-        Consignment consignment = consignmentService.findById(requestObjectDTO.getNewConsignment());
+        Consignment consignment = consignmentResponseDTO.mapToEntity(requestObjectDTO.getNewConsignment());
         List<ObejctScheDTO> removeObject = new ArrayList<>();
         int total = 0;
         for (int obj = 0; obj < vehicleConsignmentDTOS.size(); obj++) {
@@ -111,7 +113,7 @@ public class ScheduleController {
             for (int j = 0; j < obejctScheDTOS.size(); j++) {
 //                int count = 1;
                 schedule = scheduleService.findScheduleByVehDriCon(obejctScheDTOS.get(j));
-                if (schedule.getVehicle().getWeight() >= weight && quan > 0) {
+                if (schedule.getVehicle().getWeight() == weight && quan > 0) {
                     schedules.add(schedule);
                     quan = quan - 1;
                     removeObject.add(obejctScheDTOS.get(j));
@@ -126,6 +128,26 @@ public class ScheduleController {
             }
             vehicleConsignmentDTOS.get(i).setQuantity(String.valueOf(quan));
 
+            if(quan>0){
+                for (int j = 0; j < obejctScheDTOS.size(); j++) {
+//                int count = 1;
+                    schedule = scheduleService.findScheduleByVehDriCon(obejctScheDTOS.get(j));
+                    if (schedule.getVehicle().getWeight() > weight && quan > 0) {
+                        schedules.add(schedule);
+                        quan = quan - 1;
+                        removeObject.add(obejctScheDTOS.get(j));
+                    }
+                    if (quan == 0 && removeObject.size() < obejctScheDTOS.size()) {
+                        j = obejctScheDTOS.size();
+                    } else if (quan == 0 && obejctScheDTOS.size() == removeObject.size()) {
+                        j = obejctScheDTOS.size();
+                    } else if (quan > 0 && obejctScheDTOS.size() == removeObject.size()) {
+                        j = obejctScheDTOS.size();
+                    }
+                }
+                vehicleConsignmentDTOS.get(i).setQuantity(String.valueOf(quan));
+            }
+
             if (schedules.size() == obejctScheDTOS.size()) {
 //                if (i < vehicleConsignmentDTOS.size() - 1) {
 //                    consignmentRequestDTO.setVehicles(vehicleConsignmentDTOS);
@@ -138,16 +160,14 @@ public class ScheduleController {
             obejctScheDTOS.removeAll(removeObject);
 //            if(vehicleConsignmentDTOS.get(i).getWeight() >= )
         }
-        if (scheduleToConfirmDTOS.size() > 0) {
 
-        } else {
             List<Vehicle> vehicles = new ArrayList<>();
             List<Driver> drivers = new ArrayList<>();
             List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = new ArrayList<>();
             consignmentRequestDTO.setVehicles(vehicleConsignmentDTOS);
             if (total <= schedules.size()) {
                 for (int sch = 0; sch < total; sch++) {
-                    List<Driver>  resultDriver = scheduleService.findDriverForSchedule(schedules.get(sch).getVehicle().getWeight(), consignment);
+                    List<Driver>  resultDriver = driverService.findDriverForSchedule(schedules.get(sch).getVehicle().getWeight(), consignment);
                     schedule = new Schedule();
                     schedule.setVehicle(schedules.get(sch).getVehicle());
                     schedule.setDriver(schedules.get(sch).getDriver());
@@ -155,18 +175,15 @@ public class ScheduleController {
                     schedule.setConsignment(consignment);
                     schedule.setImageConsignment(consignmentRequestDTO.getImageConsignment());
                     schedule.setNote("");
-                    schedule =  scheduleService.createSchedule(schedule);
+//                    schedule =  scheduleService.createSchedule(schedule);
                     if (schedule != null) {
                         scheduleForConsignmentDTOS.add(scheduleToConfirmDTO.convertSchedule(schedule));
-
-
-                        //                            scheduleToConfirmDTOS.add(scheduleToConfirmDTO);
                     }
                 }
-                vehicles = scheduleService.findVehicleForSchedule(consignment, consignmentRequestDTO,ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue());
+                vehicles = vehicleService.findVehicleForSchedule(consignment, consignmentRequestDTO,ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue());
                 for (int ve = 0; ve < vehicles.size(); ve++) {
                     List<Driver> driverList = new ArrayList<>();
-                    driverList = scheduleService.findDriverForSchedule(vehicles.get(ve).getWeight(), consignment);
+                    driverList = driverService.findDriverForSchedule(vehicles.get(ve).getWeight(), consignment);
                     for (int dri = 0; dri < driverList.size(); dri++) {
                         if (!drivers.contains(driverList.get(dri))) {
                             drivers.add(driverList.get(dri));
@@ -187,15 +204,15 @@ public class ScheduleController {
                     schedule.setConsignment(consignment);
                     schedule.setImageConsignment(consignmentRequestDTO.getImageConsignment());
                     schedule.setNote("");
-                    schedule = scheduleService.createSchedule(schedule);
+//                    schedule = scheduleService.createSchedule(schedule);
                     if (schedule != null) {
                         scheduleForConsignmentDTOS.add(scheduleToConfirmDTO.convertSchedule(schedule));
                     }
                 }
-                vehicles = scheduleService.findVehicleForSchedule(consignment, consignmentRequestDTO,ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue());
+                vehicles = vehicleService.findVehicleForSchedule(consignment, consignmentRequestDTO,ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue());
                 for (int ve = 0; ve < vehicles.size(); ve++) {
                     List<Driver> driverList = new ArrayList<>();
-                    driverList = scheduleService.findDriverForSchedule(vehicles.get(ve).getWeight(), consignment);
+                    driverList = driverService.findDriverForSchedule(vehicles.get(ve).getWeight(), consignment);
                     for (int dri = 0; dri < driverList.size(); dri++) {
                         if (!drivers.contains(driverList.get(dri))) {
                             drivers.add(driverList.get(dri));
@@ -205,16 +222,13 @@ public class ScheduleController {
                 }
 
 
-                scheduleToConfirmDTO.setScheduleForConsignmentDTOS(scheduleForConsignmentDTOS);
-                scheduleToConfirmDTO.setDriverForScheduleDTOS(driverForScheduleDTO.mapToListResponse(drivers));
-                scheduleToConfirmDTO.setVehicleForDetailDTOS(vehicleForDetailDTO.mapToListResponse(vehicles));
-                total = 0;
-                for (int obj = 0; obj < vehicleConsignmentDTOS.size(); obj++) {
-                    total += Integer.parseInt(vehicleConsignmentDTOS.get(obj).getQuantity());
-                }
+                scheduleToConfirmDTO.getScheduleForConsignmentDTOS().addAll(scheduleForConsignmentDTOS);
+                scheduleToConfirmDTO.getDriverForScheduleDTOS().addAll(driverForScheduleDTO.mapToListResponse(drivers));
+                scheduleToConfirmDTO.getVehicleForDetailDTOS().addAll(vehicleForDetailDTO.mapToListResponse(vehicles));
                 if (total > 0) {
                     ScheduleToConfirmDTO resultReturn = scheduleReturn(consignment, consignmentRequestDTO, scheduleToConfirmDTO.getScheduleForConsignmentDTOS());
                     if (resultReturn.getScheduleForConsignmentDTOS().size() > 0 ) {
+
                         scheduleToConfirmDTO.getScheduleForConsignmentDTOS().addAll(resultReturn.getScheduleForConsignmentDTOS());
                         scheduleToConfirmDTO.getDriverForScheduleDTOS().addAll(resultReturn.getDriverForScheduleDTOS());
                         scheduleToConfirmDTO.getVehicleForDetailDTOS().addAll(resultReturn.getVehicleForDetailDTOS());
@@ -229,13 +243,13 @@ public class ScheduleController {
 
             }
 
-        }
+
         return  scheduleToConfirmDTO;
     }
 
     private ScheduleToConfirmDTO scheduleReturn(Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO, List<ScheduleForConsignmentDTO> scheduleds) throws ParseException {
         List<Vehicle> vehicles =
-                scheduleService.findVehicleForSchedule(consignment, consignmentRequestDTO, ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue());
+                vehicleService.findVehicleForSchedule(consignment, consignmentRequestDTO, ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue());
         int sizeVehicle = 0;
         for (int i = 0; i < consignmentRequestDTO.getVehicles().size(); i++) {
             String quantity = consignmentRequestDTO.getVehicles().get(i).getQuantity();
@@ -255,6 +269,13 @@ public class ScheduleController {
                 @Override
                 public int compare(Vehicle o1, Vehicle o2) {
                     return o1.getKilometerRunning().compareTo(o2.getKilometerRunning());
+                }
+            });
+
+            Collections.sort(vehicles, new Comparator<Vehicle>() {
+                @Override
+                public int compare(Vehicle o1, Vehicle o2) {
+                    return o1.getWeight().compareTo(o2.getWeight());
                 }
             });
             for (int i = 0; i < sizeVehicle; i++) {
@@ -290,7 +311,7 @@ public class ScheduleController {
                 double weight = Double.parseDouble(consignmentRequestDTO.getVehicles().get(i).getWeight());
                 int quantity = Integer.parseInt(consignmentRequestDTO.getVehicles().get(i).getQuantity());
                 if (quantity > 0) {
-                    resultDriver = scheduleService.findDriverForSchedule(weight, consignment);
+                    resultDriver = driverService.findDriverForSchedule(weight, consignment);
                     for (int j = 0; j < resultDriver.size(); j++) {
                         if (scheduleds.size() > 0) {
                             for (int s = 0; s < scheduleds.size(); s++) {
@@ -329,7 +350,7 @@ public class ScheduleController {
                             schedule.setDriver(drivers.get(k));
                             schedule.setVehicle(vehiclesSave.get(v));
                             schedule.setIsApprove(false);
-                            schedule = scheduleService.createSchedule(schedule);
+//                            schedule = scheduleService.createSchedule(schedule);
                             if (schedule != null) {
                                 scheduleForConsignmentDTOS.add(scheduleToConfirmDTO.convertSchedule(schedule));
                             }
@@ -345,7 +366,7 @@ public class ScheduleController {
                             schedule.setDriver(drivers.get(k));
                             schedule.setVehicle(vehiclesSave.get(v));
                             schedule.setIsApprove(false);
-                            schedule = scheduleService.createSchedule(schedule);
+//                            schedule = scheduleService.createSchedule(schedule);
                             if (schedule != null) {
                                 scheduleForConsignmentDTOS.add(scheduleToConfirmDTO.convertSchedule(schedule));
                             }
@@ -373,18 +394,28 @@ public class ScheduleController {
     }
 
     @PostMapping("/status")
-    public ResponseEntity<List<Integer>> updateStatusSchedules(@RequestBody List<ObejctScheDTO> requestObjectDTOS){
-        List<Integer> result =new ArrayList<>();
-        try{
-            for(int i =0 ; i<requestObjectDTOS.size(); i++){
-                boolean s =  scheduleService.updateStatusSchedule(requestObjectDTOS.get(i));
-                if(!s){
-                    result.add(requestObjectDTOS.get(i).getConsignment_id());
+    public ResponseEntity<Boolean> updateStatusSchedules(@RequestBody RequestSaveScheObjDTO requestSaveScheObjDTO){
+        boolean result = false;
+        if(requestSaveScheObjDTO!=null){
+            List<ObejctScheDTO> obejctScheDTOS =requestSaveScheObjDTO.getObejctScheDTOS();
+            ConsignmentRequestDTO consignmentRequestDTO = requestSaveScheObjDTO.getConsignmentRequestDTO();
+            try{
+                Consignment consignment = consignmentService.save(consignmentRequestDTO);
+                if(consignment.getId()!=null){
+                    scheduleService.createSchedule(obejctScheDTOS, consignment);
+                    result = true;
                 }
+//            for(int i =0 ; i<requestObjectDTOS.size(); i++){
+//                boolean s =  scheduleService.updateStatusSchedule(requestObjectDTOS.get(i));
+//                if(!s){
+//                    result.add(requestObjectDTOS.get(i).getConsignment_id());
+//                }
+//            }
+
+            }catch (Exception e){
+                return ResponseEntity.badRequest().build();
             }
 
-        }catch (Exception e){
-            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().body(result);
     }

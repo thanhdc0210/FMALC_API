@@ -43,4 +43,19 @@ public class ConsignmentResponseDTO {
                 .map(x -> mapToResponse(x))
                 .collect(Collectors.toList());
     }
+    public Consignment mapToEntity(ConsignmentResponseDTO baseEntitie) {
+        ModelMapper modelMapper = new ModelMapper();
+        Consignment consignment = modelMapper.map(baseEntitie, Consignment.class);
+//        consignmentResponseDTO.setStatusStr(ConsignmentStatusEnum.getValueEnumToShow(consignmentResponseDTO.getStatus()));
+
+        List<Place> places = new ArrayList<>();
+        for (PlaceResponeDTO deliveryDetail: baseEntitie.getPlaces()) {
+            Place palce = modelMapper.map(deliveryDetail, Place.class);
+
+            places.add(palce);
+        }
+        consignment.setPlaces(places);
+
+        return consignment;
+    }
 }
