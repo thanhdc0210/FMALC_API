@@ -1,5 +1,6 @@
 package fmalc.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,7 @@ public class Fuel implements Serializable {
     private Vehicle vehicle;
 
     @Column(name = "unit_price_at_filling_time", nullable = false)
-    private Float unitPriceAtFillingTime;
+    private Double unitPriceAtFillingTime;
 
     @Column(name = "volume", nullable = false)
     private Double volume;
@@ -43,5 +44,6 @@ public class Fuel implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "fuel_type_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
     private FuelType fuelType;
 }

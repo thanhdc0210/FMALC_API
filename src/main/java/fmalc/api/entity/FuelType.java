@@ -1,5 +1,6 @@
 package fmalc.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,5 +32,6 @@ public class FuelType {
     private String type;
 
     @OneToMany(mappedBy = "fuelType", cascade = { CascadeType.MERGE })
+    @JsonIgnore
     private Collection<Fuel> fuels;
 }

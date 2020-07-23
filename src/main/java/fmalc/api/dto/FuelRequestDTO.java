@@ -12,7 +12,7 @@ import lombok.Setter;
 public class FuelRequestDTO {
     private Integer fuelTypeId;
     private Integer kmOld;
-    private Float unitPriceAtFillingTime;
-    private Double volumne;
-    private String vehicleLiencePlates;
+    private Double unitPriceAtFillingTime;
+    private Double volume;
+    private String vehicleLicensePlates;
 }

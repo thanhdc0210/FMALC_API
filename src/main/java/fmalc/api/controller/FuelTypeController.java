@@ -27,15 +27,16 @@ public class FuelTypeController {
     @GetMapping("/fuel-type")
     public ResponseEntity<FuelTypeResponseDTO> getFuelTypesAndVehicleLicensePlate(@RequestParam("status") List<Integer> status,
                                                                                   @RequestParam("username") String username){
-        System.out.println(username);
-        System.out.println(status.size());
         List<FuelType> fuelTypes = fuelTypeService.getListFuelType();
         Vehicle vehicle = vehicleService.findVehicleByUsernameAndConsignmentStatus(username, status);
         if (fuelTypes == null){
             return ResponseEntity.noContent().build();
         }else{
             if(vehicle == null){
-                return ResponseEntity.noContent().build();
+                FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
+                fuelTypeResponseDTO.setVehicleLicensePlate(null);
+                fuelTypeResponseDTO.setFuelTypeList(fuelTypes);
+                return ResponseEntity.ok().body(fuelTypeResponseDTO);
             }else{
                 FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
                 fuelTypeResponseDTO.setVehicleLicensePlate(vehicle.getLicensePlates());

@@ -69,8 +69,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "from vehicle v, consignment c, driver d, account a, schedule s\n" +
                 "where v.id = s.vehicle_id and c.id = s.consignment_id and s.driver_id = d.id\n" +
                 "and d.account_id = a.id and a.username= :username\n" +
-                "-- and timediff(p.actual_time, now()) < 0\n" +
-                "-- and s.is_approve = true and c.status = 3\n" +
                 "and c.id IN (\n" +
                 "select MAX(c.id) \n" +
                 "from consignment c, driver d, schedule s, account a, place p\n" +
@@ -79,6 +77,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "and d.account_id = a.id\n" +
                 "and timediff(p.actual_time,timestamp(now())) < 0\n" +
                 "and c.status = 3\n" +
+                "and p.type = 1\n" +
                 "and s.is_approve = true\n" +
                 "and a.username = :username\n" +
                 "and p.actual_time between :startDate and now() "+

@@ -122,14 +122,19 @@ public class VehicleController {
         String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionBeforeDelivery(username);
 
         if (vehiclePlates == null) {
-            return ResponseEntity.noContent().build();
+            InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+            inspectionResponseDTO.setVehicleLicensePlates(null);
+            inspectionResponseDTO.setInspections(inspectionService.findAll());
+
+            return ResponseEntity.ok().body(inspectionResponseDTO);
+        }else {
+
+            InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+            inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
+            inspectionResponseDTO.setInspections(inspectionService.findAll());
+
+            return ResponseEntity.ok().body(inspectionResponseDTO);
         }
-
-        InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-        inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
-        inspectionResponseDTO.setInspections(inspectionService.findAll());
-
-        return ResponseEntity.ok().body(inspectionResponseDTO);
     }
 
     @GetMapping(value = "/report-inspection-after-delivery")
