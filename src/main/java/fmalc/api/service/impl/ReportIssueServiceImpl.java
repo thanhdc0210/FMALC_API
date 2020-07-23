@@ -2,6 +2,7 @@ package fmalc.api.service.impl;
 
 import fmalc.api.dto.ReportIssueContentRequestDTO;
 import fmalc.api.dto.ReportIssueInformationForUpdatingDTO;
+import fmalc.api.dto.ReportIssueDTO;
 import fmalc.api.dto.ReportIssueRequestDTO;
 import fmalc.api.dto.ReportIssueResponseDTO;
 import fmalc.api.entity.Driver;
@@ -140,4 +141,11 @@ public class ReportIssueServiceImpl implements ReportIssueService {
         return flag;
     }
 
+    @Override
+    public List<ReportIssueDTO> getReportIssueByVehicle(int idVehicle) {
+        List<ReportIssue> reportIssues= reportIssueRepository.findReportIssueByVehicle(idVehicle);
+        ReportIssueDTO reportIssueDTO = new ReportIssueDTO();
+        List<ReportIssueDTO> reportIssueDTOS = reportIssueDTO.mapToListResponse(reportIssues);
+        return reportIssueDTOS;
+    }
 }

@@ -1,7 +1,6 @@
 package fmalc.api.repository;
 
 import fmalc.api.entity.ReportIssue;
-import fmalc.api.entity.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +22,7 @@ public interface ReportIssueRepository extends JpaRepository<ReportIssue, Intege
     ArrayList<ReportIssue> findByUsernameAndLicensePlates(@Param("username") String username,
                                                           @Param("licensePlates") String licensePlates, @Param("startDate") Timestamp startDate,
                                                           @Param("current") Timestamp current);
+
+    @Query("select r from ReportIssue r where r.vehicle.id =?1")
+    List<ReportIssue> findReportIssueByVehicle(int idVehicle);
 }

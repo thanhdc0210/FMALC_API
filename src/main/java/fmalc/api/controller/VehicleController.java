@@ -107,6 +107,34 @@ public class VehicleController {
 
     }
 
+    @PutMapping("/")
+    public ResponseEntity<Vehicle> updateVehicle( @RequestBody VehicleForDetailDTO dto) throws ParseException {
+        Vehicle vehicle = new Vehicle();
+        VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
+        vehicleForDetailDTO =dto;
+        String dateString = dto.getDateOfManufacture(); //
+
+        java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+        vehicle = vehicleForDetailDTO.convertToEnity(dto);
+        vehicle.setStatus(VehicleStatusEnum.AVAILABLE.getValue());
+        vehicle.setDateOfManufacture(sqlDate);
+        vehicle.setDriverLicense(dto.getDriverLicense());
+
+        Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
+
+
+            vehicle = vehicleService.saveVehicle(vehicle);
+
+            if (vehicle == null) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok().body(vehicle);
+
+
+
+    }
+
     private Vehicle convertToVehicleEntity(VehicleForNewDTO vehicleForNewDTO) {
         ModelMapper modelMapper = new ModelMapper();
         Vehicle vehicle = modelMapper.map(vehicleForNewDTO, Vehicle.class);

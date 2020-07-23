@@ -1,6 +1,7 @@
 package fmalc.api.controller;
 
 import fmalc.api.dto.ReportIssueInformationForUpdatingDTO;
+import fmalc.api.dto.ReportIssueDTO;
 import fmalc.api.dto.ReportIssueRequestDTO;
 import fmalc.api.dto.ReportIssueResponseDTO;
 import fmalc.api.entity.Vehicle;
@@ -50,12 +51,26 @@ public class ReportIssueController {
     }
 
     @PutMapping(value = "/report-issue")
-    public ResponseEntity updateReportIssue(@RequestBody ReportIssueInformationForUpdatingDTO reportIssueInformationForUpdatingDTO){
+    public ResponseEntity updateReportIssue(@RequestBody ReportIssueInformationForUpdatingDTO reportIssueInformationForUpdatingDTO) {
         boolean result = reportIssueService.updateReportIssue(reportIssueInformationForUpdatingDTO);
-        if (result == false){
+        if (result == false) {
             return ResponseEntity.noContent().build();
-        }else{
+        } else {
             return ResponseEntity.ok().body(reportIssueInformationForUpdatingDTO);
+        }
+    }
+
+    @GetMapping("/vehicle/{id}")
+    public ResponseEntity<List<ReportIssueDTO>> getIssueByIdVehicle(@PathVariable Integer id){
+        List<ReportIssueDTO> reportIssues = reportIssueService.getReportIssueByVehicle(id);
+        try{
+            if(reportIssues.size()>0){
+                return  ResponseEntity.ok().body(reportIssues);
+            }else{
+                return ResponseEntity.noContent().build();
+            }
+        }catch (Exception e){
+            return ResponseEntity.noContent().build();
         }
     }
 }

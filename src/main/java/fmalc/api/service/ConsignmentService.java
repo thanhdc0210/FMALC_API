@@ -18,5 +18,10 @@ public interface ConsignmentService {
 
     List<Consignment> getAllByStatus(Integer status);
 
+    Consignment consignmentConfirm(ConsignmentRequestDTO consignmentRequestDTO);
+
+    List<Consignment> findConsignmentByVehicle(int idVehicle);
+
+
 //    Consignment mapDriverForConsignment(Consignment consignment);
 }

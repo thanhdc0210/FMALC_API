@@ -17,6 +17,7 @@ public class ScheduleForConsignmentDTO {
     private String imageConsignment;
     private String note;
 
+
     public ScheduleForConsignmentDTO convertSchedule(Schedule schedule){
         ModelMapper modelMapper = new ModelMapper();
         ScheduleForConsignmentDTO scheduleForLocationDTO = modelMapper.map(schedule, ScheduleForConsignmentDTO.class);
