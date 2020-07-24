@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "maintenance")
+@Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,19 +22,19 @@ public class Maintenance implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "vehicle_id", referencedColumnName = "id", nullable = false)
     private Vehicle vehicle;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "driver_id", referencedColumnName = "id")
     private Driver driver;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "maintain_type_id", referencedColumnName = "id", nullable = false)
     private MaintainType maintainType;
 
-    @Column(name = "image_maintain", nullable = false)
+    @Column(name = "image_maintain")
     private String imageMaintain;
 
     @Column(name = "km_old", nullable = false)
@@ -42,6 +43,6 @@ public class Maintenance implements Serializable {
     @Column(name = "planned_maintain_date", nullable = false)
     private Date plannedMaintainDate;
 
-    @Column(name = "actual_maintain_date", nullable = true)
+    @Column(name = "actual_maintain_date")
     private Date actualMaintainDate;
 }

@@ -185,5 +185,16 @@ public class ConsignmentController {
         }
     }
 
+    // id tạm là id của vehicle
+    @GetMapping(value = "complete/{id}")
+    public ResponseEntity completeConsignment(@PathVariable("id") int id) {
+        try {
+            maintainanceService.calculateMaintenanceForVehicle(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
 
 }

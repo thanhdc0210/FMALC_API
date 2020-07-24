@@ -5,6 +5,7 @@ import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
 
 
+import fmalc.api.dto.NotificationUnread;
 import fmalc.api.entity.Notification;
 
 import fmalc.api.service.NotificationService;
@@ -119,5 +120,10 @@ public class NotificationController {
         ModelMapper modelMapper = new ModelMapper();
         NotificationResponeDTO dto = modelMapper.map(notify, NotificationResponeDTO.class);
         return dto;
+    }
+
+    @GetMapping(value = "/count-notification-unread")
+    public NotificationUnread countNotificationUnread() {
+        return notificationService.countNotificationUnread();
     }
 }

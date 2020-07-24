@@ -2,6 +2,7 @@ package fmalc.api.service.impl;
 
 
 import fmalc.api.dto.NotificationRequestDTO;
+import fmalc.api.dto.NotificationUnread;
 import fmalc.api.entity.*;
 import fmalc.api.repository.DriverRepository;
 import fmalc.api.repository.NotificationRepositry;
@@ -54,6 +55,13 @@ public class NotificationServiceImpl implements NotificationService {
 
         notify.setDriver(driver);
         return notificationRepositry.save(notify);
+    }
+
+    @Override
+    public NotificationUnread countNotificationUnread() {
+        NotificationUnread result = new NotificationUnread();
+        result.setCount(notificationRepositry.countAllByStatusFalse());
+        return result;
     }
 
     private Notification convertToDto(NotificationRequestDTO notificationRequestDTO) {
