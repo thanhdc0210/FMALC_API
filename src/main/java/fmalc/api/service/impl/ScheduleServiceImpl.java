@@ -29,7 +29,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     DriverService driverService;
 
     @Autowired
-    MaintainanceService maintainanceService;
+    MaintenanceService maintainanceService;
 
     @Autowired
     ScheduleService scheduleService;
@@ -328,7 +328,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             flag = true;
             //            VehicleForDetailDTO vehicle = vehicleService.findVehicleById(drivers.get(i).getId());
             //check xe co lich bao tri trong tuong lai
-            maintainCheckDTO = maintainanceService.checkMaintaiinForDriver(drivers.get(i).getId());
+            maintainCheckDTO = maintainanceService.checkMaintainForDriver(drivers.get(i).getId());
             if (maintainCheckDTO.getId() != null) {
 
                 flag = checkDateMaintain(consignment, maintainCheckDTO, flag);

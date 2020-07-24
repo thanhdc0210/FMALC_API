@@ -3,7 +3,6 @@ package fmalc.api.schedule;
 import fmalc.api.dto.*;
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Driver;
-import fmalc.api.entity.Place;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.DriverStatusEnum;
 import fmalc.api.enums.TypeLocationEnum;
@@ -17,7 +16,7 @@ import java.util.*;
 public class ScheduleForConsignment {
 
     @Autowired
-    MaintainanceService maintainanceService;
+    MaintenanceService maintainanceService;
     @Autowired
     ScheduleService scheduleService;
 
@@ -95,7 +94,7 @@ public class ScheduleForConsignment {
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 //        for (int i = 0; i < drivers.size(); i++) {
 //            flag = true;
-//            maintainCheckDTO = maintainanceService.checkMaintaiinForDriver(drivers.get(i).getId());
+//            maintainCheckDTO = maintainanceService.checkMaintainForDriver(drivers.get(i).getId());
 //            if (maintainCheckDTO.getId() != null) {
 //                // check xem lich bao tri co trung ngay vs ngay giao hang khong
 //                Place deliveryDetail =
