@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NotificationRepositry extends JpaRepository<Notification, Integer> {
+    int countAllByStatusFalse();
 }
