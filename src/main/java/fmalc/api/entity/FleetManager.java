@@ -46,7 +46,7 @@ public class FleetManager {
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
-    @Column(name = "image")
+    @Column(name = "image", length = 500)
     private String image;
 
     @OneToMany(mappedBy = "fleetManager", cascade = { CascadeType.MERGE})

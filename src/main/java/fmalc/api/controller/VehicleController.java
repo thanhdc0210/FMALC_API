@@ -3,6 +3,7 @@ package fmalc.api.controller;
 
 import fmalc.api.dto.*;
 
+import fmalc.api.entity.Inspection;
 import fmalc.api.entity.Vehicle;
 
 import fmalc.api.enums.VehicleStatusEnum;
@@ -76,7 +77,7 @@ public class VehicleController {
         return ResponseEntity.ok().body(vehicleForDetailDTO);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Vehicle> createVehicle(@RequestBody VehicleForNewDTO dto) throws ParseException {
         Vehicle vehicle = new Vehicle();
 
@@ -148,20 +149,25 @@ public class VehicleController {
             (@RequestParam(value = "username") String username) {
 
         String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionBeforeDelivery(username);
+        List<Inspection> inspections = inspectionService.findAll();
+        if (inspections == null){
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            if (vehiclePlates == null) {
+                InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+                inspectionResponseDTO.setVehicleLicensePlates(null);
+                inspectionResponseDTO.setInspections(inspectionService.findAll());
 
-        if (vehiclePlates == null) {
-            InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-            inspectionResponseDTO.setVehicleLicensePlates(null);
-            inspectionResponseDTO.setInspections(inspectionService.findAll());
+                return ResponseEntity.ok().body(inspectionResponseDTO);
+            }else {
 
-            return ResponseEntity.ok().body(inspectionResponseDTO);
-        }else {
+                InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+                inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
+                inspectionResponseDTO.setInspections(inspectionService.findAll());
 
-            InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-            inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
-            inspectionResponseDTO.setInspections(inspectionService.findAll());
-
-            return ResponseEntity.ok().body(inspectionResponseDTO);
+                return ResponseEntity.ok().body(inspectionResponseDTO);
+            }
         }
     }
 
@@ -170,20 +176,25 @@ public class VehicleController {
             (@RequestParam(value = "username") String username) {
 
         String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionAfterDelivery(username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)));
+        List<Inspection> inspections = inspectionService.findAll();
+        if (inspections == null){
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            if (vehiclePlates == null) {
+                InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+                inspectionResponseDTO.setVehicleLicensePlates(null);
+                inspectionResponseDTO.setInspections(inspectionService.findAll());
 
-        if (vehiclePlates == null) {
-            InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-            inspectionResponseDTO.setVehicleLicensePlates(null);
-            inspectionResponseDTO.setInspections(inspectionService.findAll());
+                return ResponseEntity.ok().body(inspectionResponseDTO);
+            }else {
 
-            return ResponseEntity.ok().body(inspectionResponseDTO);
-        }else {
+                InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+                inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
+                inspectionResponseDTO.setInspections(inspectionService.findAll());
 
-            InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-            inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
-            inspectionResponseDTO.setInspections(inspectionService.findAll());
-
-            return ResponseEntity.ok().body(inspectionResponseDTO);
+                return ResponseEntity.ok().body(inspectionResponseDTO);
+            }
         }
     }
 }

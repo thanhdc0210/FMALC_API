@@ -34,7 +34,7 @@ public class Schedule implements Serializable {
     @JoinColumn(name = "consignment_id", referencedColumnName = "id", nullable = false)
     private Consignment consignment;
 
-    @Column(name = "image_consignment")
+    @Column(name = "image_consignment", length = 500)
     private String imageConsignment;
 
     /**

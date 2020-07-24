@@ -394,16 +394,24 @@ public class ScheduleController {
     }
 
     @PostMapping("/status")
-    public ResponseEntity<Boolean> updateStatusSchedules(@RequestBody RequestSaveScheObjDTO requestSaveScheObjDTO){
+    public ResponseEntity<ConsignmentResponseDTO> updateStatusSchedules(@RequestBody RequestSaveScheObjDTO requestSaveScheObjDTO){
         boolean result = false;
+        Consignment consignment = new Consignment();
+        ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
         if(requestSaveScheObjDTO!=null){
             List<ObejctScheDTO> obejctScheDTOS =requestSaveScheObjDTO.getObejctScheDTOS();
             ConsignmentRequestDTO consignmentRequestDTO = requestSaveScheObjDTO.getConsignmentRequestDTO();
             try{
-                Consignment consignment = consignmentService.save(consignmentRequestDTO);
+                 consignment = consignmentService.save(consignmentRequestDTO);
+
                 if(consignment.getId()!=null){
+                    consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
                     scheduleService.createSchedule(obejctScheDTOS, consignment);
                     result = true;
+
+                }
+                if(result){
+                    return ResponseEntity.ok().body(consignmentResponseDTO);
                 }
 //            for(int i =0 ; i<requestObjectDTOS.size(); i++){
 //                boolean s =  scheduleService.updateStatusSchedule(requestObjectDTOS.get(i));
@@ -417,7 +425,8 @@ public class ScheduleController {
             }
 
         }
-        return ResponseEntity.ok().body(result);
+
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/vehicle/{id}")

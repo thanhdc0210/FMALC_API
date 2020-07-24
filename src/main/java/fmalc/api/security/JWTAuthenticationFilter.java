@@ -88,9 +88,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             loginResponseDTO.setAvatar(fleetManager.getImage());
             loginResponseDTO.setName(fleetManager.getName());
         } else if (roles.get(0).equals("ROLE_DRIVER")) {
-            Driver driver = driverRepository.findByAccount_Username(username);
-            loginResponseDTO.setAvatar(driver.getImage());
-            loginResponseDTO.setName(driver.getName());
+//            Driver driver = driverRepository.findByAccount_Username(username);
+//            loginResponseDTO.setAvatar(driver.getImage());
+//            loginResponseDTO.setName(driver.getName());
         }
         Gson gson = new Gson();
         res.getWriter().write(gson.toJson(loginResponseDTO));
