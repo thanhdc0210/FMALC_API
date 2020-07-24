@@ -47,7 +47,7 @@ public class Driver implements Serializable {
      @OneToOne
      private Account account;
 
-    @Column(name = "identity_no", nullable = false)
+    @Column(name = "identity_no", nullable = false, unique = true)
     private String identityNo; // Số trên CMND
 
     @Column(name = "name", nullable = false)
@@ -69,7 +69,7 @@ public class Driver implements Serializable {
     private Date dateOfBirth;
 
     // Loại bằng lái của tài xế
-    @Column(name = "driver_license", nullable = false, unique = true)
+    @Column(name = "driver_license", nullable = false)
     private Integer driverLicense;
 
     @Column(name = "working_hour")

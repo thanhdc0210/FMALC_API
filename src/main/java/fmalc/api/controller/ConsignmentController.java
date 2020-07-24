@@ -1,19 +1,20 @@
 package fmalc.api.controller;
 
 import fmalc.api.dto.*;
-import fmalc.api.entity.*;
-import fmalc.api.enums.DriverStatusEnum;
+import fmalc.api.entity.Consignment;
+import fmalc.api.entity.Driver;
+import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.ScheduleConsginmentEnum;
-import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 @RestController
 @RequestMapping(value = "/api/v1.0/consignments")
@@ -32,7 +33,7 @@ public class ConsignmentController {
     DriverService driverService;
 
     @Autowired
-    MaintainanceService maintainanceService;
+    MaintenanceService maintainanceService;
 
     @Autowired
     PlaceService placeService;
