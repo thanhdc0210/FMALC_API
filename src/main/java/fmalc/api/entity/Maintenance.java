@@ -11,6 +11,8 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "maintenance")
 @Setter
 @Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class Maintenance implements Serializable {
@@ -37,7 +39,7 @@ public class Maintenance implements Serializable {
     @Column(name = "image_maintain")
     private String imageMaintain;
 
-    @Column(name = "km_old", nullable = false)
+    @Column(name = "km_old")
     private Integer kmOld;
 
     @Column(name = "planned_maintain_date", nullable = false)
@@ -45,4 +47,8 @@ public class Maintenance implements Serializable {
 
     @Column(name = "actual_maintain_date")
     private Date actualMaintainDate;
+
+    @Column(name = "status", nullable = true)
+    private Boolean status;
+
 }

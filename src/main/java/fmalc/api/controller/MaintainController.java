@@ -1,8 +1,7 @@
 package fmalc.api.controller;
 
-import fmalc.api.dto.MaintainCheckDTO;
 import fmalc.api.dto.MaintainReponseDTO;
-import fmalc.api.service.MaintainanceService;
+import fmalc.api.service.MaintenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +16,7 @@ import java.util.*;
 public class MaintainController {
 
     @Autowired
-    MaintainanceService maintainanceService;
+    MaintenanceService maintainanceService;
 
     @GetMapping("/id/{id}")
     public ResponseEntity<List<MaintainReponseDTO>> getAllMaintainForVehicle(@PathVariable int id){

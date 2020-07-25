@@ -27,6 +27,12 @@ public class ScheduleServiceImpl implements ScheduleService {
     DriverService driverService;
 
     @Autowired
+    MaintenanceService maintainanceService;
+
+    @Autowired
+    ScheduleService scheduleService;
+
+    @Autowired
     PlaceService placeService;
 
     private static int priorityPlace = 1;

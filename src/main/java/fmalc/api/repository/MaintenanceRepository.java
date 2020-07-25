@@ -11,14 +11,13 @@ import java.sql.Date;
 import java.util.List;
 
 @Repository
-public interface MaintainanceRepository extends JpaRepository<Maintenance, Integer> {
-//    Maintenance findBy
+public interface MaintenanceRepository extends JpaRepository<Maintenance, Integer> {
+    //    Maintenance findBy
     @Query("Select m from Maintenance m where m.vehicle.id =?1")
     List<Maintenance> findByVehicle(int idVehicle);
 
     @Query("Select m from Maintenance m where m.driver.id =?1")
     List<Maintenance> findByDriver(int idDriver);
-
     List<Maintenance> findTop2ByVehicle_IdOrderByIdDesc(int vehicleId);
 
     @Modifying
@@ -32,4 +31,9 @@ public interface MaintainanceRepository extends JpaRepository<Maintenance, Integ
     void updateActualMaintainDate(Integer id, Date date);
 
     List<Maintenance> findAllByActualMaintainDateIsNotNullOrderByActualMaintainDateDesc();
+    //GiangTLB
+    List<Maintenance> findMaintenancesByDriverIdAndAndStatus(int driverId, boolean status);
+
+    @Query("update Maintenance m set m.imageMaintain=?1, m.kmOld=?2, m.status=true where m.id=?3")
+    Maintenance updateMaintanance(String image,Integer kmOld, Integer id);
 }

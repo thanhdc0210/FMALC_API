@@ -9,7 +9,7 @@ import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.repository.VehicleRepository;
-import fmalc.api.service.MaintainanceService;
+import fmalc.api.service.MaintenanceService;
 import fmalc.api.service.PlaceService;
 import fmalc.api.service.ScheduleService;
 import fmalc.api.service.VehicleService;
@@ -33,7 +33,7 @@ public class VehicleServiceImpl implements VehicleService {
     PlaceService placeService;
 
     @Autowired
-    MaintainanceService maintainanceService;
+    MaintenanceService maintainanceService;
     private static int priorityPlace = 1;
 
     @Override

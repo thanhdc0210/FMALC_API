@@ -47,7 +47,7 @@ public class Driver implements Serializable {
      @OneToOne
      private Account account;
 
-    @Column(name = "identity_no", nullable = false)
+    @Column(name = "identity_no", nullable = false, unique = true)
     private String identityNo; // Số trên CMND
 
     @Column(name = "name", nullable = false)
@@ -56,7 +56,7 @@ public class Driver implements Serializable {
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "no", nullable = false)
+    @Column(name = "no", nullable = false, unique = true)
     private String no; // Số bằng lái
 
     @Column(name = "license_expires", nullable = false)
@@ -75,7 +75,7 @@ public class Driver implements Serializable {
     @Column(name = "working_hour")
     private Float workingHour;
 
-    @Column(name = "image")
+    @Column(name = "image", length = 500)
     private String image;
 
     @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
