@@ -1,6 +1,5 @@
 package fmalc.api.dto;
 
-import fmalc.api.entity.Vehicle;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -13,4 +12,5 @@ public class NotificationResponeDTO {
     private String content;
     private boolean status;
     private int id;
+    private int type;
 }

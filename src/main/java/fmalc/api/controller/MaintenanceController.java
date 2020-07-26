@@ -19,7 +19,7 @@ public class MaintenanceController {
     @Autowired
     MaintenanceService maintenanceService;
 
-    @GetMapping
+    @GetMapping("/actual-date")
     public ResponseEntity getMaintenance() {
         try {
             List<Maintenance> maintenances = maintenanceService.getMaintenance();

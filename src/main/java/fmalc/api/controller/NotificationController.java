@@ -1,6 +1,5 @@
 package fmalc.api.controller;
 
-import fmalc.api.dto.LocationResponeDTO;
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
 
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -100,7 +98,6 @@ public class NotificationController {
     public ResponseEntity<String> notifyReceived() {
 
         closeInterval();
-//        System.out.println("AAAAAAAAAAA");
         notificationResponeDTOS = new ArrayList<>();
         String result = "OK";
         return ResponseEntity.ok().body(result);
