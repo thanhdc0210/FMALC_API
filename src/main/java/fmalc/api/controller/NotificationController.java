@@ -50,9 +50,7 @@ public class NotificationController {
     // save notify and send notify for fleet manager
     @PostMapping("/")
     public ResponseEntity<NotificationResponeDTO> createNotification(@RequestBody NotificationRequestDTO notificationRequestDTO) {
-//        NotificationResponeDTO check = null;
         NotificationResponeDTO notificationResponeDTO;
-//        String url = "localhost:8082/fmacl/notification/notificationworking";
         try {
 
             Notification notificationSaved = notificationService.createNotifiation(notificationRequestDTO);
@@ -61,14 +59,8 @@ public class NotificationController {
                 notificationResponeDTO = convertToDto(notificationSaved);
                 if (notificationSend != notificationResponeDTO) {
                     notificationResponeDTOS.add(notificationResponeDTO);
-//
                     intervals.subscribe((i) -> notifyForManagerWorkingHours());
-//                    closeInterval();
-//
-//                    closeInterval();
-//                    System.out.println("LIST" + notificationResponeDTOS.size());
-//                    System.out.println("NOTIFY");
-//                    notifyForManagerWorkingHours();
+
                 }
 
                 return ResponseEntity.ok().body(notificationResponeDTO);

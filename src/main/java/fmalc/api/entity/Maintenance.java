@@ -11,7 +11,6 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "maintenance")
 @Setter
 @Getter
-@Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
