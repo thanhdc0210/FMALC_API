@@ -23,7 +23,7 @@ public class MaintenanceResponseDTO implements Serializable {
         this.maintainId = dto.getId();
         this.maintainTypeId = dto.getMaintenanceType().getId();
         this.content = dto.getMaintenanceType().getContent();
-        this.maintainTypeName = dto.getMaintenanceType().getMaintainTypeName();
+        this.maintainTypeName = dto.getMaintenanceType().getMaintenanceTypeName();
         this.licensePlates = dto.getVehicle().getLicensePlates();
         this.maintainDate = dto.getPlannedMaintainDate();
     }

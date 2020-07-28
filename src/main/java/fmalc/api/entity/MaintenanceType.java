@@ -27,7 +27,7 @@ public class MaintenanceType implements Serializable {
     @Column(name = "kilometers_number", nullable = false)
     private Integer kilometersNumber;
 
-    @Column(name = "maintain_type_name", nullable = false)
-    private String maintainTypeName;
+    @Column(name = "maintenance_type_name", nullable = false)
+    private String maintenanceTypeName;
 
 }

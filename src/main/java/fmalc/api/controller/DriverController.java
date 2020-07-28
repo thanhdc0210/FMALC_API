@@ -88,6 +88,18 @@ public class DriverController {
         return ResponseEntity.ok().body(result);
     }
 
+    @PutMapping(value = "token-device")
+    public ResponseEntity<Driver> updateTokenDevice(@PathVariable("id") Integer driverId,
+                                                    @PathVariable("token") String token){
+        Driver driver = driverService.findById(driverId);
+
+        if (driver == null){
+            return ResponseEntity.noContent().build();
+        }else{
+            driver.setTokenDevice(token);
+            return ResponseEntity.ok().body(driverService.updateTokenDevice(driver));
+        }
+    }
 }
 
 
