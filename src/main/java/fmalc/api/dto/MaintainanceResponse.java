@@ -26,7 +26,7 @@ public class MaintainanceResponse {
         maintainanceResponse.setLicensePlates(maintenance.getVehicle().getLicensePlates());
         maintainanceResponse.setNameDriver(maintenance.getDriver().getName());
         maintainanceResponse.setPhoneNumberDriver(maintenance.getDriver().getPhoneNumber());
-        maintainanceResponse.setContent(maintenance.getMaintainType().getContent());
+        maintainanceResponse.setContent(maintenance.getMaintenanceType().getContent());
         int status = 1;
         LocalDate today = LocalDate.now();
         if (maintenance.getActualMaintainDate().toLocalDate().isAfter(today)) {

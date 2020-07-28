@@ -10,8 +10,8 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "maintain_type")
-public class MaintainType implements Serializable {
+@Table(name = "maintenance_type")
+public class MaintenanceType implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id

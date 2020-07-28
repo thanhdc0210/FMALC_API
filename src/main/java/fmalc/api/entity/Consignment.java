@@ -49,4 +49,7 @@ public class Consignment implements Serializable {
 
     @OneToMany(mappedBy = "consignment", cascade = { CascadeType.MERGE})
     private Collection<Place> places;
+
+    @Column(name = "image_contract", length = 500)
+    private String imageContract;
 }
