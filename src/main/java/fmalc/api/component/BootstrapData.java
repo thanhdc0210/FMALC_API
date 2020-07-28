@@ -100,21 +100,21 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     }
 
     private void bootstrapMaintainType() {
-        MaintainType maintainType = maintainTypeRepository.findByMaintainTypeName("Loại 1");
-        if (maintainType == null) {
-            maintainType = new MaintainType();
-            maintainType.setMaintainTypeName("Loại 1");
-            maintainType.setContent("Thay nhớt, kiểm tra lốp, kiểm tra thắng,...");
-            maintainType.setKilometersNumber(5000);
-            maintainTypeRepository.save(maintainType);
+        MaintenanceType maintenanceType = maintainTypeRepository.findByMaintenanceTypeName("Loại 1");
+        if (maintenanceType == null) {
+            maintenanceType = new MaintenanceType();
+            maintenanceType.setMaintenanceTypeName("Loại 1");
+            maintenanceType.setContent("Thay nhớt, kiểm tra lốp, kiểm tra thắng,...");
+            maintenanceType.setKilometersNumber(5000);
+            maintainTypeRepository.save(maintenanceType);
         }
-        maintainType = maintainTypeRepository.findByMaintainTypeName("Loại 2");
-        if (maintainType == null) {
-            maintainType = new MaintainType();
-            maintainType.setMaintainTypeName("Loại 2");
-            maintainType.setContent("Đảo lốp, thay nhớt, kiểm tra lốp, kiểm tra thắng,...");
-            maintainType.setKilometersNumber(10000);
-            maintainTypeRepository.save(maintainType);
+        maintenanceType = maintainTypeRepository.findByMaintenanceTypeName("Loại 2");
+        if (maintenanceType == null) {
+            maintenanceType = new MaintenanceType();
+            maintenanceType.setMaintenanceTypeName("Loại 2");
+            maintenanceType.setContent("Đảo lốp, thay nhớt, kiểm tra lốp, kiểm tra thắng,...");
+            maintenanceType.setKilometersNumber(10000);
+            maintainTypeRepository.save(maintenanceType);
         }
     }
 

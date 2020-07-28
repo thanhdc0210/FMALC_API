@@ -48,4 +48,8 @@ public class Schedule implements Serializable {
 
     @OneToMany(mappedBy = "schedule", cascade = { CascadeType.MERGE })
     private Collection<Location> locations;
+
+    @OneToOne
+    @JoinColumn(name = "inheritance", referencedColumnName = "id")
+    private Schedule schedule;
 }

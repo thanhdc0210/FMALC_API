@@ -11,8 +11,8 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "maintain_type")
-public class MaintainType implements Serializable {
+@Table(name = "maintenance_type")
+public class MaintenanceType implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -28,7 +28,7 @@ public class MaintainType implements Serializable {
     @Column(name = "kilometers_number", nullable = false)
     private Integer kilometersNumber;
 
-    @Column(name = "maintain_type_name", nullable = false)
-    private String maintainTypeName;
+    @Column(name = "maintenance_type_name", nullable = false)
+    private String maintenanceTypeName;
 
 }

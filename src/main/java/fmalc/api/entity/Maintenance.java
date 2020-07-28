@@ -32,8 +32,8 @@ public class Maintenance implements Serializable {
     private Driver driver;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "maintain_type_id", referencedColumnName = "id", nullable = false)
-    private MaintainType maintainType;
+    @JoinColumn(name = "maintenance_type_id", referencedColumnName = "id", nullable = false)
+    private MaintenanceType maintenanceType;
 
     @Column(name = "image_maintain")
     private String imageMaintain;

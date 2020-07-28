@@ -156,7 +156,7 @@ public class VehicleController {
         else {
             if (vehiclePlates == null) {
                 InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-                inspectionResponseDTO.setVehicleLicensePlates(null);
+                inspectionResponseDTO.setVehicleLicensePlates("");
                 inspectionResponseDTO.setInspections(inspectionService.findAll());
 
                 return ResponseEntity.ok().body(inspectionResponseDTO);
@@ -183,7 +183,7 @@ public class VehicleController {
         else {
             if (vehiclePlates == null) {
                 InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-                inspectionResponseDTO.setVehicleLicensePlates(null);
+                inspectionResponseDTO.setVehicleLicensePlates("");
                 inspectionResponseDTO.setInspections(inspectionService.findAll());
 
                 return ResponseEntity.ok().body(inspectionResponseDTO);

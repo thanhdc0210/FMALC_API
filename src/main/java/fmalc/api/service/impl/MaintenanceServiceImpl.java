@@ -4,7 +4,7 @@ import fmalc.api.controller.NotificationController;
 import fmalc.api.dto.MaintainCheckDTO;
 import fmalc.api.dto.MaintainReponseDTO;
 import fmalc.api.dto.NotificationRequestDTO;
-import fmalc.api.entity.MaintainType;
+import fmalc.api.entity.MaintenanceType;
 import fmalc.api.entity.Maintenance;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.repository.MaintainTypeRepository;
@@ -18,10 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -167,14 +165,22 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         addMaintenance.setPlannedMaintainDate(next);
         addMaintenance.setKmOld(maintenances.get(0).getKmOld() + 5000);
         addMaintenance.setVehicle(vehicle);
-        MaintainType maintainType;
-        if ("Loại 1".equals(maintenance.getMaintainType().getMaintainTypeName())) {
-            maintainType = maintainTypeRepository.findByMaintainTypeName("Loại 2");
-        } else {
-            maintainType = maintainTypeRepository.findByMaintainTypeName("Loại 1");
+//<<<<<<< HEAD
+//        MaintainType maintainType;
+//        if ("Loại 1".equals(maintenance.getMaintainType().getMaintainTypeName())) {
+//            maintainType = maintainTypeRepository.findByMaintainTypeName("Loại 2");
+//        } else {
+//            maintainType = maintainTypeRepository.findByMaintainTypeName("Loại 1");
+//        }
+//        addMaintenance.setMaintainType(maintainType);
+//        addMaintenance.setStatus(false);
+//=======
+        MaintenanceType maintenanceType = maintainTypeRepository.findById(1).get();
+        if (maintenance.getMaintenanceType().getId() == 1) {
+            maintenanceType = maintainTypeRepository.findById(2).get();
         }
-        addMaintenance.setMaintainType(maintainType);
-        addMaintenance.setStatus(false);
+        addMaintenance.setMaintenanceType(maintenanceType);
+//>>>>>>> d23df9d71cc003bd4f105ea10c0a21820c7e3c2d
         maintainanceRepository.save(addMaintenance);
         if (Duration.between(today.atStartOfDay(), next.toLocalDate().atStartOfDay()).toDays() <= 7) {
             maintainanceRepository.updateActualMaintainDate(maintenances.get(0).getId(), next);
@@ -205,8 +211,10 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         addMaintenance.setKmOld(vehicle.getKilometerRunning());
         addMaintenance.setVehicle(vehicle);
         addMaintenance.setStatus(true);
-        MaintainType maintainType = maintainTypeRepository.findByMaintainTypeName("Loại 1");
-        addMaintenance.setMaintainType(maintainType);
+//        MaintenanceType maintenanceType1 = maintainTypeRepository.findByMaintainTypeName("Loại 1");
+//        addMaintenance.setMaintenanceType(maintenanceType1);
+        MaintenanceType maintenanceType = maintainTypeRepository.findById(1).get();
+        addMaintenance.setMaintenanceType(maintenanceType);
         maintainanceRepository.save(addMaintenance);
     }
 }
