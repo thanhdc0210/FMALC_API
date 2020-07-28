@@ -54,6 +54,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         notify.setDriver(driver);
+        notify.setStatus(false);
         return notificationRepositry.save(notify);
     }
 
