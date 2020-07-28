@@ -17,6 +17,7 @@ public class LoginResponseDTO implements Serializable {
     private String role;
     private String avatar;
     private String name;
+    private Integer id;
 
     @Override
     public String toString() {
@@ -26,6 +27,7 @@ public class LoginResponseDTO implements Serializable {
                 ", role='" + role + '\'' +
                 ", avatar='" + avatar + '\'' +
                 ", name='" + name + '\'' +
+                ", id='" + id + '\'' +
                 '}';
     }
 }
