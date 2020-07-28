@@ -24,8 +24,10 @@ public class MaintainanceResponse {
         ModelMapper modelMapper = new ModelMapper();
         MaintainanceResponse maintainanceResponse = modelMapper.map(maintenance, MaintainanceResponse.class);
         maintainanceResponse.setLicensePlates(maintenance.getVehicle().getLicensePlates());
-        maintainanceResponse.setNameDriver(maintenance.getDriver().getName());
-        maintainanceResponse.setPhoneNumberDriver(maintenance.getDriver().getPhoneNumber());
+        if (maintenance.getDriver() != null) {
+            maintainanceResponse.setNameDriver(maintenance.getDriver().getName());
+            maintainanceResponse.setPhoneNumberDriver(maintenance.getDriver().getPhoneNumber());
+        }
         maintainanceResponse.setContent(maintenance.getMaintainType().getContent());
         int status = 1;
         LocalDate today = LocalDate.now();

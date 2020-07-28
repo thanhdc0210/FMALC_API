@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MaintainTypeRepository extends JpaRepository<MaintainType, Integer> {
+    MaintainType findByMaintainTypeName(String maintainTypeName);
 }

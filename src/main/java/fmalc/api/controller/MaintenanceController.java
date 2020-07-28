@@ -12,6 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.*;
+
 @RestController
 @RequestMapping("/api/v1.0/maintenances")
 public class MaintenanceController {
@@ -23,6 +26,14 @@ public class MaintenanceController {
     public ResponseEntity getMaintenance() {
         try {
             List<Maintenance> maintenances = maintenanceService.getMaintenance();
+            var idsRemove = maintenances.stream()
+                    .collect(groupingBy(x -> x.getVehicle().getId(),
+                            minBy(comparingInt(y -> y.getId()))))
+                    .values()
+                    .stream()
+                    .map(x -> x.get().getId())
+                    .collect(toList());
+            maintenances.removeIf(x -> idsRemove.contains(x.getId()));
             if (maintenances.isEmpty()) {
                 return ResponseEntity.noContent().build();
             } else {
