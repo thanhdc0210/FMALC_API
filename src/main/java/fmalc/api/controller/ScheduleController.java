@@ -11,6 +11,7 @@ import fmalc.api.dto.ScheduleResponseDTO;
 import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.ScheduleConsginmentEnum;
+import fmalc.api.enums.SearchTypeForDriverEnum;
 import fmalc.api.service.ConsignmentService;
 import fmalc.api.service.DriverService;
 import fmalc.api.service.ScheduleService;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -436,6 +439,24 @@ public class ScheduleController {
             result = scheduleService.getScheduleForVehicle(id);
             if(result.size()>0){
                 return  ResponseEntity.ok().body(result);
+            }else{
+                return ResponseEntity.noContent().build();
+            }
+
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+//        return ResponseEntity.ok().body(result);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ScheduleResponseDTO>> searchByTypeForDriver(@RequestParam SearchTypeForDriverEnum searchType, @RequestParam String searchValue){
+        List<Schedule> result =new ArrayList<>();
+        try{
+            result = scheduleService.searchByTypeForDriver(searchValue,searchType);
+            if(result.size()>0){
+                List<ScheduleResponseDTO> consignmentResponses = new ArrayList<>(new ScheduleResponseDTO().mapToListResponse(result));
+                return  ResponseEntity.ok().body(consignmentResponses);
             }else{
                 return ResponseEntity.noContent().build();
             }
