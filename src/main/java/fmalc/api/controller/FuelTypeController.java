@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,22 +30,28 @@ public class FuelTypeController {
     @GetMapping("/fuel-type")
     public ResponseEntity<FuelTypeResponseDTO> getFuelTypesAndVehicleLicensePlate(@RequestParam("status") List<Integer> status,
                                                                                   @RequestParam("username") String username){
-        List<FuelType> fuelTypes = fuelTypeService.getListFuelType();
-        Vehicle vehicle = vehicleService.findVehicleByUsernameAndConsignmentStatus(username, status);
-        if (fuelTypes == null){
-            return ResponseEntity.noContent().build();
-        }else{
-            if(vehicle == null){
-                FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
-                fuelTypeResponseDTO.setVehicleLicensePlate(null);
-                fuelTypeResponseDTO.setFuelTypeList(fuelTypes);
-                return ResponseEntity.ok().body(fuelTypeResponseDTO);
+        try {
+            List<FuelType> fuelTypes = fuelTypeService.getListFuelType();
+            Vehicle vehicle = vehicleService.findVehicleByUsernameAndConsignmentStatus(username, status,
+                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
+                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
+            if (fuelTypes == null){
+                return ResponseEntity.noContent().build();
             }else{
-                FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
-                fuelTypeResponseDTO.setVehicleLicensePlate(vehicle.getLicensePlates());
-                fuelTypeResponseDTO.setFuelTypeList(fuelTypes);
-                return ResponseEntity.ok().body(fuelTypeResponseDTO);
+                if(vehicle == null){
+                    FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
+                    fuelTypeResponseDTO.setVehicleLicensePlate(null);
+                    fuelTypeResponseDTO.setFuelTypeList(fuelTypes);
+                    return ResponseEntity.ok().body(fuelTypeResponseDTO);
+                }else{
+                    FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
+                    fuelTypeResponseDTO.setVehicleLicensePlate(vehicle.getLicensePlates());
+                    fuelTypeResponseDTO.setFuelTypeList(fuelTypes);
+                    return ResponseEntity.ok().body(fuelTypeResponseDTO);
+                }
             }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
         }
     }
 }

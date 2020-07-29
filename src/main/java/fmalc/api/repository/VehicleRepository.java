@@ -95,9 +95,11 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "INNER JOIN Account a ON a.id = d.account.id " +
                 "AND a.username = :username AND s.isApprove = true AND c.status IN :status " +
                 "AND timediff(now(), p.plannedTime) < 0 "+
+                "AND p.plannedTime between :startDate and :endDate "+
                 "GROUP BY v.id "
                 )
-        Vehicle findVehicleByUsernameAndConsignmentStatus(@Param("username") String username, List<Integer> status);
+        Vehicle findVehicleByUsernameAndConsignmentStatus(@Param("username") String username,@Param("status") List<Integer> status,
+                          @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 
         @Modifying
         @org.springframework.transaction.annotation.Transactional
