@@ -49,7 +49,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public Vehicle saveVehicle(Vehicle vehicle) {
         vehicle = vehicleRepository.saveAndFlush(vehicle);
-//        maintainanceService.createFirstMaintain(vehicle);
+        maintainanceService.createFirstMaintain(vehicle);
         return vehicle;
     }
 
