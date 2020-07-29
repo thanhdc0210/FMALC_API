@@ -210,9 +210,9 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Driver updateTokenDevice(Driver driver) {
+    public String updateTokenDevice(Driver driver) {
 
-        return driverRepository.save(driver);
+        return driverRepository.save(driver).getTokenDevice();
     }
 
     private List<Driver> checkScheduledForDriver(List<Driver> drivers, Consignment consignment) {

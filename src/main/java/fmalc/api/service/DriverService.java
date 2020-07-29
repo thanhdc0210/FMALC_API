@@ -35,5 +35,5 @@ public interface DriverService {
 
     List<ScheduleForConsignmentDTO> checkScheduleForDriver(int idDriver);
 
-    Driver updateTokenDevice(Driver driver);
+    String updateTokenDevice(Driver driver);
 }
