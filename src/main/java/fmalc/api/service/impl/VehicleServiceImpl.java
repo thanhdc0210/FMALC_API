@@ -56,8 +56,9 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public VehicleForDetailDTO findVehicleById(int id) {
         Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
-
-        return new VehicleForDetailDTO().convertToDto(vehicle);
+        VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
+        vehicleForDetailDTO = vehicleForDetailDTO.convertToDto(vehicle);
+        return vehicleForDetailDTO;
     }
 
     @Override
@@ -605,8 +606,9 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public void updateStatus(int status, int id) {
-        vehicleRepository.updateStatusVehicle(status, id);
+    public int updateStatus(int status, int id) {
+//       Vehicle vehicle= vehicleRepository.updateStatusVehicle(status, id);
+       return  vehicleRepository.updateStatusVehicle(status, id);
     }
 
 

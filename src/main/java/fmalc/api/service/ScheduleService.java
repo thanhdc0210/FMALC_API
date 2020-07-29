@@ -26,4 +26,6 @@ public interface ScheduleService {
     Schedule findById(Integer id);
     Schedule findScheduleByVehDriCon(ObejctScheDTO obejctScheDTO);
     List<Schedule> checkDriverInScheduled(int idDriver);
+
+    StatusToUpdateDTO updateStautsForVeDriAndCon(StatusToUpdateDTO statusToUpdateDTO, Schedule schedule);
 }

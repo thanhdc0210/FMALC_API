@@ -12,8 +12,10 @@ public class LocationDTO implements Serializable {
     private double latitude;
     private  double longitude;
     private String time;
-    private int consignment;
+    private int schedule;
     private String address;
+
+
 
 
 }

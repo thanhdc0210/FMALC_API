@@ -1,13 +1,15 @@
 package fmalc.api.repository;
 
 import fmalc.api.entity.Consignment;
+import fmalc.api.entity.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
+
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
@@ -26,4 +28,10 @@ public interface ConsignmentRepository
     @Query("select c from Consignment c, Schedule s where c.id = s.consignment.id and s.vehicle.id=?1")
     List<Consignment> findConsignemnt(int idVehicle);
     Consignment findById (int id);
+
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value = "UPDATE Consignment c set c.status = ?1 where c.id = ?2", nativeQuery = true)
+    int updateStatusVehicle(int status, int id);
+
 }

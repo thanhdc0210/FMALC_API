@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 
+import reactor.core.scheduler.Scheduler;
 import reactor.util.function.Tuple2;
 
 import java.time.Duration;
@@ -43,7 +44,7 @@ public class NotificationController {
 
     // set 5s to do
     private Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
-
+    private Flux<List<NotificationResponeDTO>> flux;
 
     // save notify and send notify for fleet manager
     @PostMapping("/")
@@ -75,31 +76,35 @@ public class NotificationController {
         return notificationResponeDTOS;
     }
 
-    private void closeInterval() {
+    private Disposable closeInterval() {
+        System.out.println("NOTU");
         Disposable disposable = intervals.subscribe();
         disposable.dispose();
+        return disposable;
     }
 
     // send notify for fleet manager
     @GetMapping(value = "/notificationworking", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<List<NotificationResponeDTO>> notifyForManagerWorkingHours() {
-        closeInterval();
+//        closeInterval();
         intervals.subscribe((i) -> returnResponeFor());
         Flux<List<NotificationResponeDTO>> monoTransaction = Flux.fromStream(Stream.generate(() -> returnResponeFor()));
-        Flux<List<NotificationResponeDTO>> flux = Flux.zip(intervals, monoTransaction).map(Tuple2::getT2);
-
+        if(returnResponeFor().size()>0){
+//            System.out.println(">0");
+           monoTransaction = Flux.fromStream(Stream.generate(() -> returnResponeFor()));
+            flux = Flux.zip(intervals, monoTransaction).map(Tuple2::getT2);
+        }
         return flux;
-
-
     }
 
     // delete list to disconnect notify
     @GetMapping(value = "/notificationworking/received", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<String> notifyReceived() {
 
-        closeInterval();
+//        closeInterval();
         notificationResponeDTOS = new ArrayList<>();
         String result = "OK";
+
         return ResponseEntity.ok().body(result);
     }
 
