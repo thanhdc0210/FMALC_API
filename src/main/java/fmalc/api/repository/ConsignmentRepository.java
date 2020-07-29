@@ -31,7 +31,7 @@ public interface ConsignmentRepository
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query(value = "UPDATE consignment c set c.status = ?1 where c.id = ?2", nativeQuery = true)
+    @Query(value = "UPDATE Consignment c set c.status = ?1 where c.id = ?2", nativeQuery = true)
     int updateStatusVehicle(int status, int id);
 
 }
