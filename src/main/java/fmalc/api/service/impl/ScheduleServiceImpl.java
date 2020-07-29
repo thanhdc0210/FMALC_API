@@ -4,6 +4,7 @@ package fmalc.api.service.impl;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.ScheduleConsginmentEnum;
+import fmalc.api.enums.SearchTypeForDriverEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.ScheduleRepository;
 import fmalc.api.service.*;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static fmalc.api.enums.SearchTypeForDriverEnum.*;
 
 
 @Service
@@ -125,6 +128,25 @@ public class ScheduleServiceImpl implements ScheduleService {
     public List<Schedule> checkDriverInScheduled(int idDriver) {
         List<Schedule> schedules = scheduleRepository.checkDriverInScheduled(idDriver);
         return schedules;
+    }
+
+    @Override
+    public List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType) {
+        List<Schedule> result = new ArrayList<>();
+        switch (searchType) {
+            case CONSIGNMENT_ID:
+                Integer parsed = Integer.parseInt(value);
+                result = scheduleRepository.findByConsignment_Id(parsed);
+                return result;
+            case LICENSE_PLATE:
+                result = scheduleRepository.findByVehicleLicensePlatesContaining(value);
+                return result;
+            case OWNER_NAME:
+                result = scheduleRepository.findByConsignmentOwnerNameContaining(value);
+                return result;
+            default:
+                throw new IllegalStateException("Unexpected value: " + searchType);
+        }
     }
 
 

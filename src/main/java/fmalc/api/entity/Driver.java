@@ -86,23 +86,4 @@ public class Driver implements Serializable {
 
     @Column(name = "token_device")
     private String tokenDevice;
-
-    @Override
-    public String toString() {
-        return "Driver{" +
-                "id=" + id +
-                ", status=" + status +
-                ", account=" + account +
-                ", identityNo='" + identityNo + '\'' +
-                ", name='" + name + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", no='" + no + '\'' +
-                ", licenseExpires=" + licenseExpires +
-                ", dateOfBirth=" + dateOfBirth +
-                ", driverLicense=" + driverLicense +
-                ", workingHour=" + workingHour +
-                ", image='" + image + '\'' +
-                ", tokenDevice='" + tokenDevice + '\'' +
-                '}';
-    }
 }

@@ -6,6 +6,7 @@ import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Driver;
 import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
+import fmalc.api.enums.SearchTypeForDriverEnum;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -26,4 +27,7 @@ public interface ScheduleService {
     Schedule findById(Integer id);
     Schedule findScheduleByVehDriCon(ObejctScheDTO obejctScheDTO);
     List<Schedule> checkDriverInScheduled(int idDriver);
+
+    List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType);
+
 }
