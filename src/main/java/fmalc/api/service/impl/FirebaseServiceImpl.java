@@ -48,8 +48,6 @@ public class FirebaseServiceImpl {
                 .setNotification(new Notification(notificationRequest.getNotificationData().getTitle(), notificationRequest.getNotificationData().getBody()))
                 .putData("title", notificationRequest.getNotificationData().getTitle())
                 .putData("body", notificationRequest.getNotificationData().getBody())
-                .putData("type", notificationRequest.getNotificationData().getType())
-                .putData("id", notificationRequest.getNotificationData().getId())
                 .build();
 
         String response = null;
