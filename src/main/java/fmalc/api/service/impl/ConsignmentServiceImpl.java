@@ -193,4 +193,10 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         }
         return result;
     }
+
+    @Override
+    public int updateStatus(int status, int id) {
+//        Consignment consignment = consignmentRepository.updateStatusVehicle(status,id);
+        return consignmentRepository.updateStatusVehicle(status,id);
+    }
 }

@@ -45,21 +45,21 @@ public class MaintenanceController {
         }
     }
 
-    @GetMapping("")
-    public ResponseEntity<List<MaintenanceResponseDTO>> getListMaintenanceForDriver(@RequestParam Integer driverId) {
-        List<Maintenance> maintenanceList = maintenanceService.getListMaintenanceForDriver(driverId);
-        try {
-            if (maintenanceList.isEmpty()) {
-                return ResponseEntity.noContent().build();
-            } else {
-                List<MaintenanceResponseDTO> result = new MaintenanceResponseDTO().mapToListResponse(maintenanceList);
-                return ResponseEntity.ok().body(result);
-            }
-        } catch (Exception exception) {
-            return ResponseEntity.badRequest().build();
-        }
-
-    }
+//    @GetMapping("")
+//    public ResponseEntity<List<MaintenanceResponseDTO>> getListMaintenanceForDriver(@RequestParam Integer driverId) {
+//        List<Maintenance> maintenanceList = maintenanceService.getListMaintenanceForDriver(driverId);
+//        try {
+//            if (maintenanceList.isEmpty()) {
+//                return ResponseEntity.noContent().build();
+//            } else {
+//                List<MaintenanceResponseDTO> result = new MaintenanceResponseDTO().mapToListResponse(maintenanceList);
+//                return ResponseEntity.ok().body(result);
+//            }
+//        } catch (Exception exception) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//    }
 
     @PutMapping(value = "update-maintaining-complete")
     public ResponseEntity updateMaintainingComplete(@RequestParam("id") Integer id, @RequestParam("km") Integer km, @RequestPart(value = "file") MultipartFile file) {

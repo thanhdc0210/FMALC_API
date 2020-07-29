@@ -36,8 +36,8 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
         @Modifying(clearAutomatically = true)
         @Transactional
-        @Query(value = "UPDATE Vehicle v set v.status = ?1 where v.id = ?2", nativeQuery = true)
-        void updateStatusVehicle(int status, int id);
+        @Query(value = "UPDATE vehicle v set v.status = ?1 where v.id = ?2", nativeQuery = true)
+        int updateStatusVehicle(int status, int id);
 
         @Query(value = "SELECT v.license_plates " +
                 "FROM vehicle v " +

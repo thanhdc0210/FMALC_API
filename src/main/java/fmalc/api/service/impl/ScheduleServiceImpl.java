@@ -38,6 +38,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     PlaceService placeService;
 
+    @Autowired
+    ConsignmentService consignmentService;
+
     private static int priorityPlace = 1;
 
     @Override
@@ -131,6 +134,16 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+
+    public StatusToUpdateDTO updateStautsForVeDriAndCon(StatusToUpdateDTO statusToUpdateDTO,Schedule schedule) {
+        StatusToUpdateDTO status = new StatusToUpdateDTO();
+        status.setVehicle_status(vehicleService.updateStatus(statusToUpdateDTO.getVehicle_status(), schedule.getVehicle().getId()));
+        status.setDriver_status(driverService.updateStatus(statusToUpdateDTO.getDriver_status(), schedule.getDriver().getId()));
+        status.setConsignment_status(consignmentService.updateStatus(statusToUpdateDTO.getConsignment_status(), schedule.getConsignment().getId()));
+        return status;
+    }
+
+    @Override
     public List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType) {
         List<Schedule> result = new ArrayList<>();
         switch (searchType) {
@@ -147,6 +160,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             default:
                 throw new IllegalStateException("Unexpected value: " + searchType);
         }
+
     }
 
 

@@ -22,6 +22,7 @@ public interface ConsignmentService {
 
     List<Consignment> findConsignmentByVehicle(int idVehicle);
 
+    int updateStatus(int status, int id);
 
 //    Consignment mapDriverForConsignment(Consignment consignment);
 }
