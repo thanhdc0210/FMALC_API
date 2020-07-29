@@ -18,8 +18,7 @@ public class Maintenance implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "native")
-    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
@@ -47,7 +46,7 @@ public class Maintenance implements Serializable {
     @Column(name = "actual_maintain_date")
     private Date actualMaintainDate;
 
-    @Column(name = "status", nullable = true)
+    @Column(name = "status", nullable = false)
     private Boolean status;
 
 }
