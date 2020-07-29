@@ -29,6 +29,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public Inspection save(Inspection inspection) {
+        inspection.setIsActive(true);
         inspection.setId(null);
         return inspectionRepository.save(inspection);
     }
