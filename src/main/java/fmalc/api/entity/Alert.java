@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "alert")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

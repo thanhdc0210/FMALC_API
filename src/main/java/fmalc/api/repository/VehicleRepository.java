@@ -103,4 +103,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
         @org.springframework.transaction.annotation.Transactional
         @Query(value = "Update vehicle v set v.kilometer_running =:kmRunning where v.id =:id", nativeQuery = true)
         void updateKmRunning(@Param("id") int id, @Param("kmRunning") int kmRunning);
+
+        Vehicle findByIdEqualsAndStatusIsNotLike(Integer id, Integer status);
 }

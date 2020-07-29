@@ -52,4 +52,6 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     Driver findDriverByUsername(@Param("username") String username);
 
     Driver findByAccount_Username(String username);
+
+    Driver findByIdAndAccountIsActive(Integer id, Boolean isActive);
 }
