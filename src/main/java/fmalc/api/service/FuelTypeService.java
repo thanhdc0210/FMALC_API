@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface FuelTypeService {
     List<FuelType> getListFuelType();
+
+    void createOrUpdateFuelType(List<Double> prices);
 }

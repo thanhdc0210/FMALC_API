@@ -40,14 +40,14 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
         int updateStatusVehicle(int status, int id);
 
         @Query(value = "SELECT v.license_plates " +
-                "FROM Vehicle v " +
+                "FROM vehicle v " +
                 "WHERE " +
                 "v.id IN ( " +
                 "SELECT s.vehicle_id " +
-                "FROM Schedule s " +
+                "FROM schedule s " +
                 "WHERE s.consignment_id IN ( " +
                 "SELECT c.id " +
-                "FROM Place p , Consignment c " +
+                "FROM place p , consignment c " +
                 "WHERE c.id = p.consignment_id " +
                 "AND timediff(now(), p.planned_time) < 0 " +
                 "AND c.status = 0 " +
@@ -56,10 +56,10 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 ") " +
                 "AND s.driver_id IN ( " +
                 "SELECT d.id " +
-                "FROM Driver d " +
+                "FROM driver d " +
                 "WHERE d.account_id IN ( " +
                 "SELECT a.id " +
-                "FROM Account a " +
+                "FROM account a " +
                 "WHERE a.username = :username)) " +
                 "and s.is_approve = true ) " +
                 "limit 1", nativeQuery = true)
@@ -103,4 +103,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
         @org.springframework.transaction.annotation.Transactional
         @Query(value = "Update vehicle v set v.kilometer_running =:kmRunning where v.id =:id", nativeQuery = true)
         void updateKmRunning(@Param("id") int id, @Param("kmRunning") int kmRunning);
+
+        Vehicle findByIdEqualsAndStatusIsNotLike(Integer id, Integer status);
 }

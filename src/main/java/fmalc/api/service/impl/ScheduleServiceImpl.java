@@ -4,6 +4,7 @@ package fmalc.api.service.impl;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.ScheduleConsginmentEnum;
+import fmalc.api.enums.SearchTypeForDriverEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.ScheduleRepository;
 import fmalc.api.service.*;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static fmalc.api.enums.SearchTypeForDriverEnum.*;
 
 
 @Service
@@ -131,12 +134,33 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+
     public StatusToUpdateDTO updateStautsForVeDriAndCon(StatusToUpdateDTO statusToUpdateDTO,Schedule schedule) {
         StatusToUpdateDTO status = new StatusToUpdateDTO();
-        status.setVehicle_status(vehicleService.updateStatus(statusToUpdateDTO.getVehicle_status(),schedule.getVehicle().getId()));
-        status.setDriver_status(driverService.updateStatus(statusToUpdateDTO.getDriver_status(),schedule.getDriver().getId()));
-        status.setConsignment_status(consignmentService.updateStatus(statusToUpdateDTO.getConsignment_status(),schedule.getConsignment().getId()));
+        status.setVehicle_status(vehicleService.updateStatus(statusToUpdateDTO.getVehicle_status(), schedule.getVehicle().getId()));
+        status.setDriver_status(driverService.updateStatus(statusToUpdateDTO.getDriver_status(), schedule.getDriver().getId()));
+        status.setConsignment_status(consignmentService.updateStatus(statusToUpdateDTO.getConsignment_status(), schedule.getConsignment().getId()));
         return status;
+    }
+
+    @Override
+    public List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType) {
+        List<Schedule> result = new ArrayList<>();
+        switch (searchType) {
+            case CONSIGNMENT_ID:
+                Integer parsed = Integer.parseInt(value);
+                result = scheduleRepository.findByConsignment_Id(parsed);
+                return result;
+            case LICENSE_PLATE:
+                result = scheduleRepository.findByVehicleLicensePlatesContaining(value);
+                return result;
+            case OWNER_NAME:
+                result = scheduleRepository.findByConsignmentOwnerNameContaining(value);
+                return result;
+            default:
+                throw new IllegalStateException("Unexpected value: " + searchType);
+        }
+
     }
 
 

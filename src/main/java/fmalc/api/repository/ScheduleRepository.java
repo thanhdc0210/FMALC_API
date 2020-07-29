@@ -3,6 +3,7 @@ package fmalc.api.repository;
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
+import io.swagger.models.auth.In;
 import org.hibernate.sql.Update;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -40,4 +41,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query(value = "update schedule s set s.vehicle_id=:idVehicle, s.driver_id =:idDriver, s.is_approve=:status where s.id=:id", nativeQuery = true)
     int updateStatusSchedule(@Param("idVehicle") int idVehicle, @Param("idDriver")int idDriver, @Param("status") int status,@Param("id")  int id);
 
+
+    List<Schedule> findScheduleByConsignmentId(Integer consignmentId);
+    List<Schedule> findByConsignmentOwnerNameContaining(String ownerName);
+    List<Schedule> findByVehicleLicensePlatesContaining(String licensePlate);
 }

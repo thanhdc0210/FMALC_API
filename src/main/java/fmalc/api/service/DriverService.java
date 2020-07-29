@@ -22,15 +22,18 @@ public interface DriverService {
     List<Driver> findDriverByLicense(double weight);
 
     List<Driver> getListDriverByLicense(double weight, int status);
+
     int updateStatus(int status, int id);
 
     Driver updateAvatar(Integer id, MultipartFile file) throws IOException;
 
     List<Driver> findAllByFleetManager(Integer id);
-  
+
     Driver findDriverByUsername(String username);
 
     List<Driver> findDriverForSchedule(double weight, Consignment consignment);
 
     List<ScheduleForConsignmentDTO> checkScheduleForDriver(int idDriver);
+
+    String updateTokenDevice(Driver driver);
 }

@@ -3,7 +3,9 @@ package fmalc.api.component;
 import fmalc.api.entity.*;
 import fmalc.api.repository.AccountRepository;
 import fmalc.api.repository.FleetManagerRepository;
+import fmalc.api.repository.MaintainTypeRepository;
 import fmalc.api.repository.RoleRepository;
+import fmalc.api.util.FuelTypeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -11,10 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Timer;
 
 @Component
 public class BootstrapData implements ApplicationListener<ContextRefreshedEvent> {
@@ -30,9 +29,21 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private MaintainTypeRepository maintainTypeRepository;
+
+    @Autowired
+    private FuelTypeUtil fuelTypeUtil;
+
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        bootstrapAccount();
+        bootstrapMaintainType();
+        cronJob();
+    }
+
+    private void bootstrapAccount() {
         // Check role FLEET_ADMIN exist
         Role roleAdmin = roleRepository.findByRole("ROLE_ADMIN");
         if (roleAdmin == null) {
@@ -86,5 +97,31 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
             fleetManager.setImage("https://fmalc-img.s3-ap-southeast-1.amazonaws.com/abc.jpg");
             fleetManagerRepository.save(fleetManager);
         }
+    }
+
+    private void bootstrapMaintainType() {
+        MaintenanceType maintenanceType = maintainTypeRepository.findByMaintenanceTypeName("Loại 1");
+        if (maintenanceType == null) {
+            maintenanceType = new MaintenanceType();
+            maintenanceType.setMaintenanceTypeName("Loại 1");
+            maintenanceType.setContent("Thay nhớt, kiểm tra lốp, kiểm tra thắng,...");
+            maintenanceType.setKilometersNumber(5000);
+            maintainTypeRepository.save(maintenanceType);
+        }
+        maintenanceType = maintainTypeRepository.findByMaintenanceTypeName("Loại 2");
+        if (maintenanceType == null) {
+            maintenanceType = new MaintenanceType();
+            maintenanceType.setMaintenanceTypeName("Loại 2");
+            maintenanceType.setContent("Đảo lốp, thay nhớt, kiểm tra lốp, kiểm tra thắng,...");
+            maintenanceType.setKilometersNumber(10000);
+            maintainTypeRepository.save(maintenanceType);
+        }
+    }
+
+    private void cronJob() {
+        Timer t = new Timer();
+
+        // This task is scheduled to run every hour
+        t.scheduleAtFixedRate(fuelTypeUtil, 0, 1000 * 60 * 60);
     }
 }

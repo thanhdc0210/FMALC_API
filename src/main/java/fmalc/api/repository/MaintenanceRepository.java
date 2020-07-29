@@ -34,6 +34,5 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
     //GiangTLB
     List<Maintenance> findMaintenancesByDriverIdAndAndStatus(int driverId, boolean status);
 
-    @Query("update Maintenance m set m.imageMaintain=?1, m.kmOld=?2, m.status=true where m.id=?3")
-    Maintenance updateMaintanance(String image,Integer kmOld, Integer id);
+
 }

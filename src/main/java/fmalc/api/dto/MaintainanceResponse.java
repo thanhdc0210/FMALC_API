@@ -24,9 +24,17 @@ public class MaintainanceResponse {
         ModelMapper modelMapper = new ModelMapper();
         MaintainanceResponse maintainanceResponse = modelMapper.map(maintenance, MaintainanceResponse.class);
         maintainanceResponse.setLicensePlates(maintenance.getVehicle().getLicensePlates());
+//<<<<<<< HEAD
+        if (maintenance.getDriver() != null) {
+            maintainanceResponse.setNameDriver(maintenance.getDriver().getName());
+            maintainanceResponse.setPhoneNumberDriver(maintenance.getDriver().getPhoneNumber());
+        }
+        maintainanceResponse.setContent(maintenance.getMaintenanceType().getContent());
+//=======
         maintainanceResponse.setNameDriver(maintenance.getDriver().getName());
         maintainanceResponse.setPhoneNumberDriver(maintenance.getDriver().getPhoneNumber());
-        maintainanceResponse.setContent(maintenance.getMaintainType().getContent());
+        maintainanceResponse.setContent(maintenance.getMaintenanceType().getContent());
+//>>>>>>> d23df9d71cc003bd4f105ea10c0a21820c7e3c2d
         int status = 1;
         LocalDate today = LocalDate.now();
         if (maintenance.getActualMaintainDate().toLocalDate().isAfter(today)) {
