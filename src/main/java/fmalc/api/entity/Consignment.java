@@ -23,8 +23,7 @@ public class Consignment implements Serializable {
     private Integer amount;
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "native")
-    @GeneratedValue(generator = "generator", strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 

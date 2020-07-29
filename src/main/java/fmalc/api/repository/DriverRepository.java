@@ -33,7 +33,7 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
 
     @Modifying
     @Transactional
-    @Query(value = "Update Driver d set d.status =:status where d.id =:id", nativeQuery = true)
+    @Query(value = "Update driver d set d.status =:status where d.id =:id", nativeQuery = true)
     int updateStatusDriver(@Param("status") int status, @Param("id")int id);
 
     @Modifying

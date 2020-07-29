@@ -19,8 +19,7 @@ import java.util.Collection;
 public class FleetManager {
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "native")
-    @GeneratedValue(generator = "generator", strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 

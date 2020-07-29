@@ -17,8 +17,7 @@ import java.sql.Date;
 public class ConsignmentHistory implements Serializable {
 
     @Id
-    @GenericGenerator(name = "generator", strategy = "native")
-    @GeneratedValue(generator = "generator", strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     // @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
     // @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "id")
