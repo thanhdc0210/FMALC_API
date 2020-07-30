@@ -27,7 +27,6 @@ public interface ConsignmentRepository
 
     @Query("select c from Consignment c, Schedule s where c.id = s.consignment.id and s.vehicle.id=?1")
     List<Consignment> findConsignemnt(int idVehicle);
-    Consignment findById (int id);
 
     @Modifying(clearAutomatically = true)
     @Transactional

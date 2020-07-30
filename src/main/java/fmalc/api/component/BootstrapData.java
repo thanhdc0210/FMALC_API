@@ -3,7 +3,7 @@ package fmalc.api.component;
 import fmalc.api.entity.*;
 import fmalc.api.repository.AccountRepository;
 import fmalc.api.repository.FleetManagerRepository;
-import fmalc.api.repository.MaintainTypeRepository;
+import fmalc.api.repository.MaintenanceTypeRepository;
 import fmalc.api.repository.RoleRepository;
 import fmalc.api.util.FuelTypeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private MaintainTypeRepository maintainTypeRepository;
+    private MaintenanceTypeRepository maintenanceTypeRepository;
 
     @Autowired
     private FuelTypeUtil fuelTypeUtil;
@@ -100,21 +100,21 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
     }
 
     private void bootstrapMaintainType() {
-        MaintenanceType maintenanceType = maintainTypeRepository.findByMaintenanceTypeName("Loại 1");
+        MaintenanceType maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 1");
         if (maintenanceType == null) {
             maintenanceType = new MaintenanceType();
             maintenanceType.setMaintenanceTypeName("Loại 1");
             maintenanceType.setContent("Thay nhớt, kiểm tra lốp, kiểm tra thắng,...");
             maintenanceType.setKilometersNumber(5000);
-            maintainTypeRepository.save(maintenanceType);
+            maintenanceTypeRepository.save(maintenanceType);
         }
-        maintenanceType = maintainTypeRepository.findByMaintenanceTypeName("Loại 2");
+        maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 2");
         if (maintenanceType == null) {
             maintenanceType = new MaintenanceType();
             maintenanceType.setMaintenanceTypeName("Loại 2");
             maintenanceType.setContent("Đảo lốp, thay nhớt, kiểm tra lốp, kiểm tra thắng,...");
             maintenanceType.setKilometersNumber(10000);
-            maintainTypeRepository.save(maintenanceType);
+            maintenanceTypeRepository.save(maintenanceType);
         }
     }
 
