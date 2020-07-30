@@ -7,7 +7,7 @@ import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.entity.MaintenanceType;
 import fmalc.api.entity.Maintenance;
 import fmalc.api.entity.Vehicle;
-import fmalc.api.repository.MaintainTypeRepository;
+import fmalc.api.repository.MaintenanceTypeRepository;
 import fmalc.api.repository.MaintenanceRepository;
 import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.MaintenanceService;
@@ -36,7 +36,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     NotificationController notificationController;
 
     @Autowired
-    MaintainTypeRepository maintainTypeRepository;
+    MaintenanceTypeRepository maintenanceTypeRepository;
 
     @Autowired
     VehicleRepository vehicleRepository;
@@ -165,22 +165,14 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         addMaintenance.setPlannedMaintainDate(next);
         addMaintenance.setKmOld(maintenances.get(0).getKmOld() + 5000);
         addMaintenance.setVehicle(vehicle);
-//<<<<<<< HEAD
-//        MaintainType maintainType;
-//        if ("Loại 1".equals(maintenance.getMaintainType().getMaintainTypeName())) {
-//            maintainType = maintainTypeRepository.findByMaintainTypeName("Loại 2");
-//        } else {
-//            maintainType = maintainTypeRepository.findByMaintainTypeName("Loại 1");
-//        }
-//        addMaintenance.setMaintainType(maintainType);
-//        addMaintenance.setStatus(false);
-//=======
-        MaintenanceType maintenanceType = maintainTypeRepository.findById(1).get();
-        if (maintenance.getMaintenanceType().getId() == 1) {
-            maintenanceType = maintainTypeRepository.findById(2).get();
+        MaintenanceType maintenanceType;
+        if ("Loại 1".equals(maintenance.getMaintenanceType().getMaintenanceTypeName())) {
+            maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 2");
+        } else {
+            maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 1");
         }
         addMaintenance.setMaintenanceType(maintenanceType);
-//>>>>>>> d23df9d71cc003bd4f105ea10c0a21820c7e3c2d
+        addMaintenance.setStatus(false);
         maintainanceRepository.save(addMaintenance);
         if (Duration.between(today.atStartOfDay(), next.toLocalDate().atStartOfDay()).toDays() <= 7) {
             maintainanceRepository.updateActualMaintainDate(maintenances.get(0).getId(), next);
@@ -211,10 +203,8 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         addMaintenance.setKmOld(vehicle.getKilometerRunning());
         addMaintenance.setVehicle(vehicle);
         addMaintenance.setStatus(true);
-//        MaintenanceType maintenanceType1 = maintainTypeRepository.findByMaintainTypeName("Loại 1");
-//        addMaintenance.setMaintenanceType(maintenanceType1);
-        MaintenanceType maintenanceType = maintainTypeRepository.findById(1).get();
-        addMaintenance.setMaintenanceType(maintenanceType);
+        MaintenanceType maintenanceType1 = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 1");
+        addMaintenance.setMaintenanceType(maintenanceType1);
         maintainanceRepository.save(addMaintenance);
     }
 }
