@@ -20,6 +20,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Location createLocation(Location location) {
+//        location.setId(null);
         locationRepository.save(location);
         return location;
     }

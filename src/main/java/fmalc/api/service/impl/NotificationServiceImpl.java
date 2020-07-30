@@ -38,6 +38,7 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notify = convertToDto(dto);
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(df.format(date));
+
         Timestamp timestamp = new Timestamp(date.getTime());
         notify.setTime(timestamp);
 

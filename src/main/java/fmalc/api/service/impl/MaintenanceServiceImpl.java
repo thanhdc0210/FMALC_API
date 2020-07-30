@@ -213,7 +213,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         addMaintenance.setStatus(true);
 //        MaintenanceType maintenanceType1 = maintainTypeRepository.findByMaintainTypeName("Loại 1");
 //        addMaintenance.setMaintenanceType(maintenanceType1);
-        MaintenanceType maintenanceType = maintainTypeRepository.findById(1).get();
+        MaintenanceType maintenanceType = maintainTypeRepository.findByKilometersNumber(5000);
         addMaintenance.setMaintenanceType(maintenanceType);
         maintainanceRepository.save(addMaintenance);
     }

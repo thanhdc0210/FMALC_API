@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MaintainTypeRepository extends JpaRepository<MaintenanceType, Integer> {
     MaintenanceType findByMaintenanceTypeName(String maintenanceTypeName);
+    MaintenanceType findByKilometersNumber(int km);
 }

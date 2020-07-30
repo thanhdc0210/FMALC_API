@@ -54,9 +54,10 @@ public class LocationController {
     List<Location> locations = new ArrayList<>();
 
     @PostMapping("/sendLocation")
-    public ResponseEntity<Location> tracking(@RequestBody LocationDTO dto) throws ParseException {
+    public ResponseEntity<String> tracking(@RequestBody LocationDTO dto) throws ParseException {
         System.out.println("Send");
         Location location = new Location();
+//        location.setId(null);
         location.setLatitude(dto.getLatitude());
         location.setLongitude(dto.getLongitude());
         location.setAddress(dto.getAddress());
@@ -105,7 +106,7 @@ public class LocationController {
             }, timeToRun);
 //            sizeHash = sizetmp;
 //        }
-        return ResponseEntity.ok().body(location);
+        return ResponseEntity.ok().body("OK");
     }
 
     @GetMapping(value = "/trackingLocation/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

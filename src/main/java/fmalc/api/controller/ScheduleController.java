@@ -10,6 +10,7 @@ import fmalc.api.dto.ScheduleResponseDTO;
 
 import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
+import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.SearchTypeForDriverEnum;
 import fmalc.api.service.ConsignmentService;
@@ -478,6 +479,12 @@ public class ScheduleController {
             return ResponseEntity.badRequest().build();
         }
 //        return ResponseEntity.ok().body(result);
+    }
+
+    @GetMapping("/driver/{id}")
+    public ResponseEntity<Integer> countConsignmentADriver(@PathVariable("id") int id ){
+        int count  = scheduleService.checkConsignmentStatus(id, ConsignmentStatusEnum.DELIVERING.getValue(), ConsignmentStatusEnum.OBTAINING.getValue());
+        return ResponseEntity.ok().body(count);
     }
 
 }

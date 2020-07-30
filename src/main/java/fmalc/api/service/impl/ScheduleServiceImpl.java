@@ -134,6 +134,14 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public int checkConsignmentStatus(int idDriver, int status,int statusDe) {
+//        if(>0){
+//
+//        }
+        return scheduleRepository.checkConsignmentStatus(idDriver, status, statusDe).size();
+    }
+
+    @Override
 
     public StatusToUpdateDTO updateStautsForVeDriAndCon(StatusToUpdateDTO statusToUpdateDTO,Schedule schedule) {
         StatusToUpdateDTO status = new StatusToUpdateDTO();
