@@ -1,7 +1,7 @@
 package fmalc.api.controller;
 
-import fmalc.api.dto.ReportIssueInformationForUpdatingDTO;
 import fmalc.api.dto.ReportIssueDTO;
+import fmalc.api.dto.ReportIssueInformationForUpdatingDTO;
 import fmalc.api.dto.ReportIssueRequestDTO;
 import fmalc.api.dto.ReportIssueResponseDTO;
 import fmalc.api.entity.Vehicle;
@@ -40,13 +40,19 @@ public class ReportIssueController {
     @GetMapping(value = "information-report-issue")
     public ResponseEntity<ReportIssueResponseDTO> getIssueInformationOfAVehicle(@RequestParam(value = "username") String username,
                                                                                 @RequestParam(value = "status") List<Integer> status){
+        try {
 
-        Vehicle vehicle = vehicleService.findVehicleByUsernameAndConsignmentStatus(username, status);
+            Vehicle vehicle = vehicleService.findVehicleByUsernameAndConsignmentStatus(username, status,
+                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
+                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
 
-        if (vehicle == null){
-            return ResponseEntity.noContent().build();
-        }else {
-            return ResponseEntity.ok().body(new ReportIssueResponseDTO(vehicle));
+            if (vehicle == null){
+                return ResponseEntity.noContent().build();
+            }else {
+                return ResponseEntity.ok().body(new ReportIssueResponseDTO(vehicle));
+            }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
         }
     }
 

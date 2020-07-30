@@ -612,7 +612,8 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
 
-    public Vehicle findVehicleByUsernameAndConsignmentStatus(String username, List<Integer> status) {
-        return vehicleRepository.findVehicleByUsernameAndConsignmentStatus(username, status);
+    public Vehicle findVehicleByUsernameAndConsignmentStatus(String username, List<Integer> status,
+                                                             Timestamp startDate, Timestamp endDate) {
+        return vehicleRepository.findVehicleByUsernameAndConsignmentStatus(username, status, startDate, endDate);
     }
 }

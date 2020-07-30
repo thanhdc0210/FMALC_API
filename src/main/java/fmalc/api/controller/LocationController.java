@@ -106,7 +106,9 @@ public class LocationController {
             }, timeToRun);
 //            sizeHash = sizetmp;
 //        }
+
         return ResponseEntity.ok().body("OK");
+
     }
 
     @GetMapping(value = "/trackingLocation/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

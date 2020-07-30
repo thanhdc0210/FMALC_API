@@ -45,5 +45,6 @@ public interface VehicleService {
     List<ScheduleForConsignmentDTO> checkScheduleForVehicle(int idVehicle);
 
     int updateStatus(int status, int id);
-    Vehicle findVehicleByUsernameAndConsignmentStatus(String username, List<Integer> status);
+    Vehicle findVehicleByUsernameAndConsignmentStatus(String username, List<Integer> status,
+                                                      Timestamp startDate, Timestamp endDate);
 }
