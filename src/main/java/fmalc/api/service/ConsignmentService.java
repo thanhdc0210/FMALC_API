@@ -24,5 +24,7 @@ public interface ConsignmentService {
 
     int updateStatus(int status, int id);
 
+    List<Consignment> getConsignmentOfDriver(int id);
+
 //    Consignment mapDriverForConsignment(Consignment consignment);
 }

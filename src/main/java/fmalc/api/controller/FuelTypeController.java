@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,29 +28,39 @@ public class FuelTypeController {
 
     @GetMapping("/fuel-type")
     public ResponseEntity<FuelTypeResponseDTO> getFuelTypesAndVehicleLicensePlate(@RequestParam("status") List<Integer> status,
-                                                                                  @RequestParam("username") String username){
+                                                                                  @RequestParam("username") String username) {
         try {
             List<FuelType> fuelTypes = fuelTypeService.getListFuelType();
             Vehicle vehicle = vehicleService.findVehicleByUsernameAndConsignmentStatus(username, status,
                     Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
                     Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
-            if (fuelTypes == null){
+            if (fuelTypes == null) {
                 return ResponseEntity.noContent().build();
-            }else{
-                if(vehicle == null){
+            } else {
+                if (vehicle == null) {
                     FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
                     fuelTypeResponseDTO.setVehicleLicensePlate(null);
                     fuelTypeResponseDTO.setFuelTypeList(fuelTypes);
                     return ResponseEntity.ok().body(fuelTypeResponseDTO);
-                }else{
+                } else {
                     FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
                     fuelTypeResponseDTO.setVehicleLicensePlate(vehicle.getLicensePlates());
                     fuelTypeResponseDTO.setFuelTypeList(fuelTypes);
                     return ResponseEntity.ok().body(fuelTypeResponseDTO);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FuelType>> getPriceFuel() {
+        List<FuelType> fuelTypes = fuelTypeService.getListFuelType();
+        if (fuelTypes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        fuelTypes.stream().forEach(x -> x.setFuels(null));
+        return ResponseEntity.ok().body(fuelTypes);
     }
 }

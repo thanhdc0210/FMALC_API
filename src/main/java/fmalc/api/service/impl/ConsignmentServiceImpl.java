@@ -2,20 +2,22 @@ package fmalc.api.service.impl;
 
 import fmalc.api.dto.ConsignmentRequestDTO;
 import fmalc.api.entity.Consignment;
+import fmalc.api.entity.Place;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.ConsignmentRepository;
-import fmalc.api.entity.Place;
 import fmalc.api.repository.PlaceRepository;
 import fmalc.api.service.ConsignmentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Service
@@ -197,5 +199,10 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     @Override
     public int updateStatus(int status, int id) {
         return consignmentRepository.updateStatusVehicle(status,id);
+    }
+
+    @Override
+    public List<Consignment> getConsignmentOfDriver(int id) {
+        return consignmentRepository.getConsignmentOfDriver(id);
     }
 }
