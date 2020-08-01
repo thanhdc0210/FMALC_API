@@ -2,27 +2,21 @@ package fmalc.api.controller;
 
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
-
-
 import fmalc.api.dto.NotificationUnread;
 import fmalc.api.entity.Notification;
-
 import fmalc.api.service.NotificationService;
 import fmalc.api.service.VehicleService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
-
-import reactor.core.scheduler.Scheduler;
 import reactor.util.function.Tuple2;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 @RestController
@@ -111,5 +105,11 @@ public class NotificationController {
     @GetMapping(value = "/count-notification-unread")
     public NotificationUnread countNotificationUnread() {
         return notificationService.countNotificationUnread();
+    }
+
+    @GetMapping(value = "/by-type")
+    public ResponseEntity getNotificationsByType(@RequestParam("type") int type) {
+        List<Notification> notifications = notificationService.getNotificationsByType(type);
+        return ResponseEntity.ok().body(new NotificationResponeDTO().mapToListResponse(notifications));
     }
 }

@@ -3,7 +3,9 @@ package fmalc.api.service.impl;
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
 import fmalc.api.dto.NotificationUnread;
-import fmalc.api.entity.*;
+import fmalc.api.entity.Driver;
+import fmalc.api.entity.Notification;
+import fmalc.api.entity.Vehicle;
 import fmalc.api.repository.DriverRepository;
 import fmalc.api.repository.NotificationRepositry;
 import fmalc.api.repository.VehicleRepository;
@@ -12,12 +14,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -62,6 +64,11 @@ public class NotificationServiceImpl implements NotificationService {
         result.setCount(notificationRepositry.countAllByStatusFalse());
         result.setNotificationsUnread(new NotificationResponeDTO().mapToListResponse(notificationRepositry.findTop4ByStatusIsFalseOrderByIdDesc()));
         return result;
+    }
+
+    @Override
+    public List<Notification> getNotificationsByType(int type) {
+        return notificationRepositry.findAllByTypeOrderByIdDesc(type);
     }
 
     private Notification convertToDto(NotificationRequestDTO notificationRequestDTO) {

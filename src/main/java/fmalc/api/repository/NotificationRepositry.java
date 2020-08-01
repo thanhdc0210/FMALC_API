@@ -13,4 +13,6 @@ public interface NotificationRepositry extends JpaRepository<Notification, Integ
     int countAllByStatusFalse();
 
     List<Notification> findTop4ByStatusIsFalseOrderByIdDesc();
+
+    List<Notification> findAllByTypeOrderByIdDesc(int type);
 }

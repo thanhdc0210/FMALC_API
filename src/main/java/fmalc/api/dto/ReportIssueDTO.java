@@ -1,10 +1,10 @@
 package fmalc.api.dto;
 
-import fmalc.api.entity.*;
+import fmalc.api.entity.ReportIssue;
+import fmalc.api.enums.ReportIssueTypeEnum;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
-import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,10 +22,12 @@ public class ReportIssueDTO {
     private Boolean status;
     private String image;
     private Integer type;
+    private String typeStr;
 
     public ReportIssueDTO convertSchedule(ReportIssue reportIssue){
         ModelMapper modelMapper = new ModelMapper();
         ReportIssueDTO reportIssueDTO = modelMapper.map(reportIssue, ReportIssueDTO.class);
+        reportIssueDTO.setTypeStr(ReportIssueTypeEnum.getValueEnumToShow(reportIssueDTO.getType()));
         return  reportIssueDTO;
     }
     public List<ReportIssueDTO> mapToListResponse(List<ReportIssue> baseEntities) {

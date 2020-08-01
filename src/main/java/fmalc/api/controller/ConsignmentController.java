@@ -67,6 +67,21 @@ public class ConsignmentController {
         }
     }
 
+    @GetMapping("driver/{id}")
+    public ResponseEntity<List<ConsignmentResponseDTO>> getConsignmentOfDriver(@PathVariable("id") int id){
+        try{
+            List<Consignment> consignments = consignmentService.getConsignmentOfDriver(id);
+            if(consignments.size()>0){
+                ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
+                List<ConsignmentResponseDTO> consignmentResponseDTOS = consignmentResponseDTO.mapToListResponse(consignments);
+                return ResponseEntity.ok().body(consignmentResponseDTOS);
+            }else{
+                return ResponseEntity.noContent().build();
+            }
+        }catch (Exception e){
+            return  ResponseEntity.badRequest().build();
+        }
+    }
 
     @GetMapping("{id}")
     public ResponseEntity<ConsignmentDetailDTO> getDetailConsignment(@PathVariable("id") int id){
