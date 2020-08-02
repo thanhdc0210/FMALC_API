@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -45,4 +46,12 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     List<Schedule> findScheduleByConsignmentId(Integer consignmentId);
     List<Schedule> findByConsignmentOwnerNameContaining(String ownerName);
     List<Schedule> findByVehicleLicensePlatesContaining(String licensePlate);
+
+    // THANHDC
+//    @Query("Select count(distinct s.id) From schedule s, driver d, consignment c, place p " +
+//            "where d.id = :id and p.planned_time between :startDate and :endDate " +
+//            "and s.is_approve = true and s.consignment_id = c.id and s.driver_id = d.id " +
+//            "and c.id = p.consignment_id and c.status != 3")
+//    Integer countScheduleNumberInADayOfDriver(@Param("id") Integer id,
+//                                              @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 }

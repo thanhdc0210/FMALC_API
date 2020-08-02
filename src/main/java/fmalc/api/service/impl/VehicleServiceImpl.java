@@ -37,8 +37,8 @@ public class VehicleServiceImpl implements VehicleService {
     private static int priorityPlace = 1;
 
     @Override
-    public String findVehicleLicensePlatesForReportInspectionBeforeDelivery(String username) {
-        return vehicleRepository.findVehicleLicensePlatesForReportInspectionBeforeDelivery(username);
+    public String findVehicleLicensePlatesForReportInspectionBeforeDelivery(String username, Timestamp endDate) {
+        return vehicleRepository.findVehicleLicensePlatesForReportInspectionBeforeDelivery(username, endDate);
     }
 
     @Override

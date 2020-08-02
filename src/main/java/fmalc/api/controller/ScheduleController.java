@@ -1,21 +1,20 @@
 package fmalc.api.controller;
 
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import fmalc.api.dto.*;
-import fmalc.api.entity.Consignment;
-import fmalc.api.entity.Driver;
+import fmalc.api.entity.*;
 
 import fmalc.api.dto.DetailedScheduleDTO;
 import fmalc.api.dto.ScheduleResponseDTO;
 
-import fmalc.api.entity.Schedule;
-import fmalc.api.entity.Vehicle;
+import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.SearchTypeForDriverEnum;
-import fmalc.api.service.ConsignmentService;
-import fmalc.api.service.DriverService;
-import fmalc.api.service.ScheduleService;
-import fmalc.api.service.VehicleService;
+import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/v1.0/schedules")
@@ -43,6 +43,12 @@ public class ScheduleController {
 
     @Autowired
     ConsignmentService consignmentService;
+
+    @Autowired
+    NotificationService notificationService;
+
+    @Autowired
+    FirebaseService firebaseService;
 
     @GetMapping(value = "driver")
 
@@ -406,14 +412,38 @@ public class ScheduleController {
             ConsignmentRequestDTO consignmentRequestDTO = requestSaveScheObjDTO.getConsignmentRequestDTO();
             try {
                 consignment = consignmentService.save(consignmentRequestDTO);
+                Schedule schedule = new Schedule();
 
                 if (consignment.getId() != null) {
                     consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
-                    scheduleService.createSchedule(obejctScheDTOS, consignment);
+                    schedule = scheduleService.createSchedule(obejctScheDTOS, consignment);
                     result = true;
 
                 }
                 if (result) {
+
+                    // Save notification
+                    NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+                    for (ObejctScheDTO obejctScheDTO : obejctScheDTOS){
+                            notificationRequestDTO.setVehicle_id(obejctScheDTO.getVehicle_id());
+                            notificationRequestDTO.setDriver_id(obejctScheDTO.getDriver_id());
+                            notificationRequestDTO.setStatus(false);
+                            notificationRequestDTO.setContent("Bạn được phân công lịch chạy " + schedule.getId() + " cần thực hiện trong thời gian sắp tới");
+                            notificationRequestDTO.setType(4);
+                            notificationService.createNotification(notificationRequestDTO);
+
+                        // Send notification to driver
+                        NotificationData notificationData = new NotificationData();
+                        notificationData.setBody(notificationRequestDTO.getContent());
+                        notificationData.setTitle(NotificationTypeEnum.getValueEnumToShow(4));
+                        NotificationRequest notificationRequest = new NotificationRequest();
+                        notificationRequest.setNotificationData(notificationData);
+                        notificationRequest.setTo(driverService.findTokenDeviceByDriverId(obejctScheDTO.getDriver_id()));
+
+                        firebaseService.sendPnsToDevice(notificationRequest);
+                        
+                    }
+
                     return ResponseEntity.ok().body(consignmentResponseDTO);
                 }
 //            for(int i =0 ; i<requestObjectDTOS.size(); i++){
