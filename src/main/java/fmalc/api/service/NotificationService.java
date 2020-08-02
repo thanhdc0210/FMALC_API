@@ -4,7 +4,6 @@ import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationUnread;
 import fmalc.api.entity.Notification;
 
-
 import java.text.ParseException;
 import java.util.List;
 
@@ -14,4 +13,6 @@ public interface NotificationService {
     NotificationUnread countNotificationUnread();
 
     List<Notification> findByDriverId(Integer driverId);
+
+    List<Notification> getNotificationsByType(int type);
 }

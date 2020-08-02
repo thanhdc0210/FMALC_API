@@ -1,19 +1,17 @@
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.ReportIssueContentRequestDTO;
-import fmalc.api.dto.ReportIssueInformationForUpdatingDTO;
 import fmalc.api.dto.ReportIssueDTO;
+import fmalc.api.dto.ReportIssueInformationForUpdatingDTO;
 import fmalc.api.dto.ReportIssueRequestDTO;
-import fmalc.api.dto.ReportIssueResponseDTO;
-import fmalc.api.entity.Driver;
 import fmalc.api.entity.ReportIssue;
-import fmalc.api.entity.Vehicle;
 import fmalc.api.repository.DriverRepository;
 import fmalc.api.repository.InspectionRepository;
 import fmalc.api.repository.ReportIssueRepository;
 import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.ReportIssueService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -147,5 +145,10 @@ public class ReportIssueServiceImpl implements ReportIssueService {
         ReportIssueDTO reportIssueDTO = new ReportIssueDTO();
         List<ReportIssueDTO> reportIssueDTOS = reportIssueDTO.mapToListResponse(reportIssues);
         return reportIssueDTOS;
+    }
+
+    @Override
+    public List<ReportIssue> getAllIssue() {
+        return reportIssueRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 }

@@ -3,11 +3,8 @@ package fmalc.api.controller;
 import fmalc.api.dto.NotificationMobileResponse;
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
-
-
 import fmalc.api.dto.NotificationUnread;
 import fmalc.api.entity.Notification;
-
 import fmalc.api.entity.NotificationData;
 import fmalc.api.entity.NotificationRequest;
 import fmalc.api.enums.NotificationTypeEnum;
@@ -19,14 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
-
 import reactor.util.function.Tuple2;
-
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 @RestController
@@ -134,19 +129,25 @@ public class NotificationController {
     }
 
     @GetMapping(value = "/driver/{id}")
-    public ResponseEntity<List<NotificationMobileResponse>> findNotificationByDriverId(@PathVariable("id") Integer id){
+    public ResponseEntity<List<NotificationMobileResponse>> findNotificationByDriverId(@PathVariable("id") Integer id) {
 
         try {
             List<Notification> notifications = notificationService.findByDriverId(id);
 
-            if (notifications != null){
+            if (notifications != null) {
                 List<NotificationMobileResponse> notificationMobileResponses = new ArrayList<>(new NotificationMobileResponse().mapToListResponse(notifications));
                 return ResponseEntity.ok().body(notificationMobileResponses);
-            }else{
+            } else {
                 return ResponseEntity.noContent().build();
             }
-        }catch (Exception e){
-            return  ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping(value = "/by-type")
+    public ResponseEntity getNotificationsByType(@RequestParam("type") int type) {
+        List<Notification> notifications = notificationService.getNotificationsByType(type);
+        return ResponseEntity.ok().body(new NotificationResponeDTO().mapToListResponse(notifications));
     }
 }

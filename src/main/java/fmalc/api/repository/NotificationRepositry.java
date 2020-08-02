@@ -16,7 +16,8 @@ public interface NotificationRepositry extends JpaRepository<Notification, Integ
 
     List<Notification> findTop4ByStatusIsFalseOrderByIdDesc();
 
-//    @Query(value = "Select id, content, status, time, type, driverId, vehicleId From Notification n " +
-//            "Where n.driverId = :id")
+
     List<Notification> findByDriverId(Integer driver_id);
+
+    List<Notification> findAllByTypeOrderByIdDesc(int type);
 }

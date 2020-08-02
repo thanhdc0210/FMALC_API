@@ -6,7 +6,9 @@ import com.google.firebase.messaging.Message;
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
 import fmalc.api.dto.NotificationUnread;
-import fmalc.api.entity.*;
+import fmalc.api.entity.Driver;
+import fmalc.api.entity.Notification;
+import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.repository.DriverRepository;
 import fmalc.api.repository.NotificationRepositry;
@@ -16,12 +18,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -95,6 +93,11 @@ public class NotificationServiceImpl implements NotificationService {
     public List<Notification> findByDriverId(Integer driverId) {
 
         return notificationRepositry.findByDriverId(driverId);
+    }
+
+    @Override
+    public List<Notification> getNotificationsByType(int type) {
+        return notificationRepositry.findAllByTypeOrderByIdDesc(type);
     }
 
     private Notification convertToDto(NotificationRequestDTO notificationRequestDTO) {
