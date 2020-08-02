@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.util.function.Tuple2;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -136,19 +135,19 @@ public class NotificationController {
     }
 
     @GetMapping(value = "/driver/{id}")
-    public ResponseEntity<List<NotificationMobileResponse>> findNotificationByDriverId(@PathVariable("id") Integer id){
+    public ResponseEntity<List<NotificationMobileResponse>> findNotificationByDriverId(@PathVariable("id") Integer id) {
 
         try {
             List<Notification> notifications = notificationService.findByDriverId(id);
 
-            if (notifications != null){
+            if (notifications != null) {
                 List<NotificationMobileResponse> notificationMobileResponses = new ArrayList<>(new NotificationMobileResponse().mapToListResponse(notifications));
                 return ResponseEntity.ok().body(notificationMobileResponses);
-            }else{
+            } else {
                 return ResponseEntity.noContent().build();
             }
-        }catch (Exception e){
-            return  ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }

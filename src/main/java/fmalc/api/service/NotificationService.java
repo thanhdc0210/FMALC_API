@@ -11,9 +11,8 @@ public interface NotificationService {
     Notification createNotification(NotificationRequestDTO notify) throws ParseException;
 
     NotificationUnread countNotificationUnread();
-
+    
     List<Notification> getNotificationsByType(int type);
 
     List<Notification> findByDriverId(Integer driverId);
-
 }
