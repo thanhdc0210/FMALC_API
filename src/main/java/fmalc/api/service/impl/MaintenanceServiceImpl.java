@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -207,4 +208,12 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         addMaintenance.setMaintenanceType(maintenanceType1);
         maintainanceRepository.save(addMaintenance);
     }
+
+    // Start date : lúc bấm nút kết thúc  -- THANHDC
+//    @Override
+//    public Integer countMaintenanceScheduleNumberInADayOfDriver(Integer driverId, Timestamp startDate, Timestamp endDate) {
+//
+//        return maintainanceRepository.countMaintenanceScheduleNumberInADayOfDriver(driverId, startDate, endDate);
+//    }
+
 }

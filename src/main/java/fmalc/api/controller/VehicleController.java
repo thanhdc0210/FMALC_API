@@ -148,7 +148,8 @@ public class VehicleController {
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionBeforeDelivery
             (@RequestParam(value = "username") String username) {
 
-        String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionBeforeDelivery(username);
+        String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionBeforeDelivery(username
+        , Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)) );
         List<Inspection> inspections = inspectionService.findAll();
         if (inspections == null){
             return ResponseEntity.noContent().build();

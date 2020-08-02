@@ -11,6 +11,7 @@ import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -162,6 +163,13 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
 
     }
+
+    // Start date : lúc bấm nút kết thúc   --  THANHDC
+//    @Override
+//    public Integer countScheduleNumberInADayOfDriver(Integer id, Timestamp startDate, Timestamp endDate) {
+//
+//        return scheduleRepository.countScheduleNumberInADayOfDriver(id, startDate, endDate);
+//    }
 
 
 }
