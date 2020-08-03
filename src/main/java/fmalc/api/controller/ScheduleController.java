@@ -432,7 +432,7 @@ public class ScheduleController {
                             notificationRequestDTO.setVehicle_id(obejctScheDTO.getVehicle_id());
                             notificationRequestDTO.setDriver_id(obejctScheDTO.getDriver_id());
                             notificationRequestDTO.setStatus(false);
-                            notificationRequestDTO.setContent("Bạn được phân công lịch chạy " + schedule.getId() + " cần thực hiện trong thời gian sắp tới");
+                            notificationRequestDTO.setContent("Bạn có lịch chạy mới của lô hàng #" + schedule.getId());
                             notificationRequestDTO.setType(4);
                             notificationService.createNotification(notificationRequestDTO);
 
