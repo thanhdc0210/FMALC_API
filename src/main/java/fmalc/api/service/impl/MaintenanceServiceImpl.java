@@ -1,27 +1,25 @@
 package fmalc.api.service.impl;
 
 import fmalc.api.controller.NotificationController;
-import fmalc.api.dto.MaintainCheckDTO;
-import fmalc.api.dto.MaintainReponseDTO;
-import fmalc.api.dto.NotificationRequestDTO;
-import fmalc.api.entity.MaintenanceType;
-import fmalc.api.entity.Maintenance;
-import fmalc.api.entity.Vehicle;
-import fmalc.api.repository.MaintainTypeRepository;
+import fmalc.api.dto.*;
+import fmalc.api.entity.*;
+import fmalc.api.enums.TypeLocationEnum;
+import fmalc.api.repository.DayOffRepository;
+import fmalc.api.repository.MaintenanceTypeRepository;
 import fmalc.api.repository.MaintenanceRepository;
 import fmalc.api.repository.VehicleRepository;
-import fmalc.api.service.MaintenanceService;
-import fmalc.api.service.UploaderService;
+import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,13 +34,30 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     NotificationController notificationController;
 
     @Autowired
-    MaintainTypeRepository maintainTypeRepository;
+    MaintenanceTypeRepository maintenanceTypeRepository;
 
     @Autowired
     VehicleRepository vehicleRepository;
 
+    @Autowired
+    VehicleService vehicleService;
+
+    @Autowired
+    ScheduleService scheduleService;
+    @Autowired
+    PlaceService placeService;
+
+    @Autowired
+    DriverService driverService;
+
+    @Autowired
+    DayOffService dayOffService;
+
+    @Autowired
+    DayOffRepository dayOffRepository;
+
     @Override
-    public MaintainCheckDTO checkMaintainForVehicle(int idVehicle) {
+    public List<MaintainCheckDTO> checkMaintainForVehicle(int idVehicle) {
         List<Maintenance> maintenances = maintainanceRepository.findByVehicle(idVehicle);
         if (!maintenances.isEmpty()) {
             List<MaintainCheckDTO> maintainCheckDTOs = new MaintainCheckDTO().mapToListResponse(maintenances);
@@ -55,32 +70,35 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             maintainCheckDTOs.removeIf(x -> id.contains(x.getId()));
 
             if (!maintainCheckDTOs.isEmpty()) {
-                return maintainCheckDTOs.get(0);
+                return maintainCheckDTOs;
             }
         }
-        return new MaintainCheckDTO();
+        return new ArrayList<>();
     }
 
     @Override
-    public MaintainCheckDTO checkMaintainForDriver(int idDriver) {
+    public List<MaintainCheckDTO> checkMaintainForDriver(int idDriver) {
 
         List<Maintenance> maintenances = maintainanceRepository.findByDriver(idDriver);
         if (!maintenances.isEmpty()) {
             List<MaintainCheckDTO> maintainCheckDTOs = new MaintainCheckDTO().mapToListResponse(maintenances);
 
-            Date date = new Date(System.currentTimeMillis());
+
+            maintainCheckDTOs.sort(Comparator.comparing(MaintainCheckDTO::getActualMaintainDate));
+
+//            Date date = new Date(System.currentTimeMillis());
             List<Integer> id = maintainCheckDTOs.stream()
-                    .filter(x -> date.after(x.getPlannedMaintainDate()))
+                    .filter(x -> x.getStatus() == 1)
                     .map(MaintainCheckDTO::getId)
                     .collect(Collectors.toList());
             maintainCheckDTOs.removeIf(x -> id.contains(x.getId()));
 
             if (!maintainCheckDTOs.isEmpty()) {
-                return maintainCheckDTOs.get(0);
+                return maintainCheckDTOs;
             }
 
         }
-        return new MaintainCheckDTO();
+        return new ArrayList<>();
     }
 
     @Override
@@ -107,6 +125,341 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             }
         }
         return maintainanceRepository.save(maintenance);
+    }
+
+    @Override
+    public MaintainConfirmDTO updatePlannedTime(int id, int km) {
+        Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
+        boolean res = false;
+        java.util.Date date1 = new java.util.Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Maintenance maintenance = new Maintenance();
+        if (vehicle.getId() != null) {
+            List<Maintenance> maintenances = maintainanceRepository.findByVehicle(vehicle.getId());
+            for (int i = 0; i < maintenances.size(); i++) {
+
+                if (maintenances.get(i).getStatus()==false) {
+                    maintenance = maintenances.get(i);
+                    maintenances.remove(maintenances.get(i));
+                    i = maintenances.size();
+//                    maintainanceRepository.updateActualMaintainDate(maintenance.getId(),);
+                }
+            }
+
+            maintenances.sort(Comparator.comparing(Maintenance::getActualMaintainDate));
+            int kmRun = vehicle.getKilometerRunning();
+            int kmOld=0;
+            if(maintenances.size()>0){
+                kmOld = maintenances.get(maintenances.size() - 1).getKmOld();
+            }else{
+                kmOld= maintenance.getKmOld();
+            }
+
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date date = new java.util.Date();
+            Date dateS = new Date(date.getTime());
+
+            if (sdf.format(dateS).compareTo(sdf.format(maintenances.get(maintenances.size() - 1).getActualMaintainDate())) >= 1) {
+                int numDate = sdf.format(dateS).compareTo(sdf.format(maintenances.get(maintenances.size() - 1).getActualMaintainDate()));
+                int avg = (((kmOld + 5000) - vehicle.getKilometerRunning()) * numDate) / vehicle.getKilometerRunning();
+                int t = (kmOld + 5000) / 5000;
+                MaintenanceType maintenanceType = new MaintenanceType();
+                if (kmOld <= 5000) {
+                    maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 3");
+                    maintenance.setMaintenanceType(maintenanceType);
+                } else if (t % 2 == 0) {
+                    maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 1");
+                    maintenance.setMaintenanceType(maintenanceType);
+                } else if (t % 2 != 0) {
+                    maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 2");
+                    maintenance.setMaintenanceType(maintenanceType);
+                }
+
+
+                if (avg <= 7) {
+                     date1 = checkScheduleForAVehicle(vehicle);
+                    maintenance.setActualMaintainDate(new Date(date1.getTime()));
+                    maintenance.setPlannedMaintainDate(new Date(date1.getTime()));
+
+                    maintenance.setVehicle(vehicle);
+                    maintenance.setStatus(false);
+                    if (maintainanceRepository.save(maintenance) != null) {
+
+                    }
+                } else {
+                   date1 = checkScheduleForAVehicle(vehicle);
+                    maintenance.setActualMaintainDate(new Date(date1.getTime()));
+                    maintenance.setVehicle(vehicle);
+                    maintenance.setStatus(false);
+                    if (maintainanceRepository.save(maintenance) != null) {
+                        res = true;
+                    }
+                }
+            }
+
+
+        }
+        MaintainReponseDTO maintainReponseDTO = new MaintainReponseDTO();
+        DriverForDetailDTO driverForDetailDTO = new DriverForDetailDTO();
+        maintainReponseDTO = maintainReponseDTO.convertSchedule(maintenance);
+        List<DriverForDetailDTO> driverForDetailDTOS = new ArrayList<>();
+        driverForDetailDTOS =driverForDetailDTO.mapToListResponse(findDriverForMaintain(vehicle.getWeight(),sdf.format(date1)));
+       MaintainConfirmDTO maintainConfirmDTO = new MaintainConfirmDTO();
+       maintainConfirmDTO.setDriverForDetailDTOS(driverForDetailDTOS);
+       maintainConfirmDTO.setMaintainReponseDTO(maintainReponseDTO);
+        return maintainConfirmDTO;
+    }
+
+    private List<Driver> findDriverForMaintain(double weight, String date) {
+        List<Driver> drivers = driverService.findDriverByLicense(weight);
+        List<Driver> result = new ArrayList<>();
+        boolean flag =true;
+        if (drivers.size() > 0) {
+            for (int i =0; i< drivers.size(); i++){
+                Driver driver = drivers.get(i);
+                flag = checkDateMaintain(date,checkMaintainForDriver(driver.getId()));
+                if(flag){
+                  flag =  checkSchedule(driver.getId(),date);
+                  if(flag){
+                      flag = checkDayOff(date, driver.getId());
+                  }
+                }
+                if(flag){
+                    result.add(driver);
+                }
+            }
+        }
+        result.sort(Comparator.comparing(Driver::getWorkingHour));
+        return drivers;
+    }
+
+
+
+    private boolean checkDayOff(String dates, int id){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<DayOff> dayOffs = new ArrayList<>();
+        boolean flag= false;
+        dayOffs = dayOffRepository.checkDayOffOfDriver(id);
+        if(dayOffs.size()>0){
+            for (int j = 0; j< dayOffs.size(); j++){
+                String dateOff = sdf.format(dayOffs.get(j).getStartDate());
+
+                    if(dateOff.compareTo(dates)>=1){
+                       flag =true;
+                    }else if(  dateOff.compareTo(dates)<=-1){
+                        String dateEnd = sdf.format(dayOffs.get(j).getEndDate());
+                        if(dateEnd.compareTo(dates) >= 1){
+                            flag = false;
+                        }else{
+                            flag =true;
+                        }
+                    }
+
+                if(flag == false){
+                    j = dayOffs.size();
+                }else{
+
+                }
+            }
+
+
+//                String dateConsignment =
+        }else{
+           flag = true;
+        }
+        return  flag;
+    }
+
+
+    private List<ScheduleForConsignmentDTO> checkScheduleForDriver(int idDriver) {
+        List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();
+        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
+        List<ScheduleForConsignmentDTO> result = new ArrayList<>();
+        boolean flag = true;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<Schedule> Schedules = scheduleService.checkDriverInScheduled(idDriver);
+        if (Schedules.size() > 0) {
+
+            scheduleForLocationDTOS = scheduleForLocationDTO.mapToListResponse(Schedules);
+            if (scheduleForLocationDTOS.size() > 0) {
+                for (int i = 0; i < scheduleForLocationDTOS.size(); i++) {
+                    flag = true;
+                    PlaceResponeDTO deliveryDetail = new PlaceResponeDTO();
+                    deliveryDetail = placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTOS.get(i).getConsignment().getId(), 1, TypeLocationEnum.RECEIVED_PLACE.getValue());
+                    if (deliveryDetail.getPlannedTime() != null) {
+                        String datePlace = sdf.format(deliveryDetail.getPlannedTime());
+                        String dateNow = sdf.format(new java.util.Date());
+                        if (dateNow.compareTo(datePlace) <= 0) {
+                            flag = false;
+//                            id.add(scheduleForLocationDTOS.get(i).getId());
+                        }
+                    } else {
+                        flag = false;
+//                        id.add(scheduleForLocationDTOS.get(i).getId());
+                    }
+                    if (flag) {
+                        result.add(scheduleForLocationDTOS.get(i));
+                    }
+                }
+
+            }
+
+
+        }
+        return scheduleForLocationDTOS;
+    }
+
+
+    private boolean checkDateMaintain(String dateS, List<MaintainCheckDTO> maintainCheckDTO) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        boolean flag = false;
+        for(int i=0 ;i<maintainCheckDTO.size();i++){
+            String dateMaintain = sdf.format(maintainCheckDTO.get(i).getPlannedMaintainDate());
+            if (dateS.compareTo(dateMaintain) != 0) {
+                flag = true;
+            } else {
+                flag = false;
+            }
+            if(!flag){
+                flag = false;
+                i=maintainCheckDTO.size();
+            }
+        }
+        return flag;
+    }
+
+    private boolean checkSchedule(int id, String dateC) {
+//        boolean flag = true;
+        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
+        List<Driver> k = new ArrayList<>();
+        java.util.Date result = new java.util.Date();
+        List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = new ArrayList<>();
+        scheduleForConsignmentDTOS = checkScheduleForDriver(id);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        boolean flag = true;
+
+        if (scheduleForConsignmentDTOS.size() > 0) {
+
+            for (int j = 0; j < scheduleForConsignmentDTOS.size(); j++) {
+                scheduleForLocationDTO = scheduleForConsignmentDTOS.get(j);
+                List<PlaceResponeDTO> listScheduleDeli =
+                        placeService.getPlaceByTypePlace(scheduleForLocationDTO.getConsignment().getId(), TypeLocationEnum.DELIVERED_PLACE.getValue());
+
+                PlaceResponeDTO placeScheduleRecei =
+                        placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), 1, TypeLocationEnum.RECEIVED_PLACE.getValue());
+                PlaceResponeDTO placeScheduleDeli =
+                        placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), listScheduleDeli.size(), TypeLocationEnum.RECEIVED_PLACE.getValue());
+
+                String dateRecei = sdf.format(placeScheduleRecei.getPlannedTime());
+                String dateDeli = sdf.format(placeScheduleDeli.getPlannedTime());
+                if (dateC.compareTo(dateRecei) < 0) {
+                    if (dateC.compareTo(sdf.format(result)) > 0) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        j = scheduleForConsignmentDTOS.size();
+
+                    }
+                } else if (dateC.compareTo(dateRecei) > 0 && dateC.compareTo(dateRecei) > 0) {
+                    if (dateC.compareTo(dateDeli) > 0) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                        j = scheduleForConsignmentDTOS.size();
+//                            i++;
+                    }
+                } else {
+                    flag = false;
+                    j = scheduleForConsignmentDTOS.size();
+//                        i++;
+                }
+                if (flag && j == scheduleForConsignmentDTOS.size()) {
+                    flag = true;
+                } else {
+                    flag = false;
+                }
+
+                if (flag && j == scheduleForConsignmentDTOS.size()) {
+                    flag = true;
+                } else {
+                    flag = false;
+                }
+            }
+
+        } else {
+            flag = false;
+        }
+        return flag;
+    }
+
+    private java.util.Date checkScheduleForAVehicle(Vehicle vehicle) {
+        List<Schedule> schedules = scheduleService.checkVehicleInScheduled(vehicle.getId());
+        java.util.Date result = new java.util.Date();
+        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
+        List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = new ArrayList<>();
+        int i = 1;
+        boolean flag = true;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+
+        if (schedules != null && schedules.size() > 0) {
+            scheduleForConsignmentDTOS = scheduleForLocationDTO.mapToListResponse(schedules);
+            do {
+                try {
+                    result = sdf.parse(sdf.format(result));
+                    c.setTime(sdf.parse(sdf.format(result)));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                c.add(Calendar.DAY_OF_MONTH, i);
+                String dateC = sdf.format(c.getTime());
+                for (int j = 0; j < scheduleForConsignmentDTOS.size(); j++) {
+                    scheduleForLocationDTO = scheduleForConsignmentDTOS.get(j);
+                    List<PlaceResponeDTO> listScheduleDeli =
+                            placeService.getPlaceByTypePlace(scheduleForLocationDTO.getConsignment().getId(), TypeLocationEnum.DELIVERED_PLACE.getValue());
+
+                    PlaceResponeDTO placeScheduleRecei =
+                            placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), 1, TypeLocationEnum.RECEIVED_PLACE.getValue());
+                    PlaceResponeDTO placeScheduleDeli =
+                            placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), listScheduleDeli.size(), TypeLocationEnum.RECEIVED_PLACE.getValue());
+
+                    String dateRecei = sdf.format(placeScheduleRecei.getPlannedTime());
+                    String dateDeli = sdf.format(placeScheduleDeli.getPlannedTime());
+                    if (dateC.compareTo(dateRecei) < 0) {
+                        if (dateC.compareTo(sdf.format(result)) > 0) {
+                            flag = true;
+                        } else {
+                            j = scheduleForConsignmentDTOS.size();
+                            i++;
+                        }
+                    } else if (dateC.compareTo(dateRecei) > 0 && dateC.compareTo(dateRecei) > 0) {
+                        if (dateC.compareTo(dateDeli) > 0) {
+                            flag = true;
+                        } else {
+//                            flag =false;
+                            j = scheduleForConsignmentDTOS.size();
+                            i++;
+                        }
+                    } else {
+                        j = scheduleForConsignmentDTOS.size();
+                        i++;
+                    }
+                    if (flag && j == scheduleForConsignmentDTOS.size()) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                    }
+                }
+
+                if (!flag) {
+
+                }
+            } while (flag);
+        }
+
+
+        return c.getTime();
     }
 
     @Override
@@ -165,22 +518,14 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         addMaintenance.setPlannedMaintainDate(next);
         addMaintenance.setKmOld(maintenances.get(0).getKmOld() + 5000);
         addMaintenance.setVehicle(vehicle);
-//<<<<<<< HEAD
-//        MaintainType maintainType;
-//        if ("Loại 1".equals(maintenance.getMaintainType().getMaintainTypeName())) {
-//            maintainType = maintainTypeRepository.findByMaintainTypeName("Loại 2");
-//        } else {
-//            maintainType = maintainTypeRepository.findByMaintainTypeName("Loại 1");
-//        }
-//        addMaintenance.setMaintainType(maintainType);
-//        addMaintenance.setStatus(false);
-//=======
-        MaintenanceType maintenanceType = maintainTypeRepository.findById(1).get();
-        if (maintenance.getMaintenanceType().getId() == 1) {
-            maintenanceType = maintainTypeRepository.findById(2).get();
+        MaintenanceType maintenanceType;
+        if ("Loại 1".equals(maintenance.getMaintenanceType().getMaintenanceTypeName())) {
+            maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 2");
+        } else {
+            maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 1");
         }
         addMaintenance.setMaintenanceType(maintenanceType);
-//>>>>>>> d23df9d71cc003bd4f105ea10c0a21820c7e3c2d
+        addMaintenance.setStatus(false);
         maintainanceRepository.save(addMaintenance);
         if (Duration.between(today.atStartOfDay(), next.toLocalDate().atStartOfDay()).toDays() <= 7) {
             maintainanceRepository.updateActualMaintainDate(maintenances.get(0).getId(), next);
@@ -210,11 +555,16 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         addMaintenance.setActualMaintainDate(Date.valueOf(today));
         addMaintenance.setKmOld(vehicle.getKilometerRunning());
         addMaintenance.setVehicle(vehicle);
-        addMaintenance.setStatus(true);
-//        MaintenanceType maintenanceType1 = maintainTypeRepository.findByMaintainTypeName("Loại 1");
-//        addMaintenance.setMaintenanceType(maintenanceType1);
-        MaintenanceType maintenanceType = maintainTypeRepository.findByKilometersNumber(5000);
-        addMaintenance.setMaintenanceType(maintenanceType);
+        addMaintenance.setStatus(false);
+        MaintenanceType maintenanceType = new MaintenanceType();
+        if (vehicle.getKilometerRunning() <= 5000) {
+            maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 3");
+            addMaintenance.setMaintenanceType(maintenanceType);
+        } else {
+            maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 1");
+            addMaintenance.setMaintenanceType(maintenanceType);
+        }
+
         maintainanceRepository.save(addMaintenance);
     }
 }

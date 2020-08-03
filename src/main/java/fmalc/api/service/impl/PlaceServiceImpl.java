@@ -8,8 +8,15 @@ import fmalc.api.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 @Service
 public class PlaceServiceImpl implements PlaceService {
@@ -51,6 +58,22 @@ public class PlaceServiceImpl implements PlaceService {
         }
 
         return  placeResponeDTOS;
+    }
+
+    @Override
+    public PlaceResponeDTO updateActualTime(int id) throws ParseException {
+        Place place = placeRepository.findById(id);
+        PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
+        if(place!=null){
+//            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", Locale.getDefault());
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+            place.setActualTime(timestamp);
+            place = placeRepository.save(place);
+
+            placeResponeDTO = placeResponeDTO.convertPlace(place);
+        }
+        return placeResponeDTO;
     }
 
     @Override

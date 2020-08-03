@@ -47,6 +47,14 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
+    public Vehicle updateKmVehicle(int id, int km) {
+        Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
+        vehicle.setKilometerRunning(km);
+        vehicle = vehicleRepository.save(vehicle);
+        return vehicle;
+    }
+
+    @Override
     public Vehicle saveVehicle(Vehicle vehicle) {
         vehicle = vehicleRepository.saveAndFlush(vehicle);
         maintainanceService.createFirstMaintain(vehicle);
@@ -386,23 +394,32 @@ public class VehicleServiceImpl implements VehicleService {
     private List<Vehicle> checkMaintainForVehicle(List<Vehicle> vehicles, Consignment consignment) {
 
         boolean flag = true;
-        MaintainCheckDTO maintainCheckDTO = new MaintainCheckDTO();
+        List<MaintainCheckDTO> maintainCheckDTO = new ArrayList<>();
         List<Vehicle> result = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         for (int i = 0; i < vehicles.size(); i++) {
             flag = true;
-            maintainCheckDTO = new MaintainCheckDTO();
+//            maintainCheckDTO = new MaintainCheckDTO();
 //            double weight = consignment.getWeight();
 //            VehicleForDetailDTO vehicle = vehicleService.findVehicleById(vehicles.get(i).getId());
             //check xe co lich bao tri trong tuong lai
             maintainCheckDTO = maintainanceService.checkMaintainForVehicle(vehicles.get(i).getId());
-            if (maintainCheckDTO.getId() != null) {
+            for(int m =0; m< maintainCheckDTO.size(); m++){
+                if (maintainCheckDTO.get(m).getId() != null) {
 
 
-                //list place receive of a consignment
-                flag = checkDateMaintain(consignment, maintainCheckDTO, flag);
+                    //list place receive of a consignment
+                    flag = checkDateMaintain(consignment, maintainCheckDTO.get(m), flag);
+                    if (flag) {
+//                        result.add(vehicles.get(i));
+                    }else{
+                        flag = false;
+                        m = maintainCheckDTO.size();
+                    }
 
+                }
             }
+
             if (flag) {
                 result.add(vehicles.get(i));
             }
@@ -482,8 +499,7 @@ public class VehicleServiceImpl implements VehicleService {
         ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
         for (int i = 0; i < vehicles.size(); i++) {
             flag = true;
-//            double weight = consignment.getWeight();
-            //check xe co lich bao tri trong tuong lai
+
             scheduleForLocationDTOS = checkScheduleForVehicle(vehicles.get(i).getId());
             if (scheduleForLocationDTOS.size() > 0) {
                 for (int j = 0; j < scheduleForLocationDTOS.size(); j++) {

@@ -1,8 +1,13 @@
 package fmalc.api.dto;
 
+import fmalc.api.entity.Driver;
+import fmalc.api.enums.DriverStatusEnum;
 import lombok.Data;
+import org.modelmapper.ModelMapper;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class DriverForDetailDTO {
@@ -18,4 +23,18 @@ public class DriverForDetailDTO {
     private Float workingHour;
     private String image;
     private FLeetManagerResponseDTO fleetManager;
+
+    public DriverForDetailDTO mapToResponse(Driver baseEntities) {
+        ModelMapper modelMapper = new ModelMapper();
+        DriverForDetailDTO driverResponse = modelMapper.map(baseEntities, DriverForDetailDTO.class);
+        return driverResponse;
+    }
+
+    public List<DriverForDetailDTO> mapToListResponse(List<Driver> baseEntities) {
+        List<DriverForDetailDTO> result = baseEntities
+                .stream()
+                .map(driver -> mapToResponse(driver))
+                .collect(Collectors.toList());
+        return result;
+    }
 }

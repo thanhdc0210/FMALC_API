@@ -19,6 +19,7 @@ public class MaintainReponseDTO {
     private Integer kmOld;
     private Date plannedMaintainDate;
     private Date actualMaintainDate;
+    private int status;
 
     public MaintainReponseDTO convertSchedule(Maintenance maintenance){
         ModelMapper modelMapper = new ModelMapper();

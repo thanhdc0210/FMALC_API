@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-
+@Transactional
 public interface LocationRepository extends JpaRepository<Location, Integer> {
 //    @Query("SELECT l  FROM Location l WHERE l.vehicle.id= ?1")
 //    List<Location> getListLocationById(int vehicle);

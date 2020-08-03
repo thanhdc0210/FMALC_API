@@ -15,6 +15,7 @@ public class MaintainCheckDTO {
     private Integer kmOld;
     private Date plannedMaintainDate;
     private Date actualMaintainDate;
+    private int status;
 
     public MaintainCheckDTO convertMaintain(Maintenance maintenance){
         ModelMapper modelMapper = new ModelMapper();

@@ -55,7 +55,7 @@ public class NotificationController {
             Notification notificationSaved = notificationService.createNotifiation(notificationRequestDTO);
             if (notificationSaved != null) {
 
-                notificationResponeDTO = convertToDto(notificationSaved);
+                notificationResponeDTO = new NotificationResponeDTO().mapToResponse(notificationSaved);
                 if (notificationSend != notificationResponeDTO) {
                     notificationResponeDTOS.add(notificationResponeDTO);
                     intervals.subscribe((i) -> notifyForManagerWorkingHours());
@@ -106,14 +106,6 @@ public class NotificationController {
         String result = "OK";
 
         return ResponseEntity.ok().body(result);
-    }
-
-
-    //convert notify
-    private NotificationResponeDTO convertToDto(Notification notify) {
-        ModelMapper modelMapper = new ModelMapper();
-        NotificationResponeDTO dto = modelMapper.map(notify, NotificationResponeDTO.class);
-        return dto;
     }
 
     @GetMapping(value = "/count-notification-unread")

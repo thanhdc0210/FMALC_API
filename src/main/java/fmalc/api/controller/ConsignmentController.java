@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,25 @@ public class ConsignmentController {
         }
         catch (Exception e){
           return   ResponseEntity.badRequest().build();
+        }
+
+    }
+
+    @PostMapping("update")
+    public ResponseEntity<ConsignmentDetailDTO> updateConsignment(@RequestBody ConsignmentDetailDTO consignmentDetailDTO    ){
+        try{
+            Consignment consignment = consignmentService.findById(id);
+            if(consignment!=null){
+                ConsignmentDetailDTO consignmentDetailDTO = new ConsignmentDetailDTO();
+                consignmentDetailDTO = consignmentDetailDTO.convertToDTO(consignment);
+                return ResponseEntity.ok().body(consignmentDetailDTO);
+            }else{
+                return ResponseEntity.noContent().build();
+            }
+
+        }
+        catch (Exception e){
+            return   ResponseEntity.badRequest().build();
         }
 
     }
@@ -179,6 +199,16 @@ public class ConsignmentController {
 
     }
 
+    @PostMapping("places/id/{id}")
+    public ResponseEntity<PlaceResponeDTO> updateActualTime(@PathVariable("id") Integer id)  {
+        PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
+        try{
+            placeResponeDTO = placeService.updateActualTime(id);
+        }catch (Exception e){
+            ResponseEntity.noContent().build();
+        }
 
+        return ResponseEntity.ok().body(placeResponeDTO);
+    }
 
 }

@@ -3,6 +3,7 @@ package fmalc.api.service.impl;
 
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
+import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.SearchTypeForDriverEnum;
 import fmalc.api.enums.TypeLocationEnum;
@@ -60,7 +61,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public Schedule createSchedule(List<ObejctScheDTO> obejctScheDTOs, Consignment consignment) {
-        Schedule schedule= new Schedule();
+        Schedule schedule = new Schedule();
         for (int i = 0; i < obejctScheDTOs.size(); i++) {
             VehicleForDetailDTO vehicleForDetailDTO = vehicleService.findVehicleById(obejctScheDTOs.get(i).getVehicle_id());
             Vehicle vehicle = vehicleForDetailDTO.convertToEnity(vehicleForDetailDTO);
@@ -86,7 +87,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleForConsignmentDTOS;
     }
 
-      @Override
+    @Override
     public List<ScheduleForLocationDTO> getScheduleToCheck() {
         ScheduleForLocationDTO scheduleForLocationDTO = new ScheduleForLocationDTO();
         List<Schedule> schedules = scheduleRepository.findAll();
@@ -134,7 +135,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public int checkConsignmentStatus(int idDriver, int status,int statusDe) {
+    public int checkConsignmentStatus(int idDriver, int status, int statusDe) {
 //        if(>0){
 //
 //        }
@@ -142,12 +143,15 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-
-    public StatusToUpdateDTO updateStautsForVeDriAndCon(StatusToUpdateDTO statusToUpdateDTO,Schedule schedule) {
+    public StatusToUpdateDTO updateStautsForVeDriAndCon(StatusToUpdateDTO statusToUpdateDTO, Schedule schedule) {
         StatusToUpdateDTO status = new StatusToUpdateDTO();
-        status.setVehicle_status(vehicleService.updateStatus(statusToUpdateDTO.getVehicle_status(), schedule.getVehicle().getId()));
-        status.setDriver_status(driverService.updateStatus(statusToUpdateDTO.getDriver_status(), schedule.getDriver().getId()));
-        status.setConsignment_status(consignmentService.updateStatus(statusToUpdateDTO.getConsignment_status(), schedule.getConsignment().getId()));
+//        Consignment consignment = consignmentService.findById(schedule.getConsignment().getId());
+//        if (consignment.getStatus() == ConsignmentStatusEnum.WAITING.getValue()) {
+            status.setVehicle_status(vehicleService.updateStatus(statusToUpdateDTO.getVehicle_status(), schedule.getVehicle().getId()));
+            status.setDriver_status(driverService.updateStatus(statusToUpdateDTO.getDriver_status(), schedule.getDriver().getId()));
+            status.setConsignment_status(consignmentService.updateStatus(statusToUpdateDTO.getConsignment_status(), schedule.getConsignment().getId()));
+
+//        }
         return status;
     }
 

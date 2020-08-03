@@ -1,9 +1,14 @@
 package fmalc.api.controller;
+import fmalc.api.dto.MaintainConfirmDTO;
 import fmalc.api.dto.MaintainReponseDTO;
 import fmalc.api.dto.MaintainanceResponse;
 import fmalc.api.dto.MaintenanceResponseDTO;
 import fmalc.api.entity.Maintenance;
+import fmalc.api.entity.Vehicle;
+import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.MaintenanceService;
+import fmalc.api.service.VehicleService;
+import org.jboss.jandex.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +26,10 @@ public class MaintenanceController {
 
     @Autowired
     MaintenanceService maintenanceService;
+
+    @Autowired
+//    VehicleRepository vehicleRepository;
+    VehicleService vehicleService;
 
     @GetMapping("/actual-date")
     public ResponseEntity getMaintenance() {
@@ -75,6 +84,32 @@ public class MaintenanceController {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.badRequest().build();
+    }
+
+
+    @PostMapping(value = "update-plannedtime")
+    public ResponseEntity<MaintainConfirmDTO> updatePlannedtime(@RequestParam("id") Integer id, @RequestParam("km") Integer km) {
+//        if (file.isEmpty()) {
+//            return ResponseEntity.badRequest().build();
+//        }
+        Boolean reuslt = false;
+        MaintainConfirmDTO maintenance = new MaintainConfirmDTO();
+        try {
+            Vehicle vehicle = vehicleService.updateKmVehicle(id,km);
+
+            maintenance = maintenanceService.updatePlannedTime(id, km);
+            if(maintenance.getMaintainReponseDTO()!= null && maintenance.getMaintainReponseDTO().getActualMaintainDate()!= null){
+                reuslt = true;
+            }else if(maintenance!= null && maintenance.getMaintainReponseDTO().getActualMaintainDate()== null){
+                reuslt = false;
+            }
+//            if (maintenance != null) {
+
+//            }
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().body(maintenance);
     }
 
 

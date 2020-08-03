@@ -3,6 +3,7 @@ package fmalc.api.service;
 import fmalc.api.dto.PlaceResponeDTO;
 import fmalc.api.entity.Place;
 
+import java.text.ParseException;
 import java.util.*;
 
 public interface PlaceService {
@@ -12,4 +13,5 @@ public interface PlaceService {
 
     PlaceResponeDTO getPlaceByTypePlaceAndPriority(int idConsignment, int priority, int typePlace);
     List<PlaceResponeDTO> getPlaceByTypePlace(int idConsignment,  int typePlace);
+    PlaceResponeDTO updateActualTime(int id) throws ParseException;
 }

@@ -22,4 +22,5 @@ public interface PlaceRepository extends JpaRepository<Place, Integer> {
     @Query("select p from Place p where p.consignment.id =?1 and p.priority = ?2 and p.type =?3")
     Place getPlaceByTypePlaceAndPriority(int idConsignment, int priority, int typePlace);
 
+    Place findById(int id);
 }

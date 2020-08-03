@@ -34,7 +34,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 
     @Override
     public Consignment findById(int consignment_id) {
-        return consignmentRepository.findById(consignment_id);
+        return consignmentRepository.findById(consignment_id).get();
     }
 
     @Override
@@ -196,7 +196,10 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 
     @Override
     public int updateStatus(int status, int id) {
-//        Consignment consignment = consignmentRepository.updateStatusVehicle(status,id);
-        return consignmentRepository.updateStatusVehicle(status,id);
+
+        if(consignmentRepository.updateStatusVehicle(status,id)>0){
+            consignmentRepository.findById(id);
+        }
+        return  consignmentRepository.findById(id).get().getStatus();
     }
 }

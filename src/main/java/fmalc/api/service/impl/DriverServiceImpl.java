@@ -322,20 +322,28 @@ public class DriverServiceImpl implements DriverService {
     private List<Driver> checkMaintainForDriver(List<Driver> drivers, Consignment consignment) {
 
         boolean flag = true;
-        MaintainCheckDTO maintainCheckDTO = new MaintainCheckDTO();
+        List<MaintainCheckDTO> maintainCheckDTO = new ArrayList<>();
         List<Driver> result = new ArrayList<>();
 
         for (int i = 0; i < drivers.size(); i++) {
-            flag = true;
+            flag = false;
             //            VehicleForDetailDTO vehicle = vehicleService.findVehicleById(drivers.get(i).getId());
             //check xe co lich bao tri trong tuong lai
             maintainCheckDTO = maintainanceService.checkMaintainForDriver(drivers.get(i).getId());
-            if (maintainCheckDTO.getId() != null) {
 
-                flag = checkDateMaintain(consignment, maintainCheckDTO, flag);
+            for(int m =0; m< maintainCheckDTO.size();m++){
+                flag = checkDateMaintain(consignment, maintainCheckDTO.get(m), flag);
+                if(flag){
 
+                }else{
+                    flag= false;
+                    m= maintainCheckDTO.size();
+                }
             }
 
+//            if (maintainCheckDTO.getId() != null) {
+//                flag = checkDateMaintain(consignment, maintainCheckDTO, flag);
+//            }
             if (flag) {
                 result.add(drivers.get(i));
             }

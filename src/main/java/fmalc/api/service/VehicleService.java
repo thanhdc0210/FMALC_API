@@ -25,6 +25,7 @@ public interface VehicleService {
     String findVehicleLicensePlatesForReportInspectionBeforeDelivery(String username);
     String findVehicleLicensePlatesForReportInspectionAfterDelivery(String username, Timestamp startDate);
 
+    Vehicle updateKmVehicle(int id, int km);
 
     List<Vehicle> findByWeight(double weight);
 

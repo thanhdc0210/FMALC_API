@@ -20,6 +20,8 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
     List<Maintenance> findByDriver(int idDriver);
     List<Maintenance> findTop2ByVehicle_IdOrderByIdDesc(int vehicleId);
 
+
+
     @Modifying
     @Transactional
     @Query(value = "Update maintenance m set m.planned_maintain_date =:date where m.id =:id", nativeQuery = true)
