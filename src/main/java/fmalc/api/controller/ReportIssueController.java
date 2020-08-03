@@ -4,6 +4,7 @@ import fmalc.api.dto.ReportIssueDTO;
 import fmalc.api.dto.ReportIssueInformationForUpdatingDTO;
 import fmalc.api.dto.ReportIssueRequestDTO;
 import fmalc.api.dto.ReportIssueResponseDTO;
+import fmalc.api.entity.ReportIssue;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.service.ReportIssueService;
 import fmalc.api.service.VehicleService;
@@ -26,12 +27,12 @@ public class ReportIssueController {
     VehicleService vehicleService;
 
     @PostMapping(value = "report-issue")
-    public ResponseEntity<ReportIssueRequestDTO> createReportIssue(@RequestBody ReportIssueRequestDTO reportIssueRequestDTO){
+    public ResponseEntity<ReportIssueRequestDTO> createReportIssue(@RequestBody ReportIssueRequestDTO reportIssueRequestDTO) {
         boolean result = reportIssueService.saveReportIssue(reportIssueRequestDTO);
 
-        if (result == false){
+        if (result == false) {
             return ResponseEntity.noContent().build();
-        }else{
+        } else {
             return ResponseEntity.ok().body(reportIssueRequestDTO);
         }
     }
@@ -39,19 +40,19 @@ public class ReportIssueController {
     // Lấy vehicle tài xế sắp chạy --> get report-issue của xe đó
     @GetMapping(value = "information-report-issue")
     public ResponseEntity<ReportIssueResponseDTO> getIssueInformationOfAVehicle(@RequestParam(value = "username") String username,
-                                                                                @RequestParam(value = "status") List<Integer> status){
+                                                                                @RequestParam(value = "status") List<Integer> status) {
         try {
 
             Vehicle vehicle = vehicleService.findVehicleByUsernameAndConsignmentStatus(username, status,
                     Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
                     Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
 
-            if (vehicle == null){
+            if (vehicle == null) {
                 return ResponseEntity.noContent().build();
-            }else {
+            } else {
                 return ResponseEntity.ok().body(new ReportIssueResponseDTO(vehicle));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -67,15 +68,29 @@ public class ReportIssueController {
     }
 
     @GetMapping("/vehicle/{id}")
-    public ResponseEntity<List<ReportIssueDTO>> getIssueByIdVehicle(@PathVariable Integer id){
+    public ResponseEntity<List<ReportIssueDTO>> getIssueByIdVehicle(@PathVariable Integer id) {
         List<ReportIssueDTO> reportIssues = reportIssueService.getReportIssueByVehicle(id);
-        try{
-            if(reportIssues.size()>0){
-                return  ResponseEntity.ok().body(reportIssues);
-            }else{
+        try {
+            if (reportIssues.size() > 0) {
+                return ResponseEntity.ok().body(reportIssues);
+            } else {
                 return ResponseEntity.noContent().build();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<ReportIssueDTO>> getIssue() {
+        List<ReportIssue> reportIssues = reportIssueService.getAllIssue();
+        try {
+            if (!reportIssues.isEmpty()) {
+                return ResponseEntity.ok().body(new ReportIssueDTO().mapToListResponse(reportIssues));
+            } else {
+                return ResponseEntity.noContent().build();
+            }
+        } catch (Exception e) {
             return ResponseEntity.noContent().build();
         }
     }

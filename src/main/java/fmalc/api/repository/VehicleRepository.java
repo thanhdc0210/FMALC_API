@@ -57,6 +57,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "FROM place p , consignment c " +
                 "WHERE c.id = p.consignment_id " +
                 "AND timediff(now(), p.planned_time) < 0 " +
+                "AND p.planned_time between now() and :endDate " +
                 "AND c.status = 0 " +
                 "AND p.priority = 1 " +
                 "GROUP BY c.id " +
@@ -70,7 +71,8 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "WHERE a.username = :username)) " +
                 "and s.is_approve = true ) " +
                 "limit 1", nativeQuery = true)
-        String findVehicleLicensePlatesForReportInspectionBeforeDelivery(@Param("username") String username);
+        String findVehicleLicensePlatesForReportInspectionBeforeDelivery(@Param("username") String username,
+                                                                         @Param("endDate") Timestamp endDate);
 
         @Query(value = "Select distinct v.license_plates\n" +
                 "from vehicle v, consignment c, driver d, account a, schedule s\n" +

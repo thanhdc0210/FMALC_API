@@ -23,4 +23,5 @@ public interface PlaceRepository extends JpaRepository<Place, Integer> {
     Place getPlaceByTypePlaceAndPriority(int idConsignment, int priority, int typePlace);
 
     Place findById(int id);
+    Place findPlaceById(int id);
 }

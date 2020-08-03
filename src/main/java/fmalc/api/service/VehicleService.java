@@ -22,7 +22,7 @@ public interface VehicleService {
     Vehicle findVehicleByLicensePlates(String licensePlates);
 
     List<Vehicle> findByStatus(int status, double weight);
-    String findVehicleLicensePlatesForReportInspectionBeforeDelivery(String username);
+    String findVehicleLicensePlatesForReportInspectionBeforeDelivery(String username, Timestamp endDate);
     String findVehicleLicensePlatesForReportInspectionAfterDelivery(String username, Timestamp startDate);
 
     Vehicle updateKmVehicle(int id, int km);

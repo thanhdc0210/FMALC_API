@@ -3,6 +3,7 @@ package fmalc.api.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.sql.Date;
 @Table(name = "consignment_history")
 @Getter
 @NoArgsConstructor
+@Setter
 @AllArgsConstructor
 public class ConsignmentHistory implements Serializable {
 

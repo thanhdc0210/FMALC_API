@@ -1,9 +1,7 @@
 package fmalc.api.controller;
 
 import fmalc.api.dto.*;
-import fmalc.api.entity.Consignment;
-import fmalc.api.entity.Driver;
-import fmalc.api.entity.Vehicle;
+import fmalc.api.entity.*;
 import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +38,15 @@ public class ConsignmentController {
     PlaceService placeService;
 
     @Autowired
+    AccountService accountService;
+
+    @Autowired
     ParkingService parkingService;
 
+    @Autowired
+    FleetManagerService fleetManagerService;
+    @Autowired
+    ConsignmentHistoryService consignmentHistoryService;
 
     @GetMapping("test")
     public ResponseEntity<List<ScheduleForLocationDTO>> test() {
@@ -68,6 +73,21 @@ public class ConsignmentController {
         }
     }
 
+    @GetMapping("driver/{id}")
+    public ResponseEntity<List<ConsignmentResponseDTO>> getConsignmentOfDriver(@PathVariable("id") int id){
+        try{
+            List<Consignment> consignments = consignmentService.getConsignmentOfDriver(id);
+            if(consignments.size()>0){
+                ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
+                List<ConsignmentResponseDTO> consignmentResponseDTOS = consignmentResponseDTO.mapToListResponse(consignments);
+                return ResponseEntity.ok().body(consignmentResponseDTOS);
+            }else{
+                return ResponseEntity.noContent().build();
+            }
+        }catch (Exception e){
+            return  ResponseEntity.badRequest().build();
+        }
+    }
 
     @GetMapping("{id}")
     public ResponseEntity<ConsignmentDetailDTO> getDetailConsignment(@PathVariable("id") int id){
@@ -88,17 +108,22 @@ public class ConsignmentController {
 
     }
 
-    @PostMapping("update")
-    public ResponseEntity<ConsignmentDetailDTO> updateConsignment(@RequestBody ConsignmentDetailDTO consignmentDetailDTO    ){
+    @PostMapping("update/{username}")
+    public ResponseEntity<Integer> updateConsignment(@PathVariable("username") String username, @RequestBody ConsignmentUpdateDTO consignmentUpdateDTO    ){
         try{
-            Consignment consignment = consignmentService.findById(id);
-            if(consignment!=null){
-                ConsignmentDetailDTO consignmentDetailDTO = new ConsignmentDetailDTO();
-                consignmentDetailDTO = consignmentDetailDTO.convertToDTO(consignment);
-                return ResponseEntity.ok().body(consignmentDetailDTO);
-            }else{
-                return ResponseEntity.noContent().build();
-            }
+            Account accout = accountService.getAccount(username);
+            FleetManager fleetManager = fleetManagerService.findByAccount(accout.getId());
+
+            int i = consignmentService.updateConsignment(consignmentUpdateDTO);
+            String note ="Cập nhật lại lô hàng số "+consignmentUpdateDTO.getId();
+            ConsignmentHistory consignmentHistory = consignmentHistoryService.save(consignmentUpdateDTO.getId(),fleetManager,note);
+//            if(consignment!=null){
+//                ConsignmentDetailDTO consignmentDetailDTO = new ConsignmentDetailDTO();
+//                consignmentDetailDTO = consignmentDetailDTO.convertToDTO(consignment);
+                return ResponseEntity.ok().body(i);
+//            }else{
+//                return ResponseEntity.noContent().build();
+//            }
 
         }
         catch (Exception e){

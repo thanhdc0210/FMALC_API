@@ -8,6 +8,7 @@ import fmalc.api.entity.Vehicle;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface MaintenanceService {
@@ -26,4 +27,8 @@ public interface MaintenanceService {
     void createFirstMaintain(Vehicle vehicle);
 
     void calculateMaintenanceForVehicle(int idVehicle);
+
+    // ThanhDC
+//    Integer countMaintenanceScheduleNumberInADayOfDriver(Integer driverId,
+//                                                         Timestamp startDate, Timestamp endDate);
 }

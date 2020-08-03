@@ -51,7 +51,7 @@ public class ReportIssue implements Serializable {
     @Column(name = "status", nullable = false)
     private Boolean status;
 
-    @Column(name = "image")
+    @Column(name = "image", length = 1000)
     private String image;
 
     // Báo cáo trước khi chạy hay sau khi chạy hoàn thành đơn hàng

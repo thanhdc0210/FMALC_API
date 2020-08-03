@@ -9,6 +9,7 @@ import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.SearchTypeForDriverEnum;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.List;
 
@@ -34,4 +35,6 @@ public interface ScheduleService {
 
     List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType);
 
+//    THANHDC
+//    Integer countScheduleNumberInADayOfDriver(Integer id, Timestamp startDate, Timestamp endDate);
 }

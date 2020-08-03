@@ -1,21 +1,22 @@
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.ConsignmentRequestDTO;
-import fmalc.api.entity.Consignment;
+import fmalc.api.dto.ConsignmentUpdateDTO;
+import fmalc.api.entity.*;
 import fmalc.api.enums.TypeLocationEnum;
-import fmalc.api.repository.ConsignmentRepository;
-import fmalc.api.entity.Place;
-import fmalc.api.repository.PlaceRepository;
+import fmalc.api.repository.*;
 import fmalc.api.service.ConsignmentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +27,14 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 
     @Autowired
     PlaceRepository placeRepository;
+
+    @Autowired
+    ScheduleRepository scheduleRepository;
+
+    @Autowired
+    VehicleRepository vehicleRepository;
+    @Autowired
+    DriverRepository driverRepository;
 
 //    @Override
 //    public List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(List<Integer> status, String username) {
@@ -201,5 +210,39 @@ public class ConsignmentServiceImpl implements ConsignmentService {
             consignmentRepository.findById(id);
         }
         return  consignmentRepository.findById(id).get().getStatus();
+    }
+
+    @Override
+    public List<Consignment> getConsignmentOfDriver(int id) {
+        return consignmentRepository.getConsignmentOfDriver(id);
+    }
+
+    @Override
+    public int updateConsignment(ConsignmentUpdateDTO consignmentUpdateDTO) {
+        int result =0;
+        Consignment consignment = consignmentRepository.findConsignmentById(consignmentUpdateDTO.getId());
+        consignment.setOwnerName(consignmentUpdateDTO.getOwnerName());
+        consignment.setOwnerNote(consignmentUpdateDTO.getOwnerNote());
+        for(int i =0; i< consignmentUpdateDTO.getSchedules().size(); i++){
+            Schedule schedule = scheduleRepository.findScheduleById(consignmentUpdateDTO.getSchedules().get(i).getId());
+            Driver driver = driverRepository.findById(consignmentUpdateDTO.getSchedules().get(i).getDriver());
+            Vehicle vehicle = vehicleRepository.findByIdVehicle(consignmentUpdateDTO.getSchedules().get(i).getVehicle());
+
+            schedule.setVehicle(vehicle);
+            schedule.setDriver(driver);
+            schedule = scheduleRepository.save(schedule);
+
+        }
+        for(int i =0 ; i< consignmentUpdateDTO.getPlaces().size();i++){
+            Place place = placeRepository.findPlaceById(consignmentUpdateDTO.getPlaces().get(i).getId());
+            place.setContactName(consignmentUpdateDTO.getPlaces().get(i).getContactName());
+            place.setContactPhone(consignmentUpdateDTO.getPlaces().get(i).getContactPhone());
+            place = placeRepository.save(place);
+
+        }
+        consignment = consignmentRepository.save(consignment);
+
+
+        return 0;
     }
 }

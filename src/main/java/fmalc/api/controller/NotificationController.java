@@ -1,28 +1,27 @@
 package fmalc.api.controller;
 
+import fmalc.api.dto.NotificationMobileResponse;
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
-
-
 import fmalc.api.dto.NotificationUnread;
 import fmalc.api.entity.Notification;
-
+import fmalc.api.entity.NotificationData;
+import fmalc.api.entity.NotificationRequest;
+import fmalc.api.enums.NotificationTypeEnum;
+import fmalc.api.service.DriverService;
+import fmalc.api.service.FirebaseService;
 import fmalc.api.service.NotificationService;
 import fmalc.api.service.VehicleService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
-
-import reactor.core.scheduler.Scheduler;
 import reactor.util.function.Tuple2;
-
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 @RestController
@@ -35,6 +34,12 @@ public class NotificationController {
     @Autowired
     VehicleService vehicleService;
 
+    @Autowired
+    DriverService driverService;
+
+    @Autowired
+    FirebaseService firebaseService;
+
 
     // list notify
     private List<NotificationResponeDTO> notificationResponeDTOS = new ArrayList<>();
@@ -46,14 +51,24 @@ public class NotificationController {
     private Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
     private Flux<List<NotificationResponeDTO>> flux;
 
-    // save notify and send notify for fleet manager
+    // save notify and send notify for fleet manager and driver
     @PostMapping("/")
     public ResponseEntity<NotificationResponeDTO> createNotification(@RequestBody NotificationRequestDTO notificationRequestDTO) {
         NotificationResponeDTO notificationResponeDTO;
         try {
 
-            Notification notificationSaved = notificationService.createNotifiation(notificationRequestDTO);
+            Notification notificationSaved = notificationService.createNotification(notificationRequestDTO);
             if (notificationSaved != null) {
+
+                NotificationData notificationData = new NotificationData();
+                notificationData.setTitle(NotificationTypeEnum.getValueEnumToShow(notificationRequestDTO.getType()));
+                notificationData.setBody(notificationRequestDTO.getContent());
+
+                NotificationRequest notificationRequest = new NotificationRequest();
+                notificationRequest.setNotificationData(notificationData);
+                notificationRequest.setTo(driverService.findTokenDeviceByDriverId(notificationRequestDTO.getDriver_id()));
+
+                firebaseService.sendPnsToDevice(notificationRequest);
 
                 notificationResponeDTO = new NotificationResponeDTO().mapToResponse(notificationSaved);
                 if (notificationSend != notificationResponeDTO) {
@@ -111,5 +126,28 @@ public class NotificationController {
     @GetMapping(value = "/count-notification-unread")
     public NotificationUnread countNotificationUnread() {
         return notificationService.countNotificationUnread();
+    }
+
+    @GetMapping(value = "/by-type")
+    public ResponseEntity getNotificationsByType(@RequestParam("type") int type) {
+        List<Notification> notifications = notificationService.getNotificationsByType(type);
+        return ResponseEntity.ok().body(new NotificationResponeDTO().mapToListResponse(notifications));
+    }
+
+    @GetMapping(value = "/driver/{id}")
+    public ResponseEntity<List<NotificationMobileResponse>> findNotificationByDriverId(@PathVariable("id") Integer id) {
+
+        try {
+            List<Notification> notifications = notificationService.findByDriverId(id);
+
+            if (notifications != null) {
+                List<NotificationMobileResponse> notificationMobileResponses = new ArrayList<>(new NotificationMobileResponse().mapToListResponse(notifications));
+                return ResponseEntity.ok().body(notificationMobileResponses);
+            } else {
+                return ResponseEntity.noContent().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

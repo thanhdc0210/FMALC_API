@@ -70,4 +70,7 @@ public class Vehicle implements Serializable {
     // Loại bằng lái yêu cầu
     @Column(name = "driver_license", nullable = false)
     private Integer driverLicense;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 }

@@ -8,6 +8,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import fmalc.api.entity.NotificationRequest;
+import fmalc.api.service.FirebaseService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 @Service
-public class FirebaseServiceImpl {
+public class FirebaseServiceImpl implements FirebaseService {
 
     @Value("${app.firebase-config}")
     private String firebaseConfig;

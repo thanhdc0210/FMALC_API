@@ -24,4 +24,9 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.updateIsActiveById(id, isActive);
         return accountRepository.findById(id).get();
     }
+
+    @Override
+    public Account getAccount(String username) {
+        return accountRepository.findByUsername(username);
+    }
 }

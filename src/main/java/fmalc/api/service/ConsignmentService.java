@@ -1,6 +1,7 @@
 package fmalc.api.service;
 
 import fmalc.api.dto.ConsignmentRequestDTO;
+import fmalc.api.dto.ConsignmentUpdateDTO;
 import fmalc.api.entity.Consignment;
 
 import java.text.ParseException;
@@ -24,5 +25,8 @@ public interface ConsignmentService {
 
     int updateStatus(int status, int id);
 
+    List<Consignment> getConsignmentOfDriver(int id);
+
+    int updateConsignment(ConsignmentUpdateDTO consignmentUpdateDTO);
 //    Consignment mapDriverForConsignment(Consignment consignment);
 }

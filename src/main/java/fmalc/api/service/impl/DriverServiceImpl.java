@@ -215,6 +215,16 @@ public class DriverServiceImpl implements DriverService {
         return driverRepository.save(driver).getTokenDevice();
     }
 
+    @Override
+    public String findTokenDeviceByDriverId(Integer id) {
+
+        if (driverRepository.existsById(id)){
+            return driverRepository.findTokenDeviceByDriverId(id);
+        }
+
+        return "";
+    }
+
     private List<Driver> checkScheduledForDriver(List<Driver> drivers, Consignment consignment) {
         boolean flag = true;
         List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();

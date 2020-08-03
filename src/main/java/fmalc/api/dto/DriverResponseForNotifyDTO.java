@@ -15,5 +15,5 @@ public class DriverResponseForNotifyDTO {
     private Date license_expires;
     private String no;
     private Date dateOfBirth;
-
+    private String image;
 }
