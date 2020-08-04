@@ -1,4 +1,4 @@
-package fmalc.api.service;
+package fmalc.api.service.impl;
 
 import fmalc.api.entity.Account;
 import fmalc.api.repository.AccountRepository;
@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service("userDetailsService")
 @Transactional
-public class MyUserDetailsService implements UserDetailsService {
+public class MyUserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private AccountRepository accountRepository;
 
