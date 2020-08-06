@@ -23,6 +23,7 @@ import fmalc.api.enums.SearchTypeForDriverEnum;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -55,7 +56,7 @@ public class ScheduleController {
     FirebaseService firebaseService;
 
     @GetMapping(value = "driver")
-
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<List<ScheduleResponseDTO>> findByConsignmentStatusAndUsername(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
         List<Schedule> schedules = scheduleService.findByConsignmentStatusAndUsername(status, username);
 
@@ -497,6 +498,7 @@ public class ScheduleController {
 
 
     @GetMapping("/search")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<List<ScheduleResponseDTO>> searchByTypeForDriver(@RequestParam SearchTypeForDriverEnum searchType, @RequestParam String searchValue){
         List<Schedule> result =new ArrayList<>();
         try{

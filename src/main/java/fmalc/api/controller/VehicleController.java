@@ -13,6 +13,7 @@ import fmalc.api.service.VehicleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -145,6 +146,7 @@ public class VehicleController {
 
 
     @GetMapping(value = "/report-inspection-before-delivery")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionBeforeDelivery
             (@RequestParam(value = "username") String username) {
 
@@ -173,6 +175,7 @@ public class VehicleController {
     }
 
     @GetMapping(value = "/report-inspection-after-delivery")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionAfterDelivery
             (@RequestParam(value = "username") String username) {
 

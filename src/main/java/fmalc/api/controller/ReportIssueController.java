@@ -10,6 +10,7 @@ import fmalc.api.service.ReportIssueService;
 import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -27,6 +28,7 @@ public class ReportIssueController {
     VehicleService vehicleService;
 
     @PostMapping(value = "report-issue")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<ReportIssueRequestDTO> createReportIssue(@RequestBody ReportIssueRequestDTO reportIssueRequestDTO) {
         boolean result = reportIssueService.saveReportIssue(reportIssueRequestDTO);
 
@@ -39,6 +41,7 @@ public class ReportIssueController {
 
     // Lấy vehicle tài xế sắp chạy --> get report-issue của xe đó
     @GetMapping(value = "information-report-issue")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<ReportIssueResponseDTO> getIssueInformationOfAVehicle(@RequestParam(value = "username") String username,
                                                                                 @RequestParam(value = "status") List<Integer> status) {
         try {
@@ -58,6 +61,7 @@ public class ReportIssueController {
     }
 
     @PutMapping(value = "/report-issue")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity updateReportIssue(@RequestBody ReportIssueInformationForUpdatingDTO reportIssueInformationForUpdatingDTO) {
         boolean result = reportIssueService.updateReportIssue(reportIssueInformationForUpdatingDTO);
         if (result == false) {

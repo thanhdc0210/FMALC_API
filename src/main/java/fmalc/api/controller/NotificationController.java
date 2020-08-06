@@ -15,6 +15,7 @@ import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -68,10 +69,13 @@ public class NotificationController {
                 notificationRequest.setNotificationData(notificationData);
                 notificationRequest.setTo(driverService.findTokenDeviceByDriverId(notificationRequestDTO.getDriver_id()));
 
-                firebaseService.sendPnsToDevice(notificationRequest);
-
                 notificationResponeDTO = new NotificationResponeDTO().mapToResponse(notificationSaved);
                 if (notificationSend != notificationResponeDTO) {
+
+                    // Send to driver
+                    firebaseService.sendPnsToDevice(notificationRequest);
+
+                    // Send to fleet_manager
                     notificationResponeDTOS.add(notificationResponeDTO);
                     intervals.subscribe((i) -> notifyForManagerWorkingHours());
 
@@ -135,6 +139,7 @@ public class NotificationController {
     }
 
     @GetMapping(value = "/driver/{id}")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<List<NotificationMobileResponse>> findNotificationByDriverId(@PathVariable("id") Integer id) {
 
         try {

@@ -9,6 +9,7 @@ import fmalc.api.service.UploaderService;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -61,6 +62,7 @@ public class InspectionController {
     }
 
     @PostMapping(value = "upload-image")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity uploadImage( @RequestPart(value = "file") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().build();
