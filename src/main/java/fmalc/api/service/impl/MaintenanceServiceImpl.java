@@ -134,7 +134,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public MaintainConfirmDTO updatePlannedTime(int id, int km) {
-        Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
+        Vehicle vehicle = vehicleRepository.findById(id).get();
         boolean res = false;
         java.util.Date date1 = new java.util.Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

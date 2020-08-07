@@ -6,12 +6,14 @@ import com.google.firebase.messaging.Message;
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
 import fmalc.api.dto.NotificationUnread;
+import fmalc.api.entity.Account;
 import fmalc.api.entity.Driver;
 import fmalc.api.entity.Notification;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.NotificationTypeEnum;
+import fmalc.api.repository.AccountRepository;
 import fmalc.api.repository.DriverRepository;
-import fmalc.api.repository.NotificationRepositry;
+import fmalc.api.repository.NotificationRepository;
 import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.NotificationService;
 import org.modelmapper.ModelMapper;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -27,7 +30,7 @@ import java.util.logging.Logger;
 public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
-    NotificationRepositry notificationRepositry;
+    NotificationRepository notificationRepository;
 
     @Autowired
     DriverRepository driverRepository;
@@ -35,39 +38,20 @@ public class NotificationServiceImpl implements NotificationService {
     @Autowired
     VehicleRepository vehicleRepository;
 
+    @Autowired
+    AccountRepository accountRepository;
+
     private Logger logger = Logger.getLogger("MYLOG");
 
     @Override
     public Notification createNotification(NotificationRequestDTO dto) throws ParseException {
-//        Date date = new Date();
         Notification notify = convertToDto(dto);
-
-//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-//        date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(df.format(date));
-
-//        Timestamp timestamp = new Timestamp(date.getTime());
-//        notify.setTime(timestamp);
-
-//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-//        date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(df.format(date));
-//        Timestamp timestamp = new Timestamp(date.getTime());
-//        notify.setTime(timestamp);
         notify.setTime(new Timestamp(System.currentTimeMillis()));
-
-
-//        notify = convertToDto(dto);
-        Vehicle vehicle = new Vehicle();
-        vehicle = vehicleRepository.findByIdVehicle(dto.getVehicle_id());
+        Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
         notify.setVehicle(vehicle);
-        Driver driver = new Driver();
-        try {
-            driver =driverRepository.findById(dto.getDriver_id());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        Driver driver = driverRepository.findById(dto.getDriver_id()).get();
 
-//        notify.setDriver(driver);
-        notify.setStatus(false);
+        notify.setDriver(driver);
 
         // Send notification to android
         String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
@@ -86,25 +70,38 @@ public class NotificationServiceImpl implements NotificationService {
             logger.info("Fail to send firebase notification " + e.getMessage());
         }
 
-        return notificationRepositry.save(notify);
+        return notificationRepository.save(notify);
     }
 
     @Override
-    public NotificationUnread countNotificationUnread() {
+    public NotificationUnread countNotificationUnread(Integer accountId) {
         NotificationUnread result = new NotificationUnread();
-        result.setCount(notificationRepositry.countAllByStatusFalse());
-        result.setNotificationsUnread(new NotificationResponeDTO().mapToListResponse(notificationRepositry.findTop4ByStatusIsFalseOrderByIdDesc()));
+        Account account = accountRepository.findById(accountId).get();
+        result.setCount(notificationRepository.countAllByAccountNotContains(account));
+        result.setNotificationsUnread(new NotificationResponeDTO().mapToListResponse(notificationRepository.findTop4ByAccountNotContains(account)));
         return result;
     }
 
     @Override
     public List<Notification> getNotificationsByType(int type) {
-        return notificationRepositry.findAllByTypeOrderByIdDesc(type);
+        return notificationRepository.findAllByTypeOrderByIdDesc(type);
     }
 
     public List<Notification> findByDriverId(Integer driverId) {
+        return notificationRepository.findByDriverId(driverId);
+    }
 
-        return notificationRepositry.findByDriverId(driverId);
+    @Override
+    public void readNotification(Integer accountId, Integer notificationId) {
+        Notification notification = notificationRepository.findById(notificationId).get();
+        Account account = accountRepository.findById(accountId).get();
+        Collection<Account> accounts = notification.getAccount();
+        boolean isPresent = accounts.stream().filter(x -> x.getId() == accountId).findFirst().isPresent();
+        if (!isPresent) {
+            accounts.add(account);
+            notification.setAccount(accounts);
+            notificationRepository.save(notification);
+        }
     }
 
     private Notification convertToDto(NotificationRequestDTO notificationRequestDTO) {

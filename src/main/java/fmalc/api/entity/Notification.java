@@ -1,11 +1,14 @@
 package fmalc.api.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import javax.persistence.*;
-
-import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
+import java.util.Collection;
 
 @Table(name = "notification")
 @Entity
@@ -39,12 +42,15 @@ public class Notification implements Serializable {
     @Column(name = "content", nullable = false)
     private String content;
 
-    // Kiểm tra thông báo đã được đọc hay chưa
-    @Column(name = "status", nullable = false)
-    private Boolean status;
-
     // Phân biệt 2 loại notification.
     // Odd-hours alert và Long Idle Times
     @Column(name = "type", nullable = false)
     private Integer type;
+
+    @ManyToMany
+    @JoinTable(name = "read_notification",
+            joinColumns = {@JoinColumn(name = "notification_id")},
+            inverseJoinColumns = {@JoinColumn(name = "account_id")}
+    )
+    private Collection<Account> account;
 }

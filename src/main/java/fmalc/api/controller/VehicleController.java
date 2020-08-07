@@ -1,28 +1,25 @@
 package fmalc.api.controller;
 
 
-import fmalc.api.dto.*;
-
+import fmalc.api.dto.InspectionResponseDTO;
+import fmalc.api.dto.VehicleForDetailDTO;
+import fmalc.api.dto.VehicleForNewDTO;
+import fmalc.api.dto.VehicleReponseDTO;
 import fmalc.api.entity.Inspection;
 import fmalc.api.entity.Vehicle;
-
 import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.service.InspectionService;
 import fmalc.api.service.VehicleService;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,6 +87,7 @@ public class VehicleController {
         vehicle.setKilometerRunning(defaultKilometRunning);
         vehicle.setDateOfManufacture(sqlDate);
         vehicle.setDriverLicense(dto.getDriverLicense());
+        vehicle.setIsActive(true);
 
         Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
 

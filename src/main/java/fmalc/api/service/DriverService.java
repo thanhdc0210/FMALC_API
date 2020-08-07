@@ -1,5 +1,6 @@
 package fmalc.api.service;
 
+import fmalc.api.dto.DayOffRequestDTO;
 import fmalc.api.dto.DriverRequestDTO;
 import fmalc.api.dto.ScheduleForConsignmentDTO;
 import fmalc.api.entity.Consignment;
@@ -38,4 +39,6 @@ public interface DriverService {
     String updateTokenDevice(Driver driver);
 
     String findTokenDeviceByDriverId(Integer id);
+
+    void createDayOff(DayOffRequestDTO dayOffRequestDTO);
 }

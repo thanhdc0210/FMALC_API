@@ -27,8 +27,6 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     @Query("select d from  Driver d where d.driverLicense >= ?1")
     List<Driver> findDriverByLicenseC(int license);
 
-    Driver findById(int id);
-
     List<Driver> findAllByFleetManager_Id(Integer id);
 
     @Modifying

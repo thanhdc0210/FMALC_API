@@ -1,6 +1,7 @@
 
 package fmalc.api.controller;
 
+import fmalc.api.dto.DayOffRequestDTO;
 import fmalc.api.dto.DriverRequestDTO;
 import fmalc.api.dto.DriverResponseDTO;
 import fmalc.api.entity.Driver;
@@ -96,6 +97,16 @@ public class DriverController {
         }else{
             driver.setTokenDevice(token.substring(1, token.length()-1));
             return ResponseEntity.ok().body(driverService.updateTokenDevice(driver));
+        }
+    }
+
+    @PostMapping(value = "create-dateoff")
+    public ResponseEntity createDateOff(@RequestBody DayOffRequestDTO dayOffRequestDTO){
+        try {
+            driverService.createDayOff(dayOffRequestDTO);
+            return ResponseEntity.ok().build();
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }
