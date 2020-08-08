@@ -1,12 +1,16 @@
 package fmalc.api.entity;
 
-import java.io.Serializable;
-import java.sql.Date;
-import java.util.Collection;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Collection;
 
 @Entity
 @Table(name = "vehicle")
@@ -14,6 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Vehicle implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -47,6 +52,7 @@ public class Vehicle implements Serializable {
     private Integer kilometerRunning;
 
     @Column(name = "date_of_manufacture", nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date dateOfManufacture;
 
     @Column(name = "weight", nullable = false)
@@ -74,6 +80,8 @@ public class Vehicle implements Serializable {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
+    @CreatedDate
+    @Temporal(TemporalType.DATE)
     @Column(name = "date_create", nullable = false)
     private Date dateCreate;
 }
