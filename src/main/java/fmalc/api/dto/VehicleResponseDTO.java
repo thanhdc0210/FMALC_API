@@ -5,10 +5,10 @@ import lombok.Data;
 import org.modelmapper.ModelMapper;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 @Data
-public class VehicleReponseDTO implements Serializable {
+public class VehicleResponseDTO implements Serializable {
     private int status;
     private String vehicleName;
     private Date dateOfManufacture;
@@ -20,9 +20,9 @@ public class VehicleReponseDTO implements Serializable {
     private String licensePlates;
     private double weight;
 
-    public VehicleReponseDTO convertVehicle(Vehicle vehicle){
+    public VehicleResponseDTO convertVehicle(Vehicle vehicle){
         ModelMapper modelMapper = new ModelMapper();
-        VehicleReponseDTO vehicleReponseDTO = modelMapper.map(vehicle, VehicleReponseDTO.class);
-        return vehicleReponseDTO;
+        VehicleResponseDTO vehicleResponseDTO = modelMapper.map(vehicle, VehicleResponseDTO.class);
+        return vehicleResponseDTO;
     }
 }

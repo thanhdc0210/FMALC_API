@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Data
 public class NotificationResponeDTO {
-    private VehicleReponseDTO vehicle;
+    private VehicleResponseDTO vehicle;
     private DriverResponseForNotifyDTO driver;
     private Timestamp time;
     private String content;
