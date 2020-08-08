@@ -73,4 +73,7 @@ public class Vehicle implements Serializable {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
+
+    @Column(name = "created_date", nullable = false)
+    private Date createdDate;
 }
