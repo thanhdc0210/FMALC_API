@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -113,4 +114,5 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
         void updateKmRunning(@Param("id") int id, @Param("kmRunning") int kmRunning);
 
         Vehicle findByIdEqualsAndStatusIsNotLike(Integer id, Integer status);
+        List<Vehicle> findByDateCreateBefore(Date dateBefor);
 }

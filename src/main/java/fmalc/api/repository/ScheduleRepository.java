@@ -47,10 +47,13 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query(value = "update schedule s set s.vehicle_id=:idVehicle, s.driver_id =:idDriver, s.is_approve=:status where s.id=:id", nativeQuery = true)
     int updateStatusSchedule(@Param("idVehicle") int idVehicle, @Param("idDriver")int idDriver, @Param("status") int status,@Param("id")  int id);
 
-
+    //GiangTLB
     List<Schedule> findScheduleByConsignmentId(Integer consignmentId);
     List<Schedule> findByConsignmentOwnerNameContaining(String ownerName);
     List<Schedule> findByVehicleLicensePlatesContaining(String licensePlate);
+
+    List<Schedule> findScheduleByConsignmentStatus(Integer consignmentStatus);
+
 
     // THANHDC
 //    @Query("Select count(distinct s.id) From schedule s, driver d, consignment c, place p " +
