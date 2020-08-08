@@ -48,7 +48,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle updateKmVehicle(int id, int km) {
-        Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
+        Vehicle vehicle = vehicleRepository.findById(id).get();
         vehicle.setKilometerRunning(km);
         vehicle = vehicleRepository.save(vehicle);
         return vehicle;
@@ -63,7 +63,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public VehicleForDetailDTO findVehicleById(int id) {
-        Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
+        Vehicle vehicle = vehicleRepository.findById(id).get();
         VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
         vehicleForDetailDTO = vehicleForDetailDTO.convertToDto(vehicle);
         return vehicleForDetailDTO;
@@ -71,7 +71,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle findVehicleByIdForLocation(int id) {
-        return vehicleRepository.findByIdVehicle(id);
+        return vehicleRepository.findById(id).get();
     }
 
     @Override
