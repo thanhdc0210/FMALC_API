@@ -1,9 +1,11 @@
 package fmalc.api.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Collection;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -49,6 +51,14 @@ public class Schedule implements Serializable {
     private Collection<Location> locations;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "inheritance", referencedColumnName = "id")
-    private Schedule schedule;
+    private Schedule inheritance;
+
+    public Integer getMonthForReport(){
+        return consignment.getStartDateForReport().getMonth();
+    }
+    public Timestamp getTimeStampForReport(){
+        return consignment.getStartDateForReport();
+    }
 }

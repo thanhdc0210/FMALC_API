@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -21,6 +22,15 @@ public class ReportController {
     public ResponseEntity<HashMap<String,Integer>> getOverviewReport() {
         HashMap<String,Integer> result = reportService.getOverviewReport();
         if (result.size() == 3){
+            return ResponseEntity.ok().body(result);
+        }
+        return ResponseEntity.noContent().build();
+
+    }
+    @GetMapping("/report-by-year")
+    public ResponseEntity<HashMap<Integer,Object>> getOverviewReport(@RequestParam("year") Integer year) {
+        HashMap<Integer,Object> result = reportService.getReportByYear(year);
+        if (result.size() == 12){
             return ResponseEntity.ok().body(result);
         }
         return ResponseEntity.noContent().build();
