@@ -7,7 +7,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-import fmalc.api.entity.NotificationRequest;
+import fmalc.api.dto.NotificationRequest;
 import fmalc.api.service.FirebaseService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;

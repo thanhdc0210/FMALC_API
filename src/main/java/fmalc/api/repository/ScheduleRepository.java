@@ -59,4 +59,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 //            "and c.id = p.consignment_id and c.status != 3")
 //    Integer countScheduleNumberInADayOfDriver(@Param("id") Integer id,
 //                                              @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
+
 }

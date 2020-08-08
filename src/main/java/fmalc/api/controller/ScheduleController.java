@@ -1,10 +1,6 @@
 package fmalc.api.controller;
 
 
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 
@@ -31,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/v1.0/schedules")

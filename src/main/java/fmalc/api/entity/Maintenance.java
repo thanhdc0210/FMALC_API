@@ -11,7 +11,6 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "maintenance")
 @Setter
 @Getter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class Maintenance implements Serializable {
@@ -46,6 +45,7 @@ public class Maintenance implements Serializable {
     @Column(name = "actual_maintain_date")
     private Date actualMaintainDate;
 
+    // Check xem driver làm hay chưa
     @Column(name = "status", nullable = false)
     private Boolean status;
 
