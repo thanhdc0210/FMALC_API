@@ -56,50 +56,13 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         List<Place> places = consignmentRequestDTO.getPlace().stream()
                 .map(x -> modelMapper.map(x, Place.class))
                 .collect(Collectors.toList());
+        consignment.setImageContract(consignmentRequestDTO.getImageConsignment());
         consignment = consignmentRepository.save(consignment);
-//        List<Place> placesRecei = new ArrayList<>();
-//        List<Place> placesDeli = new ArrayList<>();
-//        List<Place> places = new ArrayList<>();
-//        if(consignment.getId()!=null){
-//            for(int i= 0; i<place.size();i++){
-//
-//                if(place.get(i).getType() == TypeLocationEnum.RECEIVED_PLACE.getValue()){
-//                    placesRecei.add(place.get(i));
-//
-//                }else if(place.get(i).getType() == TypeLocationEnum.DELIVERED_PLACE.getValue()){
-//                    placesDeli.add(place.get(i));
-//                }
-////                place.get(i).setConsignment(consignment);
-////                place.get(i).setPriority(1);
-////                placeRepository.save(place.get(i));
-//            }
-//
-//            placesRecei.sort((Place s1, Place s2)-> (s2.getPlannedTime()).compareTo((s1.getPlannedTime())));
-//            placesDeli.sort((Place s1, Place s2)-> (s2.getPlannedTime()).compareTo((s1.getPlannedTime())));
-//
-//           for(int i = 0 ; i< placesRecei.size() ;i++){
-//               placesRecei.get(i).setPriority(placesRecei.size() -i);
-//               placesRecei.get(i).setConsignment(consignment);
-//           }
-//            for(int i = 0 ; i< placesDeli.size();i++){
-//                placesDeli.get(i).setPriority(placesDeli.size()-i);
-//                placesDeli.get(i).setConsignment(consignment);
-//            }
-//            places.addAll(placesRecei);
-//            places.addAll(placesDeli);
+
             for(int i =0; i< places.size();i++){
-//                String dateTemp = sdf.format(places.get(i).getPlannedTime());
-//                dateTemp = dateTemp.replace("T", " ");
-////                dateTemp = dateTemp.replace("+", "");
-//                dateTemp =dateTemp.substring(0, dateTemp.indexOf("+"));
-//                places.get(i).setPlannedTime(Timestamp.valueOf(dateTemp));
                 places.get(i).setConsignment(consignment);
                 placeRepository.save(places.get(i));
             }
-//            consignment.setPlaces(places);
-            //            for(int i =0; i<placesRecei.size(); i++){
-//               List<Place> placesReceis  = placesRecei.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
-//            }
 
         consignment.setPlaces(places);
         return consignment;
