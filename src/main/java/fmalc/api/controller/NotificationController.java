@@ -129,8 +129,8 @@ public class NotificationController {
     }
 
     @GetMapping(value = "/count-notification-unread")
-    public NotificationUnread countNotificationUnread(@RequestParam("accountId") Integer accountId) {
-        return notificationService.countNotificationUnread(accountId);
+    public NotificationUnread countNotificationUnread(@RequestParam("username") String username) {
+        return notificationService.countNotificationUnread(username);
     }
 
     @GetMapping(value = "/by-type")
@@ -158,11 +158,22 @@ public class NotificationController {
     }
 
     @GetMapping(value = "/read")
-    public ResponseEntity readNotification(@RequestParam("accountId") Integer accountId,
+    public ResponseEntity readNotification(@RequestParam("username") String username,
                                            @RequestParam("notificationId") Integer notificationId) {
         try {
-            notificationService.readNotification(accountId, notificationId);
+            notificationService.readNotification(username, notificationId);
             return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping(value = "/read-all-type")
+    public ResponseEntity readNotificationByType(@RequestParam("username") String username,
+                                           @RequestParam("type") Integer type) {
+        try {
+            notificationService.readNotificationByType(username, type);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
