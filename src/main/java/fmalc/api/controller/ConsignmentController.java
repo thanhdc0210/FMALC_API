@@ -77,7 +77,7 @@ public class ConsignmentController {
     @GetMapping("driver/{id}")
     public ResponseEntity<List<ConsignmentResponseDTO>> getConsignmentOfDriver(@PathVariable("id") int id){
         try{
-            List<Consignment> consignments = consignmentService.getConsignmentOfDriver(id);
+            List<Consignment> consignments = consignmentService.getConsignmentOfDriver(id, ConsignmentStatusEnum.WAITING.getValue());
             if(consignments.size()>0){
                 ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
                 List<ConsignmentResponseDTO> consignmentResponseDTOS = consignmentResponseDTO.mapToListResponse(consignments);
