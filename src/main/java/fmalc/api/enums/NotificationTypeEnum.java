@@ -4,7 +4,9 @@ public enum NotificationTypeEnum {
     ODD_HOURS_ALERTS("Chạy xe ngoài giờ làm việc"){@Override public int getValue(){return 0;}},
     LONG_IDLE_TIMES("Dừng xe quá lâu"){@Override public int getValue(){return 1;}},
     MAINTAIN_SCHEDULE("Lịch bảo trì"){@Override public int getValue(){return 2;}},
-    TASK_SCHEDULE("Lịch chạy"){@Override public int getValue(){return 3;}};
+    TASK_SCHEDULE("Lịch chạy"){@Override public int getValue(){return 3;}},
+    ISSUE("Sự cố"){@Override public int getValue(){return 4;}},
+    ALERT("Cảnh báo"){@Override public int getValue(){return 5;}};
 
     String notificationTypeEnum;
 
@@ -28,6 +30,10 @@ public enum NotificationTypeEnum {
                 return MAINTAIN_SCHEDULE.getNotificationTypeEnum();
             case 3:
                 return TASK_SCHEDULE.getNotificationTypeEnum();
+            case 4:
+                return ISSUE.getNotificationTypeEnum();
+            case 5:
+                return ALERT.getNotificationTypeEnum();
             default:
                 throw new AssertionError("Unknown operations");
         }
