@@ -101,6 +101,21 @@ public class ScheduleServiceImpl implements ScheduleService {
                 schedule.setIsApprove(true);
                 schedule.setId(null);
                 schedule = scheduleRepository.save(schedule);
+                if(obejctScheDTOS.get(i).getConsignment_id()>0){
+                    driver =driverService.findById(obejctScheDTOS.get(i).getConsignment_id());
+                   Schedule tmp = new Schedule();
+
+                    tmp.setImageConsignment("");
+                    tmp.setConsignment(consignment);
+                    tmp.setDriver(driver);
+                    tmp.setVehicle(vehicle);
+                    tmp.setIsApprove(true);
+                    tmp.setId(null);
+                    tmp.setInheritance(schedule);
+                    tmp = scheduleRepository.save(tmp);
+                    schedules.add(tmp);
+                }
+
                 schedules.add(schedule);
             }
 

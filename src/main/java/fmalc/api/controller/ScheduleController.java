@@ -1,6 +1,10 @@
 package fmalc.api.controller;
 
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 
@@ -468,38 +472,59 @@ public class ScheduleController {
     }
 
     @PostMapping("/status")
-    public ResponseEntity<ConsignmentResponseDTO> updateStatusSchedules(@RequestPart(value = "file") MultipartFile file, @ModelAttribute RequestSaveScheObjDTO requestSaveScheObjDTO) {
+    public ResponseEntity<ConsignmentResponseDTO> updateStatusSchedules(@RequestPart(value = "file") MultipartFile file, @ModelAttribute(value = "requestSaveScheObjDTO")  String requestSaveScheObjDTO) {
+
         boolean result = false;
-        List<ObejctScheDTO> obejctScheDTOS = requestSaveScheObjDTO.getObejctScheDTOS();
+
+        JsonObject jsonObject = new JsonParser().parse(requestSaveScheObjDTO).getAsJsonObject();
+        JsonArray jsonArray = (JsonArray) jsonObject.get("obejctScheDTOS");
+        List<ObejctScheDTO> obejctScheDTOS = new ArrayList<>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonObject post_id =(JsonObject) jsonArray.get(i);
+            ObejctScheDTO obejctScheDTO = new ObejctScheDTO();
+            post_id.get("vehicle_id").getAsInt();
+            obejctScheDTO.setVehicle_id(post_id.get("vehicle_id").getAsInt()) ;
+            obejctScheDTO.setDriver_id(post_id.get("driver_id").getAsInt());
+            obejctScheDTO.setConsignment_id(post_id.get("consignment_id").getAsInt());
+//                    new Gson().fromJson(post_id, ObejctScheDTO.class);
+            obejctScheDTOS.add(obejctScheDTO);
+        }
+        ConsignmentRequestDTO consignmentRequestDTO = new Gson().fromJson(jsonObject.get("consignmentRequestDTO"), ConsignmentRequestDTO.class);
+//        List<ObejctScheDTO> obejctScheDTOS1 = new ArrayList<>();
+//        obejctScheDTOS1 = obejctScheDTOS;
+            RequestSaveScheObjDTO requestSaveScheObjDTO1 = new RequestSaveScheObjDTO();
+        requestSaveScheObjDTO1.setConsignmentRequestDTO(consignmentRequestDTO);
+        requestSaveScheObjDTO1.setObejctScheDTOS(obejctScheDTOS);
+//        List<ObejctScheDTO> obejctScheDTOS = requestSaveScheObjDTO.getObejctScheDTOS();
         List<Schedule> schedules = new ArrayList<>();
         ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
         if (requestSaveScheObjDTO != null) {
-            schedules =  scheduleService.createSchedule(requestSaveScheObjDTO, file);
+            schedules =  scheduleService.createSchedule(requestSaveScheObjDTO1, file);
             try {
                 if (schedules.size()>0) {
                     Consignment consignment = consignmentService.findById(schedules.get(0).getConsignment().getId());
                     consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
                     // Save notification
-                    NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
-                    for (Schedule schedule : schedules) {
-                        notificationRequestDTO.setVehicle_id(schedule.getVehicle().getId());
-                        notificationRequestDTO.setDriver_id(schedule.getDriver().getId());
-                        notificationRequestDTO.setStatus(false);
-                        notificationRequestDTO.setContent("Bạn có lịch chạy mới của lô hàng #" + schedule.getId());
-                        notificationRequestDTO.setType(4);
-                        notificationService.createNotification(notificationRequestDTO);
-
-                        // Send notification to driver
-                        NotificationData notificationData = new NotificationData();
-                        notificationData.setBody(notificationRequestDTO.getContent());
-                        notificationData.setTitle(NotificationTypeEnum.getValueEnumToShow(4));
-                        NotificationRequest notificationRequest = new NotificationRequest();
-                        notificationRequest.setNotificationData(notificationData);
-                        notificationRequest.setTo(driverService.findTokenDeviceByDriverId(schedule.getDriver().getId()));
-
-                        firebaseService.sendPnsToDevice(notificationRequest);
-
-                    }
+//                    NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+//                    for (Schedule schedule : schedules) {
+//                        notificationRequestDTO.setVehicle_id(schedule.getVehicle().getId());
+//                        notificationRequestDTO.setDriver_id(schedule.getDriver().getId());
+//                        notificationRequestDTO.setStatus(false);
+//                        notificationRequestDTO.setContent("Bạn có lịch chạy mới của lô hàng #" + schedule.getId());
+//                        notificationRequestDTO.setType(NotificationTypeEnum.TASK_SCHEDULE.getValue());
+//                        notificationService.createNotification(notificationRequestDTO);
+//
+//                        // Send notification to driver
+//                        NotificationData notificationData = new NotificationData();
+//                        notificationData.setBody(notificationRequestDTO.getContent());
+//                        notificationData.setTitle(NotificationTypeEnum.getValueEnumToShow(4));
+//                        NotificationRequest notificationRequest = new NotificationRequest();
+//                        notificationRequest.setNotificationData(notificationData);
+//                        notificationRequest.setTo(driverService.findTokenDeviceByDriverId(schedule.getDriver().getId()));
+//
+//                        firebaseService.sendPnsToDevice(notificationRequest);
+//
+//                    }
 
                     return ResponseEntity.ok().body(consignmentResponseDTO);
                 }
