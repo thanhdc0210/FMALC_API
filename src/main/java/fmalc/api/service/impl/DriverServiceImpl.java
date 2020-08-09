@@ -1,22 +1,19 @@
-
-
 package fmalc.api.service.impl;
 
-import fmalc.api.dto.DriverRequestDTO;
-import fmalc.api.dto.MaintainCheckDTO;
-import fmalc.api.dto.PlaceResponeDTO;
-import fmalc.api.dto.ScheduleForConsignmentDTO;
+import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.DriverLicenseEnum;
 import fmalc.api.enums.TypeLocationEnum;
-import fmalc.api.repository.*;
+import fmalc.api.repository.AccountRepository;
+import fmalc.api.repository.DriverRepository;
+import fmalc.api.repository.FleetManagerRepository;
+import fmalc.api.repository.RoleRepository;
 import fmalc.api.service.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -102,17 +99,17 @@ public class DriverServiceImpl implements DriverService {
         if (!driverRepository.existsById(id)) {
             throw new Exception();
         }
-        driverRepository.updateDriver(id,driverRequest.getName(), driverRequest.getIdentityNo(), driverRequest.getNo(), driverRequest.getLicenseExpires(), driverRequest.getDateOfBirth(), driverRequest.getDriverLicense());
+        driverRepository.updateDriver(id, driverRequest.getName(), driverRequest.getIdentityNo(), driverRequest.getNo(), driverRequest.getLicenseExpires(), driverRequest.getDateOfBirth(), driverRequest.getDriverLicense());
         return driverRepository.findById(id).get();
     }
 
     @Override
     public List<Driver> findDriverByLicense(double weight) {
         List<Driver> drivers = new ArrayList<>();
-        if(weight >3.5){
-            drivers = driverRepository.findDriverByLicenseC(DriverLicenseEnum.C.getValue());
-        }else{
-            drivers = driverRepository.findDriverByLicenseB2(DriverLicenseEnum.B2.getValue());
+        if (weight > 3.5) {
+            drivers = driverRepository.findDriverByLicenseC(DriverLicenseEnum.C.getValue(), true);
+        } else {
+            drivers = driverRepository.findDriverByLicenseB2(DriverLicenseEnum.B2.getValue(),true);
         }
         return drivers;
     }
@@ -120,9 +117,9 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public List<Driver> getListDriverByLicense(double weight, int status) {
         List<Driver> drivers = new ArrayList<>();
-        if(weight >3.5){
+        if (weight > 3.5) {
             drivers = driverRepository.findByDriverLicenseC(DriverLicenseEnum.C.getValue(), status);
-        }else{
+        } else {
             drivers = driverRepository.findByDriverLicenseB2(DriverLicenseEnum.B2.getValue(), status);
         }
         return drivers;
@@ -130,7 +127,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public int updateStatus(int status, int id) {
-        return driverRepository.updateStatusDriver(status,id);
+        return driverRepository.updateStatusDriver(status, id);
     }
 
     @Override
@@ -156,20 +153,22 @@ public class DriverServiceImpl implements DriverService {
         }
         return drivers;
     }
-    private PlaceResponeDTO getPlaceByTypePlaceAndPriority(List<Place> places, int priority, int type){
+
+    private PlaceResponeDTO getPlaceByTypePlaceAndPriority(List<Place> places, int priority, int type) {
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
         Place place = new Place();
-        for(int i = 0; i< places.size(); i++){
-            if(places.get(i).getPriority() == priority && places.get(i).getType() == type){
+        for (int i = 0; i < places.size(); i++) {
+            if (places.get(i).getPriority() == priority && places.get(i).getType() == type) {
                 place = places.get(i);
             }
         }
-        if(place!= null){
+        if (place != null) {
             placeResponeDTO = placeResponeDTO.convertPlace(place);
         }
 
-        return  placeResponeDTO;
+        return placeResponeDTO;
     }
+
     @Override
     public List<ScheduleForConsignmentDTO> checkScheduleForDriver(int idDriver) {
         List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();
@@ -211,18 +210,29 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public String updateTokenDevice(Driver driver) {
-
         return driverRepository.save(driver).getTokenDevice();
     }
 
     @Override
     public String findTokenDeviceByDriverId(Integer id) {
 
-        if (driverRepository.existsById(id)){
+        if (driverRepository.existsById(id)) {
             return driverRepository.findTokenDeviceByDriverId(id);
         }
 
         return "";
+    }
+
+    @Override
+    public void createDayOff(DayOffRequestDTO dayOffRequestDTO) {
+        DayOff dayOff = new DayOff();
+        dayOff.setStartDate(dayOffRequestDTO.getStartDate());
+        dayOff.setEndDate(dayOffRequestDTO.getEndDate());
+        Driver driver = driverRepository.findById(dayOffRequestDTO.getDriverId()).get();
+        dayOff.setDriver(driver);
+        FleetManager fleetManager = fleetManagerRepository.findById(dayOffRequestDTO.getFleetManagerId()).get();
+        dayOff.setFleetManager(fleetManager);
+        dayOffService.save(dayOff);
     }
 
     private List<Driver> checkScheduledForDriver(List<Driver> drivers, Consignment consignment) {
@@ -262,21 +272,22 @@ public class DriverServiceImpl implements DriverService {
         return result;
     }
 
-    private List<PlaceResponeDTO> getPlaceByTypePlace(List<Place> places,  int type){
+    private List<PlaceResponeDTO> getPlaceByTypePlace(List<Place> places, int type) {
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
         List<PlaceResponeDTO> placeResponeDTOS = new ArrayList<>();
         List<Place> placesResult = new ArrayList<>();
-        for(int i = 0; i< places.size(); i++){
-            if(places.get(i).getType() == type){
+        for (int i = 0; i < places.size(); i++) {
+            if (places.get(i).getType() == type) {
                 placesResult.add(places.get(i));
             }
         }
-        if(places!= null){
+        if (places != null) {
             placeResponeDTOS = placeResponeDTO.mapToListResponse(placesResult);
         }
 
-        return  placeResponeDTOS;
+        return placeResponeDTOS;
     }
+
     private boolean checkDateConsignmentAndSchedule(ScheduleForConsignmentDTO scheduleForLocationDTO, Consignment consignment, boolean flag) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         flag = true;
@@ -293,7 +304,7 @@ public class DriverServiceImpl implements DriverService {
                 getPlaceByTypePlaceAndPriority(places, 1, TypeLocationEnum.RECEIVED_PLACE.getValue());
 
         PlaceResponeDTO placeConsignmentDeli =
-               getPlaceByTypePlaceAndPriority(places, listConsginmentDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
+                getPlaceByTypePlaceAndPriority(places, listConsginmentDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
 
         // Schedule
         // lấy thời gian consignment  lấy hàng có độ ưu tiên 1
@@ -358,11 +369,12 @@ public class DriverServiceImpl implements DriverService {
 
         return result;
     }
+
     private boolean checkDateMaintain(Consignment consignment, MaintainCheckDTO maintainCheckDTO, boolean flag) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         List<Place> places = (List<Place>) consignment.getPlaces();
         PlaceResponeDTO placeSchedulePriorityRecei =
-            getPlaceByTypePlaceAndPriority(places, 1, TypeLocationEnum.DELIVERED_PLACE.getValue());
+                getPlaceByTypePlaceAndPriority(places, 1, TypeLocationEnum.DELIVERED_PLACE.getValue());
 
         //list place delivery of a consignment
         List<PlaceResponeDTO> placeConsgimentsPriorityDeli =

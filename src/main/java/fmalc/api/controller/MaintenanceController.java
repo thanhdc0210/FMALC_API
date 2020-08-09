@@ -11,6 +11,7 @@ import fmalc.api.service.VehicleService;
 import org.jboss.jandex.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,9 +56,10 @@ public class MaintenanceController {
     }
 
     @GetMapping("")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<List<MaintenanceResponseDTO>> getListMaintenanceForDriver(@RequestParam Integer driverId) {
-        List<Maintenance> maintenanceList = maintenanceService.getListMaintenanceForDriver(driverId);
         try {
+            List<Maintenance> maintenanceList = maintenanceService.getListMaintenanceForDriver(driverId);
             if (maintenanceList.isEmpty()) {
                 return ResponseEntity.noContent().build();
             } else {
@@ -71,6 +73,7 @@ public class MaintenanceController {
     }
 
     @PutMapping(value = "update-maintaining-complete")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity updateMaintainingComplete(@RequestParam("id") Integer id, @RequestParam("km") Integer km, @RequestPart(value = "file") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().build();

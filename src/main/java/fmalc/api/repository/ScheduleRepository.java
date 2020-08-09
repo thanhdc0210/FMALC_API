@@ -32,7 +32,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query("select  s from Schedule s where s.driver.id =?1")
     List<Schedule> checkDriverInScheduled(int idDriver);
 
-    @Query("select  s from  Schedule  s where s.schedule.id =?1")
+    @Query("select  s from  Schedule  s where s.inheritance.id =?1")
     Schedule findScheduleBySchedule(int id);
 
     @Query("select  s from Schedule s where s.driver.id =?1 and s.consignment.status = ?2 or s.consignment.status = ?3")
@@ -52,10 +52,13 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query(value = "update schedule s set s.vehicle_id=:idVehicle, s.driver_id =:idDriver, s.is_approve=:status where s.id=:id", nativeQuery = true)
     int updateStatusSchedule(@Param("idVehicle") int idVehicle, @Param("idDriver")int idDriver, @Param("status") int status,@Param("id")  int id);
 
-
+    //GiangTLB
     List<Schedule> findScheduleByConsignmentId(Integer consignmentId);
     List<Schedule> findByConsignmentOwnerNameContaining(String ownerName);
     List<Schedule> findByVehicleLicensePlatesContaining(String licensePlate);
+
+    List<Schedule> findScheduleByConsignmentStatus(Integer consignmentStatus);
+
 
     // THANHDC
 //    @Query("Select count(distinct s.id) From schedule s, driver d, consignment c, place p " +
@@ -64,4 +67,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 //            "and c.id = p.consignment_id and c.status != 3")
 //    Integer countScheduleNumberInADayOfDriver(@Param("id") Integer id,
 //                                              @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
+
 }

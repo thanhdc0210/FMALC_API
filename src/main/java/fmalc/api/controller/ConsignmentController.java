@@ -184,10 +184,17 @@ public class ConsignmentController {
         return ResponseEntity.ok().body(consignmentListDTOS);
     }
 
-    @PostMapping("cancel/{id}")
-    public ResponseEntity<Integer> cancelConsignment(@PathVariable("id") int id, @RequestBody String content){
+    @PostMapping("cancel/{id}/{username}")
+    public ResponseEntity<Integer> cancelConsignment(@PathVariable("id") int id,@PathVariable("username") String username, @RequestBody String content){
         try{
+            content = content.replaceAll("\"","");
             Consignment consignment = consignmentService.cancelConsignment(id,content);
+            if(consignment.getStatus() == ConsignmentStatusEnum.CANCELED.getValue()){
+                Account account = accountService.getAccount(username);
+                FleetManager fleetManager = fleetManagerService.findByAccount(account.getId());
+                String note = "Lô hàng bị hủy bởi "+ fleetManager.getName();
+                ConsignmentHistory consignmentHistory = consignmentHistoryService.save(consignment.getId(), fleetManager,note);
+            }
             return ResponseEntity.ok().body(consignment.getStatus());
         }catch (Exception e){
             return ResponseEntity.badRequest().build();

@@ -4,7 +4,7 @@ import fmalc.api.repository.DriverRepository;
 import fmalc.api.repository.FleetManagerRepository;
 import fmalc.api.security.JWTAuthenticationFilter;
 import fmalc.api.security.JWTAuthorizationFilter;
-import fmalc.api.service.MyUserDetailsService;
+import fmalc.api.service.impl.MyUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ import static fmalc.api.constant.SecurityConstant.AUTH_LOGIN_URL;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurity extends WebSecurityConfigurerAdapter {
-    private final MyUserDetailsService userDetailsService;
+    private final MyUserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private FleetManagerRepository fleetManagerRepository;
@@ -32,7 +32,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private DriverRepository driverRepository;
 
-    public WebSecurity(MyUserDetailsService userDetailsService) {
+    public WebSecurity(MyUserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 

@@ -102,19 +102,24 @@ public class DayOffServiceImpl implements DayOffService {
         return  placeResponeDTO;
     }
 
-    private List<PlaceResponeDTO> getPlaceByTypePlace(List<Place> places,  int type){
+    private List<PlaceResponeDTO> getPlaceByTypePlace(List<Place> places,  int type) {
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
         List<PlaceResponeDTO> placeResponeDTOS = new ArrayList<>();
         List<Place> placesResult = new ArrayList<>();
-        for(int i = 0; i< places.size(); i++){
-            if(places.get(i).getType() == type){
+        for (int i = 0; i < places.size(); i++) {
+            if (places.get(i).getType() == type) {
                 placesResult.add(places.get(i));
             }
         }
-        if(places!= null){
+        if (places != null) {
             placeResponeDTOS = placeResponeDTO.mapToListResponse(placesResult);
         }
 
-        return  placeResponeDTOS;
+        return placeResponeDTOS;
+    }
+
+    @Override
+    public void save(DayOff dayOff) {
+        dayOffRepository.save(dayOff);
     }
 }

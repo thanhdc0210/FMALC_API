@@ -1,28 +1,26 @@
 package fmalc.api.controller;
 
 
-import fmalc.api.dto.*;
-
+import fmalc.api.dto.InspectionResponseDTO;
+import fmalc.api.dto.VehicleForDetailDTO;
+import fmalc.api.dto.VehicleForNewDTO;
+import fmalc.api.dto.VehicleResponseDTO;
 import fmalc.api.entity.Inspection;
 import fmalc.api.entity.Vehicle;
-
 import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.service.InspectionService;
 import fmalc.api.service.VehicleService;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,21 +36,21 @@ public class VehicleController {
     private static int defaultKilometRunning = 0;
 
     @GetMapping("/listVehicles")
-    public ResponseEntity<List<VehicleReponseDTO>> getListVehicle() {
+    public ResponseEntity<List<VehicleResponseDTO>> getListVehicle() {
         List<Vehicle> vehicles = vehicleService.getListVehicle();
 
         if (vehicles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        List<VehicleReponseDTO> vehicleDTOS = vehicles.stream().map(this::convertToDto).collect(Collectors.toList());
+        List<VehicleResponseDTO> vehicleDTOS = vehicles.stream().map(this::convertToDto).collect(Collectors.toList());
 
         return ResponseEntity.ok().body(vehicleDTOS);
     }
 
-    private VehicleReponseDTO convertToDto(Vehicle vehicleType) {
+    private VehicleResponseDTO convertToDto(Vehicle vehicleType) {
         ModelMapper modelMapper = new ModelMapper();
-        VehicleReponseDTO dto = modelMapper.map(vehicleType, VehicleReponseDTO.class);
+        VehicleResponseDTO dto = modelMapper.map(vehicleType, VehicleResponseDTO.class);
 
         return dto;
     }
@@ -97,8 +95,7 @@ public class VehicleController {
 
         String dateString = dto.getDateOfManufacture(); //
 
-        java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
-        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+        java.util.Date sqlDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
         vehicle = convertToVehicleEntity(dto);
         vehicle.setStatus(VehicleStatusEnum.AVAILABLE.getValue());
         vehicle.setKilometerRunning(defaultKilometRunning);
@@ -159,6 +156,7 @@ public class VehicleController {
 
 
     @GetMapping(value = "/report-inspection-before-delivery")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionBeforeDelivery
             (@RequestParam(value = "username") String username) {
 
@@ -187,6 +185,7 @@ public class VehicleController {
     }
 
     @GetMapping(value = "/report-inspection-after-delivery")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionAfterDelivery
             (@RequestParam(value = "username") String username) {
 

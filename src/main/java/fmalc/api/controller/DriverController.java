@@ -1,12 +1,14 @@
 
 package fmalc.api.controller;
 
+import fmalc.api.dto.DayOffRequestDTO;
 import fmalc.api.dto.DriverRequestDTO;
 import fmalc.api.dto.DriverResponseDTO;
 import fmalc.api.entity.Driver;
 import fmalc.api.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -89,6 +91,7 @@ public class DriverController {
     }
 
     @PatchMapping(value = "token-device/{id}")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<String> updateTokenDevice(@PathVariable("id") Integer driverId,@RequestBody String token){
         Driver driver = driverService.findById(driverId);
         if (driver == null){
@@ -96,6 +99,16 @@ public class DriverController {
         }else{
             driver.setTokenDevice(token.substring(1, token.length()-1));
             return ResponseEntity.ok().body(driverService.updateTokenDevice(driver));
+        }
+    }
+
+    @PostMapping(value = "create-dateoff")
+    public ResponseEntity createDateOff(@RequestBody DayOffRequestDTO dayOffRequestDTO){
+        try {
+            driverService.createDayOff(dayOffRequestDTO);
+            return ResponseEntity.ok().build();
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }

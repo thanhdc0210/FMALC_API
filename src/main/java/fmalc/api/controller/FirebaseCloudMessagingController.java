@@ -1,6 +1,6 @@
 package fmalc.api.controller;
 
-import fmalc.api.entity.NotificationRequest;
+import fmalc.api.dto.NotificationRequest;
 import fmalc.api.service.impl.FirebaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

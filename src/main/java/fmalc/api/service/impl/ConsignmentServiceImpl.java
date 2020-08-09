@@ -244,8 +244,8 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         consignment.setOwnerNote(consignmentUpdateDTO.getOwnerNote());
         for(int i =0; i< consignmentUpdateDTO.getSchedules().size(); i++){
             Schedule schedule = scheduleRepository.findScheduleById(consignmentUpdateDTO.getSchedules().get(i).getId());
-            Driver driver = driverRepository.findById(consignmentUpdateDTO.getSchedules().get(i).getDriver());
-            Vehicle vehicle = vehicleRepository.findByIdVehicle(consignmentUpdateDTO.getSchedules().get(i).getVehicle());
+            Driver driver = driverRepository.findById(consignmentUpdateDTO.getSchedules().get(i).getDriver()).get();
+            Vehicle vehicle = vehicleRepository.findById(consignmentUpdateDTO.getSchedules().get(i).getVehicle()).get();
 
             schedule.setVehicle(vehicle);
             schedule.setDriver(driver);

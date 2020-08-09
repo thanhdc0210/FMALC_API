@@ -1,7 +1,10 @@
 package fmalc.api.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 import javax.persistence.*;
 
@@ -52,4 +55,10 @@ public class Consignment implements Serializable {
 
     @Column(name = "image_contract", length = 500)
     private String imageContract;
+
+    public Timestamp getStartDateForReport(){
+        return places.stream().sorted(Comparator.comparing(Place::getActualTime)).collect(Collectors.toList())
+                .stream().findFirst().orElse(null).getActualTime();
+
+    }
 }

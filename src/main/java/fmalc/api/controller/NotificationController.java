@@ -5,8 +5,8 @@ import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
 import fmalc.api.dto.NotificationUnread;
 import fmalc.api.entity.Notification;
-import fmalc.api.entity.NotificationData;
-import fmalc.api.entity.NotificationRequest;
+import fmalc.api.dto.NotificationData;
+import fmalc.api.dto.NotificationRequest;
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.service.DriverService;
 import fmalc.api.service.FirebaseService;
@@ -15,10 +15,12 @@ import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.util.function.Tuple2;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,10 +70,13 @@ public class NotificationController {
                 notificationRequest.setNotificationData(notificationData);
                 notificationRequest.setTo(driverService.findTokenDeviceByDriverId(notificationRequestDTO.getDriver_id()));
 
-                firebaseService.sendPnsToDevice(notificationRequest);
-
                 notificationResponeDTO = new NotificationResponeDTO().mapToResponse(notificationSaved);
                 if (notificationSend != notificationResponeDTO) {
+
+                    // Send to driver
+                    firebaseService.sendPnsToDevice(notificationRequest);
+
+                    // Send to fleet_manager
                     notificationResponeDTOS.add(notificationResponeDTO);
                     intervals.subscribe((i) -> notifyForManagerWorkingHours());
 
@@ -104,9 +109,9 @@ public class NotificationController {
 //        closeInterval();
         intervals.subscribe((i) -> returnResponeFor());
         Flux<List<NotificationResponeDTO>> monoTransaction = Flux.fromStream(Stream.generate(() -> returnResponeFor()));
-        if(returnResponeFor().size()>0){
+        if (returnResponeFor().size() > 0) {
 //            System.out.println(">0");
-           monoTransaction = Flux.fromStream(Stream.generate(() -> returnResponeFor()));
+            monoTransaction = Flux.fromStream(Stream.generate(() -> returnResponeFor()));
             flux = Flux.zip(intervals, monoTransaction).map(Tuple2::getT2);
         }
         return flux;
@@ -124,8 +129,8 @@ public class NotificationController {
     }
 
     @GetMapping(value = "/count-notification-unread")
-    public NotificationUnread countNotificationUnread() {
-        return notificationService.countNotificationUnread();
+    public NotificationUnread countNotificationUnread(@RequestParam("accountId") Integer accountId) {
+        return notificationService.countNotificationUnread(accountId);
     }
 
     @GetMapping(value = "/by-type")
@@ -135,6 +140,7 @@ public class NotificationController {
     }
 
     @GetMapping(value = "/driver/{id}")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<List<NotificationMobileResponse>> findNotificationByDriverId(@PathVariable("id") Integer id) {
 
         try {
@@ -146,6 +152,17 @@ public class NotificationController {
             } else {
                 return ResponseEntity.noContent().build();
             }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping(value = "/read")
+    public ResponseEntity readNotification(@RequestParam("accountId") Integer accountId,
+                                           @RequestParam("notificationId") Integer notificationId) {
+        try {
+            notificationService.readNotification(accountId, notificationId);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

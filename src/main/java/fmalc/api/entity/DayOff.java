@@ -36,4 +36,7 @@ public class DayOff {
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
     @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
     private Driver driver;
+
+    @Column(name = "note", nullable = false)
+    private String note;
 }

@@ -11,8 +11,11 @@ import fmalc.api.repository.ScheduleRepository;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -43,6 +46,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Autowired
     ConsignmentService consignmentService;
 
+    @Autowired
+    UploaderService uploaderService;
+
     private static int priorityPlace = 1;
 
     @Override
@@ -61,23 +67,46 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Schedule createSchedule(List<ObejctScheDTO> obejctScheDTOs, Consignment consignment) {
-        Schedule schedule = new Schedule();
-        for (int i = 0; i < obejctScheDTOs.size(); i++) {
-            VehicleForDetailDTO vehicleForDetailDTO = vehicleService.findVehicleById(obejctScheDTOs.get(i).getVehicle_id());
-            Vehicle vehicle = vehicleForDetailDTO.convertToEnity(vehicleForDetailDTO);
-            Driver driver = driverService.findById(obejctScheDTOs.get(i).getDriver_id());
-            schedule = new Schedule();
+    public List<Schedule> createSchedule(RequestSaveScheObjDTO requestSaveScheObjDTO, MultipartFile file) {
+        Consignment consignment = new Consignment();
+        ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
+        List<ObejctScheDTO> obejctScheDTOS = requestSaveScheObjDTO.getObejctScheDTOS();
+        List<Schedule> schedules = new ArrayList<>();
+        ConsignmentRequestDTO consignmentRequestDTO = requestSaveScheObjDTO.getConsignmentRequestDTO();
+        try {
+            if(!file.isEmpty()){
+                String link = uploaderService.upload(file);
+                consignmentRequestDTO.setImageConsignment(link);
+            }
 
-            schedule.setImageConsignment("");
-            schedule.setConsignment(consignment);
-            schedule.setDriver(driver);
-            schedule.setVehicle(vehicle);
-            schedule.setIsApprove(true);
-            schedule.setId(null);
-            schedule = scheduleRepository.save(schedule);
+            consignment = consignmentService.save(consignmentRequestDTO);
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
         }
-        return schedule;
+        Schedule schedule = new Schedule();
+
+        if (consignment.getId() != null) {
+
+
+            for (int i = 0; i < obejctScheDTOS.size(); i++) {
+                VehicleForDetailDTO vehicleForDetailDTO = vehicleService.findVehicleById(obejctScheDTOS.get(i).getVehicle_id());
+                Vehicle vehicle = vehicleForDetailDTO.convertToEnity(vehicleForDetailDTO);
+                Driver driver = driverService.findById(obejctScheDTOS.get(i).getDriver_id());
+                schedule = new Schedule();
+
+                schedule.setImageConsignment("");
+                schedule.setConsignment(consignment);
+                schedule.setDriver(driver);
+                schedule.setVehicle(vehicle);
+                schedule.setIsApprove(true);
+                schedule.setId(null);
+                schedule = scheduleRepository.save(schedule);
+                schedules.add(schedule);
+            }
+
+        }
+
+        return schedules;
     }
 
     @Override
@@ -148,9 +177,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         StatusToUpdateDTO status = new StatusToUpdateDTO();
 //        Consignment consignment = consignmentService.findById(schedule.getConsignment().getId());
 //        if (consignment.getStatus() == ConsignmentStatusEnum.WAITING.getValue()) {
-            status.setVehicle_status(vehicleService.updateStatus(statusToUpdateDTO.getVehicle_status(), schedule.getVehicle().getId()));
-            status.setDriver_status(driverService.updateStatus(statusToUpdateDTO.getDriver_status(), schedule.getDriver().getId()));
-            status.setConsignment_status(consignmentService.updateStatus(statusToUpdateDTO.getConsignment_status(), schedule.getConsignment().getId()));
+        status.setVehicle_status(vehicleService.updateStatus(statusToUpdateDTO.getVehicle_status(), schedule.getVehicle().getId()));
+        status.setDriver_status(driverService.updateStatus(statusToUpdateDTO.getDriver_status(), schedule.getDriver().getId()));
+        status.setConsignment_status(consignmentService.updateStatus(statusToUpdateDTO.getConsignment_status(), schedule.getConsignment().getId()));
 
 //        }
         return status;

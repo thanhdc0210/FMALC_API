@@ -16,6 +16,7 @@ public class ScheduleForConsignmentDTO {
     private ConsignmentResponseDTO consignment;
     private String imageConsignment;
     private String note;
+    private DriverForScheduleDTO inheritance;
 
 
     public ScheduleForConsignmentDTO convertSchedule(Schedule schedule){

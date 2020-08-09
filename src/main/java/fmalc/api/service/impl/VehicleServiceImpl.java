@@ -49,7 +49,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle updateKmVehicle(int id, int km) {
-        Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
+        Vehicle vehicle = vehicleRepository.findById(id).get();
         vehicle.setKilometerRunning(km);
         vehicle = vehicleRepository.save(vehicle);
         return vehicle;
@@ -64,7 +64,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public VehicleForDetailDTO findVehicleById(int id) {
-        Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
+        Vehicle vehicle = vehicleRepository.findById(id).get();
         VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
         vehicleForDetailDTO = vehicleForDetailDTO.convertToDto(vehicle);
         return vehicleForDetailDTO;
@@ -72,7 +72,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle findVehicleByIdForLocation(int id) {
-        return vehicleRepository.findByIdVehicle(id);
+        return vehicleRepository.findById(id).get();
     }
 
     @Override
@@ -143,6 +143,15 @@ public class VehicleServiceImpl implements VehicleService {
 //            if (size > 0) {
                 double weight = Double.parseDouble(vehicleConsignmentDTOS.get(i).getWeight());
                 vehicles = findByWeight(weight);
+                int tmp=0;
+                for(int t = 0 ; t< vehicles.size();t++){
+                    tmp =i;
+                    if(result.contains(vehicles.get(t))){
+                       vehicles.remove(vehicles.get(t));
+                       i=tmp;
+                    }
+                }
+//                vehicles = checkDuplicate(result, vehicles);
                 if (vehicles.size() > 0) {
                     vehicles = checkMaintainForVehicle(vehicles, consignment);
                     if (sche == ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue()) {
@@ -197,11 +206,11 @@ public class VehicleServiceImpl implements VehicleService {
                             vehicleSmaller = checkScheduledForVehicle(vehicleSmaller, consignment);
                         }
                         if (vehicleSmaller.size() > 0 && vehicleSmaller.size() >= (size - vehicles.size())) {
-                            vehicles.addAll(vehicleSmaller);
-                            result = checkDuplicate(result, vehicles);
+//                            vehicles.addAll(vehicleSmaller);
+                            result = checkDuplicate(result, vehicleSmaller);
                         } else {
-                            vehicles.addAll(vehicleSmaller);
-                            result = checkDuplicate(result, vehicles);
+//                            vehicles.addAll(vehicleSmaller);
+                            result = checkDuplicate(result, vehicleSmaller);
                         }
                     } else {
                         //vehicleBigger size = 0
@@ -421,15 +430,16 @@ public class VehicleServiceImpl implements VehicleService {
                     flag = checkDateMaintain(consignment, maintainCheckDTO.get(m), flag);
                     if (flag) {
 //                        result.add(vehicles.get(i));
+                        m = maintainCheckDTO.size();
                     }else{
                         flag = false;
-                        m = maintainCheckDTO.size();
+
                     }
 
                 }
             }
 
-            if (flag) {
+            if (!flag) {
                 result.add(vehicles.get(i));
             }
         }
