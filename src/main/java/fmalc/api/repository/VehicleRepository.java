@@ -114,5 +114,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
         void updateKmRunning(@Param("id") int id, @Param("kmRunning") int kmRunning);
 
         Vehicle findByIdEqualsAndStatusIsNotLike(Integer id, Integer status);
-        List<Vehicle> findByDateCreateBefore(Date dateBefor);
+        List<Vehicle> findByDateCreateBefore(Date dateBefore);
+
 }

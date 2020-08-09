@@ -1,6 +1,7 @@
 package fmalc.api.controller;
 
 
+import fmalc.api.dto.ReportBySpecificRangeResponseDTO;
 import fmalc.api.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.util.HashMap;
 
 @RestController
@@ -28,7 +30,7 @@ public class ReportController {
 
     }
     @GetMapping("/report-by-year")
-    public ResponseEntity<HashMap<Integer,Object>> getOverviewReport(@RequestParam("year") Integer year) {
+    public ResponseEntity<HashMap<Integer,Object>> getReportByYear(@RequestParam("year") Integer year) throws ParseException {
         HashMap<Integer,Object> result = reportService.getReportByYear(year);
         if (result.size() == 12){
             return ResponseEntity.ok().body(result);
@@ -36,4 +38,17 @@ public class ReportController {
         return ResponseEntity.noContent().build();
 
     }
+
+    @GetMapping("/report-for-a-vehicle")
+    public ResponseEntity<ReportBySpecificRangeResponseDTO> getReportForAVehicle(@RequestParam("id") Integer id,
+                                    @RequestParam("startDate") String startDate,  @RequestParam("endDate") String endDate) throws ParseException {
+        ReportBySpecificRangeResponseDTO result = reportService.getReportOneVehicleBySpecificRange(id, startDate, endDate);
+        if (result!= null){
+            return ResponseEntity.ok().body(result);
+        }
+        return ResponseEntity.noContent().build();
+
+    }
+
+
 }

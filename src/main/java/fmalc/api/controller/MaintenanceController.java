@@ -56,7 +56,7 @@ public class MaintenanceController {
     }
 
     @GetMapping("")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
+//    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<List<MaintenanceResponseDTO>> getListMaintenanceForDriver(@RequestParam Integer driverId) {
         try {
             List<Maintenance> maintenanceList = maintenanceService.getListMaintenanceForDriver(driverId);

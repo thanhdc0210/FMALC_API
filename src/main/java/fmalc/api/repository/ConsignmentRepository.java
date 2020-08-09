@@ -1,13 +1,16 @@
 package fmalc.api.repository;
 
 import fmalc.api.entity.Consignment;
+import fmalc.api.entity.Place;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -26,7 +29,7 @@ public interface ConsignmentRepository
     Consignment findConsignmentById(int id);
 
     @Query("select c from Consignment c, Schedule s where c.id = s.consignment.id and s.vehicle.id=?1")
-    List<Consignment> findConsignemnt(int idVehicle);
+    List<Consignment> findConsignment(int idVehicle);
 
     @Modifying(clearAutomatically = true)
     @Transactional
@@ -39,5 +42,12 @@ public interface ConsignmentRepository
             " WHERE d.id = ?1" +
             " AND c.status = 0")
     List<Consignment> getConsignmentOfDriver(int driverId);
+
+    @Query(value = "SELECT c from  Consignment c where c.id in (" +
+                    "SELECT p.consignment.id from Place p "+
+                    "WHERE p.actualTime between :startDate AND :endDate "+
+                    "GROUP BY p.consignment.id ) " +
+                    " AND  c.status= 3 ")
+    List<Consignment> getConsignmentForReport (@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 
 }
