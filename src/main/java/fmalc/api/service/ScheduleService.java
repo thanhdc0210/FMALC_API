@@ -35,6 +35,7 @@ public interface ScheduleService {
 
     List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType);
 
+    Schedule getScheduleByDriverSub(int id);
 //    THANHDC
 //    Integer countScheduleNumberInADayOfDriver(Integer id, Timestamp startDate, Timestamp endDate);
 }

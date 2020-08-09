@@ -68,7 +68,7 @@ public class ScheduleServiceImpl implements ScheduleService {
             Vehicle vehicle = vehicleForDetailDTO.convertToEnity(vehicleForDetailDTO);
             Driver driver = driverService.findById(obejctScheDTOs.get(i).getDriver_id());
             schedule = new Schedule();
-            schedule.setNote("");
+
             schedule.setImageConsignment("");
             schedule.setConsignment(consignment);
             schedule.setDriver(driver);
@@ -174,6 +174,11 @@ public class ScheduleServiceImpl implements ScheduleService {
                 throw new IllegalStateException("Unexpected value: " + searchType);
         }
 
+    }
+
+    @Override
+    public Schedule getScheduleByDriverSub(int id) {
+        return scheduleRepository.findScheduleBySchedule(id);
     }
 
     // Start date : lúc bấm nút kết thúc   --  THANHDC

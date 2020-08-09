@@ -66,6 +66,20 @@ public class VehicleController {
         return ResponseEntity.ok().body(vehicle);
     }
 
+    @PostMapping("delete/{id}")
+    public ResponseEntity<Boolean> disableVehicle(@PathVariable("id") int id){
+
+        try{
+            Vehicle vehicle = vehicleService.disableVehicle(id);
+            if(vehicle.getIsActive() == false){
+                return ResponseEntity.ok().body(true);
+            }
+        }catch (Exception e){
+            return  ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/detail/{licensePlates}")
     public ResponseEntity<VehicleForDetailDTO> getDetailVehicleByLicensePlates(@PathVariable String licensePlates) {
         Vehicle vehicle = vehicleService.findVehicleByLicensePlates(licensePlates);
@@ -90,7 +104,7 @@ public class VehicleController {
         vehicle.setKilometerRunning(defaultKilometRunning);
         vehicle.setDateOfManufacture(sqlDate);
         vehicle.setDriverLicense(dto.getDriverLicense());
-
+        vehicle.setIsActive(true);
         Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
 
         if (checkLicensePlate == null) {

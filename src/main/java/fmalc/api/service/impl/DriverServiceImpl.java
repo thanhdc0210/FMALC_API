@@ -344,17 +344,14 @@ public class DriverServiceImpl implements DriverService {
             for(int m =0; m< maintainCheckDTO.size();m++){
                 flag = checkDateMaintain(consignment, maintainCheckDTO.get(m), flag);
                 if(flag){
-
+                    m= maintainCheckDTO.size();
                 }else{
                     flag= false;
-                    m= maintainCheckDTO.size();
+
                 }
             }
 
-//            if (maintainCheckDTO.getId() != null) {
-//                flag = checkDateMaintain(consignment, maintainCheckDTO, flag);
-//            }
-            if (flag) {
+            if (!flag) {
                 result.add(drivers.get(i));
             }
         }

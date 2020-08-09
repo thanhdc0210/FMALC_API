@@ -66,7 +66,7 @@ public class NotificationServiceImpl implements NotificationService {
             e.printStackTrace();
         }
 
-//        notify.setDriver(driver);
+        notify.setDriver(driver);
         notify.setStatus(false);
 
         // Send notification to android

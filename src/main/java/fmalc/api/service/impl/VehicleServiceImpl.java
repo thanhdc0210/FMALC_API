@@ -5,6 +5,7 @@ import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Place;
 import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
+import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.enums.VehicleStatusEnum;
@@ -76,7 +77,15 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<Vehicle> getListVehicle() {
-        return vehicleRepository.findAll();
+        return vehicleRepository.getListVehicle(true);
+    }
+
+    @Override
+    public Vehicle disableVehicle(int id) {
+        Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
+        vehicle.setIsActive(false);
+
+        return vehicleRepository.save(vehicle);
     }
 
     @Override
@@ -92,7 +101,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<Vehicle> findByWeight(double weight) {
-        List<Vehicle> vehicles = vehicleRepository.findByWeight(weight);
+        List<Vehicle> vehicles = vehicleRepository.findByWeight(weight, true);
         return vehicles.stream()
                 .filter(x -> x.getStatus() != VehicleStatusEnum.SOLD.getValue())
                 .collect(Collectors.toList());

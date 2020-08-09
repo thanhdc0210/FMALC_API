@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface LocationService {
     Location createLocation(Location location);
-//    List<Location> getListLocationByVehicle(int vehicle);
+    List<Location> getListLocationBySchedule(int scheduleId);
 //    List<LocationDTO> getListLocationByVehicle(int vehicle);
 }

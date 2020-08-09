@@ -15,5 +15,5 @@ public class MaintainTypeDTO {
 
     private Integer kilometersNumber;
 
-    private String maintainTypeName;
+    private String maintenanceTypeName;
 }
