@@ -75,11 +75,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationUnread countNotificationUnread(Integer accountId) {
+    public NotificationUnread countNotificationUnread(String username) {
         NotificationUnread result = new NotificationUnread();
-        Account account = accountRepository.findById(accountId).get();
-        result.setCount(notificationRepository.countAllByAccountNotContains(account));
-        result.setNotificationsUnread(new NotificationResponeDTO().mapToListResponse(notificationRepository.findTop4ByAccountNotContains(account)));
+        Account account = accountRepository.findByUsername(username);
+        result.setCount(notificationRepository.countAllByAccountNotContainsAndTypeNot(account, 3));
+        result.setNotificationsUnread(new NotificationResponeDTO().mapToListResponse(notificationRepository.findTop4ByAccountNotContainsAndTypeNotOrderByIdDesc(account, 3)));
         return result;
     }
 
@@ -93,16 +93,28 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void readNotification(Integer accountId, Integer notificationId) {
+    public void readNotification(String username, Integer notificationId) {
         Notification notification = notificationRepository.findById(notificationId).get();
-        Account account = accountRepository.findById(accountId).get();
+        Account account = accountRepository.findByUsername(username);
         Collection<Account> accounts = notification.getAccount();
-        boolean isPresent = accounts.stream().filter(x -> x.getId() == accountId).findFirst().isPresent();
+        boolean isPresent = accounts.stream().filter(x -> x.getUsername().equals(username)).findFirst().isPresent();
         if (!isPresent) {
             accounts.add(account);
             notification.setAccount(accounts);
             notificationRepository.save(notification);
         }
+    }
+
+    @Override
+    public void readNotificationByType(String username, Integer type) {
+        Account account = accountRepository.findByUsername(username);
+        List<Notification> notifications = notificationRepository.findAllByTypeAndAccountNotContains(type, account);
+        for (Notification notification: notifications) {
+            Collection<Account> accounts = notification.getAccount();
+            accounts.add(account);
+            notification.setAccount(accounts);
+        }
+        notificationRepository.saveAll(notifications);
     }
 
     private Notification convertToDto(NotificationRequestDTO notificationRequestDTO) {
