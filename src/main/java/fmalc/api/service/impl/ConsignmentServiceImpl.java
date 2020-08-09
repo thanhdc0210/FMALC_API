@@ -176,7 +176,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     public List<Consignment> findConsignmentByVehicle(int idVehicle) {
         List<Consignment> consignments = new ArrayList<>();
         List<Consignment> result = new ArrayList<>();
-        consignments =consignmentRepository.findConsignemnt(idVehicle);
+        consignments =consignmentRepository.findConsignment(idVehicle);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date date = new java.util.Date();
         String dateNow = sdf.format(date);
