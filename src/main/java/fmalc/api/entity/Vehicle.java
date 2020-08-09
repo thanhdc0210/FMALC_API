@@ -81,7 +81,6 @@ public class Vehicle implements Serializable {
     private Boolean isActive;
 
     @CreatedDate
-    @Temporal(TemporalType.DATE)
     @Column(name = "date_create", nullable = false)
     private Date dateCreate;
 }
