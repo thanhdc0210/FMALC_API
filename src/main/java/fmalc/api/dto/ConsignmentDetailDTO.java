@@ -16,7 +16,7 @@ import java.util.Collection;
 public class ConsignmentDetailDTO {
     private Integer amount;
     private Integer id;
-    private Collection<ConsignmentHistory> consignmentHistories;
+    private Collection<ConsignmentHistoryDTO> consignmentHistories;
     private String ownerName;
     private String ownerNote;
     private Double weight;

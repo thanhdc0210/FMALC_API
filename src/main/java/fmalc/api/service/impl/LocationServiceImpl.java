@@ -25,6 +25,11 @@ public class LocationServiceImpl implements LocationService {
         return location;
     }
 
+    @Override
+    public List<Location> getListLocationBySchedule(int scheduleId) {
+        return locationRepository.findBySchedule(scheduleId);
+    }
+
 //    @Override
 //    public List<Location> getListLocationByVehicle(int vehicle) {
 //

@@ -42,7 +42,8 @@ public class Consignment implements Serializable {
     // Tổng trọng lượng
     @Column(name = "weight", nullable = false)
     private Double weight;
-
+    @Column(name = "cancel_note")
+    private String cancelNote;
     @Column(name = "status", nullable = false)
     private Integer status;
 

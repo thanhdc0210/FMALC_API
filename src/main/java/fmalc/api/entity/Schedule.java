@@ -41,8 +41,7 @@ public class Schedule implements Serializable {
     /**
      * Lý do cancel
      */
-    @Column(name = "note")
-    private String note;
+
 
     @Column(name = "is_approve", nullable = false)
     private Boolean isApprove;

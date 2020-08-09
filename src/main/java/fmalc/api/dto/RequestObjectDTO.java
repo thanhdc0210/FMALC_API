@@ -9,5 +9,5 @@ public class RequestObjectDTO {
     private List<ObejctScheDTO> schedule;
     private ConsignmentRequestDTO consignmentRequest;
     private ConsignmentResponseDTO newConsignment;
-
+    private  int driver_sub;
 }

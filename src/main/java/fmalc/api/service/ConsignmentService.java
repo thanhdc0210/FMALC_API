@@ -3,6 +3,7 @@ package fmalc.api.service;
 import fmalc.api.dto.ConsignmentRequestDTO;
 import fmalc.api.dto.ConsignmentUpdateDTO;
 import fmalc.api.entity.Consignment;
+import fmalc.api.entity.Schedule;
 
 import java.text.ParseException;
 import java.util.List;
@@ -26,7 +27,8 @@ public interface ConsignmentService {
     int updateStatus(int status, int id);
 
     List<Consignment> getConsignmentOfDriver(int id);
-
+    List<Schedule> findScheduleByConsignment(int id);
+    Consignment cancelConsignment(int id, String content);
     int updateConsignment(ConsignmentUpdateDTO consignmentUpdateDTO);
 //    Consignment mapDriverForConsignment(Consignment consignment);
 }

@@ -21,6 +21,9 @@ import java.util.List;
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     List<Schedule> findByConsignment_Id(int consignmentId);
 
+    @Query("select s from Schedule s where s.consignment.id=?1")
+    List<Schedule> findScheudleByConsignment(int consignmentId);
+
     Schedule findScheduleById(int id);
 
     @Query("select  s from Schedule s where s.vehicle.id =?1")
@@ -29,6 +32,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query("select  s from Schedule s where s.driver.id =?1")
     List<Schedule> checkDriverInScheduled(int idDriver);
 
+    @Query("select  s from  Schedule  s where s.inheritance.id =?1")
+    Schedule findScheduleBySchedule(int id);
 
     @Query("select  s from Schedule s where s.driver.id =?1 and s.consignment.status = ?2 or s.consignment.status = ?3")
     List<Schedule> checkConsignmentStatus(int idDriver, int status , int statusDeli);

@@ -8,6 +8,7 @@ import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.SearchTypeForDriverEnum;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -16,7 +17,7 @@ import java.util.List;
 
 public interface ScheduleService {
     List<ScheduleForLocationDTO> getScheduleByConsignmentId(int id);
-    Schedule createSchedule(List<ObejctScheDTO> obejctScheDTOs, Consignment consignment);
+    List<Schedule> createSchedule(RequestSaveScheObjDTO requestSaveScheObjDTO , MultipartFile file);
 
     List<ScheduleForConsignmentDTO> getScheduleForVehicle(int idVehicle) ;
 
@@ -35,6 +36,7 @@ public interface ScheduleService {
 
     List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType);
 
+    Schedule getScheduleByDriverSub(int id);
 //    THANHDC
 //    Integer countScheduleNumberInADayOfDriver(Integer id, Timestamp startDate, Timestamp endDate);
 }

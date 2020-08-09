@@ -3,6 +3,7 @@ package fmalc.api.service.impl;
 import fmalc.api.dto.ConsignmentRequestDTO;
 import fmalc.api.dto.ConsignmentUpdateDTO;
 import fmalc.api.entity.*;
+import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.*;
 import fmalc.api.service.ConsignmentService;
@@ -215,6 +216,24 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     @Override
     public List<Consignment> getConsignmentOfDriver(int id) {
         return consignmentRepository.getConsignmentOfDriver(id);
+    }
+
+    @Override
+    public List<Schedule> findScheduleByConsignment(int id) {
+
+        return  scheduleRepository.findScheudleByConsignment(id);
+    }
+
+    @Override
+    public Consignment cancelConsignment(int id, String content) {
+        Consignment consignment = consignmentRepository.findConsignmentById(id);
+        if(consignment.getStatus() == ConsignmentStatusEnum.WAITING.getValue()){
+            consignment.setStatus(ConsignmentStatusEnum.CANCELED.getValue());
+            consignment.setCancelNote(content);
+        }
+
+
+        return consignmentRepository.save(consignment);
     }
 
     @Override

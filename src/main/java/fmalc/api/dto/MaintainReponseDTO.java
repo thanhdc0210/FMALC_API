@@ -14,7 +14,7 @@ public class MaintainReponseDTO {
     private Integer id;
     private VehicleForDetailDTO vehicle;
     private DriverForScheduleDTO driver;
-    private MaintainTypeDTO maintainType;
+    private MaintainTypeDTO maintenanceType;
     private String imageMaintain;
     private Integer kmOld;
     private Date plannedMaintainDate;

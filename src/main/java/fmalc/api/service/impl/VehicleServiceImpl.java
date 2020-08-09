@@ -5,6 +5,7 @@ import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Place;
 import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
+import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.enums.VehicleStatusEnum;
@@ -76,7 +77,15 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<Vehicle> getListVehicle() {
-        return vehicleRepository.findAll();
+        return vehicleRepository.getListVehicle(true);
+    }
+
+    @Override
+    public Vehicle disableVehicle(int id) {
+        Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
+        vehicle.setIsActive(false);
+
+        return vehicleRepository.save(vehicle);
     }
 
     @Override
@@ -92,7 +101,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<Vehicle> findByWeight(double weight) {
-        List<Vehicle> vehicles = vehicleRepository.findByWeight(weight);
+        List<Vehicle> vehicles = vehicleRepository.findByWeight(weight, true);
         return vehicles.stream()
                 .filter(x -> x.getStatus() != VehicleStatusEnum.SOLD.getValue())
                 .collect(Collectors.toList());
@@ -134,6 +143,15 @@ public class VehicleServiceImpl implements VehicleService {
 //            if (size > 0) {
                 double weight = Double.parseDouble(vehicleConsignmentDTOS.get(i).getWeight());
                 vehicles = findByWeight(weight);
+                int tmp=0;
+                for(int t = 0 ; t< vehicles.size();t++){
+                    tmp =i;
+                    if(result.contains(vehicles.get(t))){
+                       vehicles.remove(vehicles.get(t));
+                       i=tmp;
+                    }
+                }
+//                vehicles = checkDuplicate(result, vehicles);
                 if (vehicles.size() > 0) {
                     vehicles = checkMaintainForVehicle(vehicles, consignment);
                     if (sche == ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue()) {
@@ -188,11 +206,11 @@ public class VehicleServiceImpl implements VehicleService {
                             vehicleSmaller = checkScheduledForVehicle(vehicleSmaller, consignment);
                         }
                         if (vehicleSmaller.size() > 0 && vehicleSmaller.size() >= (size - vehicles.size())) {
-                            vehicles.addAll(vehicleSmaller);
-                            result = checkDuplicate(result, vehicles);
+//                            vehicles.addAll(vehicleSmaller);
+                            result = checkDuplicate(result, vehicleSmaller);
                         } else {
-                            vehicles.addAll(vehicleSmaller);
-                            result = checkDuplicate(result, vehicles);
+//                            vehicles.addAll(vehicleSmaller);
+                            result = checkDuplicate(result, vehicleSmaller);
                         }
                     } else {
                         //vehicleBigger size = 0
@@ -412,15 +430,16 @@ public class VehicleServiceImpl implements VehicleService {
                     flag = checkDateMaintain(consignment, maintainCheckDTO.get(m), flag);
                     if (flag) {
 //                        result.add(vehicles.get(i));
+                        m = maintainCheckDTO.size();
                     }else{
                         flag = false;
-                        m = maintainCheckDTO.size();
+
                     }
 
                 }
             }
 
-            if (flag) {
+            if (!flag) {
                 result.add(vehicles.get(i));
             }
         }

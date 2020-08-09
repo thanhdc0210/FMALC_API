@@ -17,14 +17,19 @@ import java.util.*;
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
+        @Query("SELECT v from Vehicle v where v.isActive =?1 ")
+        List<Vehicle> getListVehicle(Boolean isActive);
+
+        @Query("SELECT v FROM Vehicle v WHERE v.id = ?1")
+        Vehicle findByIdVehicle(int id);
         @Query("SELECT v FROM Vehicle v WHERE v.licensePlates = ?1")
         Vehicle findByLicensePlates(String license);
 
         @Query("SELECT v FROM Vehicle v WHERE v.status = ?1 and v.weight >= ?2")
         List<Vehicle> findByStatus(int status, double weight);
 
-        @Query("SELECT v FROM Vehicle v where  v.weight >= ?1")
-        List<Vehicle> findByWeight( double weight);
+        @Query("SELECT v FROM Vehicle v where  v.weight >= ?1 and v.isActive=?2")
+        List<Vehicle> findByWeight( double weight,Boolean isActive);
 
         @Query("SELECT v FROM Vehicle v where  v.weight > ?1")
         List<Vehicle> findByWeightBigger( double weight);

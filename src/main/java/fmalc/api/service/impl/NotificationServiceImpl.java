@@ -53,6 +53,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         notify.setDriver(driver);
 
+
         // Send notification to android
         String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
         String content  = dto.getContent();

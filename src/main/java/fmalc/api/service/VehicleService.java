@@ -18,7 +18,7 @@ public interface VehicleService {
     Vehicle findVehicleByIdForLocation(int id);
 
     List<Vehicle> getListVehicle();
-
+    Vehicle disableVehicle(int id);
     Vehicle findVehicleByLicensePlates(String licensePlates);
 
     List<Vehicle> findByStatus(int status, double weight);

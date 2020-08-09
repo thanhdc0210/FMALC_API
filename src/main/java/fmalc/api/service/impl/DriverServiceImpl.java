@@ -107,9 +107,9 @@ public class DriverServiceImpl implements DriverService {
     public List<Driver> findDriverByLicense(double weight) {
         List<Driver> drivers = new ArrayList<>();
         if (weight > 3.5) {
-            drivers = driverRepository.findDriverByLicenseC(DriverLicenseEnum.C.getValue());
+            drivers = driverRepository.findDriverByLicenseC(DriverLicenseEnum.C.getValue(), true);
         } else {
-            drivers = driverRepository.findDriverByLicenseB2(DriverLicenseEnum.B2.getValue());
+            drivers = driverRepository.findDriverByLicenseB2(DriverLicenseEnum.B2.getValue(),true);
         }
         return drivers;
     }
@@ -355,17 +355,14 @@ public class DriverServiceImpl implements DriverService {
             for(int m =0; m< maintainCheckDTO.size();m++){
                 flag = checkDateMaintain(consignment, maintainCheckDTO.get(m), flag);
                 if(flag){
-
+                    m= maintainCheckDTO.size();
                 }else{
                     flag= false;
-                    m= maintainCheckDTO.size();
+
                 }
             }
 
-//            if (maintainCheckDTO.getId() != null) {
-//                flag = checkDateMaintain(consignment, maintainCheckDTO, flag);
-//            }
-            if (flag) {
+            if (!flag) {
                 result.add(drivers.get(i));
             }
         }

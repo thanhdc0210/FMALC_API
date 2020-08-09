@@ -66,13 +66,29 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         List<Maintenance> maintenances = maintainanceRepository.findByVehicle(idVehicle);
         if (!maintenances.isEmpty()) {
             List<MaintainCheckDTO> maintainCheckDTOs = new MaintainCheckDTO().mapToListResponse(maintenances);
-            Date date = new Date(System.currentTimeMillis());
-            List<Integer> id = maintainCheckDTOs.stream()
-                    .filter(x -> date.after(x.getPlannedMaintainDate()))
-                    .map(MaintainCheckDTO::getId)
-                    .collect(Collectors.toList());
 
-            maintainCheckDTOs.removeIf(x -> id.contains(x.getId()));
+            Date date = new Date(System.currentTimeMillis());
+            int t = 0;
+            for (int i = 0; i < maintainCheckDTOs.size(); i++) {
+                t = i;
+                if (maintainCheckDTOs.get(i).getActualMaintainDate() != null) {
+                    if (date.after(maintainCheckDTOs.get(i).getActualMaintainDate())) {
+                        maintainCheckDTOs.remove(maintainCheckDTOs.get(i));
+                        i = t;
+                    }
+                } else {
+                    if (date.after(maintainCheckDTOs.get(i).getPlannedMaintainDate())) {
+                        maintainCheckDTOs.remove(maintainCheckDTOs.get(i));
+                        i = t;
+                    }
+                }
+            }
+//            List<Integer> id = maintainCheckDTOs.stream()
+//                    .filter(x -> date.after(x.getPlannedMaintainDate()))
+//                    .map(MaintainCheckDTO::getId)
+//                    .collect(Collectors.toList());
+//
+//            maintainCheckDTOs.removeIf(x -> id.contains(x.getId()));
 
             if (!maintainCheckDTOs.isEmpty()) {
                 return maintainCheckDTOs;
@@ -91,12 +107,27 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
             maintainCheckDTOs.sort(Comparator.comparing(MaintainCheckDTO::getActualMaintainDate));
 
-//            Date date = new Date(System.currentTimeMillis());
-            List<Integer> id = maintainCheckDTOs.stream()
-                    .filter(x -> x.getStatus() == 1)
-                    .map(MaintainCheckDTO::getId)
-                    .collect(Collectors.toList());
-            maintainCheckDTOs.removeIf(x -> id.contains(x.getId()));
+            Date date = new Date(System.currentTimeMillis());
+//            List<Integer> id = maintainCheckDTOs.stream()
+//                    .filter(x -> x.getStatus() == 1)
+//                    .map(MaintainCheckDTO::getId)
+//                    .collect(Collectors.toList());
+//            maintainCheckDTOs.removeIf(x -> id.contains(x.getId()));
+            int t = 0;
+            for (int i = 0; i < maintainCheckDTOs.size(); i++) {
+                t = i;
+                if (maintainCheckDTOs.get(i).getActualMaintainDate() != null) {
+                    if (date.after(maintainCheckDTOs.get(i).getActualMaintainDate())) {
+                        maintainCheckDTOs.remove(maintainCheckDTOs.get(i));
+                        i = t;
+                    }
+                } else {
+                    if (date.after(maintainCheckDTOs.get(i).getPlannedMaintainDate())) {
+                        maintainCheckDTOs.remove(maintainCheckDTOs.get(i));
+                        i = t;
+                    }
+                }
+            }
 
             if (!maintainCheckDTOs.isEmpty()) {
                 return maintainCheckDTOs;
@@ -191,10 +222,10 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                         maintenance.setActualMaintainDate(new Date(date1.getTime()));
                         maintenance.setPlannedMaintainDate(new Date(date1.getTime()));
                         List<Driver> drivers = findDriverForMaintain(vehicle.getWeight(), sdf.format(date1));
-                        for(int i =0; i< drivers.size();i++){
-                            if((maintainanceRepository.findMaintenancesByDriverIdAndAndStatus(drivers.get(i).getId(),false)).size()<=0){
+                        for (int i = 0; i < drivers.size(); i++) {
+                            if ((maintainanceRepository.findMaintenancesByDriverIdAndAndStatus(drivers.get(i).getId(), false)).size() <= 0) {
                                 maintenance.setDriver(drivers.get(i));
-                                i =drivers.size();
+                                i = drivers.size();
                             }
                         }
                         maintenance.setVehicle(vehicle);
@@ -225,10 +256,10 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                             maintenance.setPlannedMaintainDate(new Date(date1.getTime()));
                             List<Driver> drivers = findDriverForMaintain(vehicle.getWeight(), sdf.format(date1));
                             maintenance.setVehicle(vehicle);
-                            for(int i =0; i< drivers.size();i++){
-                                if((maintainanceRepository.findMaintenancesByDriverIdAndAndStatus(drivers.get(i).getId(),false)).size()<=0){
+                            for (int i = 0; i < drivers.size(); i++) {
+                                if ((maintainanceRepository.findMaintenancesByDriverIdAndAndStatus(drivers.get(i).getId(), false)).size() <= 0) {
                                     maintenance.setDriver(drivers.get(i));
-                                    i =drivers.size();
+                                    i = drivers.size();
                                 }
                             }
                             maintenance.setDriver(drivers.get(0));
@@ -258,10 +289,10 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                         maintenance.setPlannedMaintainDate(new Date(date1.getTime()));
                         List<Driver> drivers = findDriverForMaintain(vehicle.getWeight(), sdf.format(date1));
                         maintenance.setVehicle(vehicle);
-                        for(int i =0; i< drivers.size();i++){
-                            if((maintainanceRepository.findMaintenancesByDriverIdAndAndStatus(drivers.get(i).getId(),false)).size()<=0){
+                        for (int i = 0; i < drivers.size(); i++) {
+                            if ((maintainanceRepository.findMaintenancesByDriverIdAndAndStatus(drivers.get(i).getId(), false)).size() <= 0) {
                                 maintenance.setDriver(drivers.get(i));
-                                i =drivers.size();
+                                i = drivers.size();
                             }
                         }
 //                        maintenance.setDriver(drivers.get(0));
@@ -302,10 +333,10 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                         maintenance.setActualMaintainDate(new Date(date1.getTime()));
                         maintenance.setPlannedMaintainDate(new Date(date1.getTime()));
                         List<Driver> drivers = findDriverForMaintain(vehicle.getWeight(), sdf.format(date1));
-                        for(int i =0; i< drivers.size();i++){
-                            if((maintainanceRepository.findMaintenancesByDriverIdAndAndStatus(drivers.get(i).getId(),false)).size()<=0){
+                        for (int i = 0; i < drivers.size(); i++) {
+                            if ((maintainanceRepository.findMaintenancesByDriverIdAndAndStatus(drivers.get(i).getId(), false)).size() <= 0) {
                                 maintenance.setDriver(drivers.get(i));
-                                i =drivers.size();
+                                i = drivers.size();
                             }
                         }
                         maintenance.setVehicle(vehicle);

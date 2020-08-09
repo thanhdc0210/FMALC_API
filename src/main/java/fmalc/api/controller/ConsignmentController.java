@@ -2,6 +2,7 @@ package fmalc.api.controller;
 
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
+import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,9 +133,16 @@ public class ConsignmentController {
 
     }
 
+
+
     @GetMapping(value = "status")
     public ResponseEntity<List<ConsignmentListDTO>> getAllByStatus(@RequestParam("status") Integer status) {
-        List<Consignment> consignments = consignmentService.getAllByStatus(status);
+        List<Consignment> consignments = new ArrayList<>();
+        if(status == ConsignmentStatusEnum.DELIVERING.getValue() || status == ConsignmentStatusEnum.OBTAINING.getValue()){
+            consignments.addAll(consignmentService.getAllByStatus(ConsignmentStatusEnum.DELIVERING.getValue()));
+            consignments.addAll(consignmentService.getAllByStatus(ConsignmentStatusEnum.OBTAINING.getValue()));
+        }
+         consignments = consignmentService.getAllByStatus(status);
         ConsignmentListDTO consignmentListDTO = new ConsignmentListDTO();
         List<ConsignmentListDTO> consignmentListDTOS = consignmentListDTO.mapToListResponse(consignments);
         if (consignments.isEmpty()) {
@@ -176,6 +184,24 @@ public class ConsignmentController {
         return ResponseEntity.ok().body(consignmentListDTOS);
     }
 
+    @PostMapping("cancel/{id}/{username}")
+    public ResponseEntity<Integer> cancelConsignment(@PathVariable("id") int id,@PathVariable("username") String username, @RequestBody String content){
+        try{
+            content = content.replaceAll("\"","");
+            Consignment consignment = consignmentService.cancelConsignment(id,content);
+            if(consignment.getStatus() == ConsignmentStatusEnum.CANCELED.getValue()){
+                Account account = accountService.getAccount(username);
+                FleetManager fleetManager = fleetManagerService.findByAccount(account.getId());
+                String note = "Lô hàng bị hủy bởi "+ fleetManager.getName();
+                ConsignmentHistory consignmentHistory = consignmentHistoryService.save(consignment.getId(), fleetManager,note);
+            }
+            return ResponseEntity.ok().body(consignment.getStatus());
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+
+
+    }
     @PostMapping
     public ResponseEntity<NewScheduleDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO) {
         try {
