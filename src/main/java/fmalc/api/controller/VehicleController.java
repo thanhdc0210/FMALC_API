@@ -7,6 +7,7 @@ import fmalc.api.dto.VehicleForNewDTO;
 import fmalc.api.dto.VehicleReponseDTO;
 import fmalc.api.entity.Inspection;
 import fmalc.api.entity.Vehicle;
+import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.service.InspectionService;
 import fmalc.api.service.VehicleService;
@@ -21,6 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -198,6 +200,22 @@ public class VehicleController {
                 return ResponseEntity.ok().body(inspectionResponseDTO);
             }
         }
+    }
+
+    @GetMapping(value = "/running")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    public ResponseEntity<String> getVehicleRunning( @RequestParam("username") String username){
+        List<Integer> status = new ArrayList<>();
+        status.add(ConsignmentStatusEnum.OBTAINING.getValue());
+        status.add(ConsignmentStatusEnum.DELIVERING.getValue());
+        Vehicle vehicle = vehicleService.findVehicleByUsernameAndConsignmentStatus(username, status,
+                Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
+                Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
+
+        if(vehicle.getId() >= 0){
+            return ResponseEntity.ok().body(vehicle.getId().toString());
+        }
+        return ResponseEntity.noContent().build();
     }
 }
 
