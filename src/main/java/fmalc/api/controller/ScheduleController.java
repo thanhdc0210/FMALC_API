@@ -22,11 +22,13 @@ import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.SearchTypeForDriverEnum;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.annotation.MultipartConfig;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -472,8 +474,9 @@ public class ScheduleController {
     }
 
     @PostMapping("/status")
-    public ResponseEntity<ConsignmentResponseDTO> updateStatusSchedules(@RequestPart(value = "file") MultipartFile file, @ModelAttribute(value = "requestSaveScheObjDTO")  String requestSaveScheObjDTO) {
 
+//    @MultipartConfig(maxFileSize =  @Value("${multipart.max-file-size}"), maxRequestSize = 1024*1024*1024)
+    public ResponseEntity<ConsignmentResponseDTO> updateStatusSchedules(@RequestPart(value = "file") MultipartFile file, @ModelAttribute(value = "requestSaveScheObjDTO")  String requestSaveScheObjDTO) {
         boolean result = false;
 
         JsonObject jsonObject = new JsonParser().parse(requestSaveScheObjDTO).getAsJsonObject();
@@ -485,7 +488,10 @@ public class ScheduleController {
             post_id.get("vehicle_id").getAsInt();
             obejctScheDTO.setVehicle_id(post_id.get("vehicle_id").getAsInt()) ;
             obejctScheDTO.setDriver_id(post_id.get("driver_id").getAsInt());
-            obejctScheDTO.setConsignment_id(post_id.get("consignment_id").getAsInt());
+            if(post_id.get("consignment_id")!=null){
+                obejctScheDTO.setConsignment_id(post_id.get("consignment_id").getAsInt());
+            }
+
 //                    new Gson().fromJson(post_id, ObejctScheDTO.class);
             obejctScheDTOS.add(obejctScheDTO);
         }

@@ -422,21 +422,25 @@ public class VehicleServiceImpl implements VehicleService {
 //            VehicleForDetailDTO vehicle = vehicleService.findVehicleById(vehicles.get(i).getId());
             //check xe co lich bao tri trong tuong lai
             maintainCheckDTO = maintainanceService.checkMaintainForVehicle(vehicles.get(i).getId());
-            for(int m =0; m< maintainCheckDTO.size(); m++){
-                if (maintainCheckDTO.get(m).getId() != null) {
+            if(maintainCheckDTO.size()>0){
+                for(int m =0; m< maintainCheckDTO.size(); m++){
+                    if (maintainCheckDTO.get(m).getId() != null) {
 
 
-                    //list place receive of a consignment
-                    flag = checkDateMaintain(consignment, maintainCheckDTO.get(m), flag);
-                    if (flag) {
+                        //list place receive of a consignment
+                        flag = checkDateMaintain(consignment, maintainCheckDTO.get(m), flag);
+                        if (flag) {
 //                        result.add(vehicles.get(i));
-                        m = maintainCheckDTO.size();
-                    }else{
-                        flag = false;
+                            m = maintainCheckDTO.size();
+                        }else{
+                            flag = false;
+
+                        }
 
                     }
-
                 }
+            }else{
+                result.add(vehicles.get(i));
             }
 
             if (!flag) {
