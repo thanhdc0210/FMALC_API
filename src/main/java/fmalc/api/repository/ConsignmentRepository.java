@@ -39,9 +39,9 @@ public interface ConsignmentRepository
     @Query("SELECT c FROM Consignment c" +
             " INNER JOIN Schedule s ON c.id = s.consignment.id" +
             " INNER JOIN Driver d ON s.driver.id = d.id" +
-            " WHERE d.id = ?1" +
+            " WHERE d.id = :driverId" +
             " AND c.status = :status")
-    List<Consignment> getConsignmentOfDriver(int driverId, int status);
+    List<Consignment> getConsignmentOfDriver(@Param("driverId") int driverId,@Param("status") int status);
 
     @Query(value = "SELECT c from  Consignment c where c.id in (" +
                     "SELECT p.consignment.id from Place p "+

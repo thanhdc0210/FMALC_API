@@ -21,6 +21,7 @@ public class ConsignmentDetailDTO {
     private String ownerNote;
     private Double weight;
     private Integer status;
+    private String imageContract;
     private List<ScheduleForDetailDTO> schedules;
     private Collection<PlaceResponeDTO> places;
 
