@@ -8,6 +8,7 @@ import fmalc.api.dto.VehicleResponseDTO;
 import fmalc.api.entity.Inspection;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.ConsignmentStatusEnum;
+import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.service.InspectionService;
 import fmalc.api.service.VehicleService;
@@ -163,7 +164,7 @@ public class VehicleController {
             (@RequestParam(value = "username") String username) {
 
         String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionBeforeDelivery(username
-        , Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)) );
+        , Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)), ConsignmentStatusEnum.WAITING.getValue());
         List<Inspection> inspections = inspectionService.findAll();
         if (inspections == null){
             return ResponseEntity.noContent().build();
@@ -191,7 +192,8 @@ public class VehicleController {
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionAfterDelivery
             (@RequestParam(value = "username") String username) {
 
-        String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionAfterDelivery(username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)));
+        String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionAfterDelivery(username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
+                ConsignmentStatusEnum.COMPLETED.getValue(), TypeLocationEnum.DELIVERED_PLACE.getValue());
         List<Inspection> inspections = inspectionService.findAll();
         if (inspections == null){
             return ResponseEntity.noContent().build();

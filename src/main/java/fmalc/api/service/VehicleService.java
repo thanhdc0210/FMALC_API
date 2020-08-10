@@ -22,8 +22,8 @@ public interface VehicleService {
     Vehicle findVehicleByLicensePlates(String licensePlates);
 
     List<Vehicle> findByStatus(int status, double weight);
-    String findVehicleLicensePlatesForReportInspectionBeforeDelivery(String username, Timestamp endDate);
-    String findVehicleLicensePlatesForReportInspectionAfterDelivery(String username, Timestamp startDate);
+    String findVehicleLicensePlatesForReportInspectionBeforeDelivery(String username, Timestamp endDate, Integer status);
+    String findVehicleLicensePlatesForReportInspectionAfterDelivery(String username, Timestamp startDate, Integer status, Integer type);
 
     Vehicle updateKmVehicle(int id, int km);
 

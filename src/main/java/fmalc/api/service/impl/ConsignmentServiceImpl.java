@@ -177,8 +177,8 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     }
 
     @Override
-    public List<Consignment> getConsignmentOfDriver(int id) {
-        return consignmentRepository.getConsignmentOfDriver(id);
+    public List<Consignment> getConsignmentOfDriver(int id, int status) {
+        return consignmentRepository.getConsignmentOfDriver(id, status);
     }
 
     @Override

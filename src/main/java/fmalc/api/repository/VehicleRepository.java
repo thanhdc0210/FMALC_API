@@ -61,7 +61,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "WHERE c.id = p.consignment_id " +
                 "AND timediff(now(), p.planned_time) < 0 " +
                 "AND p.planned_time between now() and :endDate " +
-                "AND c.status = 0 " +
+                "AND c.status = :status " +
                 "AND p.priority = 1 " +
                 "GROUP BY c.id " +
                 ") " +
@@ -75,7 +75,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "and s.is_approve = true ) " +
                 "limit 1", nativeQuery = true)
         String findVehicleLicensePlatesForReportInspectionBeforeDelivery(@Param("username") String username,
-                                                                         @Param("endDate") Timestamp endDate);
+                                                   @Param("endDate") Timestamp endDate,@Param("status") Integer status);
 
         @Query(value = "Select distinct v.license_plates\n" +
                 "from vehicle v, consignment c, driver d, account a, schedule s\n" +
@@ -88,14 +88,14 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "and p.consignment_id = c.id\n" +
                 "and d.account_id = a.id\n" +
                 "and timediff(p.actual_time,timestamp(now())) < 0\n" +
-                "and c.status = 3\n" +
-                "and p.type = 1\n" +
+                "and c.status = :status\n" +
+                "and p.type = :type\n" +
                 "and s.is_approve = true\n" +
                 "and a.username = :username\n" +
                 "and p.actual_time between :startDate and now() "+
                 ")", nativeQuery = true)
         String findVehicleLicensePlatesForReportInspectionAfterDelivery(@Param("username") String username,
-                                                                        @Param("startDate") Timestamp startDate);
+        @Param("startDate") Timestamp startDate, @Param("status") Integer status, @Param("type") Integer type);
 
         // Get vehicle --> get report_issue information của xe sắp chạy
         @Query(value = "SELECT v " +
