@@ -1,5 +1,6 @@
 package fmalc.api.dto;
 
+import fmalc.api.entity.Driver;
 import fmalc.api.entity.Maintenance;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
@@ -24,23 +25,20 @@ public class MaintainanceResponse {
         ModelMapper modelMapper = new ModelMapper();
         MaintainanceResponse maintainanceResponse = modelMapper.map(maintenance, MaintainanceResponse.class);
         maintainanceResponse.setLicensePlates(maintenance.getVehicle().getLicensePlates());
-//<<<<<<< HEAD
-        if (maintenance.getDriver() != null) {
+        Driver driver = maintenance.getDriver();
+        if (driver != null) {
             maintainanceResponse.setNameDriver(maintenance.getDriver().getName());
             maintainanceResponse.setPhoneNumberDriver(maintenance.getDriver().getPhoneNumber());
         }
         maintainanceResponse.setContent(maintenance.getMaintenanceType().getContent());
-//=======
-        maintainanceResponse.setNameDriver(maintenance.getDriver().getName());
-        maintainanceResponse.setPhoneNumberDriver(maintenance.getDriver().getPhoneNumber());
-        maintainanceResponse.setContent(maintenance.getMaintenanceType().getContent());
-//>>>>>>> d23df9d71cc003bd4f105ea10c0a21820c7e3c2d
-        int status = 1;
+        int status = 0;
         LocalDate today = LocalDate.now();
-        if (maintenance.getActualMaintainDate().toLocalDate().isAfter(today)) {
-            status = 0;
-        } else if (maintenance.getActualMaintainDate().toLocalDate().isBefore(today)) {
+        if (maintenance.getActualMaintainDate().toLocalDate().isEqual(today)) {
+            status = 1;
+        } else if (maintenance.getStatus()) {
             status = 2;
+        } else if (!maintenance.getStatus()) {
+            status = 0;
         }
         maintainanceResponse.setStatus(status);
         return maintainanceResponse;

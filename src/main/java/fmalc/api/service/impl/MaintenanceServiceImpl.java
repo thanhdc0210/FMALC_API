@@ -5,8 +5,8 @@ import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.DayOffRepository;
-import fmalc.api.repository.MaintenanceTypeRepository;
 import fmalc.api.repository.MaintenanceRepository;
+import fmalc.api.repository.MaintenanceTypeRepository;
 import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.Date;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class MaintenanceServiceImpl implements MaintenanceService {
@@ -703,6 +703,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Override
     public List<Maintenance> getMaintenance() {
         return maintainanceRepository.findAllByActualMaintainDateIsNotNullOrderByActualMaintainDateDesc();
+    }
+
+    @Override
+    public List<Maintenance> getMaintenanceToConfirm() {
+        return maintainanceRepository.findAllByActualMaintainDateIsNotNullAndStatusOrderByActualMaintainDateDesc(false);
     }
 
     @Override
