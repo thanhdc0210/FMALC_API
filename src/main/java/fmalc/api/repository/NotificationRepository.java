@@ -16,7 +16,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
 
     List<Notification> findAllByTypeOrderByIdDesc(int type);
 
-    List<Notification> findByDriverId(Integer driver_id);
+//    List<Notification> findByDriverId(Integer driver_id);
 
     List<Notification> findAllByTypeAndAccountNotContains(Integer type, Account account);
 }

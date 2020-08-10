@@ -15,9 +15,7 @@ public interface NotificationService {
     
     List<Notification> getNotificationsByType(int type);
 
-    List<Notification> findByDriverId(Integer driverId);
-
-    void readNotification(String username, Integer notificationId);
-
-    void readNotificationByType(String username, Integer type);
+//    void readNotification(String username, Integer notificationId);
+//
+//    void readNotificationByType(String username, Integer type);
 }

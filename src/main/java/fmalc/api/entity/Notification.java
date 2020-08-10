@@ -29,9 +29,9 @@ public class Notification implements Serializable {
     @JoinColumn(name = "vehicle_id", referencedColumnName = "id", nullable = false)
     private Vehicle vehicle;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
-    private Driver driver;
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+//    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
+//    private Driver driver;
 
     /**
      * Thời gian gửi thông báo
@@ -47,10 +47,13 @@ public class Notification implements Serializable {
     @Column(name = "type", nullable = false)
     private Integer type;
 
-    @ManyToMany
-    @JoinTable(name = "read_notification",
-            joinColumns = {@JoinColumn(name = "notification_id")},
-            inverseJoinColumns = {@JoinColumn(name = "account_id")}
-    )
-    private Collection<Account> account;
+//    @ManyToMany
+//    @JoinTable(name = "read_notification",
+//            joinColumns = {@JoinColumn(name = "notification_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "account_id")}
+//    )
+//    private Collection<Account> account;
+
+    @ManyToMany(mappedBy = "notification")
+    Collection<AccountNotification> accountNotifications;
 }

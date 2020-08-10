@@ -1,5 +1,6 @@
 package fmalc.api.dto;
 
+import fmalc.api.entity.AccountNotification;
 import fmalc.api.entity.Notification;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,13 +17,20 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NotificationMobileResponse {
-    private Integer vehicleId;
-    private Integer driverId;
     private Timestamp time;
     private String content;
     private boolean status;
     private Integer id;
     private Integer type;
+
+    public NotificationMobileResponse(AccountNotification accountNotification) {
+        Notification notification = accountNotification.getNotification();
+        this.time = notification.getTime();
+        this.content = notification.getContent();
+        this.status = accountNotification.getStatus();
+        this.id = accountNotification.getId();
+        this.type = notification.getType();
+    }
 
     public NotificationMobileResponse mapToResponse(Notification notification) {
         ModelMapper modelMapper = new ModelMapper();

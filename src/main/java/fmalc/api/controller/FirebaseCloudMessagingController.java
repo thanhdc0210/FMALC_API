@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/v1.0/fcm")
 public class FirebaseCloudMessagingController {
 
-    @Autowired
-    FirebaseServiceImpl firebaseService;
-
-    @PostMapping(value = "/device")
-    public ResponseEntity<String> sendPnsToDevice(@RequestBody NotificationRequest notificationRequest) {
-        return ResponseEntity.ok().body(firebaseService.sendPnsToDevice(notificationRequest));
-    }
+//    @Autowired
+//    FirebaseServiceImpl firebaseService;
+//
+//    @PostMapping(value = "/device")
+//    public ResponseEntity<String> sendPnsToDevice(@RequestBody NotificationRequest notificationRequest) {
+//        return ResponseEntity.ok().body(firebaseService.sendPnsToDevice(notificationRequest));
+//    }
 }

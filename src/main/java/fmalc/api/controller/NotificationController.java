@@ -1,15 +1,14 @@
 package fmalc.api.controller;
 
+import com.google.firebase.internal.FirebaseService;
 import fmalc.api.dto.NotificationMobileResponse;
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
 import fmalc.api.dto.NotificationUnread;
+import fmalc.api.entity.AccountNotification;
 import fmalc.api.entity.Notification;
-import fmalc.api.dto.NotificationData;
-import fmalc.api.dto.NotificationRequest;
-import fmalc.api.enums.NotificationTypeEnum;
+import fmalc.api.service.AccountNotificationService;
 import fmalc.api.service.DriverService;
-import fmalc.api.service.FirebaseService;
 import fmalc.api.service.NotificationService;
 import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +39,7 @@ public class NotificationController {
     DriverService driverService;
 
     @Autowired
-    FirebaseService firebaseService;
-
+    AccountNotificationService accountNotificationService;
 
     // list notify
     private List<NotificationResponeDTO> notificationResponeDTOS = new ArrayList<>();
@@ -54,6 +52,7 @@ public class NotificationController {
     private Flux<List<NotificationResponeDTO>> flux;
 
     // save notify and send notify for fleet manager and driver
+    // alert and notify for odd-hours and long idle times
     @PostMapping("/")
     public ResponseEntity<NotificationResponeDTO> createNotification(@RequestBody NotificationRequestDTO notificationRequestDTO) {
         NotificationResponeDTO notificationResponeDTO;
@@ -62,19 +61,19 @@ public class NotificationController {
             Notification notificationSaved = notificationService.createNotification(notificationRequestDTO);
             if (notificationSaved != null) {
 
-                NotificationData notificationData = new NotificationData();
-                notificationData.setTitle(NotificationTypeEnum.getValueEnumToShow(notificationRequestDTO.getType()));
-                notificationData.setBody(notificationRequestDTO.getContent());
-
-                NotificationRequest notificationRequest = new NotificationRequest();
-                notificationRequest.setNotificationData(notificationData);
-                notificationRequest.setTo(driverService.findTokenDeviceByDriverId(notificationRequestDTO.getDriver_id()));
+//                NotificationData notificationData = new NotificationData();
+//                notificationData.setTitle(NotificationTypeEnum.getValueEnumToShow(notificationRequestDTO.getType()));
+//                notificationData.setBody(notificationRequestDTO.getContent());
+//
+//                NotificationRequest notificationRequest = new NotificationRequest();
+//                notificationRequest.setNotificationData(notificationData);
+//                notificationRequest.setTo(driverService.findTokenDeviceByDriverId(notificationRequestDTO.getDriver_id()));
 
                 notificationResponeDTO = new NotificationResponeDTO().mapToResponse(notificationSaved);
                 if (notificationSend != notificationResponeDTO) {
 
                     // Send to driver
-                    firebaseService.sendPnsToDevice(notificationRequest);
+//                    firebaseService.sendPnsToDevice(notificationRequest);
 
                     // Send to fleet_manager
                     notificationResponeDTOS.add(notificationResponeDTO);
@@ -139,42 +138,67 @@ public class NotificationController {
         return ResponseEntity.ok().body(new NotificationResponeDTO().mapToListResponse(notifications));
     }
 
-    @GetMapping(value = "/driver/{id}")
+    @GetMapping(value = "/account/{username}")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
-    public ResponseEntity<List<NotificationMobileResponse>> findNotificationByDriverId(@PathVariable("id") Integer id) {
+    public ResponseEntity<List<NotificationMobileResponse>> findNotificationByUsername(@PathVariable("username") String username) {
 
         try {
-            List<Notification> notifications = notificationService.findByDriverId(id);
 
-            if (notifications != null) {
-                List<NotificationMobileResponse> notificationMobileResponses = new ArrayList<>(new NotificationMobileResponse().mapToListResponse(notifications));
-                return ResponseEntity.ok().body(notificationMobileResponses);
-            } else {
+            List<AccountNotification> accountNotifications = accountNotificationService.findByUsername(username);
+            if (accountNotifications != null){
+                List<NotificationMobileResponse> notificationMobileResponses = new ArrayList<>();
+
+                for(AccountNotification accountNotification : accountNotifications){
+                    notificationMobileResponses.add(new NotificationMobileResponse(accountNotification));
+                }
+
+                if (notificationMobileResponses != null){
+                    return ResponseEntity.ok().body(notificationMobileResponses);
+                }else{
+                    return ResponseEntity.noContent().build();
+                }
+            }else{
                 return ResponseEntity.noContent().build();
             }
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @GetMapping(value = "/read")
-    public ResponseEntity readNotification(@RequestParam("username") String username,
-                                           @RequestParam("notificationId") Integer notificationId) {
-        try {
-            notificationService.readNotification(username, notificationId);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
+//    @GetMapping(value = "/read")
+//    public ResponseEntity readNotification(@RequestParam("username") String username,
+//                                           @RequestParam("notificationId") Integer notificationId) {
+//        try {
+//            notificationService.readNotification(username, notificationId);
+//            return ResponseEntity.ok().build();
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
 
-    @GetMapping(value = "/read-all-type")
-    public ResponseEntity readNotificationByType(@RequestParam("username") String username,
-                                           @RequestParam("type") Integer type) {
+//    @GetMapping(value = "/read-all-type")
+//    public ResponseEntity readNotificationByType(@RequestParam("username") String username,
+//                                           @RequestParam("type") Integer type) {
+//        try {
+//            notificationService.readNotificationByType(username, type);
+//            return ResponseEntity.noContent().build();
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
+
+
+    @PatchMapping(value = "/driver/read/{id}")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    public ResponseEntity<Boolean> updateStatus(@PathVariable("id") Integer id){
         try {
-            notificationService.readNotificationByType(username, type);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+            if (accountNotificationService.updateStatus(id)){
+                return ResponseEntity.ok().body(true);
+            }else{
+                return ResponseEntity.noContent().build();
+            }
+        }catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
     }

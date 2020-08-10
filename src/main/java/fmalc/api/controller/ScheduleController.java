@@ -1,6 +1,7 @@
 package fmalc.api.controller;
 
 
+import com.google.firebase.internal.FirebaseService;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -53,9 +54,6 @@ public class ScheduleController {
 
     @Autowired
     NotificationService notificationService;
-
-    @Autowired
-    FirebaseService firebaseService;
 
     @GetMapping(value = "driver")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
@@ -510,6 +508,7 @@ public class ScheduleController {
                 if (schedules.size()>0) {
                     Consignment consignment = consignmentService.findById(schedules.get(0).getConsignment().getId());
                     consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
+
                     // Save notification
 //                    NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
 //                    for (Schedule schedule : schedules) {
@@ -519,17 +518,6 @@ public class ScheduleController {
 //                        notificationRequestDTO.setContent("Bạn có lịch chạy mới của lô hàng #" + schedule.getId());
 //                        notificationRequestDTO.setType(NotificationTypeEnum.TASK_SCHEDULE.getValue());
 //                        notificationService.createNotification(notificationRequestDTO);
-//
-//                        // Send notification to driver
-//                        NotificationData notificationData = new NotificationData();
-//                        notificationData.setBody(notificationRequestDTO.getContent());
-//                        notificationData.setTitle(NotificationTypeEnum.getValueEnumToShow(4));
-//                        NotificationRequest notificationRequest = new NotificationRequest();
-//                        notificationRequest.setNotificationData(notificationData);
-//                        notificationRequest.setTo(driverService.findTokenDeviceByDriverId(schedule.getDriver().getId()));
-//
-//                        firebaseService.sendPnsToDevice(notificationRequest);
-//
 //                    }
 
                     return ResponseEntity.ok().body(consignmentResponseDTO);
