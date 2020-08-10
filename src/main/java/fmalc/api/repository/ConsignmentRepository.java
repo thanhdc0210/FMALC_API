@@ -47,7 +47,7 @@ public interface ConsignmentRepository
                     "SELECT p.consignment.id from Place p "+
                     "WHERE p.actualTime between :startDate AND :endDate "+
                     "GROUP BY p.consignment.id ) " +
-                    " AND  c.status= 3 ")
-    List<Consignment> getConsignmentForReport (@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
+                    " AND  c.status= :status ")
+    List<Consignment> getConsignmentForReport (@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate, @Param("status") Integer status);
 
 }

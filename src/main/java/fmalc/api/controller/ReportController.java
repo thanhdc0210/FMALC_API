@@ -2,6 +2,7 @@ package fmalc.api.controller;
 
 
 import fmalc.api.dto.ReportBySpecificRangeResponseDTO;
+import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ public class ReportController {
     @GetMapping("/report-for-a-vehicle")
     public ResponseEntity<ReportBySpecificRangeResponseDTO> getReportForAVehicle(@RequestParam("id") Integer id,
                                     @RequestParam("startDate") String startDate,  @RequestParam("endDate") String endDate) throws ParseException {
-        ReportBySpecificRangeResponseDTO result = reportService.getReportOneVehicleBySpecificRange(id, startDate, endDate);
+        ReportBySpecificRangeResponseDTO result = reportService.getReportOneVehicleBySpecificRange(id, startDate, endDate, ConsignmentStatusEnum.COMPLETED.getValue());
         if (result!= null){
             return ResponseEntity.ok().body(result);
         }

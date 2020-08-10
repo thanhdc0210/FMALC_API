@@ -124,7 +124,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public ReportBySpecificRangeResponseDTO getReportOneVehicleBySpecificRange(Integer vehicleId, String startDate, String endDate) throws ParseException {
+    public ReportBySpecificRangeResponseDTO getReportOneVehicleBySpecificRange(Integer vehicleId, String startDate, String endDate, Integer status) throws ParseException {
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat formatter = new SimpleDateFormat(pattern);
         Date localDateStartTime =formatter.parse(startDate);
@@ -132,7 +132,7 @@ public class ReportServiceImpl implements ReportService {
 
 
         List<Consignment> consignmentList = new ArrayList<>();
-        consignmentList = consignmentRepository.getConsignmentForReport(new Timestamp(localDateStartTime.getTime()),new Timestamp(localDateEndTime.getTime()));
+        consignmentList = consignmentRepository.getConsignmentForReport(new Timestamp(localDateStartTime.getTime()),new Timestamp(localDateEndTime.getTime()), status);
         AtomicInteger rate = new AtomicInteger();
 
 
