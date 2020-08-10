@@ -5,16 +5,15 @@ import fmalc.api.dto.MaintainanceResponse;
 import fmalc.api.dto.MaintenanceResponseDTO;
 import fmalc.api.entity.Maintenance;
 import fmalc.api.entity.Vehicle;
-import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.MaintenanceService;
 import fmalc.api.service.VehicleService;
-import org.jboss.jandex.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +49,19 @@ public class MaintenanceController {
                 List<MaintainanceResponse> result = new ArrayList<>(new MaintainanceResponse().mapToListResponse(maintenances));
                 return ResponseEntity.ok().body(result);
             }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/confirm")
+    public ResponseEntity getMaintenanceToConfirm() {
+        try {
+            List<Maintenance> maintenances = maintenanceService.getMaintenanceToConfirm();
+            LocalDate today = LocalDate.now();
+            maintenances.removeIf(x -> x.getActualMaintainDate().toLocalDate().isEqual(today));
+            List<MaintainanceResponse> result = new ArrayList<>(new MaintainanceResponse().mapToListResponse(maintenances));
+            return ResponseEntity.ok().body(result);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
