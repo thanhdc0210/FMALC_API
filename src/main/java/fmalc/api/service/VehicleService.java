@@ -48,4 +48,6 @@ public interface VehicleService {
     int updateStatus(int status, int id);
     Vehicle findVehicleByUsernameAndConsignmentStatus(String username, List<Integer> status,
                                                       Timestamp startDate, Timestamp endDate);
+
+    boolean checkLicensePlates(String licensePlates);
 }

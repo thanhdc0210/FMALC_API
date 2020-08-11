@@ -17,17 +17,17 @@ public class AccountNotification {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    @EmbeddedId
+    AccountNotificationKey id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "account_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @MapsId("account_id")
+    @JoinColumn(name = "account_id")
     private Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "notification_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @MapsId("notification_id")
+    @JoinColumn(name = "notification_id")
     private Notification notification;
 
     @Column(name = "status", nullable = false)

@@ -14,4 +14,12 @@ public interface AccountNotificationRepository extends JpaRepository<AccountNoti
 
     @Query("Select an From AccountNotification an Where an.account.username = :username")
     List<AccountNotification> findByUsername(@Param("username") String username);
+
+    List<AccountNotification> findAllByAccount_UsernameAndStatusIsFalseAndNotification_Type(String username, Integer type);
+
+    AccountNotification findByNotification_IdAndAccount_Username(Integer notificationId, String username);
+
+    int countAllByAccount_UsernameAndStatusIsFalseAndNotification_TypeNot(String username, Integer type);
+
+    List<AccountNotification> findTop4ByAccount_UsernameAndStatusIsFalseAndNotification_TypeNot(String username, int type);
 }

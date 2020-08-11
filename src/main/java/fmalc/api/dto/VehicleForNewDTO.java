@@ -12,4 +12,5 @@ public class VehicleForNewDTO {
     private double weight;
     private double averageFuel;
     private double maximumCapacity;
+    private Integer kilometerRunning;
 }
