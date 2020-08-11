@@ -31,7 +31,7 @@ public class FmalcApplication {
 		config.setAllowCredentials(true);
 		// Don't do this in production, use a proper list of allowed origins
 		config.setAllowedOrigins(Collections.singletonList("*"));
-		config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
+		config.setAllowedHeaders(Arrays.asList("Origin","Access-Control-Allow-Headers", "Content-Type","Content-Disposition", "Accept", "Authorization"));
 		config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
 		source.registerCorsConfiguration("/**", config);
 		return new CorsFilter(source);

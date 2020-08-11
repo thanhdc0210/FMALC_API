@@ -53,6 +53,9 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
 
     Driver findByIdAndAccountIsActive(Integer id, Boolean isActive);
 
+    @Query("select d from Driver d where d.fleetManager.id=?1")
+    List<Driver> findByFleetManagerIdAndPhoneNumberContainingIgnoreCase(int idFleet, String searchPhone);
+
     @Query("Select d.tokenDevice From Driver d Where d.id = :id")
     String findTokenDeviceByDriverId(@Param("id") Integer id);
 }

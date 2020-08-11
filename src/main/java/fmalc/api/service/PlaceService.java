@@ -13,5 +13,5 @@ public interface PlaceService {
 
     PlaceResponeDTO getPlaceByTypePlaceAndPriority(int idConsignment, int priority, int typePlace);
     List<PlaceResponeDTO> getPlaceByTypePlace(int idConsignment,  int typePlace);
-    PlaceResponeDTO updateActualTime(int id) throws ParseException;
+    PlaceResponeDTO updateActualTime(int id, int idSchedule) throws ParseException;
 }

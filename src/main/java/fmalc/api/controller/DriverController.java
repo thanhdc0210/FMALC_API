@@ -4,8 +4,13 @@ package fmalc.api.controller;
 import fmalc.api.dto.DayOffRequestDTO;
 import fmalc.api.dto.DriverRequestDTO;
 import fmalc.api.dto.DriverResponseDTO;
+import fmalc.api.entity.Account;
 import fmalc.api.entity.Driver;
+import fmalc.api.entity.FleetManager;
+import fmalc.api.enums.GlobalVariables;
+import fmalc.api.service.AccountService;
 import fmalc.api.service.DriverService;
+import fmalc.api.service.FleetManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,12 +27,28 @@ public class DriverController {
     @Autowired
     DriverService driverService;
 
+    @Autowired
+    AccountService accountService;
+
+    @Autowired
+    FleetManagerService fleetManagerService;
+
     @GetMapping
-    public ResponseEntity<List<DriverResponseDTO>> getAllDriver(@RequestParam(value = "searchPhone", defaultValue = "") String searchPhone) {
-        List<Driver> drivers = driverService.findAllAndSearch(searchPhone);
-        if (drivers.isEmpty()) {
-            return ResponseEntity.noContent().build();
+    public ResponseEntity<List<DriverResponseDTO>> getAllDriver(@RequestParam(value = "searchPhone", defaultValue = "") String searchPhone
+        , @RequestParam(value = "manager") String username
+    ) {
+        List<Driver> drivers = new ArrayList<>();
+        Account account = accountService.getAccount(username);
+        if(account.getRole().getRole().equals(GlobalVariables.ADMIN)){
+             drivers = driverService.findAllAndSearch(searchPhone);
+            if (drivers.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+        }else if(account.getRole().getRole().equals(GlobalVariables.FLEET) ){
+            FleetManager fleetManager = fleetManagerService.findByAccount(account.getId());
+            drivers = driverService.findAllAndSearchByFleet(fleetManager.getId(),searchPhone);
         }
+
         List<DriverResponseDTO> result = new ArrayList<>(new DriverResponseDTO().mapToListResponse(drivers));
         return ResponseEntity.ok().body(result);
     }

@@ -29,11 +29,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.annotation.MultipartConfig;
+import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1.0/schedules")
@@ -357,22 +355,22 @@ public class ScheduleController {
             for (int i = 0; i < vehicles.size(); i++) {
 
 
-                    resultDriver = driverService.findDriverForSchedule(vehicles.get(i).getWeight(), consignment);
-                    for (int j = 0; j < resultDriver.size(); j++) {
-                        if (scheduleds.size() > 0) {
-                            for (int s = 0; s < scheduleds.size(); s++) {
-                                if (resultDriver.get(j).getId() != scheduleds.get(s).getDriver().getId() && !drivers.contains(resultDriver.get(j))) {
-                                    drivers.add(resultDriver.get(j));
-                                }
-                            }
-
-                        } else {
-                            if (!drivers.contains(resultDriver.get(j))) {
+                resultDriver = driverService.findDriverForSchedule(vehicles.get(i).getWeight(), consignment);
+                for (int j = 0; j < resultDriver.size(); j++) {
+                    if (scheduleds.size() > 0) {
+                        for (int s = 0; s < scheduleds.size(); s++) {
+                            if (resultDriver.get(j).getId() != scheduleds.get(s).getDriver().getId() && !drivers.contains(resultDriver.get(j))) {
                                 drivers.add(resultDriver.get(j));
                             }
                         }
 
+                    } else {
+                        if (!drivers.contains(resultDriver.get(j))) {
+                            drivers.add(resultDriver.get(j));
+                        }
                     }
+
+                }
 
 
             }
@@ -430,10 +428,10 @@ public class ScheduleController {
             scheduleToConfirmDTO.setDriverForScheduleDTOS(driverForScheduleDTO.mapToListResponse(drivers));
         }
         List<ScheduleForConsignmentDTO> list = new ArrayList<>();
-        if(scheduleForConsignmentDTOS.size()>0 && driver_sub==2){
-            for(int i =0 ; i<scheduleForConsignmentDTOS.size(); i++){
+        if (scheduleForConsignmentDTOS.size() > 0 && driver_sub == 2) {
+            for (int i = 0; i < scheduleForConsignmentDTOS.size(); i++) {
                 ScheduleForConsignmentDTO scheduleForConsignmentDTO = new ScheduleForConsignmentDTO();
-                scheduleForConsignmentDTO =    scheduleForConsignmentDTOS.get(i);
+                scheduleForConsignmentDTO = scheduleForConsignmentDTOS.get(i);
 //            Schedule tmp = new Schedule();
                 for (int t = 0; t < drivers.size(); t++) {
                     if (!driversSave.contains(drivers.get(t))) {
@@ -443,15 +441,15 @@ public class ScheduleController {
                         if (license1 > 0) {
                             driversSave.add(drivers.get(t));
                             driverForScheduleDTO = new DriverForScheduleDTO();
-                            driverForScheduleDTO =  driverForScheduleDTO.convertToDto(drivers.get(t));
+                            driverForScheduleDTO = driverForScheduleDTO.convertToDto(drivers.get(t));
                             scheduleForConsignmentDTO.setInheritance(driverForScheduleDTO);
                             t = drivers.size();
                             sizeVehicle--;
 //                            list.add(scheduleForConsignment);
-                        }else if(license1 == 0 && scheduleForConsignmentDTO.getVehicle().getWeight() < 3.5){
+                        } else if (license1 == 0 && scheduleForConsignmentDTO.getVehicle().getWeight() < 3.5) {
                             driversSave.add(drivers.get(t));
                             driverForScheduleDTO = new DriverForScheduleDTO();
-                            driverForScheduleDTO =  driverForScheduleDTO.convertToDto(drivers.get(t));
+                            driverForScheduleDTO = driverForScheduleDTO.convertToDto(drivers.get(t));
                             scheduleForConsignmentDTO.setInheritance(driverForScheduleDTO);
                             t = drivers.size();
                             sizeVehicle--;
@@ -476,19 +474,19 @@ public class ScheduleController {
     @PostMapping("/status")
 
 //    @MultipartConfig(maxFileSize =  @Value("${multipart.max-file-size}"), maxRequestSize = 1024*1024*1024)
-    public ResponseEntity<ConsignmentResponseDTO> updateStatusSchedules(@RequestPart(value = "file") MultipartFile file, @ModelAttribute(value = "requestSaveScheObjDTO")  String requestSaveScheObjDTO) {
+    public ResponseEntity<ConsignmentResponseDTO> updateStatusSchedules(@RequestPart(value = "file") MultipartFile file, @ModelAttribute(value = "requestSaveScheObjDTO") String requestSaveScheObjDTO) {
         boolean result = false;
 
         JsonObject jsonObject = new JsonParser().parse(requestSaveScheObjDTO).getAsJsonObject();
         JsonArray jsonArray = (JsonArray) jsonObject.get("obejctScheDTOS");
         List<ObejctScheDTO> obejctScheDTOS = new ArrayList<>();
         for (int i = 0; i < jsonArray.size(); i++) {
-            JsonObject post_id =(JsonObject) jsonArray.get(i);
+            JsonObject post_id = (JsonObject) jsonArray.get(i);
             ObejctScheDTO obejctScheDTO = new ObejctScheDTO();
             post_id.get("vehicle_id").getAsInt();
-            obejctScheDTO.setVehicle_id(post_id.get("vehicle_id").getAsInt()) ;
+            obejctScheDTO.setVehicle_id(post_id.get("vehicle_id").getAsInt());
             obejctScheDTO.setDriver_id(post_id.get("driver_id").getAsInt());
-            if(post_id.get("consignment_id")!=null){
+            if (post_id.get("consignment_id") != null) {
                 obejctScheDTO.setConsignment_id(post_id.get("consignment_id").getAsInt());
             }
 
@@ -498,16 +496,16 @@ public class ScheduleController {
         ConsignmentRequestDTO consignmentRequestDTO = new Gson().fromJson(jsonObject.get("consignmentRequestDTO"), ConsignmentRequestDTO.class);
 //        List<ObejctScheDTO> obejctScheDTOS1 = new ArrayList<>();
 //        obejctScheDTOS1 = obejctScheDTOS;
-            RequestSaveScheObjDTO requestSaveScheObjDTO1 = new RequestSaveScheObjDTO();
+        RequestSaveScheObjDTO requestSaveScheObjDTO1 = new RequestSaveScheObjDTO();
         requestSaveScheObjDTO1.setConsignmentRequestDTO(consignmentRequestDTO);
         requestSaveScheObjDTO1.setObejctScheDTOS(obejctScheDTOS);
 //        List<ObejctScheDTO> obejctScheDTOS = requestSaveScheObjDTO.getObejctScheDTOS();
         List<Schedule> schedules = new ArrayList<>();
         ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
         if (requestSaveScheObjDTO != null) {
-            schedules =  scheduleService.createSchedule(requestSaveScheObjDTO1, file);
+            schedules = scheduleService.createSchedule(requestSaveScheObjDTO1, file);
             try {
-                if (schedules.size()>0) {
+                if (schedules.size() > 0) {
                     Consignment consignment = consignmentService.findById(schedules.get(0).getConsignment().getId());
                     consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
                     // Save notification
@@ -601,10 +599,43 @@ public class ScheduleController {
 //        return ResponseEntity.ok().body(result);
     }
 
-    @GetMapping("/driver/{id}")
-    public ResponseEntity<Integer> countConsignmentADriver(@PathVariable("id") int id) {
+    @GetMapping("driver/{id}")
+    public ResponseEntity<Integer> checkScheduleADriver(@PathVariable("id") int id) {
         int count = scheduleService.checkConsignmentStatus(id, ConsignmentStatusEnum.DELIVERING.getValue(), ConsignmentStatusEnum.OBTAINING.getValue());
         return ResponseEntity.ok().body(count);
     }
+
+    @GetMapping("driver/complete-consignment/{id}")
+    public ResponseEntity<Integer> countCosignmentInDate(@PathVariable("id") int id) {
+
+        Date date = new Date();
+        Date endDate = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        cal.set(Calendar.MILLISECOND, 999);
+        endDate = cal.getTime();
+        int count = scheduleService.countScheduleNumberInADayOfDriver(id, new Timestamp(date.getTime()), new Timestamp(endDate.getTime()));
+        return ResponseEntity.ok().body(count);
+    }
+
+    @GetMapping("driver/running/{id}")
+    public ResponseEntity<DetailedScheduleDTO> getScheduleRunningForDriver(@PathVariable("id") int id) {
+        Schedule schedule = new Schedule();
+        try {
+            schedule = scheduleService.getScheduleRunningForDriver(id);
+            if (schedule != null) {
+
+                DetailedScheduleDTO detailedScheduleDTO = new DetailedScheduleDTO(schedule);
+                return ResponseEntity.ok().body(detailedScheduleDTO);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

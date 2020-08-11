@@ -1,9 +1,12 @@
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.PlaceResponeDTO;
-import fmalc.api.entity.Consignment;
-import fmalc.api.entity.Place;
+import fmalc.api.entity.*;
+import fmalc.api.repository.DriverRepository;
 import fmalc.api.repository.PlaceRepository;
+import fmalc.api.service.ConsignmentService;
+import fmalc.api.service.DriverService;
+import fmalc.api.service.LocationService;
 import fmalc.api.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,16 +16,29 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PlaceServiceImpl implements PlaceService {
 
     @Autowired
     PlaceRepository placeRepository;
+
+    @Autowired
+    ConsignmentService consignmentService;
+
+    @Autowired
+    LocationService locationService;
+
+    @Autowired
+    DriverService driverService;
+    @Autowired
+    DriverRepository driverRepository;
+
+    private static final int SECOND = 1000;
+    private static final int MINUTE = 60 * SECOND;
+    private static final int HOUR = 60 * MINUTE;
 
     @Override
     public List<PlaceResponeDTO> getPlaceOfConsignment(int idConsignment) {
@@ -61,7 +77,7 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
-    public PlaceResponeDTO updateActualTime(int id) throws ParseException {
+    public PlaceResponeDTO updateActualTime(int id,int idSchedule) throws ParseException {
         Place place = placeRepository.findById(id);
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
         if(place!=null){
@@ -70,8 +86,37 @@ public class PlaceServiceImpl implements PlaceService {
 
             place.setActualTime(timestamp);
             place = placeRepository.save(place);
-
+            SimpleDateFormat simpleDateFormat =new SimpleDateFormat();
             placeResponeDTO = placeResponeDTO.convertPlace(place);
+            Consignment consignment = consignmentService.findById(place.getConsignment().getId());
+            List<Schedule> schedules = (List<Schedule>) consignment.getSchedules();
+            List<Place> places = (List<Place>) consignment.getPlaces();
+            List<Location> locations = new ArrayList<>();
+            Schedule schedule = new Schedule();
+            if(places.size()>0){
+                places.sort(Comparator.comparing(Place::getPlannedTime));
+                if(places.get(places.size()-1).getActualTime()!= null){
+
+                    for(int i =0; i< schedules.size();i++){
+                        if(schedules.get(i).getInheritance()== null && schedules.get(i).getId()==idSchedule){
+                            locations.addAll(locationService.getListLocationBySchedule(schedules.get(i).getId()));
+                            schedule = schedules.get(i);
+                            i = schedules.size();
+                        }
+                    }
+                    if(locations.size()>0){
+                        locations.sort(Comparator.comparing(Location::getTime));
+                        long diff = places.get(places.size()-1).getActualTime().getTime() - locations.get(0).getTime().getTime();
+                        float hours = (float) (diff/HOUR);
+                        if(hours>0){
+                            Driver driver = driverService.findById(schedule.getDriver().getId());
+                            driver.setWorkingHour(hours);
+                            driver = driverRepository.save(driver);
+                        }
+                    }
+                }
+            }
+
         }
         return placeResponeDTO;
     }

@@ -204,7 +204,13 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                     long diff = dateS.getTime() - (maintenances.get(maintenances.size() - 1).getActualMaintainDate().getTime());
                     int diffDays = (int) (diff / DAYS);
 //                    int cal = 5000/((vehicle.getKilometerRunning()- kmOld)/diffDays);
-                    int avg = DEFAULT_KM / ((vehicle.getKilometerRunning() - kmOld) / diffDays);
+                    int avg =0;
+                    if((vehicle.getKilometerRunning() < kmOld)){
+                        avg=  DEFAULT_KM / (((vehicle.getKilometerRunning() + kmOld)-kmOld) / diffDays);
+                    }else{
+                        avg=  DEFAULT_KM / ((vehicle.getKilometerRunning() - kmOld) / diffDays);
+                    }
+
                     int t = (kmOld + DEFAULT_KM) / DEFAULT_KM;
                     MaintenanceType maintenanceType = new MaintenanceType();
                     if (t % 2 == 0) {
@@ -248,7 +254,12 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                         int numDate = sdf.format(dateS).compareTo(sdf.format(maintenance.getActualMaintainDate()));
                         long diff = dateS.getTime() - (maintenance.getActualMaintainDate().getTime());
                         int diffDays = (int) (diff / DAYS);
-                        int avg = DEFAULT_KM / ((vehicle.getKilometerRunning() - kmOld) / diffDays);
+                        int avg =0;
+                        if((vehicle.getKilometerRunning() < kmOld)){
+                            avg=  DEFAULT_KM / (((vehicle.getKilometerRunning() + kmOld)-kmOld) / diffDays);
+                        }else{
+                            avg=  DEFAULT_KM / ((vehicle.getKilometerRunning() - kmOld) / diffDays);
+                        }
                         int t = (kmOld + DEFAULT_KM) / DEFAULT_KM;
                         if (avg <= 7) {
                             date1 = checkScheduleForAVehicle(vehicle, 1);
@@ -281,8 +292,13 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                 } else if (sdf.format(dateS).compareTo(sdf.format(maintenance.getActualMaintainDate())) < 0) {
                     long diff = dateS.getTime() - (maintenance.getActualMaintainDate().getTime());
                     int diffDays = (int) (diff / DAYS);
-                    int avg = DEFAULT_KM / ((vehicle.getKilometerRunning() - kmOld) / diffDays);
-                    int t = (kmOld + DEFAULT_KM) / DEFAULT_KM;
+                    int avg =0;
+                    if((vehicle.getKilometerRunning() < kmOld)){
+                        avg=  DEFAULT_KM / (((vehicle.getKilometerRunning() + kmOld)-kmOld) / diffDays);
+                    }else{
+                        avg=  DEFAULT_KM / ((vehicle.getKilometerRunning() - kmOld) / diffDays);
+                    }
+//                    int t = (kmOld + DEFAULT_KM) / DEFAULT_KM;
                     if (avg <= 7) {
                         date1 = checkScheduleForAVehicle(vehicle, 1);
                         maintenance.setActualMaintainDate(new Date(date1.getTime()));
@@ -307,7 +323,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                         maintenance.setVehicle(vehicle);
                         maintenance.setStatus(false);
                         if (maintainanceRepository.save(maintenance) != null) {
-                            res = true;
+//                            res = true;
                         }
                     }
                 }
@@ -316,7 +332,12 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                     int numDate = sdf.format(dateS).compareTo(sdf.format(maintenances.get(maintenances.size() - 1).getActualMaintainDate()));
                     long diff = dateS.getTime() - (maintenance.getActualMaintainDate().getTime());
                     int diffDays = (int) (diff / DAYS);
-                    int avg = DEFAULT_KM / ((vehicle.getKilometerRunning() - kmOld) / diffDays);
+                    int avg =0;
+                    if((vehicle.getKilometerRunning() < kmOld)){
+                        avg=  DEFAULT_KM / (((vehicle.getKilometerRunning() + kmOld)-kmOld) / diffDays);
+                    }else{
+                        avg=  DEFAULT_KM / ((vehicle.getKilometerRunning() - kmOld) / diffDays);
+                    }
                     int t = (kmOld + DEFAULT_KM) / DEFAULT_KM;
                     MaintenanceType maintenanceType = new MaintenanceType();
                     if (t % 2 == 0) {

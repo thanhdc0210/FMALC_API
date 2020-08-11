@@ -31,6 +31,11 @@ public class DriverServiceImpl implements DriverService {
         return driverRepository.findByPhoneNumberContainingIgnoreCase(searchPhone);
     }
 
+    @Override
+    public List<Driver> findAllAndSearchByFleet(int idFleet,String searchPhone) {
+        return driverRepository.findByFleetManagerIdAndPhoneNumberContainingIgnoreCase(idFleet,searchPhone);
+    }
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 

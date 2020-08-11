@@ -28,6 +28,10 @@ public class ConsignmentDetailDTO {
     public ConsignmentDetailDTO convertToDTO(Consignment consignment){
         ModelMapper modelMapper = new ModelMapper();
         ConsignmentDetailDTO consignmentDetailDTO = modelMapper.map(consignment, ConsignmentDetailDTO.class);
+        List<ScheduleForDetailDTO> list = new ArrayList<>();
+        ScheduleForDetailDTO scheduleForDetailDTO = new ScheduleForDetailDTO();
+        list = scheduleForDetailDTO.mapToListResponse((List<Schedule>) consignment.getSchedules());
+        consignmentDetailDTO.setSchedules(list);
         return consignmentDetailDTO;
     }
 

@@ -32,11 +32,13 @@ public interface ScheduleService {
 
     int  checkConsignmentStatus(int idDriver, int status, int statusDe);
 
+    Schedule getScheduleRunningForDriver(int idDriver);
+
     StatusToUpdateDTO updateStautsForVeDriAndCon(StatusToUpdateDTO statusToUpdateDTO, Schedule schedule);
 
     List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType);
 
     Schedule getScheduleByDriverSub(int id);
 //    THANHDC
-//    Integer countScheduleNumberInADayOfDriver(Integer id, Timestamp startDate, Timestamp endDate);
+    Integer countScheduleNumberInADayOfDriver(Integer id, Timestamp startDate, Timestamp endDate);
 }

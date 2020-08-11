@@ -59,13 +59,15 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 
     List<Schedule> findScheduleByConsignmentStatus(Integer consignmentStatus);
 
+    @Query("SELECT s FROM Schedule s where s.driver.id =?1 and s.consignment.status between  ?2 and ?3")
+    Schedule findConsignmentRuning(int idDriver, int start, int end);
 
     // THANHDC
-//    @Query("Select count(distinct s.id) From schedule s, driver d, consignment c, place p " +
-//            "where d.id = :id and p.planned_time between :startDate and :endDate " +
-//            "and s.is_approve = true and s.consignment_id = c.id and s.driver_id = d.id " +
-//            "and c.id = p.consignment_id and c.status != 3")
-//    Integer countScheduleNumberInADayOfDriver(@Param("id") Integer id,
-//                                              @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
+    @Query("Select count(distinct s.id) From Schedule s, Driver d, Consignment c, Place p " +
+            "where d.id = :id and p.plannedTime between :startDate and :endDate " +
+            "and s.isApprove = true and s.consignment.id = c.id and s.driver.id = d.id " +
+            "and c.id = p.consignment.id and c.status = 0")
+    Integer countScheduleNumberInADayOfDriver(@Param("id") Integer id,
+                                              @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 
 }

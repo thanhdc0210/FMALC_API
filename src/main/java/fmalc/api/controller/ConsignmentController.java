@@ -250,11 +250,11 @@ public class ConsignmentController {
 
     }
 
-    @PostMapping("places/id/{id}")
-    public ResponseEntity<PlaceResponeDTO> updateActualTime(@PathVariable("id") Integer id)  {
+    @PostMapping("places/id")
+    public ResponseEntity<PlaceResponeDTO> updateActualTime(@RequestParam("id") Integer id, @RequestParam("schedule") int idSchedule)  {
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
         try{
-            placeResponeDTO = placeService.updateActualTime(id);
+            placeResponeDTO = placeService.updateActualTime(id,idSchedule);
         }catch (Exception e){
             ResponseEntity.noContent().build();
         }

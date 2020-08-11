@@ -181,10 +181,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public int checkConsignmentStatus(int idDriver, int status, int statusDe) {
-//        if(>0){
-//
-//        }
         return scheduleRepository.checkConsignmentStatus(idDriver, status, statusDe).size();
+    }
+
+    @Override
+    public Schedule getScheduleRunningForDriver(int idDriver) {
+        return scheduleRepository.findConsignmentRuning(idDriver, ConsignmentStatusEnum.OBTAINING.getValue(),ConsignmentStatusEnum.DELIVERING.getValue());
     }
 
     @Override
@@ -226,11 +228,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     // Start date : lúc bấm nút kết thúc   --  THANHDC
-//    @Override
-//    public Integer countScheduleNumberInADayOfDriver(Integer id, Timestamp startDate, Timestamp endDate) {
-//
-//        return scheduleRepository.countScheduleNumberInADayOfDriver(id, startDate, endDate);
-//    }
+    @Override
+    public Integer countScheduleNumberInADayOfDriver(Integer id, Timestamp startDate, Timestamp endDate) {
+
+        return scheduleRepository.countScheduleNumberInADayOfDriver(id, startDate, endDate);
+    }
 
 
 }

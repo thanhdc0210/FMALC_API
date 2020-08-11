@@ -14,6 +14,8 @@ public interface DriverService {
 
     List<Driver> findAllAndSearch(String searchPhone);
 
+    List<Driver> findAllAndSearchByFleet(int idFleet,String searchPhone);
+
     Driver findById(Integer id);
 
     Driver save(DriverRequestDTO driverRequest, MultipartFile file) throws IOException;

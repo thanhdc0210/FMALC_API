@@ -12,6 +12,7 @@ import fmalc.api.service.DriverService;
 import fmalc.api.service.FirebaseService;
 import fmalc.api.service.NotificationService;
 import fmalc.api.service.VehicleService;
+import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -72,13 +73,13 @@ public class NotificationController {
 
                 notificationResponeDTO = new NotificationResponeDTO().mapToResponse(notificationSaved);
                 if (notificationSend != notificationResponeDTO) {
-
+                    notificationResponeDTOS.add(notificationResponeDTO);
+                    intervals.subscribe((i) -> notifyForManagerWorkingHours()).dispose();
                     // Send to driver
                     firebaseService.sendPnsToDevice(notificationRequest);
 
                     // Send to fleet_manager
-                    notificationResponeDTOS.add(notificationResponeDTO);
-                    intervals.subscribe((i) -> notifyForManagerWorkingHours());
+
 
                 }
 
@@ -105,16 +106,23 @@ public class NotificationController {
 
     // send notify for fleet manager
     @GetMapping(value = "/notificationworking", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<List<NotificationResponeDTO>> notifyForManagerWorkingHours() {
+    public  Flux<List<NotificationResponeDTO>> notifyForManagerWorkingHours() {
 //        closeInterval();
-        intervals.subscribe((i) -> returnResponeFor());
+
+        System.out.println("EEE");
         Flux<List<NotificationResponeDTO>> monoTransaction = Flux.fromStream(Stream.generate(() -> returnResponeFor()));
+        monoTransaction = Flux.fromStream(Stream.generate(() -> returnResponeFor()));
         if (returnResponeFor().size() > 0) {
-//            System.out.println(">0");
-            monoTransaction = Flux.fromStream(Stream.generate(() -> returnResponeFor()));
+            System.out.println(">0");
+            intervals.subscribe((i) -> returnResponeFor());
+            flux = Flux.zip(intervals, monoTransaction).map(Tuple2::getT2);
+            notificationResponeDTOS = new ArrayList<>();
+        } else {
+            System.out.println(">0");
+            intervals.subscribe((i) -> returnResponeFor()).dispose();
             flux = Flux.zip(intervals, monoTransaction).map(Tuple2::getT2);
         }
-        return flux;
+        return  flux;
     }
 
     // delete list to disconnect notify
@@ -124,6 +132,8 @@ public class NotificationController {
 //        closeInterval();
         notificationResponeDTOS = new ArrayList<>();
         String result = "OK";
+        intervals.subscribe((i) -> notifyForManagerWorkingHours()).dispose();
+
 
         return ResponseEntity.ok().body(result);
     }
@@ -170,7 +180,7 @@ public class NotificationController {
 
     @GetMapping(value = "/read-all-type")
     public ResponseEntity readNotificationByType(@RequestParam("username") String username,
-                                           @RequestParam("type") Integer type) {
+                                                 @RequestParam("type") Integer type) {
         try {
             notificationService.readNotificationByType(username, type);
             return ResponseEntity.noContent().build();
