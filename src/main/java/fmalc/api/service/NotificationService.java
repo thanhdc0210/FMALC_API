@@ -10,7 +10,7 @@ import java.util.List;
 public interface NotificationService {
     Notification createNotification(NotificationRequestDTO notify) throws ParseException;
 
-    NotificationUnread countNotificationUnread(String username);
+//    NotificationUnread countNotificationUnread(String username);
 
     
     List<Notification> getNotificationsByType(int type);

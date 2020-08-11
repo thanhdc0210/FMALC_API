@@ -42,8 +42,9 @@ public class Notification implements Serializable {
     @Column(name = "content", nullable = false)
     private String content;
 
-    // Phân biệt 2 loại notification.
+    // Phân biệt 4 loại notification.
     // Odd-hours alert và Long Idle Times
+    // Maintain và schedule
     @Column(name = "type", nullable = false)
     private Integer type;
 

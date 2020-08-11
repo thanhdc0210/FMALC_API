@@ -92,14 +92,14 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-    @Override
-    public NotificationUnread countNotificationUnread(String username) {
-        NotificationUnread result = new NotificationUnread();
-        Account account = accountRepository.findByUsername(username);
-        result.setCount(notificationRepository.countAllByAccountNotContainsAndTypeNot(account, 3));
-        result.setNotificationsUnread(new NotificationResponeDTO().mapToListResponse(notificationRepository.findTop4ByAccountNotContainsAndTypeNotOrderByIdDesc(account, 3)));
-        return result;
-    }
+//    @Override
+//    public NotificationUnread countNotificationUnread(String username) {
+//        NotificationUnread result = new NotificationUnread();
+//        Account account = accountRepository.findByUsername(username);
+//        result.setCount(notificationRepository.countAllByAccountNotContainsAndTypeNot(account, 3));
+//        result.setNotificationsUnread(new NotificationResponeDTO().mapToListResponse(notificationRepository.findTop4ByAccountNotContainsAndTypeNotOrderByIdDesc(account, 3)));
+//        return result;
+//    }
 
     @Override
     public List<Notification> getNotificationsByType(int type) {

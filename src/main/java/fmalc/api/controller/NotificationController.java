@@ -127,10 +127,10 @@ public class NotificationController {
         return ResponseEntity.ok().body(result);
     }
 
-    @GetMapping(value = "/count-notification-unread")
-    public NotificationUnread countNotificationUnread(@RequestParam("username") String username) {
-        return notificationService.countNotificationUnread(username);
-    }
+//    @GetMapping(value = "/count-notification-unread")
+//    public NotificationUnread countNotificationUnread(@RequestParam("username") String username) {
+//        return notificationService.countNotificationUnread(username);
+//    }
 
     @GetMapping(value = "/by-type")
     public ResponseEntity getNotificationsByType(@RequestParam("type") int type) {

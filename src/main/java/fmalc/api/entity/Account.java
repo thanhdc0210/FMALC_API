@@ -39,6 +39,6 @@ public class Account implements Serializable {
 //    @ManyToMany(mappedBy = "account")
 //    private Collection<Notification> notification;
 
-    @ManyToMany(mappedBy = "acconut")
+    @ManyToMany(mappedBy = "account")
     private Collection<AccountNotification> accountNotifications;
 }
