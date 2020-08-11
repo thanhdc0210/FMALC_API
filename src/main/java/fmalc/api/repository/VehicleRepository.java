@@ -110,7 +110,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
                 "AND p.plannedTime between :startDate and :endDate "+
                 "GROUP BY v.id "
                 )
-        Vehicle findVehicleByUsernameAndConsignmentStatus(@Param("username") String username,@Param("status") List<Integer> status,
+        Vehicle findVehicleByUsernameAndConsignmentStatus(@Param("username") String username, @Param("status") List<Integer> status,
                           @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 
         @Modifying

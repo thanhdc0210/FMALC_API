@@ -63,11 +63,15 @@ public class ReportIssueController {
     @PutMapping(value = "/report-issue")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity updateReportIssue(@RequestBody ReportIssueInformationForUpdatingDTO reportIssueInformationForUpdatingDTO) {
-        boolean result = reportIssueService.updateReportIssue(reportIssueInformationForUpdatingDTO);
-        if (result == false) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok().body(reportIssueInformationForUpdatingDTO);
+        try {
+            boolean result = reportIssueService.updateReportIssue(reportIssueInformationForUpdatingDTO);
+            if (result == false) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.ok().body(reportIssueInformationForUpdatingDTO);
+            }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
         }
     }
 
