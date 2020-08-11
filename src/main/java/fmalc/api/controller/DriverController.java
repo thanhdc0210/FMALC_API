@@ -71,10 +71,16 @@ public class DriverController {
             return ResponseEntity.badRequest().build();
         }
         try {
-             driver = driverService.save(driverRequest, file);
-            return ResponseEntity.ok().body(new DriverResponseDTO().mapToResponse(driver));
+            driver = driverService.findDiverByPhoneNumberOrIdentityNoOrNo(driverRequest.getPhoneNumber(),driverRequest.getIdentityNo(),driverRequest.getNo());
+            if(driver== null){
+                driver = driverService.save(driverRequest, file);
+                return ResponseEntity.ok().body(new DriverResponseDTO().mapToResponse(driver));
+            }else{
+                return ResponseEntity.badRequest().body(new DriverResponseDTO().mapToResponse(driver));
+            }
         } catch (Exception ex) {
-            return ResponseEntity.badRequest().body(driver);
+
+            return ResponseEntity.badRequest().build();
         }
     }
 
