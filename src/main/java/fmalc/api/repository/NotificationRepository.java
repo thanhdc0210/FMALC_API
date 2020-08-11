@@ -1,7 +1,6 @@
 package fmalc.api.repository;
 
 
-import fmalc.api.entity.Account;
 import fmalc.api.entity.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -18,5 +17,5 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
 
 //    List<Notification> findByDriverId(Integer driver_id);
 
-//    List<Notification> findAllByTypeAndAccountNotContains(Integer type, Account account);
+//    List<Notification> findAllByTypeAndAccountContains(Integer type, Account account);
 }

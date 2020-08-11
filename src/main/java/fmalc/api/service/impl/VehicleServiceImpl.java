@@ -5,7 +5,6 @@ import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Place;
 import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
-import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.enums.VehicleStatusEnum;
@@ -19,7 +18,10 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -654,5 +656,10 @@ public class VehicleServiceImpl implements VehicleService {
     public Vehicle findVehicleByUsernameAndConsignmentStatus(String username, List<Integer> status,
                                                              Timestamp startDate, Timestamp endDate) {
         return vehicleRepository.findVehicleByUsernameAndConsignmentStatus(username, status, startDate, endDate);
+    }
+
+    @Override
+    public boolean checkLicensePlates(String licensePlates) {
+        return vehicleRepository.existsByLicensePlates(licensePlates);
     }
 }

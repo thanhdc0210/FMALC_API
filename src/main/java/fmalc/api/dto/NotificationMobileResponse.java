@@ -20,7 +20,6 @@ public class NotificationMobileResponse {
     private Timestamp time;
     private String content;
     private boolean status;
-    private Integer id;
     private Integer type;
 
     public NotificationMobileResponse(AccountNotification accountNotification) {
@@ -28,7 +27,6 @@ public class NotificationMobileResponse {
         this.time = notification.getTime();
         this.content = notification.getContent();
         this.status = accountNotification.getStatus();
-        this.id = accountNotification.getId();
         this.type = notification.getType();
     }
 
