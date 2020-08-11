@@ -4,9 +4,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import fmalc.api.dto.NotificationRequestDTO;
-import fmalc.api.dto.NotificationResponeDTO;
-import fmalc.api.dto.NotificationUnread;
-import fmalc.api.entity.Account;
 import fmalc.api.entity.AccountNotification;
 import fmalc.api.entity.Notification;
 import fmalc.api.entity.Vehicle;
@@ -46,8 +43,13 @@ public class NotificationServiceImpl implements NotificationService {
     public Notification createNotification(NotificationRequestDTO dto) throws ParseException {
         Notification notify = convertToDto(dto);
         notify.setTime(new Timestamp(System.currentTimeMillis()));
-        Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
-        notify.setVehicle(vehicle);
+        if(dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
+                dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
+            notify.setVehicle(null);
+        } else {
+            Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
+            notify.setVehicle(vehicle);
+        }
         notify.setType(dto.getType());
         notify.setContent(dto.getContent());
 
@@ -64,20 +66,23 @@ public class NotificationServiceImpl implements NotificationService {
                 if (accountNotificationRepository.save(accountNotification) != null){
 
                     // Send notification to android
-                    String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
-                    String content  = dto.getContent();
-                    Message message = Message.builder()
-                            .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
-                            .setNotification(new com.google.firebase.messaging.Notification(title, content))
-                            .putData("title", title)
-                            .putData("body", content)
-                            .build();
+                    if(dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
+                            dto.getType() != NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
+                        String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
+                        String content  = dto.getContent();
+                        Message message = Message.builder()
+                                .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
+                                .setNotification(new com.google.firebase.messaging.Notification(title, content))
+                                .putData("title", title)
+                                .putData("body", content)
+                                .build();
 
-                    String response = null;
-                    try {
-                        response = FirebaseMessaging.getInstance().send(message);
-                    } catch (FirebaseMessagingException e) {
-                        logger.info("Fail to send firebase notification " + e.getMessage());
+                        String response = null;
+                        try {
+                            response = FirebaseMessaging.getInstance().send(message);
+                        } catch (FirebaseMessagingException e) {
+                            logger.info("Fail to send firebase notification " + e.getMessage());
+                        }
                     }
 
                     return notification;
@@ -87,7 +92,7 @@ public class NotificationServiceImpl implements NotificationService {
             }else{
                 return null;
             }
-        }catch (Exception e){
+        }catch (Exception e) {
             return null;
         }
     }

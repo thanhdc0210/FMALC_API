@@ -147,18 +147,24 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public Maintenance updateMaintainingComplete(int id, int km, MultipartFile file) throws IOException {
-        Maintenance maintenance = maintainanceRepository.findById(id).get();
+        Maintenance maintenance = maintainanceRepository.findByIdAndStatus(id,false);
         Date currentTime = new Date(System.currentTimeMillis());
+        Vehicle vehicle = maintenance.getVehicle();
         if (maintenance != null) {
             Date actualTime = maintenance.getActualMaintainDate();
-            if (currentTime.after(actualTime) && currentTime.before(new Date(actualTime.getTime() + (1000 * 60 * 60 * 24)))) {
+            if (currentTime.after(actualTime)) {
                 if (maintenance.getKmOld() < km) {
                     maintenance.setKmOld(km);
                     String image = uploaderService.upload(file);
                     maintenance.setImageMaintain(image);
                     maintenance.setStatus(true);
+                    //update km cho cả xe
+                    vehicle.setKilometerRunning(km);
+                    vehicleRepository.save(vehicle);
                 }
             }
+
+
         }
         return maintainanceRepository.save(maintenance);
     }
@@ -701,13 +707,23 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    public List<Maintenance> getMaintenance() {
-        return maintainanceRepository.findAllByActualMaintainDateIsNotNullOrderByActualMaintainDateDesc();
+    public List<Maintenance> getMaintenanceListForConfirm() {
+        List<Maintenance> maintenanceList = new ArrayList<>();
+        List<Maintenance> result = new ArrayList<>();
+        maintenanceList = maintainanceRepository.findByStatus(false);
+        if (!maintenanceList.isEmpty()){
+            maintenanceList.forEach(e-> {
+               if (!e.getActualMaintainDate().toString().isEmpty()){
+                   result.add(e);
+               }
+            });
+        }
+        return result;
     }
 
     @Override
-    public List<Maintenance> getMaintenanceToConfirm() {
-        return maintainanceRepository.findAllByActualMaintainDateIsNotNullAndStatusOrderByActualMaintainDateDesc(false);
+    public List<Maintenance> getMaintenance() {
+        return maintainanceRepository.findAllByActualMaintainDateIsNotNullOrderByActualMaintainDateDesc();
     }
 
     @Override
@@ -730,6 +746,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
         maintainanceRepository.save(addMaintenance);
     }
+
 
     // Start date : lúc bấm nút kết thúc  -- THANHDC
 //    @Override

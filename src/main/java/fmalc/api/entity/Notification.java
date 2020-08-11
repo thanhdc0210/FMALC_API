@@ -26,7 +26,7 @@ public class Notification implements Serializable {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
     private Vehicle vehicle;
 
 //    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })

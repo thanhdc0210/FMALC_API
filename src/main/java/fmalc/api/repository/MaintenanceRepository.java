@@ -37,7 +37,8 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
     List<Maintenance> findAllByActualMaintainDateIsNotNullAndStatusOrderByActualMaintainDateDesc(boolean status);
     //GiangTLB
     List<Maintenance> findMaintenancesByDriverIdAndAndStatus(int driverId, boolean status);
-
+    Maintenance findByIdAndStatus(int id, boolean status);
+    List<Maintenance> findByStatus(boolean status);
     // ThanhDC
 //    @Query("Select count(id) from Maintenance m where m.driver.id = :id " +
 //            "And m.actualMaintainDate between :startDate and :endDate")
