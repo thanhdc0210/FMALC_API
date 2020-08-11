@@ -10,6 +10,7 @@ import fmalc.api.service.MaintenanceService;
 import fmalc.api.service.VehicleService;
 import org.jboss.jandex.Main;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +57,7 @@ public class MaintenanceController {
     }
 
     @GetMapping("")
-//    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<List<MaintenanceResponseDTO>> getListMaintenanceForDriver(@RequestParam Integer driverId) {
         try {
             List<Maintenance> maintenanceList = maintenanceService.getListMaintenanceForDriver(driverId);
@@ -73,10 +74,10 @@ public class MaintenanceController {
     }
 
     @PutMapping(value = "update-maintaining-complete")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
+//    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity updateMaintainingComplete(@RequestParam("id") Integer id, @RequestParam("km") Integer km, @RequestPart(value = "file") MultipartFile file) {
         if (file.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Yêu cầu nhập chứng từ bảo trì");
         }
         try {
             Maintenance maintenance = maintenanceService.updateMaintainingComplete(id, km, file);
@@ -84,9 +85,9 @@ public class MaintenanceController {
                 return ResponseEntity.ok().build();
             }
         } catch (Exception ex) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Thông tin yêu cầu không hợp lệ");
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Thông tin yêu cầu không hợp lệ");
     }
 
 
@@ -130,4 +131,22 @@ public class MaintenanceController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+
+    @GetMapping("/list-maintenance")
+    public ResponseEntity<List<MaintainReponseDTO>> getMaintenanceListForConfirm(){
+        List<MaintainReponseDTO> result = new ArrayList<>();
+        try{
+            List<Maintenance> maintenanceList = maintenanceService.getMaintenanceListForConfirm();
+            if(maintenanceList.size()>0){
+             result = new MaintainReponseDTO().mapToListResponse(maintenanceList);
+                return ResponseEntity.ok().body(result);
+            }else{
+                return ResponseEntity.noContent().build();
+            }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }

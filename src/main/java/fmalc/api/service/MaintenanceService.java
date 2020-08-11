@@ -28,6 +28,9 @@ public interface MaintenanceService {
 
     void calculateMaintenanceForVehicle(int idVehicle);
 
+    List<Maintenance> getMaintenanceListForConfirm();
+
+
     // ThanhDC
 //    Integer countMaintenanceScheduleNumberInADayOfDriver(Integer driverId,
 //                                                         Timestamp startDate, Timestamp endDate);

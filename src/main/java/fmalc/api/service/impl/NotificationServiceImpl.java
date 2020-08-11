@@ -47,27 +47,36 @@ public class NotificationServiceImpl implements NotificationService {
     public Notification createNotification(NotificationRequestDTO dto) throws ParseException {
         Notification notify = convertToDto(dto);
         notify.setTime(new Timestamp(System.currentTimeMillis()));
-        Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
-        notify.setVehicle(vehicle);
+        if(dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
+                dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
+            notify.setVehicle(null);
+        } else {
+            Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
+            notify.setVehicle(vehicle);
+        }
+
         Driver driver = driverRepository.findById(dto.getDriver_id()).get();
 
         notify.setDriver(driver);
 
         // Send notification to android
-        String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
-        String content  = dto.getContent();
-        Message message = Message.builder()
-                .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
-                .setNotification(new com.google.firebase.messaging.Notification(title, content))
-                .putData("title", title)
-                .putData("body", content)
-                .build();
+        if(dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
+                dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
+            String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
+            String content  = dto.getContent();
+            Message message = Message.builder()
+                    .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
+                    .setNotification(new com.google.firebase.messaging.Notification(title, content))
+                    .putData("title", title)
+                    .putData("body", content)
+                    .build();
 
-        String response = null;
-        try {
-            response = FirebaseMessaging.getInstance().send(message);
-        } catch (FirebaseMessagingException e) {
-            logger.info("Fail to send firebase notification " + e.getMessage());
+            String response = null;
+            try {
+                response = FirebaseMessaging.getInstance().send(message);
+            } catch (FirebaseMessagingException e) {
+                logger.info("Fail to send firebase notification " + e.getMessage());
+            }
         }
 
         return notificationRepository.save(notify);
