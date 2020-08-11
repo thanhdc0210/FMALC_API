@@ -36,6 +36,9 @@ public class Account implements Serializable {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
+//    @ManyToMany(mappedBy = "account")
+//    private Collection<Notification> notification;
+
     @ManyToMany(mappedBy = "account")
-    private Collection<Notification> notification;
+    private Collection<AccountNotification> accountNotifications;
 }

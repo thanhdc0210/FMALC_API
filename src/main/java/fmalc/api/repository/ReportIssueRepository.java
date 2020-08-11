@@ -15,7 +15,8 @@ import java.util.List;
 @Transactional
 public interface ReportIssueRepository extends JpaRepository<ReportIssue, Integer> {
 
-    // Kiểm tra với tài xế A đã làm report-issue cho phương tiện A vào ngày hôm nay chưa
+    // Kiểm tra với tài xế A đã làm report-issue cho phương tiện A vào ngày hôm nay chưa.
+    // Nếu có rồi thì update lại content sự cố
     @Query("SELECT rs FROM ReportIssue rs WHERE rs.createdBy.account.username = :username " +
             "AND rs.vehicle.licensePlates = :licensePlates " +
             "AND rs.createTime BETWEEN :startDate AND :current")

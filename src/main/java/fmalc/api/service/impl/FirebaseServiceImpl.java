@@ -43,7 +43,7 @@ public class FirebaseServiceImpl implements FirebaseService {
         }
     }
 
-    public String sendPnsToDevice(NotificationRequest notificationRequest) {
+    public void sendPnsToDevice(NotificationRequest notificationRequest) {
         Message message = Message.builder()
                 .setToken(notificationRequest.getTo())
                 .setNotification(new Notification(notificationRequest.getNotificationData().getTitle(), notificationRequest.getNotificationData().getBody()))
@@ -57,7 +57,5 @@ public class FirebaseServiceImpl implements FirebaseService {
         } catch (FirebaseMessagingException e) {
             logger.info("Fail to send firebase notification " + e.getMessage());
         }
-
-        return response;
     }
 }

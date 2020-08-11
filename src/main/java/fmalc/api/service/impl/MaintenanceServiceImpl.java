@@ -5,8 +5,8 @@ import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.DayOffRepository;
-import fmalc.api.repository.MaintenanceTypeRepository;
 import fmalc.api.repository.MaintenanceRepository;
+import fmalc.api.repository.MaintenanceTypeRepository;
 import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.Date;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class MaintenanceServiceImpl implements MaintenanceService {
@@ -147,18 +147,24 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public Maintenance updateMaintainingComplete(int id, int km, MultipartFile file) throws IOException {
-        Maintenance maintenance = maintainanceRepository.findById(id).get();
+        Maintenance maintenance = maintainanceRepository.findByIdAndStatus(id,false);
         Date currentTime = new Date(System.currentTimeMillis());
+        Vehicle vehicle = maintenance.getVehicle();
         if (maintenance != null) {
             Date actualTime = maintenance.getActualMaintainDate();
-            if (currentTime.after(actualTime) && currentTime.before(new Date(actualTime.getTime() + (1000 * 60 * 60 * 24)))) {
+            if (currentTime.after(actualTime)) {
                 if (maintenance.getKmOld() < km) {
                     maintenance.setKmOld(km);
                     String image = uploaderService.upload(file);
                     maintenance.setImageMaintain(image);
                     maintenance.setStatus(true);
+                    //update km cho cả xe
+                    vehicle.setKilometerRunning(km);
+                    vehicleRepository.save(vehicle);
                 }
             }
+
+
         }
         return maintainanceRepository.save(maintenance);
     }
@@ -722,6 +728,21 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
+    public List<Maintenance> getMaintenanceListForConfirm() {
+        List<Maintenance> maintenanceList = new ArrayList<>();
+        List<Maintenance> result = new ArrayList<>();
+        maintenanceList = maintainanceRepository.findByStatus(false);
+        if (!maintenanceList.isEmpty()){
+            maintenanceList.forEach(e-> {
+               if (!e.getActualMaintainDate().toString().isEmpty()){
+                   result.add(e);
+               }
+            });
+        }
+        return result;
+    }
+
+    @Override
     public List<Maintenance> getMaintenance() {
         return maintainanceRepository.findAllByActualMaintainDateIsNotNullOrderByActualMaintainDateDesc();
     }
@@ -746,6 +767,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
         maintainanceRepository.save(addMaintenance);
     }
+
 
     // Start date : lúc bấm nút kết thúc  -- THANHDC
 //    @Override

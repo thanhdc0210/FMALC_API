@@ -61,8 +61,8 @@ public class Driver implements Serializable {
     @Column(name = "license_expires", nullable = false)
     private Date licenseExpires;
 
-    @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
-    private Collection<Notification> notifies;
+//    @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
+//    private Collection<Notification> notifies;
 
     @Column(name = "date_of_birth", nullable = false)
     private Date dateOfBirth;

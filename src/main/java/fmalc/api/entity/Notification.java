@@ -26,12 +26,12 @@ public class Notification implements Serializable {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "vehicle_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
     private Vehicle vehicle;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
-    private Driver driver;
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+//    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
+//    private Driver driver;
 
     /**
      * Thời gian gửi thông báo
@@ -42,15 +42,19 @@ public class Notification implements Serializable {
     @Column(name = "content", nullable = false)
     private String content;
 
-    // Phân biệt 2 loại notification.
+    // Phân biệt 4 loại notification.
     // Odd-hours alert và Long Idle Times
+    // Maintain và schedule
     @Column(name = "type", nullable = false)
     private Integer type;
 
-    @ManyToMany
-    @JoinTable(name = "read_notification",
-            joinColumns = {@JoinColumn(name = "notification_id")},
-            inverseJoinColumns = {@JoinColumn(name = "account_id")}
-    )
-    private Collection<Account> account;
+//    @ManyToMany
+//    @JoinTable(name = "read_notification",
+//            joinColumns = {@JoinColumn(name = "notification_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "account_id")}
+//    )
+//    private Collection<Account> account;
+
+    @ManyToMany(mappedBy = "notification")
+    Collection<AccountNotification> accountNotifications;
 }
