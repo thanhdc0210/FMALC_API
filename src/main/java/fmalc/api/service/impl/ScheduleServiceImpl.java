@@ -234,6 +234,12 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.countScheduleNumberInADayOfDriver(id, startDate, endDate);
     }
 
+    @Override
+    public Schedule findScheduleByConsignment_IdAndDriver_Id(Integer consignmentId, Integer driverId) {
+
+        return scheduleRepository.findScheduleByConsignment_IdAndDriver_Id(consignmentId, driverId);
+    }
+
 
 }
 
