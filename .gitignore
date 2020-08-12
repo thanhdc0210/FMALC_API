@@ -29,10 +29,5 @@ build/
 
 ### VS Code ###
 .vscode/
-src/main/java/fmalc/api/service/AlertService.java
-src/main/java/fmalc/api/service/impl/AlertServiceImpl.java
-src/main/java/fmalc/api/repository/AlertRepository.java
-src/main/java/fmalc/api/dto/AlertRequestDTO.java
-src/main/java/fmalc/api/controller/AlertController.java
 diagram-GiangTLB.mwb
 diagram-GiangTLB.mwb.bak
