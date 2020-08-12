@@ -6,9 +6,7 @@ import com.google.firebase.messaging.Message;
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
 import fmalc.api.dto.NotificationUnread;
-import fmalc.api.entity.AccountNotification;
-import fmalc.api.entity.Notification;
-import fmalc.api.entity.Vehicle;
+import fmalc.api.entity.*;
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.repository.*;
 import fmalc.api.service.NotificationService;
@@ -16,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -43,6 +42,7 @@ public class NotificationServiceImpl implements NotificationService {
     private Logger logger = Logger.getLogger("MYLOG");
 
     @Override
+//    @Transactional
     public Notification createNotification(NotificationRequestDTO dto) throws ParseException {
         Notification notify = convertToDto(dto);
         notify.setTime(new Timestamp(System.currentTimeMillis()));
@@ -53,6 +53,7 @@ public class NotificationServiceImpl implements NotificationService {
             Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
             notify.setVehicle(vehicle);
         }
+        notify.setDriver(driverRepository.findById(dto.getDriver_id()).get());
         notify.setType(dto.getType());
         notify.setContent(dto.getContent());
 
@@ -61,41 +62,41 @@ public class NotificationServiceImpl implements NotificationService {
 
             if (notification != null){
 
-                AccountNotification accountNotification = new AccountNotification();
-                accountNotification.setAccount(accountRepository.findByDriverId(dto.getDriver_id()));
-                accountNotification.setNotification(notification);
-                accountNotification.setStatus(false);
+                Account account = accountRepository.findByDriverId(dto.getDriver_id());
+                AccountNotificationKey accountNotificationKey = new AccountNotificationKey(account.getId(), notification.getId());
+                AccountNotification accountNotification = accountNotificationRepository.save(AccountNotification.builder()
+                        .id(accountNotificationKey)
+                        .account(account)
+                        .notification(notification)
+                        .status(false)
+                        .build());
+                // Send notification to android
+                if(dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
+                        dto.getType() != NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
+                    String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
+                    String content  = dto.getContent();
+                    Message message = Message.builder()
+                            .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
+                            .setNotification(new com.google.firebase.messaging.Notification(title, content))
+                            .putData("title", title)
+                            .putData("body", content)
+                            .build();
 
-                if (accountNotificationRepository.save(accountNotification) != null){
-
-                    // Send notification to android
-                    if(dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
-                            dto.getType() != NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
-                        String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
-                        String content  = dto.getContent();
-                        Message message = Message.builder()
-                                .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
-                                .setNotification(new com.google.firebase.messaging.Notification(title, content))
-                                .putData("title", title)
-                                .putData("body", content)
-                                .build();
-
-                        String response = null;
-                        try {
-                            response = FirebaseMessaging.getInstance().send(message);
-                        } catch (FirebaseMessagingException e) {
-                            logger.info("Fail to send firebase notification " + e.getMessage());
-                        }
+                    String response = null;
+                    try {
+                        response = FirebaseMessaging.getInstance().send(message);
+                    } catch (FirebaseMessagingException e) {
+                        e.printStackTrace();
+                        logger.info("Fail to send firebase notification " + e.getMessage());
                     }
-
-                    return notification;
-                }else{
-                    return null;
                 }
+
+                return notification;
             }else{
                 return null;
             }
         }catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

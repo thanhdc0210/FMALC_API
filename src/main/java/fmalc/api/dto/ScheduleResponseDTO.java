@@ -24,6 +24,7 @@ public class ScheduleResponseDTO {
     private String driverName;
     private Double weight; // Khối lượng lô hàng
     private String status;
+    private Boolean isInheritance;
 
     public ScheduleResponseDTO(Schedule schedule){
         if (places == null){
@@ -39,6 +40,11 @@ public class ScheduleResponseDTO {
         this.places = new PlaceResponeDTO().mapToListResponse(List.copyOf(schedule.getConsignment().getPlaces()));
 
         this.status = ConsignmentStatusEnum.getValueEnumToShow(schedule.getConsignment().getStatus());
+        if (schedule.getInheritance()!= null){
+            this.isInheritance = true;
+        } else {
+            this.isInheritance = false;
+        }
     }
 
     public List<ScheduleResponseDTO> mapToListResponse(List<Schedule> baseEntities){
