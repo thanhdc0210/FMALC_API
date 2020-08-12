@@ -39,7 +39,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query("select  s from  Schedule  s where s.inheritance.id =?1")
     Schedule findScheduleBySchedule(int id);
 
-    @Query("select  s from Schedule s where s.driver.id =?1 and s.consignment.status = ?2 or s.consignment.status = ?3")
+    @Query("select  s from Schedule s where s.driver.id =?1 and s.consignment.status = ?2 or s.driver.id =?1 and s.consignment.status = ?3")
     List<Schedule> checkConsignmentStatus(int idDriver, int status , int statusDeli);
 
     @Query("select  s from Schedule s where s.driver.id =?1 and s.vehicle.id =?2 and  s.consignment.id = ?3")

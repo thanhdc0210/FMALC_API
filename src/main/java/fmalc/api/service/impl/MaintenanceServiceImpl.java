@@ -208,7 +208,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             if (maintenance.getId() != null) {
                 if (maintenances.size() > 0 ) {
                     if(maintenance.getActualMaintainDate()!=null){
-
+                        maintenance = new Maintenance();
                     }else{
                         int numDate = sdf.format(dateS).compareTo(sdf.format(maintenances.get(maintenances.size() - 1).getActualMaintainDate()));
                         long diff = dateS.getTime() - (maintenances.get(maintenances.size() - 1).getActualMaintainDate().getTime());
@@ -308,7 +308,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                             }
                         }
                     }else{
-
+                        maintenance = new Maintenance();
                     }
                 } else if (maintenance != null && sdf.format(dateS).compareTo(sdf.format(maintenance.getActualMaintainDate())) <= 0) {
                     long diff = dateS.getTime() - (maintenance.getActualMaintainDate().getTime());
