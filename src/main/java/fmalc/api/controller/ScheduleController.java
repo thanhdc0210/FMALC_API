@@ -548,6 +548,7 @@ public class ScheduleController {
                         notificationRequestDTO.setType(NotificationTypeEnum.TASK_SCHEDULE.getValue());
                         notificationService.createNotification(notificationRequestDTO);
                     }
+                    
                     return ResponseEntity.ok().body(consignmentResponseDTO);
                 }
 

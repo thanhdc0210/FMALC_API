@@ -133,20 +133,16 @@ public class VehicleController {
         java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
         vehicle = vehicleService.findById(dto.getId());
 //        vehicle = vehicleForDetailDTO.convertToEnity(dto);
-        vehicle.setKilometerRunning(dto.getKilometerRunning());
+//        vehicle.setKilometerRunning(dto.getKilometerRunning());
         vehicle.setVehicleName(dto.getVehicleName());
         vehicle.setAverageFuel(dto.getAverageFuel());
         vehicle.setMaximumCapacity(dto.getMaximumCapacity());
         vehicle.setWeight(dto.getWeight());
-//        vehicle.setDateOfManufacture(dto.getDateOfManufacture());
-        vehicle.setStatus(VehicleStatusEnum.AVAILABLE.getValue());
         vehicle.setDateOfManufacture(sqlDate);
         vehicle.setDriverLicense(dto.getDriverLicense());
-
-        Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
-
-
-        vehicle = vehicleService.saveVehicle(vehicle);
+//        vehicle.setKilometerRunning(dto.getKilometerRunning());
+//        Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
+        vehicle = vehicleService.updateVehicle(vehicle);
         vehicleForDetailDTO = vehicleForDetailDTO.convertToDto(vehicle);
         if (vehicle == null) {
             return ResponseEntity.noContent().build();

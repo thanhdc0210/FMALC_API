@@ -3,6 +3,7 @@ package fmalc.api.service.impl;
 import fmalc.api.controller.NotificationController;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
+import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.DayOffRepository;
 import fmalc.api.repository.MaintenanceRepository;
@@ -544,24 +545,29 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     private boolean checkDateMaintain(String dateS, List<MaintainCheckDTO> maintainCheckDTO, int idVehicle) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         boolean flag = false;
-        for (int i = 0; i < maintainCheckDTO.size(); i++) {
-            String dateMaintain = sdf.format(maintainCheckDTO.get(i).getPlannedMaintainDate());
-            if (dateS.compareTo(dateMaintain) > 0) {
-                flag = true;
-            } else {
-                Maintenance maintenance =maintainanceRepository.findById(maintainCheckDTO.get(i).getId()).get();
-                if(maintenance.getVehicle().getId() == idVehicle){
-                    flag =true;
-                }else{
-                    flag = false;
-                }
+        if(maintainCheckDTO.size()>0){
+            for (int i = 0; i < maintainCheckDTO.size(); i++) {
+                String dateMaintain = sdf.format(maintainCheckDTO.get(i).getPlannedMaintainDate());
+                if (dateS.compareTo(dateMaintain) > 0) {
+                    flag = true;
+                } else {
+                    Maintenance maintenance =maintainanceRepository.findById(maintainCheckDTO.get(i).getId()).get();
+                    if(maintenance.getVehicle().getId() == idVehicle){
+                        flag =true;
+                    }else{
+                        flag = false;
+                    }
 
+                }
+                if (!flag) {
+                    flag = false;
+                    i = maintainCheckDTO.size();
+                }
             }
-            if (!flag) {
-                flag = false;
-                i = maintainCheckDTO.size();
-            }
+        }else{
+            flag = true;
         }
+
         return flag;
     }
 
@@ -579,41 +585,46 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
             for (int j = 0; j < scheduleForConsignmentDTOS.size(); j++) {
                 scheduleForLocationDTO = scheduleForConsignmentDTOS.get(j);
-                List<PlaceResponeDTO> listScheduleDeli =
-                        placeService.getPlaceByTypePlace(scheduleForLocationDTO.getConsignment().getId(), TypeLocationEnum.DELIVERED_PLACE.getValue());
+                if(scheduleForLocationDTO.getConsignment().getStatus()!= ConsignmentStatusEnum.COMPLETED.getValue()||
+                        scheduleForLocationDTO.getConsignment().getStatus()!= ConsignmentStatusEnum.CANCELED.getValue()
+                ){
+                    List<PlaceResponeDTO> listScheduleDeli =
+                            placeService.getPlaceByTypePlace(scheduleForLocationDTO.getConsignment().getId(), TypeLocationEnum.DELIVERED_PLACE.getValue());
 
-                PlaceResponeDTO placeScheduleRecei =
-                        placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), 1, TypeLocationEnum.RECEIVED_PLACE.getValue());
-                PlaceResponeDTO placeScheduleDeli =
-                        placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), listScheduleDeli.size(), TypeLocationEnum.RECEIVED_PLACE.getValue());
+                    PlaceResponeDTO placeScheduleRecei =
+                            placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), 1, TypeLocationEnum.RECEIVED_PLACE.getValue());
+                    PlaceResponeDTO placeScheduleDeli =
+                            placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), listScheduleDeli.size(), TypeLocationEnum.RECEIVED_PLACE.getValue());
 
-                String dateRecei = sdf.format(placeScheduleRecei.getPlannedTime());
-                String dateDeli = sdf.format(placeScheduleDeli.getPlannedTime());
-                if (dateC.compareTo(dateRecei) < 0) {
-                    if (dateC.compareTo(sdf.format(result)) > 0) {
-                        flag = true;
-                    } else {
-                        flag = false;
-                        j = scheduleForConsignmentDTOS.size();
-                    }
-                } else if (dateC.compareTo(dateRecei) > 0 && dateC.compareTo(dateRecei) > 0) {
-                    if (dateC.compareTo(dateDeli) > 0) {
-                        flag = true;
-                    } else {
-                        flag = false;
-                        j = scheduleForConsignmentDTOS.size();
+                    String dateRecei = sdf.format(placeScheduleRecei.getPlannedTime());
+                    String dateDeli = sdf.format(placeScheduleDeli.getPlannedTime());
+                    if (dateC.compareTo(dateRecei) < 0) {
+                        if (dateC.compareTo(sdf.format(result)) > 0) {
+                            flag = true;
+                        } else {
+                            flag = false;
+                            j = scheduleForConsignmentDTOS.size();
+                        }
+                    } else if (dateC.compareTo(dateRecei) > 0 && dateC.compareTo(dateRecei) > 0) {
+                        if (dateC.compareTo(dateDeli) > 0) {
+                            flag = true;
+                        } else {
+                            flag = false;
+                            j = scheduleForConsignmentDTOS.size();
 //                            i++;
-                    }
-                } else {
-                    flag = false;
-                    j = scheduleForConsignmentDTOS.size();
+                        }
+                    } else {
+                        flag = false;
+                        j = scheduleForConsignmentDTOS.size();
 //                        i++;
+                    }
+                    if (flag && j == scheduleForConsignmentDTOS.size()-1) {
+                        flag = true;
+                    } else {
+                        flag = false;
+                    }
                 }
-                if (flag && j == scheduleForConsignmentDTOS.size()) {
-                    flag = true;
-                } else {
-                    flag = false;
-                }
+
             }
 
         } else {
