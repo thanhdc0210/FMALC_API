@@ -46,8 +46,8 @@ public class NotificationServiceImpl implements NotificationService {
     public Notification createNotification(NotificationRequestDTO dto) throws ParseException {
         Notification notify = convertToDto(dto);
         notify.setTime(new Timestamp(System.currentTimeMillis()));
-        if(dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
-                dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
+        if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
+                dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()) {
             notify.setVehicle(null);
         } else {
             Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
@@ -61,7 +61,7 @@ public class NotificationServiceImpl implements NotificationService {
         try {
             Notification notification = notificationRepository.save(notify);
 
-            if (notification != null){
+            if (notification != null) {
 
                 Account account = accountRepository.findByDriverId(dto.getDriver_id());
                 AccountNotificationKey accountNotificationKey = new AccountNotificationKey(account.getId(), notification.getId());
@@ -72,31 +72,33 @@ public class NotificationServiceImpl implements NotificationService {
                         .status(false)
                         .build());
                 // Send notification to android
-                if(dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
-                        dto.getType() != NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
-                    String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
-                    String content  = dto.getContent();
-                    Message message = Message.builder()
-                            .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
-                            .setNotification(new com.google.firebase.messaging.Notification(title, content))
-                            .putData("title", title)
-                            .putData("body", content)
-                            .build();
+                if (accountNotification != null) {
+                    if (dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
+                            dto.getType() != NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()) {
+                        String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
+                        String content = dto.getContent();
+                        Message message = Message.builder()
+                                .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
+                                .setNotification(new com.google.firebase.messaging.Notification(title, content))
+                                .putData("title", title)
+                                .putData("body", content)
+                                .build();
 
-                    String response = null;
-                    try {
-                        response = FirebaseMessaging.getInstance().send(message);
-                    } catch (FirebaseMessagingException e) {
-                        e.printStackTrace();
-                        logger.info("Fail to send firebase notification " + e.getMessage());
+                        String response = null;
+                        try {
+                            response = FirebaseMessaging.getInstance().send(message);
+                        } catch (FirebaseMessagingException e) {
+                            e.printStackTrace();
+                            logger.info("Fail to send firebase notification " + e.getMessage());
+                        }
                     }
                 }
 
                 return notification;
-            }else{
+            } else {
                 return null;
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
