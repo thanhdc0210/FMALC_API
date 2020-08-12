@@ -29,4 +29,9 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccount(String username) {
         return accountRepository.findByUsername(username);
     }
+
+    @Override
+    public boolean checkUsername(String numberPhone) {
+        return accountRepository.existsByUsername(numberPhone);
+    }
 }
