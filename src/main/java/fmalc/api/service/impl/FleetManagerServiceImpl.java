@@ -91,4 +91,9 @@ public class FleetManagerServiceImpl implements FleetManagerService {
         return fleetManagerRepository.findById(id).get();
     }
 
+    @Override
+    public boolean checkIdentityNo(String identityNo) {
+        return fleetManagerRepository.existsByIdentityNo(identityNo);
+    }
+
 }

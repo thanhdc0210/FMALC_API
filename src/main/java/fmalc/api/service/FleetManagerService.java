@@ -18,4 +18,6 @@ public interface FleetManagerService {
     FleetManager update(Integer id, FleetManagerRequestDTO fleetManagerRequestDTO);
 
     FleetManager updateAvatar(Integer id, MultipartFile file) throws IOException;
+
+    boolean checkIdentityNo(String identityNo);
 }

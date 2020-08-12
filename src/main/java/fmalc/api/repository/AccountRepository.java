@@ -25,4 +25,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer>, JpaS
 
     @Query("Select d.account From Driver d Where d.id = :id")
     Account findByDriverId(@Param("id") Integer id);
+
+    boolean existsByUsername(String username);
 }
