@@ -521,15 +521,15 @@ public class ScheduleController {
                     consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
 
                     // Save notification
-//                    NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
-//                    for (Schedule schedule : schedules) {
-//                        notificationRequestDTO.setVehicle_id(schedule.getVehicle().getId());
-//                        notificationRequestDTO.setDriver_id(schedule.getDriver().getId());
-//                        notificationRequestDTO.setStatus(false);
-//                        notificationRequestDTO.setContent("Bạn có lịch chạy mới của lô hàng #" + schedule.getId());
-//                        notificationRequestDTO.setType(NotificationTypeEnum.TASK_SCHEDULE.getValue());
-//                        notificationService.createNotification(notificationRequestDTO);
-//                    }
+                    NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+                    for (Schedule schedule : schedules) {
+                        notificationRequestDTO.setVehicle_id(schedule.getVehicle().getId());
+                        notificationRequestDTO.setDriver_id(schedule.getDriver().getId());
+                        notificationRequestDTO.setStatus(false);
+                        notificationRequestDTO.setContent("Bạn có lịch chạy mới của lô hàng #" + schedule.getId());
+                        notificationRequestDTO.setType(NotificationTypeEnum.TASK_SCHEDULE.getValue());
+                        notificationService.createNotification(notificationRequestDTO);
+                    }
 
                     return ResponseEntity.ok().body(consignmentResponseDTO);
                 }
