@@ -21,6 +21,8 @@ public class NotificationMobileResponse {
     private String content;
     private boolean status;
     private Integer type;
+    private String username;
+    private Integer notificationId;
 
     public NotificationMobileResponse(AccountNotification accountNotification) {
         Notification notification = accountNotification.getNotification();
@@ -28,6 +30,8 @@ public class NotificationMobileResponse {
         this.content = notification.getContent();
         this.status = accountNotification.getStatus();
         this.type = notification.getType();
+        this.username = accountNotification.getAccount().getUsername();
+        this.notificationId = accountNotification.getNotification().getId();
     }
 
     public NotificationMobileResponse mapToResponse(Notification notification) {
