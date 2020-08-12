@@ -833,7 +833,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         boolean result = checkDateConfirm(driver, sdf.format(date), idVehicle);
         if (result) {
-            Maintenance maintenance = maintainanceRepository.findByIdAndStatus(idVehicle, false);
+            Maintenance maintenance = maintainanceRepository.findByIdVehicleAndStatus(idVehicle, false);
             maintenance.setActualMaintainDate(new Date(date.getTime()));
             maintenance = maintainanceRepository.save(maintenance);
             dates.add(date);
