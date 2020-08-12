@@ -377,7 +377,20 @@ public class ScheduleController {
         }
         if (drivers.size() > 0 && drivers.size() >= sizeVehicle) {
             Collections.sort(drivers, (o1, o2) -> o1.getWorkingHour().compareTo(o2.getWorkingHour()));
+            drivers.sort(new Comparator<Driver>() {
+                @Override
+                public int compare(Driver o1, Driver o2) {
 
+                    if(o1.getSchedules().size()<o2.getSchedules().size()){
+                        return -1;
+                    }else if(o1.getSchedules().size()>o2.getSchedules().size()){
+                        return 1;
+                    }else{
+                        return 0;
+                    }
+
+                }
+            });
             for (int v = 0; v < vehiclesSave.size(); v++) {
                 for (int k = 0; k < drivers.size(); k++) {
                     schedule = new Schedule();
