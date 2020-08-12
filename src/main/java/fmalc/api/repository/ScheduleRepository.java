@@ -40,7 +40,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     Schedule findScheduleBySchedule(int id);
 
     @Query("select  s from Schedule s where s.driver.id =?1 and s.consignment.status = ?2 or s.consignment.status = ?3")
-    List<Schedule> checkConsignmentStatus(int idDriver, int status , int statusDeli);
+    List<Schedule> checkConsignmentStatus(int idDriver, int status, int statusDeli);
 
     @Query("select  s from Schedule s where s.driver.id =?1 and s.vehicle.id =?2 and  s.consignment.id = ?3")
     Schedule findScheduleByVeDriCons(int idDriver, int idVehicle, int idConsignment);
@@ -48,17 +48,18 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query("Select s From Schedule s" +
             " Where s.consignment.status IN :status and s.driver.account.username = :username" +
             " and s.isApprove = true")
-
     List<Schedule> findByConsignmentStatusAndUsername(@Param("status") List<Integer> status, @Param("username") String username);
 
     @Modifying
 //    @Query(value = "update Schedule  s set s.vehicle.id= :idVehicle, s.driver.id= :idDriver, s.isApprove= :status where s.id=:id",nativeQuery = true)
     @Query(value = "update schedule s set s.vehicle_id=:idVehicle, s.driver_id =:idDriver, s.is_approve=:status where s.id=:id", nativeQuery = true)
-    int updateStatusSchedule(@Param("idVehicle") int idVehicle, @Param("idDriver")int idDriver, @Param("status") int status,@Param("id")  int id);
+    int updateStatusSchedule(@Param("idVehicle") int idVehicle, @Param("idDriver") int idDriver, @Param("status") int status, @Param("id") int id);
 
     //GiangTLB
     List<Schedule> findScheduleByConsignmentId(Integer consignmentId);
+
     List<Schedule> findByConsignmentOwnerNameContaining(String ownerName);
+
     List<Schedule> findByVehicleLicensePlatesContaining(String licensePlate);
 
     List<Schedule> findScheduleByConsignmentStatus(Integer consignmentStatus);
@@ -73,5 +74,4 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
             "and c.id = p.consignment.id and c.status = 0")
     Integer countScheduleNumberInADayOfDriver(@Param("id") Integer id,
                                               @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
-
 }
