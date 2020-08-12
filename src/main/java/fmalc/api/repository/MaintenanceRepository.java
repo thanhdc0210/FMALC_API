@@ -34,7 +34,8 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
 
     List<Maintenance> findAllByActualMaintainDateIsNotNullOrderByActualMaintainDateDesc();
 
-    List<Maintenance> findAllByActualMaintainDateIsNotNullAndStatusOrderByActualMaintainDateDesc(boolean status);
+    List<Maintenance> findAllByActualMaintainDateIsNotNullAndStatusIsFalseOrderByActualMaintainDateDesc();
+
     //GiangTLB
     List<Maintenance> findMaintenancesByDriverIdAndAndStatus(int driverId, boolean status);
     Maintenance findByIdAndStatus(int id, boolean status);
