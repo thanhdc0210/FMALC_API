@@ -785,17 +785,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public List<Maintenance> getMaintenanceListForConfirm() {
-        List<Maintenance> maintenanceList = new ArrayList<>();
-        List<Maintenance> result = new ArrayList<>();
-        maintenanceList = maintainanceRepository.findByStatus(false);
-        if (!maintenanceList.isEmpty()) {
-            maintenanceList.forEach(e -> {
-                if (!e.getActualMaintainDate().toString().isEmpty()) {
-                    result.add(e);
-                }
-            });
-        }
-        return result;
+        return maintainanceRepository.findAllByActualMaintainDateIsNotNullAndStatusIsFalseOrderByActualMaintainDateDesc();
     }
 
     @Override
@@ -811,7 +801,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         addMaintenance.setActualMaintainDate(Date.valueOf(today));
         addMaintenance.setKmOld(vehicle.getKilometerRunning());
         addMaintenance.setVehicle(vehicle);
-        addMaintenance.setStatus(false);
+        addMaintenance.setStatus(true);
         MaintenanceType maintenanceType = new MaintenanceType();
         if (vehicle.getKilometerRunning() <= 5000) {
             maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 3");
