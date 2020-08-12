@@ -68,15 +68,15 @@ public class VehicleController {
     }
 
     @PostMapping("delete/{id}")
-    public ResponseEntity<Boolean> disableVehicle(@PathVariable("id") int id){
+    public ResponseEntity<Boolean> disableVehicle(@PathVariable("id") int id) {
 
-        try{
+        try {
             Vehicle vehicle = vehicleService.disableVehicle(id);
-            if(vehicle.getIsActive() == false){
+            if (vehicle.getIsActive() == false) {
                 return ResponseEntity.ok().body(true);
             }
-        }catch (Exception e){
-            return  ResponseEntity.badRequest().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.noContent().build();
     }
@@ -84,7 +84,7 @@ public class VehicleController {
     @GetMapping("/detail/{licensePlates}")
     public ResponseEntity<VehicleForDetailDTO> getDetailVehicleByLicensePlates(@PathVariable String licensePlates) {
         Vehicle vehicle = vehicleService.findVehicleByLicensePlates(licensePlates);
-        VehicleForDetailDTO vehicleForDetailDTO =new VehicleForDetailDTO();
+        VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
         vehicleForDetailDTO = vehicleForDetailDTO.convertToDto(vehicle);
         if (vehicle == null) {
             return ResponseEntity.noContent().build();
@@ -123,29 +123,31 @@ public class VehicleController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Vehicle> updateVehicle( @RequestBody VehicleForDetailDTO dto) throws ParseException {
+    public ResponseEntity<VehicleForDetailDTO> updateVehicle(@RequestBody VehicleForDetailDTO dto) throws ParseException {
         Vehicle vehicle = new Vehicle();
         VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
-        vehicleForDetailDTO =dto;
+        vehicleForDetailDTO = dto;
         String dateString = dto.getDateOfManufacture(); //
 
         java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
         java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-        vehicle = vehicleForDetailDTO.convertToEnity(dto);
-        vehicle.setStatus(VehicleStatusEnum.AVAILABLE.getValue());
+        vehicle = vehicleService.findById(dto.getId());
+//        vehicle = vehicleForDetailDTO.convertToEnity(dto);
+//        vehicle.setKilometerRunning(dto.getKilometerRunning());
+        vehicle.setVehicleName(dto.getVehicleName());
+        vehicle.setAverageFuel(dto.getAverageFuel());
+        vehicle.setMaximumCapacity(dto.getMaximumCapacity());
+        vehicle.setWeight(dto.getWeight());
         vehicle.setDateOfManufacture(sqlDate);
         vehicle.setDriverLicense(dto.getDriverLicense());
-
-        Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
-
-
-            vehicle = vehicleService.saveVehicle(vehicle);
-
-            if (vehicle == null) {
-                return ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.ok().body(vehicle);
-
+//        vehicle.setKilometerRunning(dto.getKilometerRunning());
+//        Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
+        vehicle = vehicleService.updateVehicle(vehicle);
+        vehicleForDetailDTO = vehicleForDetailDTO.convertToDto(vehicle);
+        if (vehicle == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok().body(vehicleForDetailDTO);
 
 
     }
@@ -157,26 +159,24 @@ public class VehicleController {
     }
 
 
-
     @GetMapping(value = "/report-inspection-before-delivery")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionBeforeDelivery
             (@RequestParam(value = "username") String username) {
 
         String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionBeforeDelivery(username
-        , Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)), ConsignmentStatusEnum.WAITING.getValue());
+                , Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)), ConsignmentStatusEnum.WAITING.getValue());
         List<Inspection> inspections = inspectionService.findAll();
-        if (inspections == null){
+        if (inspections == null) {
             return ResponseEntity.noContent().build();
-        }
-        else {
+        } else {
             if (vehiclePlates == null) {
                 InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
                 inspectionResponseDTO.setVehicleLicensePlates("");
                 inspectionResponseDTO.setInspections(inspectionService.findAll());
 
                 return ResponseEntity.ok().body(inspectionResponseDTO);
-            }else {
+            } else {
 
                 InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
                 inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
@@ -195,17 +195,16 @@ public class VehicleController {
         String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionAfterDelivery(username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
                 ConsignmentStatusEnum.COMPLETED.getValue(), TypeLocationEnum.DELIVERED_PLACE.getValue());
         List<Inspection> inspections = inspectionService.findAll();
-        if (inspections == null){
+        if (inspections == null) {
             return ResponseEntity.noContent().build();
-        }
-        else {
+        } else {
             if (vehiclePlates == null) {
                 InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
                 inspectionResponseDTO.setVehicleLicensePlates("");
                 inspectionResponseDTO.setInspections(inspectionService.findAll());
 
                 return ResponseEntity.ok().body(inspectionResponseDTO);
-            }else {
+            } else {
 
                 InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
                 inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
@@ -218,7 +217,7 @@ public class VehicleController {
 
     @GetMapping(value = "/running")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
-    public ResponseEntity<String> getVehicleRunning( @RequestParam("username") String username){
+    public ResponseEntity<String> getVehicleRunning(@RequestParam("username") String username) {
         List<Integer> status = new ArrayList<>();
         status.add(ConsignmentStatusEnum.OBTAINING.getValue());
         status.add(ConsignmentStatusEnum.DELIVERING.getValue());
@@ -226,7 +225,7 @@ public class VehicleController {
                 Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
                 Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
 
-        if(vehicle.getId() >= 0){
+        if (vehicle.getId() >= 0) {
             return ResponseEntity.ok().body(vehicle.getId().toString());
         }
         return ResponseEntity.noContent().build();

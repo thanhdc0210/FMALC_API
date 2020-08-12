@@ -14,8 +14,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static java.util.Comparator.comparingInt;
@@ -139,6 +141,24 @@ public class MaintenanceController {
             List<Maintenance> maintenanceList = maintenanceService.getMaintenanceListForConfirm();
             if(maintenanceList.size()>0){
              result = new MaintainReponseDTO().mapToListResponse(maintenanceList);
+                return ResponseEntity.ok().body(result);
+            }else{
+                return ResponseEntity.noContent().build();
+            }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/confirm-maintenance")
+    public ResponseEntity<List<Date>> confirmMaintenace(@RequestParam("vehicle") int idVehicle
+    , @RequestParam("driver") int idDriver, @RequestParam("date")String date){
+        List<Date> result = new ArrayList<>();
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+             result = maintenanceService.dateConfirm(idVehicle,idDriver,sdf.parse(date));
+            if(result.size()>0){
+//                result = new MaintainReponseDTO().mapToListResponse(maintenanceList);
                 return ResponseEntity.ok().body(result);
             }else{
                 return ResponseEntity.noContent().build();

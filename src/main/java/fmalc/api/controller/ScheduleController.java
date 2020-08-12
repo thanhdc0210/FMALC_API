@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,15 +57,19 @@ public class ScheduleController {
     @GetMapping(value = "driver")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<List<ScheduleResponseDTO>> findByConsignmentStatusAndUsername(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {
-        List<Schedule> schedules = scheduleService.findByConsignmentStatusAndUsername(status, username);
+        try {
+            List<Schedule> schedules = scheduleService.findByConsignmentStatusAndUsername(status, username);
 
 
-        if (schedules == null) {
-            return ResponseEntity.noContent().build();
+            if (schedules == null) {
+                return ResponseEntity.noContent().build();
+            }
+            List<ScheduleResponseDTO> consignmentResponses = new ArrayList<>(new ScheduleResponseDTO().mapToListResponse(schedules));
+
+            return ResponseEntity.ok().body(consignmentResponses);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
         }
-        List<ScheduleResponseDTO> consignmentResponses = new ArrayList<>(new ScheduleResponseDTO().mapToListResponse(schedules));
-
-        return ResponseEntity.ok().body(consignmentResponses);
     }
 
     @GetMapping(value = "id/{id}")
@@ -76,6 +81,22 @@ public class ScheduleController {
         DetailedScheduleDTO detailedScheduleDTO = new DetailedScheduleDTO(schedule);
 
         return ResponseEntity.ok().body(detailedScheduleDTO);
+    }
+
+    @GetMapping(value = "{consignmentId}/{driverId}")
+    public ResponseEntity<DetailedScheduleDTO> findScheduleByConsignment_IdAndDriver_Id(@PathVariable("consignmentId") Integer consignmentId,
+                                                                                        @PathVariable("driverId") Integer driverId) {
+        try {
+            Schedule schedule = scheduleService.findScheduleByConsignment_IdAndDriver_Id(consignmentId, driverId);
+            if (schedule == null || schedule.equals("")) {
+                return ResponseEntity.noContent().build();
+            }
+            DetailedScheduleDTO detailedScheduleDTO = new DetailedScheduleDTO(schedule);
+
+            return ResponseEntity.ok().body(detailedScheduleDTO);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping
@@ -483,7 +504,6 @@ public class ScheduleController {
     }
 
     @PostMapping("/status")
-
 //    @MultipartConfig(maxFileSize =  @Value("${multipart.max-file-size}"), maxRequestSize = 1024*1024*1024)
     public ResponseEntity<ConsignmentResponseDTO> updateStatusSchedules(@RequestPart(value = "file") MultipartFile file, @ModelAttribute(value = "requestSaveScheObjDTO") String requestSaveScheObjDTO) {
         boolean result = false;
@@ -500,8 +520,6 @@ public class ScheduleController {
             if (post_id.get("consignment_id") != null) {
                 obejctScheDTO.setConsignment_id(post_id.get("consignment_id").getAsInt());
             }
-
-//                    new Gson().fromJson(post_id, ObejctScheDTO.class);
             obejctScheDTOS.add(obejctScheDTO);
         }
         ConsignmentRequestDTO consignmentRequestDTO = new Gson().fromJson(jsonObject.get("consignmentRequestDTO"), ConsignmentRequestDTO.class);
@@ -526,19 +544,13 @@ public class ScheduleController {
                         notificationRequestDTO.setVehicle_id(schedule.getVehicle().getId());
                         notificationRequestDTO.setDriver_id(schedule.getDriver().getId());
                         notificationRequestDTO.setStatus(false);
-                        notificationRequestDTO.setContent("Bạn có lịch chạy mới của lô hàng #" + schedule.getId());
+                        notificationRequestDTO.setContent("Bạn có lịch chạy mới của lô hàng #" + schedule.getConsignment().getId());
                         notificationRequestDTO.setType(NotificationTypeEnum.TASK_SCHEDULE.getValue());
                         notificationService.createNotification(notificationRequestDTO);
                     }
-
+                    
                     return ResponseEntity.ok().body(consignmentResponseDTO);
                 }
-//            for(int i =0 ; i<requestObjectDTOS.size(); i++){
-//                boolean s =  scheduleService.updateStatusSchedule(requestObjectDTOS.get(i));
-//                if(!s){
-//                    result.add(requestObjectDTOS.get(i).getConsignment_id());
-//                }
-//            }
 
             } catch (Exception e) {
                 return ResponseEntity.badRequest().build();

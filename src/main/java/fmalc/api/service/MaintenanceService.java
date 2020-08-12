@@ -8,6 +8,7 @@ import fmalc.api.entity.Vehicle;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public interface MaintenanceService {
@@ -24,6 +25,8 @@ public interface MaintenanceService {
     MaintainConfirmDTO updatePlannedTime(int id , int km);
 
     void createFirstMaintain(Vehicle vehicle);
+
+    List<Date> dateConfirm(int idVehicle, int idDriver, Date date);
 
     void calculateMaintenanceForVehicle(int idVehicle);
 
