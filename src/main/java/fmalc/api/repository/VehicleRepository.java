@@ -121,4 +121,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
         Vehicle findByIdEqualsAndStatusIsNotLike(Integer id, Integer status);
         List<Vehicle> findByDateCreateBefore(Date dateBefore);
 
+        boolean existsByLicensePlates(String licensePlates);
+
 }

@@ -22,17 +22,4 @@ public class AccountNotificationServiceImpl implements AccountNotificationServic
         }
     }
 
-    @Override
-    public Boolean updateStatus(Integer id) {
-
-        if (accountNotificationRepository.existsById(id)){
-            AccountNotification accountNotification = accountNotificationRepository.findById(id).get();
-            accountNotification.setStatus(true);
-            accountNotificationRepository.save(accountNotification);
-
-            return true;
-        }
-
-        return false;
-    }
 }

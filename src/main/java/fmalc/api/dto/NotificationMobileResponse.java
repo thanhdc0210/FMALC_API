@@ -20,16 +20,18 @@ public class NotificationMobileResponse {
     private Timestamp time;
     private String content;
     private boolean status;
-    private Integer id;
     private Integer type;
+    private String username;
+    private Integer notificationId;
 
     public NotificationMobileResponse(AccountNotification accountNotification) {
         Notification notification = accountNotification.getNotification();
         this.time = notification.getTime();
         this.content = notification.getContent();
         this.status = accountNotification.getStatus();
-        this.id = accountNotification.getId();
         this.type = notification.getType();
+        this.username = accountNotification.getAccount().getUsername();
+        this.notificationId = accountNotification.getNotification().getId();
     }
 
     public NotificationMobileResponse mapToResponse(Notification notification) {

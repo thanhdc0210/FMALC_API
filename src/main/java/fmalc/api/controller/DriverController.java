@@ -138,6 +138,17 @@ public class DriverController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping(value = "check-identity-no")
+    boolean checkIdentityNo(@RequestParam("identityNo") String identityNo) {
+        return driverService.checkIdentityNo(identityNo);
+    }
+
+    @GetMapping(value = "check-no")
+    boolean checkNo(@RequestParam("no") String no) {
+        return driverService.checkNo(no);
+    }
+
 }
 
 

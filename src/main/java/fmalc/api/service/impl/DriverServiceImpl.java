@@ -245,6 +245,16 @@ public class DriverServiceImpl implements DriverService {
         dayOffService.save(dayOff);
     }
 
+    @Override
+    public boolean checkIdentityNo(String identityNo) {
+        return driverRepository.existsByIdentityNo(identityNo);
+    }
+
+    @Override
+    public boolean checkNo(String no) {
+        return driverRepository.existsByNo(no);
+    }
+
     private List<Driver> checkScheduledForDriver(List<Driver> drivers, Consignment consignment) {
         boolean flag = true;
         List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();

@@ -1,33 +1,31 @@
 package fmalc.api.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Data
 @Entity
 @Table(name = "account_notification")
 public class AccountNotification {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    //AccountNotificationPK accountNotificationPK;
+    @EmbeddedId
+    AccountNotificationKey id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "account_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @MapsId("accountId")
+    @JoinColumn(name = "account_id")
     private Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
-    @JoinColumn(name = "notification_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @MapsId("notificationId")
+    @JoinColumn(name = "notification_id")
     private Notification notification;
 
     @Column(name = "status", nullable = false)

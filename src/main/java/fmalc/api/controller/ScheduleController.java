@@ -516,6 +516,20 @@ public class ScheduleController {
                 if (schedules.size() > 0) {
                     Consignment consignment = consignmentService.findById(schedules.get(0).getConsignment().getId());
                     consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
+
+
+                    // Save notification
+                    NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+                    for (Schedule schedule : schedules) {
+                        notificationRequestDTO.setVehicle_id(schedule.getVehicle().getId());
+                        notificationRequestDTO.setDriver_id(schedule.getDriver().getId());
+                        notificationRequestDTO.setStatus(false);
+                        notificationRequestDTO.setContent("Bạn có lịch chạy mới của lô hàng #" + schedule.getId());
+                        notificationRequestDTO.setType(NotificationTypeEnum.TASK_SCHEDULE.getValue());
+                        notificationService.createNotification(notificationRequestDTO);
+                    }
+
+
                     return ResponseEntity.ok().body(consignmentResponseDTO);
                 }
 

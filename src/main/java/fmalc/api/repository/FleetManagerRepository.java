@@ -26,4 +26,6 @@ public interface FleetManagerRepository extends JpaRepository<FleetManager, Inte
     FleetManager findByAccountID(int id);
 
     FleetManager findByAccount_Username(String username);
+
+    boolean existsByIdentityNo(String identityNo);
 }

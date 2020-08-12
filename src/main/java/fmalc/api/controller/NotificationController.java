@@ -1,6 +1,5 @@
 package fmalc.api.controller;
 
-import com.google.firebase.internal.FirebaseService;
 import fmalc.api.dto.NotificationMobileResponse;
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
@@ -11,7 +10,6 @@ import fmalc.api.service.AccountNotificationService;
 import fmalc.api.service.DriverService;
 import fmalc.api.service.NotificationService;
 import fmalc.api.service.VehicleService;
-import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -137,10 +135,10 @@ public class NotificationController {
         return ResponseEntity.ok().body(result);
     }
 
-//    @GetMapping(value = "/count-notification-unread")
-//    public NotificationUnread countNotificationUnread(@RequestParam("username") String username) {
-//        return notificationService.countNotificationUnread(username);
-//    }
+    @GetMapping(value = "/count-notification-unread")
+    public NotificationUnread countNotificationUnread(@RequestParam("username") String username) {
+        return notificationService.countNotificationUnread(username);
+    }
 
     @GetMapping(value = "/by-type")
     public ResponseEntity getNotificationsByType(@RequestParam("type") int type) {
@@ -176,46 +174,41 @@ public class NotificationController {
         }
     }
 
-//<<<<<<< HEAD
-//    @GetMapping(value = "/read-all-type")
-//    public ResponseEntity readNotificationByType(@RequestParam("username") String username,
-//                                                 @RequestParam("type") Integer type) {
-//=======
-//    @GetMapping(value = "/read")
-//    public ResponseEntity readNotification(@RequestParam("username") String username,
-//                                           @RequestParam("notificationId") Integer notificationId) {
-//        try {
-//            notificationService.readNotification(username, notificationId);
-//            return ResponseEntity.ok().build();
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
-
-//    @GetMapping(value = "/read-all-type")
-//    public ResponseEntity readNotificationByType(@RequestParam("username") String username,
-//                                           @RequestParam("type") Integer type) {
-//        try {
-//            notificationService.readNotificationByType(username, type);
-//            return ResponseEntity.noContent().build();
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
-
-
-    @PatchMapping(value = "/driver/read/{id}")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
-    public ResponseEntity<Boolean> updateStatus(@PathVariable("id") Integer id){
-//>>>>>>> 8fa47a4e88a1227addb186dd6b2f9dda62cb05c6
+    @GetMapping(value = "/read")
+    public ResponseEntity readNotification(@RequestParam("username") String username,
+                                           @RequestParam("notificationId") Integer notificationId) {
         try {
-            if (accountNotificationService.updateStatus(id)){
-                return ResponseEntity.ok().body(true);
-            }else{
-                return ResponseEntity.noContent().build();
-            }
-        }catch (Exception e){
+            notificationService.readNotification(username, notificationId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping(value = "/read-all-type")
+    public ResponseEntity readNotificationByType(@RequestParam("username") String username,
+                                           @RequestParam("type") Integer type) {
+        try {
+            notificationService.readNotificationByType(username, type);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+//    @PatchMapping(value = "/driver/read/{id}")
+//    @PreAuthorize("hasRole('ROLE_DRIVER')")
+//    public ResponseEntity<Boolean> updateStatus(@PathVariable("id") Integer id){
+////>>>>>>> 8fa47a4e88a1227addb186dd6b2f9dda62cb05c6
+//        try {
+//            if (accountNotificationService.updateStatus(id)){
+//                return ResponseEntity.ok().body(true);
+//            }else{
+//                return ResponseEntity.noContent().build();
+//            }
+//        }catch (Exception e){
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
 }

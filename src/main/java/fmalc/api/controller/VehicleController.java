@@ -101,7 +101,7 @@ public class VehicleController {
         java.util.Date sqlDate = new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
         vehicle = convertToVehicleEntity(dto);
         vehicle.setStatus(VehicleStatusEnum.AVAILABLE.getValue());
-        vehicle.setKilometerRunning(defaultKilometRunning);
+        vehicle.setKilometerRunning(dto.getKilometerRunning());
         vehicle.setDateOfManufacture(sqlDate);
         vehicle.setDriverLicense(dto.getDriverLicense());
         vehicle.setIsActive(true);
@@ -229,6 +229,11 @@ public class VehicleController {
             return ResponseEntity.ok().body(vehicle.getId().toString());
         }
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "check-license-plates")
+    boolean checkVehiclePlates(@RequestParam("licensePlates") String licensePlates) {
+        return vehicleService.checkLicensePlates(licensePlates);
     }
 }
 

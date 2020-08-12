@@ -45,4 +45,8 @@ public interface DriverService {
     String findTokenDeviceByDriverId(Integer id);
 
     void createDayOff(DayOffRequestDTO dayOffRequestDTO);
+
+    boolean checkIdentityNo(String identityNo);
+
+    boolean checkNo(String no);
 }

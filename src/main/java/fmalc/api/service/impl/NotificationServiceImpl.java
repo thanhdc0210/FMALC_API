@@ -4,9 +4,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import fmalc.api.dto.NotificationRequestDTO;
-import fmalc.api.entity.AccountNotification;
-import fmalc.api.entity.Notification;
-import fmalc.api.entity.Vehicle;
+import fmalc.api.dto.NotificationResponeDTO;
+import fmalc.api.dto.NotificationUnread;
+import fmalc.api.entity.*;
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.repository.*;
 import fmalc.api.service.NotificationService;
@@ -14,8 +14,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -40,36 +42,41 @@ public class NotificationServiceImpl implements NotificationService {
     private Logger logger = Logger.getLogger("MYLOG");
 
     @Override
+//    @Transactional
     public Notification createNotification(NotificationRequestDTO dto) throws ParseException {
         Notification notify = convertToDto(dto);
         notify.setTime(new Timestamp(System.currentTimeMillis()));
-        if(dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
-                dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
+        if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
+                dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()) {
             notify.setVehicle(null);
         } else {
             Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
             notify.setVehicle(vehicle);
         }
+        notify.setDriver(driverRepository.findById(dto.getDriver_id()).get());
         notify.setType(dto.getType());
         notify.setContent(dto.getContent());
+        notify.setDriver(driverRepository.findById(dto.getDriver_id()).get());
 
         try {
             Notification notification = notificationRepository.save(notify);
 
-            if (notification != null){
+            if (notification != null) {
 
-                AccountNotification accountNotification = new AccountNotification();
-                accountNotification.setAccount(accountRepository.findByDriverId(dto.getDriver_id()));
-                accountNotification.setNotification(notification);
-                accountNotification.setStatus(false);
-
-                if (accountNotificationRepository.save(accountNotification) != null){
-
-                    // Send notification to android
-                    if(dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
-                            dto.getType() != NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
+                Account account = accountRepository.findByDriverId(dto.getDriver_id());
+                AccountNotificationKey accountNotificationKey = new AccountNotificationKey(account.getId(), notification.getId());
+                AccountNotification accountNotification = accountNotificationRepository.save(AccountNotification.builder()
+                        .id(accountNotificationKey)
+                        .account(account)
+                        .notification(notification)
+                        .status(false)
+                        .build());
+                // Send notification to android
+                if (accountNotification != null) {
+                    if (dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
+                            dto.getType() != NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()) {
                         String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
-                        String content  = dto.getContent();
+                        String content = dto.getContent();
                         Message message = Message.builder()
                                 .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
                                 .setNotification(new com.google.firebase.messaging.Notification(title, content))
@@ -81,30 +88,32 @@ public class NotificationServiceImpl implements NotificationService {
                         try {
                             response = FirebaseMessaging.getInstance().send(message);
                         } catch (FirebaseMessagingException e) {
+                            e.printStackTrace();
                             logger.info("Fail to send firebase notification " + e.getMessage());
                         }
                     }
-
-                    return notification;
-                }else{
-                    return null;
                 }
-            }else{
+
+                return notification;
+            } else {
                 return null;
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
 
-//    @Override
-//    public NotificationUnread countNotificationUnread(String username) {
-//        NotificationUnread result = new NotificationUnread();
-//        Account account = accountRepository.findByUsername(username);
-//        result.setCount(notificationRepository.countAllByAccountNotContainsAndTypeNot(account, 3));
-//        result.setNotificationsUnread(new NotificationResponeDTO().mapToListResponse(notificationRepository.findTop4ByAccountNotContainsAndTypeNotOrderByIdDesc(account, 3)));
-//        return result;
-//    }
+    @Override
+    public NotificationUnread countNotificationUnread(String username) {
+        NotificationUnread result = new NotificationUnread();
+        result.setCount(accountNotificationRepository.countAllByAccount_UsernameAndStatusIsFalseAndNotification_TypeNot(username, 3));
+        List<Notification> notifications = new ArrayList<>();
+        List<AccountNotification> accountNotifications = accountNotificationRepository.findTop4ByAccount_UsernameAndStatusIsFalseAndNotification_TypeNot(username, 3);
+        accountNotifications.stream().forEach(x -> notifications.add(x.getNotification()));
+        result.setNotificationsUnread(new NotificationResponeDTO().mapToListResponse(notifications));
+        return result;
+    }
 
     @Override
     public List<Notification> getNotificationsByType(int type) {
@@ -115,30 +124,19 @@ public class NotificationServiceImpl implements NotificationService {
 //        return notificationRepository.findByDriverId(driverId);
 //    }
 
-//    @Override
-//    public void readNotification(String username, Integer notificationId) {
-//        Notification notification = notificationRepository.findById(notificationId).get();
-//        Account account = accountRepository.findByUsername(username);
-//        Collection<Account> accounts = notification.getAccount();
-//        boolean isPresent = accounts.stream().filter(x -> x.getUsername().equals(username)).findFirst().isPresent();
-//        if (!isPresent) {
-//            accounts.add(account);
-//            notification.setAccount(accounts);
-//            notificationRepository.save(notification);
-//        }
-//    }
-//
-//    @Override
-//    public void readNotificationByType(String username, Integer type) {
-//        Account account = accountRepository.findByUsername(username);
-//        List<Notification> notifications = notificationRepository.findAllByTypeAndAccountNotContains(type, account);
-//        for (Notification notification: notifications) {
-//            Collection<Account> accounts = notification.getAccount();
-//            accounts.add(account);
-//            notification.setAccount(accounts);
-//        }
-//        notificationRepository.saveAll(notifications);
-//    }
+    @Override
+    public void readNotification(String username, Integer notificationId) {
+        AccountNotification accountNotification = accountNotificationRepository.findByNotification_IdAndAccount_Username(notificationId, username);
+        accountNotification.setStatus(true);
+        accountNotificationRepository.save(accountNotification);
+    }
+
+    @Override
+    public void readNotificationByType(String username, Integer type) {
+        List<AccountNotification> notifications = accountNotificationRepository.findAllByAccount_UsernameAndStatusIsFalseAndNotification_Type(username, type);
+        notifications.stream().forEach(x -> x.setStatus(true));
+        accountNotificationRepository.saveAll(notifications);
+    }
 
     private Notification convertToDto(NotificationRequestDTO notificationRequestDTO) {
         ModelMapper modelMapper = new ModelMapper();
