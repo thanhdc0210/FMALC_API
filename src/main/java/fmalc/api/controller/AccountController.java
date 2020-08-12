@@ -1,14 +1,14 @@
 package fmalc.api.controller;
 
-import fmalc.api.dto.DriverResponseDTO;
-import fmalc.api.entity.Account;
-import java.util.ArrayList;
-import java.util.List;
 import fmalc.api.dto.AccountDTO;
+import fmalc.api.entity.Account;
 import fmalc.api.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1.0/accounts")
@@ -35,5 +35,10 @@ public class AccountController {
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping(value = "check-username")
+    boolean checkUsername(@RequestParam("numberPhone") String numberPhone) {
+        return accountService.checkUsername(numberPhone);
     }
 }

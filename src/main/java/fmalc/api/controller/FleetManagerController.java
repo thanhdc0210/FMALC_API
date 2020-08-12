@@ -1,9 +1,7 @@
 package fmalc.api.controller;
 
-import fmalc.api.dto.DriverResponseDTO;
 import fmalc.api.dto.FLeetManagerResponseDTO;
 import fmalc.api.dto.FleetManagerRequestDTO;
-import fmalc.api.entity.Driver;
 import fmalc.api.entity.FleetManager;
 import fmalc.api.service.FleetManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +79,11 @@ public class FleetManagerController {
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping(value = "check-identity-no")
+    boolean checkVehiclePlates(@RequestParam("identityNo") String identityNo) {
+        return fleetManagerService.checkIdentityNo(identityNo);
     }
 
 }
