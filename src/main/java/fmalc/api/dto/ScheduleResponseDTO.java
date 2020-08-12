@@ -25,12 +25,14 @@ public class ScheduleResponseDTO {
     private Double weight; // Khối lượng lô hàng
     private String status;
     private Boolean isInheritance;
+    private Integer consignmentId;
 
     public ScheduleResponseDTO(Schedule schedule){
         if (places == null){
             places = new ArrayList<>();
         }
 
+        this.consignmentId = schedule.getConsignment().getId();
         this.scheduleId = schedule.getId();
         this.ownerName = schedule.getConsignment().getOwnerName();
         this.licensePlates = schedule.getVehicle().getLicensePlates();

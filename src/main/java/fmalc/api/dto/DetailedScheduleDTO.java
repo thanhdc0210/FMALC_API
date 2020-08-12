@@ -18,6 +18,7 @@ public class DetailedScheduleDTO {
     private String licensePlates; // Biển số xe
     private String status;
     private String ownerNote;
+    private Integer consignmentId;
 
     public DetailedScheduleDTO(Schedule schedule) {
 
@@ -26,6 +27,7 @@ public class DetailedScheduleDTO {
             places = new ArrayList<>();
         }
 
+        this.consignmentId = schedule.getConsignment().getId();
         this.scheduleId = schedule.getId();
         this.ownerNote = schedule.getConsignment().getOwnerNote();
         for(Place place : schedule.getConsignment().getPlaces()){
