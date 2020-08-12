@@ -197,18 +197,18 @@ public class NotificationController {
     }
 
 
-    @PatchMapping(value = "/driver/read/{id}")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
-    public ResponseEntity<Boolean> updateStatus(@PathVariable("id") Integer id){
-//>>>>>>> 8fa47a4e88a1227addb186dd6b2f9dda62cb05c6
-        try {
-            if (accountNotificationService.updateStatus(id)){
-                return ResponseEntity.ok().body(true);
-            }else{
-                return ResponseEntity.noContent().build();
-            }
-        }catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
-    }
+//    @PatchMapping(value = "/driver/read/{id}")
+//    @PreAuthorize("hasRole('ROLE_DRIVER')")
+//    public ResponseEntity<Boolean> updateStatus(@PathVariable("id") Integer id){
+////>>>>>>> 8fa47a4e88a1227addb186dd6b2f9dda62cb05c6
+//        try {
+//            if (accountNotificationService.updateStatus(id)){
+//                return ResponseEntity.ok().body(true);
+//            }else{
+//                return ResponseEntity.noContent().build();
+//            }
+//        }catch (Exception e){
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
 }

@@ -4,11 +4,10 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 @Entity
 @Table(name = "account_notification")
 public class AccountNotification {

@@ -6,6 +6,4 @@ import java.util.List;
 
 public interface AccountNotificationService {
     List<AccountNotification> findByUsername(String username);
-
-    Boolean updateStatus(Integer id);
 }

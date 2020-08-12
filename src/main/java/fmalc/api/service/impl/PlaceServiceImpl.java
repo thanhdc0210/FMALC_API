@@ -4,10 +4,7 @@ import fmalc.api.dto.PlaceResponeDTO;
 import fmalc.api.entity.*;
 import fmalc.api.repository.DriverRepository;
 import fmalc.api.repository.PlaceRepository;
-import fmalc.api.service.ConsignmentService;
-import fmalc.api.service.DriverService;
-import fmalc.api.service.LocationService;
-import fmalc.api.service.PlaceService;
+import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +30,9 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Autowired
     DriverService driverService;
+    @Autowired
+    ScheduleService scheduleService;
+
     @Autowired
     DriverRepository driverRepository;
 
@@ -97,17 +97,17 @@ public class PlaceServiceImpl implements PlaceService {
                 places.sort(Comparator.comparing(Place::getPlannedTime));
                 if(places.get(places.size()-1).getActualTime()!= null){
 
-                    for(int i =0; i< schedules.size();i++){
-                        if(schedules.get(i).getInheritance()== null && schedules.get(i).getId()==idSchedule){
-                            locations.addAll(locationService.getListLocationBySchedule(schedules.get(i).getId()));
-                            schedule = schedules.get(i);
-                            i = schedules.size();
+                        schedule = scheduleService.findById(idSchedule);
+                        if(schedule.getInheritance()== null ){
+                            locations.addAll(locationService.getListLocationBySchedule(idSchedule));
+//                            schedule = schedules.get(i);
+
                         }
-                    }
+
                     if(locations.size()>0){
                         locations.sort(Comparator.comparing(Location::getTime));
                         long diff = places.get(places.size()-1).getActualTime().getTime() - locations.get(0).getTime().getTime();
-                        float hours = (float) (diff/HOUR);
+                        float hours = (float) (diff/MINUTE);
                         if(hours>0){
                             Driver driver = driverService.findById(schedule.getDriver().getId());
                             driver.setWorkingHour(hours);

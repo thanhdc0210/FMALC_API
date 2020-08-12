@@ -141,8 +141,10 @@ public class ConsignmentController {
         if(status == ConsignmentStatusEnum.DELIVERING.getValue() || status == ConsignmentStatusEnum.OBTAINING.getValue()){
             consignments.addAll(consignmentService.getAllByStatus(ConsignmentStatusEnum.DELIVERING.getValue()));
             consignments.addAll(consignmentService.getAllByStatus(ConsignmentStatusEnum.OBTAINING.getValue()));
+        }else{
+            consignments = consignmentService.getAllByStatus(status);
         }
-         consignments = consignmentService.getAllByStatus(status);
+
         ConsignmentListDTO consignmentListDTO = new ConsignmentListDTO();
         List<ConsignmentListDTO> consignmentListDTOS = consignmentListDTO.mapToListResponse(consignments);
         if (consignments.isEmpty()) {
