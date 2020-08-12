@@ -55,6 +55,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
         notify.setType(dto.getType());
         notify.setContent(dto.getContent());
+        notify.setDriver(driverRepository.findById(dto.getDriver_id()).get());
 
         try {
             Notification notification = notificationRepository.save(notify);
