@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface VehicleService {
     Vehicle saveVehicle(Vehicle vehicle);
-
+    Vehicle updateVehicle(Vehicle vehicle);
     Vehicle findById(int id);
 
     VehicleForDetailDTO findVehicleById(int id);
