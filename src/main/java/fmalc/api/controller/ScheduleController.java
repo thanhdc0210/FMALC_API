@@ -483,7 +483,6 @@ public class ScheduleController {
     }
 
     @PostMapping("/status")
-
 //    @MultipartConfig(maxFileSize =  @Value("${multipart.max-file-size}"), maxRequestSize = 1024*1024*1024)
     public ResponseEntity<ConsignmentResponseDTO> updateStatusSchedules(@RequestPart(value = "file") MultipartFile file, @ModelAttribute(value = "requestSaveScheObjDTO") String requestSaveScheObjDTO) {
         boolean result = false;
@@ -500,8 +499,6 @@ public class ScheduleController {
             if (post_id.get("consignment_id") != null) {
                 obejctScheDTO.setConsignment_id(post_id.get("consignment_id").getAsInt());
             }
-
-//                    new Gson().fromJson(post_id, ObejctScheDTO.class);
             obejctScheDTOS.add(obejctScheDTO);
         }
         ConsignmentRequestDTO consignmentRequestDTO = new Gson().fromJson(jsonObject.get("consignmentRequestDTO"), ConsignmentRequestDTO.class);
@@ -519,26 +516,8 @@ public class ScheduleController {
                 if (schedules.size() > 0) {
                     Consignment consignment = consignmentService.findById(schedules.get(0).getConsignment().getId());
                     consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
-
-                    // Save notification
-//                    NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
-//                    for (Schedule schedule : schedules) {
-//                        notificationRequestDTO.setVehicle_id(schedule.getVehicle().getId());
-//                        notificationRequestDTO.setDriver_id(schedule.getDriver().getId());
-//                        notificationRequestDTO.setStatus(false);
-//                        notificationRequestDTO.setContent("Bạn có lịch chạy mới của lô hàng #" + schedule.getId());
-//                        notificationRequestDTO.setType(NotificationTypeEnum.TASK_SCHEDULE.getValue());
-//                        notificationService.createNotification(notificationRequestDTO);
-//                    }
-
                     return ResponseEntity.ok().body(consignmentResponseDTO);
                 }
-//            for(int i =0 ; i<requestObjectDTOS.size(); i++){
-//                boolean s =  scheduleService.updateStatusSchedule(requestObjectDTOS.get(i));
-//                if(!s){
-//                    result.add(requestObjectDTOS.get(i).getConsignment_id());
-//                }
-//            }
 
             } catch (Exception e) {
                 return ResponseEntity.badRequest().build();
