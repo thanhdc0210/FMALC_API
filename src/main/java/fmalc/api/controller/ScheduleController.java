@@ -483,7 +483,6 @@ public class ScheduleController {
     }
 
     @PostMapping("/status")
-
 //    @MultipartConfig(maxFileSize =  @Value("${multipart.max-file-size}"), maxRequestSize = 1024*1024*1024)
     public ResponseEntity<ConsignmentResponseDTO> updateStatusSchedules(@RequestPart(value = "file") MultipartFile file, @ModelAttribute(value = "requestSaveScheObjDTO") String requestSaveScheObjDTO) {
         boolean result = false;
@@ -500,8 +499,6 @@ public class ScheduleController {
             if (post_id.get("consignment_id") != null) {
                 obejctScheDTO.setConsignment_id(post_id.get("consignment_id").getAsInt());
             }
-
-//                    new Gson().fromJson(post_id, ObejctScheDTO.class);
             obejctScheDTOS.add(obejctScheDTO);
         }
         ConsignmentRequestDTO consignmentRequestDTO = new Gson().fromJson(jsonObject.get("consignmentRequestDTO"), ConsignmentRequestDTO.class);
@@ -530,15 +527,8 @@ public class ScheduleController {
                         notificationRequestDTO.setType(NotificationTypeEnum.TASK_SCHEDULE.getValue());
                         notificationService.createNotification(notificationRequestDTO);
                     }
-
                     return ResponseEntity.ok().body(consignmentResponseDTO);
                 }
-//            for(int i =0 ; i<requestObjectDTOS.size(); i++){
-//                boolean s =  scheduleService.updateStatusSchedule(requestObjectDTOS.get(i));
-//                if(!s){
-//                    result.add(requestObjectDTOS.get(i).getConsignment_id());
-//                }
-//            }
 
             } catch (Exception e) {
                 return ResponseEntity.badRequest().build();
