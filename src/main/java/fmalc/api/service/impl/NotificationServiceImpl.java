@@ -73,7 +73,7 @@ public class NotificationServiceImpl implements NotificationService {
                         .build());
                 // Send notification to android
                 if (accountNotification != null) {
-                    if (dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
+                    if (dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() &&
                             dto.getType() != NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()) {
                         String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
                         String content = dto.getContent();

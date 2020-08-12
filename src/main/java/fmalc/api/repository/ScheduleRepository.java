@@ -53,9 +53,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     int updateStatusSchedule(@Param("idVehicle") int idVehicle, @Param("idDriver")int idDriver, @Param("status") int status,@Param("id")  int id);
 
     //GiangTLB
-    List<Schedule> findScheduleByConsignmentId(Integer consignmentId);
-    List<Schedule> findByConsignmentOwnerNameContaining(String ownerName);
-    List<Schedule> findByVehicleLicensePlatesContaining(String licensePlate);
+    List<Schedule> findScheduleByConsignmentIdAndDriverIdAndIsApprove(Integer consignmentId, Integer driverId, boolean isApprove);
+    List<Schedule> findByConsignmentOwnerNameContainingAndDriverIdAndIsApprove(String ownerName, Integer driverId, boolean isApprove);
+    List<Schedule> findByVehicleLicensePlatesContainingAndDriverIdAndIsApprove(String licensePlate, Integer driverId, boolean isApprove);
 
     List<Schedule> findScheduleByConsignmentStatus(Integer consignmentStatus);
 

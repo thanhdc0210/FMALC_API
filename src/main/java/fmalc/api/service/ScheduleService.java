@@ -36,7 +36,7 @@ public interface ScheduleService {
 
     StatusToUpdateDTO updateStautsForVeDriAndCon(StatusToUpdateDTO statusToUpdateDTO, Schedule schedule);
 
-    List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType);
+    List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType, Integer driverId);
 
     Schedule getScheduleByDriverSub(int id);
 //    THANHDC

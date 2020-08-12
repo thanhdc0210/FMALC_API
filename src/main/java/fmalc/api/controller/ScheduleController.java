@@ -581,12 +581,12 @@ public class ScheduleController {
 
 
     @GetMapping("/search")
-    @PreAuthorize("hasRole('ROLE_DRIVER')")
-    public ResponseEntity<List<ScheduleResponseDTO>> searchByTypeForDriver(@RequestParam SearchTypeForDriverEnum
-                                                                                   searchType, @RequestParam String searchValue) {
+//    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    public ResponseEntity<List<ScheduleResponseDTO>> searchByTypeForDriver(@RequestParam SearchTypeForDriverEnum searchType,
+                                                                           @RequestParam String searchValue, @RequestParam Integer driverId) {
         List<Schedule> result = new ArrayList<>();
         try {
-            result = scheduleService.searchByTypeForDriver(searchValue, searchType);
+            result = scheduleService.searchByTypeForDriver(searchValue, searchType,driverId);
             if (result.size() > 0) {
                 List<ScheduleResponseDTO> consignmentResponses = new ArrayList<>(new ScheduleResponseDTO().mapToListResponse(result));
                 return ResponseEntity.ok().body(consignmentResponses);
