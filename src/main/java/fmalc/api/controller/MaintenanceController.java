@@ -1,9 +1,7 @@
 package fmalc.api.controller;
-import fmalc.api.dto.MaintainConfirmDTO;
-import fmalc.api.dto.MaintainReponseDTO;
-import fmalc.api.dto.MaintainanceResponse;
-import fmalc.api.dto.MaintenanceResponseDTO;
+import fmalc.api.dto.*;
 import fmalc.api.entity.Maintenance;
+import fmalc.api.entity.Notification;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.service.MaintenanceService;
 import fmalc.api.service.VehicleService;
@@ -12,9 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +34,8 @@ public class MaintenanceController {
     @Autowired
 //    VehicleRepository vehicleRepository;
     VehicleService vehicleService;
+    private Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
+    private Flux<List<NotificationResponeDTO>> flux;
 
     @GetMapping("/actual-date")
     public ResponseEntity getMaintenance() {
@@ -93,17 +96,23 @@ public class MaintenanceController {
 
 
     @PostMapping(value = "update-plannedtime")
-    public ResponseEntity<MaintainConfirmDTO> updatePlannedtime(@RequestParam("id") Integer id, @RequestParam("km") Integer km) {
-//        if (file.isEmpty()) {
-//            return ResponseEntity.badRequest().build();
-//        }
+    public ResponseEntity<MaintenanceDTO> updatePlannedtime(@RequestParam("id") Integer id, @RequestParam("km") Integer km) {
         Boolean reuslt = false;
         MaintainConfirmDTO maintenance = new MaintainConfirmDTO();
+        MaintainReponseDTO maintainReponseDTO= new MaintainReponseDTO();
+        MaintenanceDTO maintenanceDTO = new MaintenanceDTO();
         try {
             Vehicle vehicle = vehicleService.updateKmVehicle(id,km);
-
             maintenance = maintenanceService.updatePlannedTime(id, km);
+            maintainReponseDTO = maintenance.getMaintainReponseDTO();
+            maintenanceDTO.setId(maintainReponseDTO.getId());
+            maintenanceDTO.setActualMaintainDate(maintainReponseDTO.getActualMaintainDate());
+            maintenanceDTO.setPlannedMaintainDate(maintainReponseDTO.getPlannedMaintainDate());
+            maintenanceDTO.setDriver(maintainReponseDTO.getDriver().getId());
+            maintenanceDTO.setVehicle(maintainReponseDTO.getVehicle().getId());
+            maintenanceDTO.setMaintenanceType(maintainReponseDTO.getMaintenanceType().getMaintenanceTypeName());
             if(maintenance.getMaintainReponseDTO()!= null && maintenance.getMaintainReponseDTO().getActualMaintainDate()!= null){
+                Notification notification = new Notification();
                 reuslt = true;
             }else if(maintenance!= null && maintenance.getMaintainReponseDTO().getActualMaintainDate()== null){
                 reuslt = false;
@@ -114,7 +123,7 @@ public class MaintenanceController {
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok().body(maintenance);
+        return ResponseEntity.ok().body(maintenanceDTO);
     }
 
 

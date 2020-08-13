@@ -38,6 +38,9 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
 
     //GiangTLB
     List<Maintenance> findMaintenancesByDriverIdAndAndStatus(int driverId, boolean status);
+    @Query("select m from Maintenance m where m.vehicle.id =?1 and m.status=?2")
+    Maintenance findByIdVehicleAndStatus(int idVehicle, Boolean status);
+
     Maintenance findByIdAndStatus(int id, boolean status);
     List<Maintenance> findByStatus(boolean status);
     // ThanhDC
