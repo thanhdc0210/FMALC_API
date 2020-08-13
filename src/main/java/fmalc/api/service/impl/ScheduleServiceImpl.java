@@ -203,18 +203,18 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType) {
+    public List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType, Integer driverId) {
         List<Schedule> result = new ArrayList<>();
         switch (searchType) {
             case CONSIGNMENT_ID:
                 Integer parsed = Integer.parseInt(value);
-                result = scheduleRepository.findByConsignment_Id(parsed);
+                result = scheduleRepository.findScheduleByConsignmentIdAndDriverIdAndIsApprove(parsed, driverId,true);
                 return result;
             case LICENSE_PLATE:
-                result = scheduleRepository.findByVehicleLicensePlatesContaining(value);
+                result = scheduleRepository.findByVehicleLicensePlatesContainingAndDriverIdAndIsApprove(value, driverId,true);
                 return result;
             case OWNER_NAME:
-                result = scheduleRepository.findByConsignmentOwnerNameContaining(value);
+                result = scheduleRepository.findByConsignmentOwnerNameContainingAndDriverIdAndIsApprove(value, driverId,true);
                 return result;
             default:
                 throw new IllegalStateException("Unexpected value: " + searchType);
