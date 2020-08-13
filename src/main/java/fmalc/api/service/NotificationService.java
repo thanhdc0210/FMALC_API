@@ -18,4 +18,6 @@ public interface NotificationService {
     void readNotification(String username, Integer notificationId);
 
     void readNotificationByType(String username, Integer type);
+
+    List<Notification> getNotificationsDayOff();
 }

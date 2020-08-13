@@ -1,9 +1,6 @@
 package fmalc.api.controller;
 
-import fmalc.api.dto.NotificationMobileResponse;
-import fmalc.api.dto.NotificationRequestDTO;
-import fmalc.api.dto.NotificationResponeDTO;
-import fmalc.api.dto.NotificationUnread;
+import fmalc.api.dto.*;
 import fmalc.api.entity.AccountNotification;
 import fmalc.api.entity.Notification;
 import fmalc.api.service.AccountNotificationService;
@@ -194,6 +191,12 @@ public class NotificationController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @GetMapping(value = "/dayoff")
+    public ResponseEntity getNotificationsDayOff() {
+        List<Notification> notifications = notificationService.getNotificationsDayOff();
+        return ResponseEntity.ok().body(new DayOffNotificationResponseDTO().mapToListResponse(notifications));
     }
 
 
