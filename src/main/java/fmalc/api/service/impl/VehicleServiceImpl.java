@@ -121,7 +121,7 @@ public class VehicleServiceImpl implements VehicleService {
     public List<Vehicle> findByWeight(double weight) {
         List<Vehicle> vehicles = vehicleRepository.findByWeight(weight, true);
         return vehicles.stream()
-                .filter(x -> x.getStatus() != VehicleStatusEnum.SOLD.getValue())
+                .filter(x -> x.getStatus() != VehicleStatusEnum.UNAVAILABLE.getValue())
                 .collect(Collectors.toList());
     }
 
@@ -131,7 +131,7 @@ public class VehicleServiceImpl implements VehicleService {
         List<Vehicle> vehicles = vehicleRepository.findByWeightBigger(weight);
         List<Vehicle> result = new ArrayList<>();
         for (int i = 0; i < vehicles.size(); i++) {
-            if (vehicles.get(i).getStatus() != VehicleStatusEnum.SOLD.getValue()) {
+            if (vehicles.get(i).getStatus() != VehicleStatusEnum.UNAVAILABLE.getValue()) {
                 result.add(vehicles.get(i));
             }
         }
@@ -143,7 +143,7 @@ public class VehicleServiceImpl implements VehicleService {
         List<Vehicle> vehicles = vehicleRepository.findByWeightSmaller(weight);
         List<Vehicle> result = new ArrayList<>();
         for (int i = 0; i < vehicles.size(); i++) {
-            if (vehicles.get(i).getStatus() != VehicleStatusEnum.SOLD.getValue()) {
+            if (vehicles.get(i).getStatus() != VehicleStatusEnum.UNAVAILABLE.getValue()) {
                 result.add(vehicles.get(i));
             }
         }

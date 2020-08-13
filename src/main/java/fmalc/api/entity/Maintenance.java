@@ -33,7 +33,7 @@ public class Maintenance implements Serializable {
     @JoinColumn(name = "maintenance_type_id", referencedColumnName = "id", nullable = false)
     private MaintenanceType maintenanceType;
 
-    @Column(name = "image_maintain")
+    @Column(name = "image_maintain", length = 2000)
     private String imageMaintain;
 
     @Column(name = "km_old")
