@@ -226,7 +226,7 @@ public class VehicleController {
                 Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
                 Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
 
-        if(vehicle.getId() >= 0){
+        if(vehicle!= null){
             return ResponseEntity.ok().body(vehicle.getId().toString());
         }
         return ResponseEntity.noContent().build();
