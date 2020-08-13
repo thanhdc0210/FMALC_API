@@ -1,4 +1,5 @@
 package fmalc.api.controller;
+
 import fmalc.api.dto.*;
 import fmalc.api.entity.Maintenance;
 import fmalc.api.entity.Notification;
@@ -10,13 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

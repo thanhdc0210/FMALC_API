@@ -1,9 +1,7 @@
 package fmalc.api.dto;
 
-import fmalc.api.entity.ConsignmentHistory;
 import lombok.Data;
 
-import java.util.Collection;
 import java.util.List;
 
 @Data

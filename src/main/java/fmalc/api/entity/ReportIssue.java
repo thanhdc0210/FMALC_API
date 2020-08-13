@@ -1,13 +1,12 @@
 package fmalc.api.entity;
 
-import java.awt.print.Book;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Objects;
-import javax.persistence.*;
-
-import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 @Table(name = "report_issue")
 @AllArgsConstructor

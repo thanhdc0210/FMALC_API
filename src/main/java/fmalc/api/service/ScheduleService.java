@@ -2,16 +2,11 @@
 package fmalc.api.service;
 
 import fmalc.api.dto.*;
-import fmalc.api.entity.Consignment;
-import fmalc.api.entity.Driver;
 import fmalc.api.entity.Schedule;
-import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.SearchTypeForDriverEnum;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.List;
 
 

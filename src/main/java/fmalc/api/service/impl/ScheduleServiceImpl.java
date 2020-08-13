@@ -2,11 +2,12 @@
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.*;
-import fmalc.api.entity.*;
+import fmalc.api.entity.Consignment;
+import fmalc.api.entity.Driver;
+import fmalc.api.entity.Schedule;
+import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.ConsignmentStatusEnum;
-import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.SearchTypeForDriverEnum;
-import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.ScheduleRepository;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static fmalc.api.enums.SearchTypeForDriverEnum.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service

@@ -1,11 +1,10 @@
 package fmalc.api.dto;
 
-import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Schedule;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
