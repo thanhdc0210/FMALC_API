@@ -41,5 +41,5 @@ public interface ScheduleService {
     Schedule getScheduleByDriverSub(int id);
 //    THANHDC
     Integer countScheduleNumberInADayOfDriver(Integer id, Timestamp startDate, Timestamp endDate);
-    Schedule findScheduleByConsignment_IdAndDriver_Id(Integer consignmentId, Integer driverId);
+//    Schedule findScheduleByConsignment_IdAndDriver_Id(Integer consignmentId, Integer driverId);
 }
