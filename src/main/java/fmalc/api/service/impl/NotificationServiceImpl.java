@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -135,6 +136,11 @@ public class NotificationServiceImpl implements NotificationService {
         List<AccountNotification> notifications = accountNotificationRepository.findAllByAccount_UsernameAndStatusIsFalseAndNotification_Type(username, type);
         notifications.stream().forEach(x -> x.setStatus(true));
         accountNotificationRepository.saveAll(notifications);
+    }
+
+    @Override
+    public List<Notification> getNotificationsDayOff() {
+        return notificationRepository.findAllByTypeInOrderByIdDesc(Arrays.asList(4, 5));
     }
 
     private Notification convertToDto(NotificationRequestDTO notificationRequestDTO) {
