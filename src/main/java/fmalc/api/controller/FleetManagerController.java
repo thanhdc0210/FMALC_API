@@ -20,21 +20,22 @@ public class FleetManagerController {
     FleetManagerService fleetManagerService;
 
     @GetMapping
-    public ResponseEntity<List<FLeetManagerResponseDTO>> getAllFleetManager(){
-        try{
+    public ResponseEntity<List<FLeetManagerResponseDTO>> getAllFleetManager() {
+        try {
             FLeetManagerResponseDTO fLeetManagerResponseDTO = new FLeetManagerResponseDTO();
             List<FLeetManagerResponseDTO> fleetManagerResponseDTOS = new ArrayList<>();
             List<FleetManager> fleetManagers = fleetManagerService.getAllFleet();
-            if(fleetManagers.size()>0){
+            if (fleetManagers.size() > 0) {
                 fleetManagerResponseDTOS = fLeetManagerResponseDTO.mapToListResponse(fleetManagers);
                 return ResponseEntity.ok().body(fleetManagerResponseDTOS);
-            }else{
+            } else {
                 return ResponseEntity.noContent().build();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
+
     @PostMapping
     public ResponseEntity createFleetManager(@RequestPart(value = "file") MultipartFile file, @ModelAttribute FleetManagerRequestDTO fleetManagerRequestDTO) {
         if (file.isEmpty()) {
@@ -84,6 +85,18 @@ public class FleetManagerController {
     @GetMapping(value = "check-identity-no")
     boolean checkVehiclePlates(@RequestParam("identityNo") String identityNo) {
         return fleetManagerService.checkIdentityNo(identityNo);
+    }
+
+    @PutMapping(value = "is-active/{accountId}")
+    public ResponseEntity updateIsActive(@PathVariable("accountId") Integer accountId,
+                                         @RequestParam("isActive") Boolean isActive,
+                                         @RequestParam(value = "fleetManagerId", required = false) Integer fleetManagerId) {
+        try {
+            fleetManagerService.updateIsActive(accountId, isActive, fleetManagerId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }

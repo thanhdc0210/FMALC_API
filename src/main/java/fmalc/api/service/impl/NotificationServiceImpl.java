@@ -62,6 +62,20 @@ public class NotificationServiceImpl implements NotificationService {
             Notification notification = notificationRepository.save(notify);
 
             if (notification != null) {
+                List<Account> accounts = accountRepository.findAllByIsActiveIsTrueAndRole_Role("ROLE_ADMIN");
+                Driver driver = driverRepository.findById(dto.getDriver_id()).get();
+                accounts.add(accountRepository.findById(driver.getFleetManager().getAccount().getId()).get());
+                List<AccountNotification> accountNotifications = new ArrayList<>();
+                for (Account acc: accounts) {
+                    AccountNotificationKey accountNotificationKey = new AccountNotificationKey(acc.getId(), notification.getId());
+                    accountNotifications.add(AccountNotification.builder()
+                            .id(accountNotificationKey)
+                            .account(acc)
+                            .notification(notification)
+                            .status(false)
+                            .build());
+                }
+                accountNotificationRepository.saveAll(accountNotifications);
 
                 Account account = accountRepository.findByDriverId(dto.getDriver_id());
                 AccountNotificationKey accountNotificationKey = new AccountNotificationKey(account.getId(), notification.getId());

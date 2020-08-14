@@ -20,4 +20,6 @@ public interface FleetManagerService {
     FleetManager updateAvatar(Integer id, MultipartFile file) throws IOException;
 
     boolean checkIdentityNo(String identityNo);
+
+    void updateIsActive(Integer accountId, Boolean isActive, Integer fleetManagerId);
 }
