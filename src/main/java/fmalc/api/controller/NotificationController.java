@@ -62,8 +62,6 @@ public class NotificationController {
     private Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
     private Flux<List<NotificationResponeDTO>> flux;
 
-    // save notify and send notify for fleet manager and driver
-    // alert and notify for odd-hours and long idle times
     @PostMapping("/")
     public ResponseEntity<NotificationResponeDTO> createNotification(@RequestBody NotificationRequestDTO notificationRequestDTO) {
         NotificationResponeDTO notificationResponeDTO;
@@ -96,9 +94,6 @@ public class NotificationController {
     private List<NotificationResponeDTO> returnResponeFor() {
         return notificationResponeDTOS;
     }
-
-
-    // send notify for fleet manager
     @GetMapping(value = "/notificationworking", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<List<NotificationResponeDTO>> notifyForManagerWorkingHours() {
         System.out.println("EEE");
