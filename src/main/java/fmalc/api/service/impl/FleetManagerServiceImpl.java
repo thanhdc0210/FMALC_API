@@ -2,9 +2,11 @@ package fmalc.api.service.impl;
 
 import fmalc.api.dto.FleetManagerRequestDTO;
 import fmalc.api.entity.Account;
+import fmalc.api.entity.Driver;
 import fmalc.api.entity.FleetManager;
 import fmalc.api.entity.Role;
 import fmalc.api.repository.AccountRepository;
+import fmalc.api.repository.DriverRepository;
 import fmalc.api.repository.FleetManagerRepository;
 import fmalc.api.repository.RoleRepository;
 import fmalc.api.service.FleetManagerService;
@@ -29,6 +31,9 @@ public class FleetManagerServiceImpl implements FleetManagerService {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    DriverRepository driverRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -94,6 +99,18 @@ public class FleetManagerServiceImpl implements FleetManagerService {
     @Override
     public boolean checkIdentityNo(String identityNo) {
         return fleetManagerRepository.existsByIdentityNo(identityNo);
+    }
+
+    @Override
+    public void updateIsActive(Integer accountId, Boolean isActive, Integer fleetManagerId) {
+        accountRepository.updateIsActiveById(accountId, isActive);
+        if (!isActive) {
+            FleetManager fleetManager = fleetManagerRepository.findByAccountID(accountId);
+            FleetManager newFleetManager = fleetManagerRepository.findById(fleetManagerId).get();
+            List<Driver> drivers = driverRepository.findAllByFleetManager_Id(fleetManager.getId());
+            drivers.stream().forEach(x -> x.setFleetManager(newFleetManager));
+            driverRepository.saveAll(drivers);
+        }
     }
 
 }

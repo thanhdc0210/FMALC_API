@@ -29,6 +29,7 @@ public class DriverResponseDTO {
     private String image;
     private Boolean isActive;
     private String tokenDevice;
+    private FLeetManagerResponseDTO fLeetManagerResponseDTO;
 
     public void setStatus(Integer status) {
         this.status = status;
@@ -40,12 +41,13 @@ public class DriverResponseDTO {
         this.driverLicenseStr = DriverLicenseEnum.getValueEnumToShow(driverLicense);
     }
 
-    public DriverResponseDTO mapToResponse(Driver baseEntities) {
+    public DriverResponseDTO mapToResponse(Driver driver) {
         ModelMapper modelMapper = new ModelMapper();
-        DriverResponseDTO driverResponse = modelMapper.map(baseEntities, DriverResponseDTO.class);
+        DriverResponseDTO driverResponse = modelMapper.map(driver, DriverResponseDTO.class);
         driverResponse.setDriverStatus(DriverStatusEnum.getValueEnumToShow(driverResponse.getStatus()));
-        driverResponse.setIsActive(baseEntities.getAccount().getIsActive());
-        driverResponse.setAccountId(baseEntities.getAccount().getId());
+        driverResponse.setIsActive(driver.getAccount().getIsActive());
+        driverResponse.setAccountId(driver.getAccount().getId());
+        driverResponse.setFLeetManagerResponseDTO(new FLeetManagerResponseDTO().mapToResponse(driver.getFleetManager()));
         return driverResponse;
     }
 
