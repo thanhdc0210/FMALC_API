@@ -42,7 +42,7 @@ public class AlertServiceImpl implements AlertService {
             if (alertRequestDTO.getDriverId() > 0) {
                 driver = driverRepository.findByIdAndAccountIsActive(alertRequestDTO.getDriverId(), true);
             }if(alertRequestDTO.getVehicleId()>0){
-                vehicle = vehicleRepository.findByIdEqualsAndStatusIsNotLike(alertRequestDTO.getVehicleId(), VehicleStatusEnum.SOLD.getValue());
+                vehicle = vehicleRepository.findByIdEqualsAndStatusIsNotLike(alertRequestDTO.getVehicleId(), VehicleStatusEnum.UNAVAILABLE.getValue());
 
             }
         } catch (Exception e){
