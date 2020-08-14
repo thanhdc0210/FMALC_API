@@ -38,13 +38,13 @@ public enum NotificationTypeEnum {
             return 5;
         }
     },
-    APPROVE("Chấp nhận lịch xin nghỉ"){
+    APPROVED("Được chấp nhận"){
         @Override
         public int getValue() {
             return 6;
         }
     },
-    REJECT("Không chấp nhận lịch xin nghỉ"){
+    REJECTED("Bị từ chối"){
         @Override
         public int getValue() {
             return 7;
@@ -77,6 +77,10 @@ public enum NotificationTypeEnum {
                 return DAY_OFF_BY_SCHEDULE.getNotificationTypeEnum();
             case 5:
                 return DAY_OFF_UNEXPECTED.getNotificationTypeEnum();
+            case 6:
+                return APPROVED.getNotificationTypeEnum();
+            case 7:
+                return REJECTED.getNotificationTypeEnum();
             default:
                 throw new AssertionError("Unknown operations");
         }
