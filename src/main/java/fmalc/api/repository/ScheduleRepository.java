@@ -68,4 +68,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 //            " And s.driver.id = :driverId")
 //    Schedule findScheduleByConsignment_IdAndDriver_Id(@Param("consignmentId") Integer consignmentId, @Param("driverId") Integer driverId);
 
+    @Query("Select s.id From Schedule s Where s.consignment.id = :consignmentId AND s.driver.id = :driverId")
+    Integer findScheduleIdByConsignmentIdAndDriverId(@Param("consignmentId") Integer consignmentId, @Param("driverId") Integer driverId);
 }

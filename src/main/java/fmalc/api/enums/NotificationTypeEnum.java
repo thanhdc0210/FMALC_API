@@ -37,6 +37,18 @@ public enum NotificationTypeEnum {
         public int getValue() {
             return 5;
         }
+    },
+    APPROVE("Chấp nhận lịch xin nghỉ"){
+        @Override
+        public int getValue() {
+            return 6;
+        }
+    },
+    REJECT("Không chấp nhận lịch xin nghỉ"){
+        @Override
+        public int getValue() {
+            return 7;
+        }
     };
 
     String notificationTypeEnum;

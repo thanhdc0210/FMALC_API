@@ -641,5 +641,20 @@ public class ScheduleController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("id")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    public ResponseEntity<Integer> findScheduleIdByConsignmentIdAndDriverId(@RequestParam("consignmentId") Integer consignmentId,
+                                            @RequestParam("driverId") Integer driverId){
+        try {
+            Integer id = scheduleService.findScheduleIdByConsignmentIdAndDriverId(consignmentId, driverId);
+            if (id == null){
+                return ResponseEntity.noContent().build();
+            }else{
+                return ResponseEntity.ok().body(id);
+            }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 }

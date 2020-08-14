@@ -234,6 +234,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     // THANHDC
 
+    public Integer findScheduleIdByConsignmentIdAndDriverId(Integer consignmentId, Integer driverId){
+        return scheduleRepository.findScheduleIdByConsignmentIdAndDriverId(consignmentId, driverId);
+    }
+
 //    @Override
 //    public Schedule findScheduleByConsignment_IdAndDriver_Id(Integer consignmentId, Integer driverId) {
 //
