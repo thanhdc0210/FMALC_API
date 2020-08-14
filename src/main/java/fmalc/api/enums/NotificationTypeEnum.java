@@ -37,6 +37,12 @@ public enum NotificationTypeEnum {
         public int getValue() {
             return 5;
         }
+    },
+    ALERT("Cảnh báo") {
+        @Override
+        public int getValue() {
+            return 6;
+        }
     };
 
     String notificationTypeEnum;
@@ -65,6 +71,8 @@ public enum NotificationTypeEnum {
                 return DAY_OFF_BY_SCHEDULE.getNotificationTypeEnum();
             case 5:
                 return DAY_OFF_UNEXPECTED.getNotificationTypeEnum();
+            case 6:
+                return ALERT.getNotificationTypeEnum();
             default:
                 throw new AssertionError("Unknown operations");
         }

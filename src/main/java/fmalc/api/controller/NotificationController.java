@@ -1,24 +1,23 @@
 package fmalc.api.controller;
 
-import fmalc.api.dto.NotificationMobileResponse;
-import fmalc.api.dto.NotificationRequestDTO;
-import fmalc.api.dto.NotificationResponeDTO;
-import fmalc.api.dto.NotificationUnread;
+import fmalc.api.dto.*;
 import fmalc.api.entity.AccountNotification;
+import fmalc.api.entity.Alert;
 import fmalc.api.entity.Notification;
-import fmalc.api.service.AccountNotificationService;
-import fmalc.api.service.DriverService;
-import fmalc.api.service.NotificationService;
-import fmalc.api.service.VehicleService;
+import fmalc.api.enums.LevelInAlertEnum;
+import fmalc.api.enums.NotificationTypeEnum;
+import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.util.function.Tuple2;
 
+import java.text.ParseException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +38,9 @@ public class NotificationController {
 
     @Autowired
     AccountNotificationService accountNotificationService;
+
+    @Autowired
+    AlertService alertService;
 
     // list notify
     private List<NotificationResponeDTO> notificationResponeDTOS = new ArrayList<>();
@@ -103,7 +105,7 @@ public class NotificationController {
 
     // send notify for fleet manager
     @GetMapping(value = "/notificationworking", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public  Flux<List<NotificationResponeDTO>> notifyForManagerWorkingHours() {
+    public Flux<List<NotificationResponeDTO>> notifyForManagerWorkingHours() {
 //        closeInterval();
 
         System.out.println("EEE");
@@ -119,7 +121,7 @@ public class NotificationController {
             intervals.subscribe((i) -> returnResponeFor()).dispose();
             flux = Flux.zip(intervals, monoTransaction).map(Tuple2::getT2);
         }
-        return  flux;
+        return flux;
     }
 
     // delete list to disconnect notify
@@ -153,19 +155,19 @@ public class NotificationController {
         try {
 
             List<AccountNotification> accountNotifications = accountNotificationService.findByUsername(username);
-            if (accountNotifications != null){
+            if (accountNotifications != null) {
                 List<NotificationMobileResponse> notificationMobileResponses = new ArrayList<>();
 
-                for(AccountNotification accountNotification : accountNotifications){
+                for (AccountNotification accountNotification : accountNotifications) {
                     notificationMobileResponses.add(new NotificationMobileResponse(accountNotification));
                 }
 
-                if (notificationMobileResponses != null){
+                if (notificationMobileResponses != null) {
                     return ResponseEntity.ok().body(notificationMobileResponses);
-                }else{
+                } else {
                     return ResponseEntity.noContent().build();
                 }
-            }else{
+            } else {
                 return ResponseEntity.noContent().build();
             }
 
@@ -187,7 +189,7 @@ public class NotificationController {
 
     @GetMapping(value = "/read-all-type")
     public ResponseEntity readNotificationByType(@RequestParam("username") String username,
-                                           @RequestParam("type") Integer type) {
+                                                 @RequestParam("type") Integer type) {
         try {
             notificationService.readNotificationByType(username, type);
             return ResponseEntity.noContent().build();
@@ -196,6 +198,39 @@ public class NotificationController {
         }
     }
 
+    @PostMapping("/notify-for-alert")
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<NotificationResponeDTO> driverSendAlert(@RequestBody AlertRequestDTO alertRequest) throws ParseException {
+        Alert alert = alertService.driverSendAlert(alertRequest);
+        NotificationResponeDTO notificationResponeDTO;
+        if (alert == null) {
+            return ResponseEntity.noContent().build();
+        }
+        if (alert != null) {
+            NotificationRequestDTO noti = new NotificationRequestDTO();
+            noti.setType(NotificationTypeEnum.ALERT.getValue());
+            noti.setDriver_id(alert.getDriver().getId());
+            noti.setStatus(false);
+            noti.setVehicle_id(alert.getVehicle().getId());
+            noti.setContent("Báo cáo từ tài xế loại " + LevelInAlertEnum.getValueEnumToShow(alert.getLevel()) + ":" + alert.getContent());
+            try {
+                Notification notificationSaved = notificationService.createNotification(noti);
+                if (notificationSaved != null) {
+                    notificationResponeDTO = new NotificationResponeDTO().mapToResponse(notificationSaved);
+                    if (notificationSend != notificationResponeDTO) {
+                        notificationResponeDTOS.add(notificationResponeDTO);
+                        intervals.subscribe((i) -> notifyForManagerWorkingHours()).dispose();
+                    }
+                    return ResponseEntity.ok().body(notificationResponeDTO);
+                } else {
+                    return ResponseEntity.noContent().build();
+                }
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().build();
+            }
+        }
+        return ResponseEntity.badRequest().build();
+    }
 
 //    @PatchMapping(value = "/driver/read/{id}")
 //    @PreAuthorize("hasRole('ROLE_DRIVER')")
@@ -211,4 +246,4 @@ public class NotificationController {
 //            return ResponseEntity.badRequest().build();
 //        }
 //    }
-}
+        }
