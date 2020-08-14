@@ -8,9 +8,9 @@ import fmalc.api.dto.VehicleResponseDTO;
 import fmalc.api.entity.Inspection;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.ConsignmentStatusEnum;
-import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.service.InspectionService;
+import fmalc.api.service.ScheduleService;
 import fmalc.api.service.VehicleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +32,9 @@ public class VehicleController {
 
     @Autowired
     InspectionService inspectionService;
+
+    @Autowired
+    ScheduleService scheduleService;
 
     private static int defaultKilometRunning = 0;
 
@@ -162,73 +162,83 @@ public class VehicleController {
     @GetMapping(value = "/report-inspection-before-delivery")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionBeforeDelivery
-            (@RequestParam(value = "username") String username) {
+            (@RequestParam(value = "username") String username, @RequestParam(value = "status") List<Integer> status) {
 
-        String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionBeforeDelivery(username
-                , Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)), ConsignmentStatusEnum.WAITING.getValue());
-        List<Inspection> inspections = inspectionService.findAll();
-        if (inspections == null) {
-            return ResponseEntity.noContent().build();
-        } else {
-            if (vehiclePlates == null) {
-                InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-                inspectionResponseDTO.setVehicleLicensePlates("");
-                inspectionResponseDTO.setInspections(inspectionService.findAll());
+        try{
+            String vehiclePlate = vehicleService.findLicensePlatesBeforeRunningOrWhileRunning(status, username);
 
-                return ResponseEntity.ok().body(inspectionResponseDTO);
+            List<Inspection> inspections = inspectionService.findAll();
+            if (inspections == null) {
+                return ResponseEntity.noContent().build();
             } else {
+                if (vehiclePlate == null) {
+                    InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+                    inspectionResponseDTO.setVehicleLicensePlates("");
+                    inspectionResponseDTO.setInspections(inspectionService.findAll());
 
-                InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-                inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
-                inspectionResponseDTO.setInspections(inspectionService.findAll());
+                    return ResponseEntity.ok().body(inspectionResponseDTO);
+                } else {
 
-                return ResponseEntity.ok().body(inspectionResponseDTO);
+                    InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+                    inspectionResponseDTO.setVehicleLicensePlates(vehiclePlate);
+                    inspectionResponseDTO.setInspections(inspectionService.findAll());
+
+                    return ResponseEntity.ok().body(inspectionResponseDTO);
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
+           return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping(value = "/report-inspection-after-delivery")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<InspectionResponseDTO> findVehicleLicensePlatesAndInspectionForReportInspectionAfterDelivery
-            (@RequestParam(value = "username") String username) {
+            (@RequestParam(value = "username") String username, @RequestParam(value = "status") List<Integer> status) {
 
-        String vehiclePlates = vehicleService.findVehicleLicensePlatesForReportInspectionAfterDelivery(username, Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
-                ConsignmentStatusEnum.COMPLETED.getValue(), TypeLocationEnum.DELIVERED_PLACE.getValue());
-        List<Inspection> inspections = inspectionService.findAll();
-        if (inspections == null) {
-            return ResponseEntity.noContent().build();
-        } else {
-            if (vehiclePlates == null) {
-                InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-                inspectionResponseDTO.setVehicleLicensePlates("");
-                inspectionResponseDTO.setInspections(inspectionService.findAll());
+       try {
+           String vehiclePlate = vehicleService.findLicensePlatesForMakingReportAfterRunning(status, username);
+           List<Inspection> inspections = inspectionService.findAll();
+           if (inspections == null) {
+               return ResponseEntity.noContent().build();
+           } else {
+               if (vehiclePlate == null) {
+                   InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+                   inspectionResponseDTO.setVehicleLicensePlates("");
+                   inspectionResponseDTO.setInspections(inspectionService.findAll());
 
-                return ResponseEntity.ok().body(inspectionResponseDTO);
-            } else {
+                   return ResponseEntity.ok().body(inspectionResponseDTO);
+               } else {
 
-                InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
-                inspectionResponseDTO.setVehicleLicensePlates(vehiclePlates);
-                inspectionResponseDTO.setInspections(inspectionService.findAll());
+                   InspectionResponseDTO inspectionResponseDTO = new InspectionResponseDTO();
+                   inspectionResponseDTO.setVehicleLicensePlates(vehiclePlate);
+                   inspectionResponseDTO.setInspections(inspectionService.findAll());
 
-                return ResponseEntity.ok().body(inspectionResponseDTO);
-            }
-        }
+                   return ResponseEntity.ok().body(inspectionResponseDTO);
+               }
+           }
+       }catch (Exception e){
+           return ResponseEntity.badRequest().build();
+       }
     }
 
     @GetMapping(value = "/running")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<String> getVehicleRunning(@RequestParam("username") String username) {
-        List<Integer> status = new ArrayList<>();
-        status.add(ConsignmentStatusEnum.OBTAINING.getValue());
-        status.add(ConsignmentStatusEnum.DELIVERING.getValue());
-        Vehicle vehicle = vehicleService.findVehicleByUsernameAndConsignmentStatus(username, status,
-                Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
-                Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
+        try {
+            List<Integer> status = new ArrayList<>();
+            status.add(ConsignmentStatusEnum.OBTAINING.getValue());
+            status.add(ConsignmentStatusEnum.DELIVERING.getValue());
+            String vehiclePlate = vehicleService.findLicensePlatesBeforeRunningOrWhileRunning(status, username);
 
-        if(vehicle!= null){
-            return ResponseEntity.ok().body(vehicle.getId().toString());
+            if(vehiclePlate!= null){
+                return ResponseEntity.ok().body(vehicleService.findVehicleByLicensePlates(vehiclePlate).getId().toString());
+            }
+            return ResponseEntity.noContent().build();
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "check-license-plates")

@@ -21,10 +21,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 
     Schedule findScheduleById(int id);
 
-//    @Query("Select s from Schedule s Where s.consignment.id = :consignmentId" +
-//            " And s.driver.id = :driverId")
-//    Schedule findScheduleByConsignment_IdAndDriver_Id(@Param("consignmentId") Integer consignmentId, @Param("driverId") Integer driverId);
-
     @Query("select  s from Schedule s where s.vehicle.id =?1")
     List<Schedule> checkVehicleInScheduled(int idVehicle);
 
@@ -40,6 +36,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query("select  s from Schedule s where s.driver.id =?1 and s.vehicle.id =?2 and  s.consignment.id = ?3")
     Schedule findScheduleByVeDriCons(int idDriver, int idVehicle, int idConsignment);
 
+    // Get the list of schedules of the driver
     @Query("Select s From Schedule s" +
             " Where s.consignment.status IN :status and s.driver.account.username = :username" +
             " and s.isApprove = true")
@@ -66,4 +63,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
             "and c.id = p.consignment.id and c.status = 0")
     Integer countScheduleNumberInADayOfDriver(@Param("id") Integer id,
                                               @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
+
+//    @Query("Select s from Schedule s Where s.consignment.id = :consignmentId" +
+//            " And s.driver.id = :driverId")
+//    Schedule findScheduleByConsignment_IdAndDriver_Id(@Param("consignmentId") Integer consignmentId, @Param("driverId") Integer driverId);
+
 }

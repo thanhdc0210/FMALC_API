@@ -44,6 +44,7 @@ public class ScheduleController {
     @Autowired
     NotificationService notificationService;
 
+    // Get the list of schedules of the driver
     @GetMapping(value = "driver")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<List<ScheduleResponseDTO>> findByConsignmentStatusAndUsername(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {

@@ -2,7 +2,6 @@ package fmalc.api.controller;
 
 import fmalc.api.dto.FuelTypeResponseDTO;
 import fmalc.api.entity.FuelType;
-import fmalc.api.entity.Vehicle;
 import fmalc.api.service.FuelTypeService;
 import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -33,20 +29,19 @@ public class FuelTypeController {
                                                                                   @RequestParam("username") String username) {
         try {
             List<FuelType> fuelTypes = fuelTypeService.getListFuelType();
-            Vehicle vehicle = vehicleService.findVehicleByUsernameAndConsignmentStatus(username, status,
-                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
-                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
+            String licensePlate = vehicleService.findLicensePlatesBeforeRunningOrWhileRunning(status, username);
+
             if (fuelTypes == null) {
                 return ResponseEntity.noContent().build();
             } else {
-                if (vehicle == null) {
+                if (licensePlate == null) {
                     FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
                     fuelTypeResponseDTO.setVehicleLicensePlate(null);
                     fuelTypeResponseDTO.setFuelTypeList(fuelTypes);
                     return ResponseEntity.ok().body(fuelTypeResponseDTO);
                 } else {
                     FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
-                    fuelTypeResponseDTO.setVehicleLicensePlate(vehicle.getLicensePlates());
+                    fuelTypeResponseDTO.setVehicleLicensePlate(licensePlate);
                     fuelTypeResponseDTO.setFuelTypeList(fuelTypes);
                     return ResponseEntity.ok().body(fuelTypeResponseDTO);
                 }

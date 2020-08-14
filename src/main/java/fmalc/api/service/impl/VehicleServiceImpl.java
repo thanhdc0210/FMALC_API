@@ -8,6 +8,7 @@ import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.enums.VehicleStatusEnum;
+import fmalc.api.repository.ScheduleRepository;
 import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.MaintenanceService;
 import fmalc.api.service.PlaceService;
@@ -18,10 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,22 +30,17 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Autowired
     ScheduleService scheduleService;
+
     @Autowired
     PlaceService placeService;
 
     @Autowired
+    ScheduleRepository scheduleRepository;
+
+    @Autowired
     MaintenanceService maintainanceService;
+
     private static int priorityPlace = 1;
-
-    @Override
-    public String findVehicleLicensePlatesForReportInspectionBeforeDelivery(String username, Timestamp endDate, Integer status) {
-        return vehicleRepository.findVehicleLicensePlatesForReportInspectionBeforeDelivery(username, endDate, status);
-    }
-
-    @Override
-    public String findVehicleLicensePlatesForReportInspectionAfterDelivery(String username, Timestamp startDate, Integer status, Integer type) {
-        return vehicleRepository.findVehicleLicensePlatesForReportInspectionAfterDelivery(username, startDate, status, type);
-    }
 
     @Override
     public Vehicle updateKmVehicle(int id, int km) {
@@ -668,14 +661,55 @@ public class VehicleServiceImpl implements VehicleService {
        return  vehicleRepository.updateStatusVehicle(status, id);
     }
 
-
-    public Vehicle findVehicleByUsernameAndConsignmentStatus(String username, List<Integer> status,
-                                                             Timestamp startDate, Timestamp endDate) {
-        return vehicleRepository.findVehicleByUsernameAndConsignmentStatus(username, status, startDate, endDate);
-    }
-
     @Override
     public boolean checkLicensePlates(String licensePlates) {
         return vehicleRepository.existsByLicensePlates(licensePlates);
     }
+
+    // Get license plates for making report before running
+    @Override
+    public String findLicensePlatesBeforeRunningOrWhileRunning(List<Integer> status, String username) {
+        List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsername(status, username);
+
+        if (schedules != null){
+            List<ObjectToSortForSchedule> objectToSortForSchedules = new ArrayList<>();
+            schedules.forEach(s -> {
+                List<Place> places = new ArrayList<>(s.getConsignment().getPlaces());
+                objectToSortForSchedules.add(new ObjectToSortForSchedule(s, places.get(0).getPlannedTime(), places.get(places.size()-1).getActualTime()));
+            });
+            objectToSortForSchedules.sort(Comparator.comparing(ObjectToSortForSchedule::getPlannedTime));
+            schedules.removeAll(schedules);
+            objectToSortForSchedules.forEach(objectToSortForSchedule -> {
+                schedules.add(objectToSortForSchedule.getSchedule());
+            });
+
+            return schedules.get(0).getVehicle().getLicensePlates();
+        }else{
+            return null;
+        }
+    }
+
+    // Get license plates for making report after running
+    @Override
+    public String findLicensePlatesForMakingReportAfterRunning(List<Integer> status, String username) {
+        List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsername(status, username);
+
+        if (schedules != null){
+            List<ObjectToSortForSchedule> objectToSortForSchedules = new ArrayList<>();
+            schedules.forEach(s -> {
+                List<Place> places = new ArrayList<>(s.getConsignment().getPlaces());
+                objectToSortForSchedules.add(new ObjectToSortForSchedule(s, places.get(0).getPlannedTime(), places.get(places.size()-1).getActualTime()));
+            });
+            objectToSortForSchedules.sort(Comparator.comparing(ObjectToSortForSchedule::getActualTime));
+            schedules.removeAll(schedules);
+            objectToSortForSchedules.forEach(objectToSortForSchedule -> {
+                schedules.add(objectToSortForSchedule.getSchedule());
+            });
+
+            return schedules.get(schedules.size()-1).getVehicle().getLicensePlates();
+        }else{
+            return null;
+        }
+    }
+
 }

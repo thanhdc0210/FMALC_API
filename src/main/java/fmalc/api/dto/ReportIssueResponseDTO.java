@@ -26,7 +26,7 @@ public class ReportIssueResponseDTO{
             reportIssueContentResponses = new ArrayList<>();
         }
         for(ReportIssue reportIssue : reportIssues){
-            if (reportIssue.getStatus().equals(true)){
+            if (reportIssue.getStatus().equals(false)){
                 ReportIssueContentResponseDTO reportIssueContentResponseDTO = new ReportIssueContentResponseDTO();
                 reportIssueContentResponseDTO.setContent(reportIssue.getContent());
                 reportIssueContentResponseDTO.setImage(reportIssue.getImage());
