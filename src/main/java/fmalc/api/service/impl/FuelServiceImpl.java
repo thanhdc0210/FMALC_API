@@ -2,6 +2,7 @@ package fmalc.api.service.impl;
 
 import fmalc.api.dto.FuelRequestDTO;
 import fmalc.api.entity.Fuel;
+import fmalc.api.entity.FuelType;
 import fmalc.api.repository.FuelRepository;
 import fmalc.api.repository.FuelTypeRepository;
 import fmalc.api.repository.VehicleRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.List;
 
 @Service
 public class FuelServiceImpl implements FuelService {
@@ -31,5 +33,10 @@ public class FuelServiceImpl implements FuelService {
         fuel.setVolume(fuelTypeRequestDTO.getVolume());
         fuel.setVehicle(vehicleRepository.findByLicensePlates(fuelTypeRequestDTO.getVehicleLicensePlates()));
         return fuelRepository.save(fuel);
+    }
+
+    @Override
+    public List<Fuel> getListFuelByVehicleId(int idVehicle) {
+        return fuelRepository.getByVehicle(idVehicle);
     }
 }

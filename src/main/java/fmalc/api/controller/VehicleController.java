@@ -1,14 +1,13 @@
 package fmalc.api.controller;
 
 
-import fmalc.api.dto.InspectionResponseDTO;
-import fmalc.api.dto.VehicleForDetailDTO;
-import fmalc.api.dto.VehicleForNewDTO;
-import fmalc.api.dto.VehicleResponseDTO;
+import fmalc.api.dto.*;
+import fmalc.api.entity.Fuel;
 import fmalc.api.entity.Inspection;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.VehicleStatusEnum;
+import fmalc.api.service.FuelService;
 import fmalc.api.service.InspectionService;
 import fmalc.api.service.ScheduleService;
 import fmalc.api.service.VehicleService;
@@ -35,6 +34,9 @@ public class VehicleController {
 
     @Autowired
     ScheduleService scheduleService;
+
+    @Autowired
+    FuelService fuelService;
 
     private static int defaultKilometRunning = 0;
 
@@ -244,6 +246,20 @@ public class VehicleController {
     @GetMapping(value = "check-license-plates")
     boolean checkVehiclePlates(@RequestParam("licensePlates") String licensePlates) {
         return vehicleService.checkLicensePlates(licensePlates);
+    }
+
+    @GetMapping("fuel-vehicle/{id}")
+    public ResponseEntity<List<FuelVehicleDTO>> getFuelOfVehicle(@PathVariable("id") int id){
+        FuelVehicleDTO fuelVehicleDTO = new FuelVehicleDTO();
+        try{
+            List<FuelVehicleDTO> fuelVehicleDTOS = fuelVehicleDTO.mapToListResponse(fuelService.getListFuelByVehicleId(id));
+            if(fuelVehicleDTOS.size()>0){
+                return ResponseEntity.ok().body(fuelVehicleDTOS);
+            }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 }
 

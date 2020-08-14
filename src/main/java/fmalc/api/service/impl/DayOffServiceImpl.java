@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,8 +54,18 @@ public class DayOffServiceImpl implements DayOffService {
     AccountNotificationService accountNotificationService;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    ;
 
+
+
+    private DayOff checkDayOff(DayOffDTO dayOffDTO){
+        DayOff dayOff = new DayOff();
+        try {
+            dayOff=  dayOffRepository.getDayOffExistByDate(dayOffDTO.getIdDriver(),false,new Date(sdf.parse(dayOffDTO.getDateStart()).getTime()),new Date(sdf.parse(dayOffDTO.getDateEnd()).getTime()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return  dayOff;
+    }
     @Override
     public List<Driver> checkDayOffODriver(List<Driver> idDriver, Consignment consignment) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -181,22 +192,35 @@ public class DayOffServiceImpl implements DayOffService {
             notification.getType();
             String note = NotificationTypeEnum.getValueEnumToShow(notification.getType()) +" "+ notification.getContent();
             DayOff dayOff = new DayOff();
-            dayOff.setDriver(driver);
-            dayOff.setIsApprove(true);
-            dayOff.setStartDate(new Date(sdf.parse((dayOffDTO.getDateStart())).getTime()));
-            dayOff.setEndDate(new Date(sdf.parse((dayOffDTO.getDateEnd())).getTime()));
-            dayOff.setFleetManager(fleetManager);
-            dayOff.setNote(note);
-            
-            if (dayOffRepository.save(dayOff) != null) {
+            dayOff = checkDayOff(dayOffDTO);
+            if(dayOff==null){
+                dayOff.setDriver(driver);
+                dayOff.setIsApprove(true);
+                dayOff.setStartDate(new Date(sdf.parse((dayOffDTO.getDateStart())).getTime()));
+                dayOff.setEndDate(new Date(sdf.parse((dayOffDTO.getDateEnd())).getTime()));
+                dayOff.setFleetManager(fleetManager);
+                dayOff.setNote(note);
+
+                if (dayOffRepository.save(dayOff) != null) {
+                    Account account = accountService.findById(fleetManager.getAccount().getId());
+                    accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
+                    if(accountNotification!=null){
+                        accountNotification.setStatus(true);
+                        accountNotification = accountNotificationService.save(accountNotification);
+                    }
+
+                }
+            }else{
+                dayOff.setIsApprove(true);
+                dayOff = dayOffRepository.save(dayOff);
                 Account account = accountService.findById(fleetManager.getAccount().getId());
                 accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
                 if(accountNotification!=null){
                     accountNotification.setStatus(true);
                     accountNotification = accountNotificationService.save(accountNotification);
                 }
-
             }
+
         }
         return flag;
     }

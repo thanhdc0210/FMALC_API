@@ -12,7 +12,6 @@ public interface NotificationService {
 
     NotificationUnread countNotificationUnread(String username);
 
-    
     List<Notification> getNotificationsByType(int type);
 
     void readNotification(String username, Integer notificationId);

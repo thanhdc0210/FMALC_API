@@ -36,7 +36,7 @@ public class DayOff {
     @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
     private Driver driver;
 
-    @Column(name = "note", nullable = false)
+    @Column(name = "note")
     private String note;
 
 
