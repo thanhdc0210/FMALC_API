@@ -332,7 +332,7 @@ public class DriverServiceImpl implements DriverService {
                 placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), 1, TypeLocationEnum.RECEIVED_PLACE.getValue());
         // lấy thằng thời gian giao hàng sau cùng
         PlaceResponeDTO placeScheduleDeli =
-                placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), listScheduleDeli.size(), TypeLocationEnum.RECEIVED_PLACE.getValue());
+                placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), listScheduleDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
 
         if (placeConsignmentRecei.getAddress() != null && placeScheduleRecei.getAddress() != null) {
             String dateReceiConsignment = sdf.format(placeConsignmentRecei.getPlannedTime());

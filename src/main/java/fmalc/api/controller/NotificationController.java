@@ -4,12 +4,11 @@ import fmalc.api.dto.NotificationMobileResponse;
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
 import fmalc.api.dto.NotificationUnread;
+import fmalc.api.entity.Account;
 import fmalc.api.entity.AccountNotification;
+import fmalc.api.entity.Driver;
 import fmalc.api.entity.Notification;
-import fmalc.api.service.AccountNotificationService;
-import fmalc.api.service.DriverService;
-import fmalc.api.service.NotificationService;
-import fmalc.api.service.VehicleService;
+import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +37,9 @@ public class NotificationController {
     DriverService driverService;
 
     @Autowired
+    AccountService accountService;
+
+    @Autowired
     AccountNotificationService accountNotificationService;
 
     // list notify
@@ -60,23 +62,14 @@ public class NotificationController {
             Notification notificationSaved = notificationService.createNotification(notificationRequestDTO);
             if (notificationSaved != null) {
 
-//                NotificationData notificationData = new NotificationData();
-//                notificationData.setTitle(NotificationTypeEnum.getValueEnumToShow(notificationRequestDTO.getType()));
-//                notificationData.setBody(notificationRequestDTO.getContent());
-//
-//                NotificationRequest notificationRequest = new NotificationRequest();
-//                notificationRequest.setNotificationData(notificationData);
-//                notificationRequest.setTo(driverService.findTokenDeviceByDriverId(notificationRequestDTO.getDriver_id()));
+                Driver driver = driverService.findById(notificationSaved.getDriver().getId());
+                Account account = accountService.findById(driver.getFleetManager().getAccount().getId());
 
                 notificationResponeDTO = new NotificationResponeDTO().mapToResponse(notificationSaved);
+                notificationResponeDTO.setUsername(account.getUsername());
                 if (notificationSend != notificationResponeDTO) {
                     notificationResponeDTOS.add(notificationResponeDTO);
                     intervals.subscribe((i) -> notifyForManagerWorkingHours()).dispose();
-                    // Send to driver
-//                    firebaseService.sendPnsToDevice(notificationRequest);
-
-                    // Send to fleet_manager
-
 
                 }
 

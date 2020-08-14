@@ -39,4 +39,5 @@ public class DayOff {
 
     @Column(name = "note", nullable = false)
     private String note;
+
 }

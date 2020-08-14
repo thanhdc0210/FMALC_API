@@ -32,10 +32,12 @@ public class FuelTypeUtil extends TimerTask {
             content = content.replace("DO 0,05S-II ", "");
             String[] lst = content.split(" ");
             List<Double> prices = new ArrayList<>();
-            for(int i = 0; i < 10; i++)
-            {
-                if (i % 2 != 0)
+            for (int i = 0; i < 10; i++) {
+                if (i % 2 != 0){
+                    lst[i] = lst[i].replaceAll("[^0-9]+", "");
                     prices.add(Double.parseDouble(lst[i]));
+                }
+
             }
 
             fuelTypeService.createOrUpdateFuelType(prices);

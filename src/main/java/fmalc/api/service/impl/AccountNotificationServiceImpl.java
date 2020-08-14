@@ -22,4 +22,14 @@ public class AccountNotificationServiceImpl implements AccountNotificationServic
         }
     }
 
+    @Override
+    public AccountNotification findByFleetAndNoti(int idFleet, int idNoti) {
+        return accountNotificationRepository.getAccountNotiByFleetAndNoti(idFleet,idNoti);
+    }
+
+    @Override
+    public AccountNotification save(AccountNotification accountNotification) {
+        return accountNotificationRepository.save(accountNotification);
+    }
+
 }

@@ -594,7 +594,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                     PlaceResponeDTO placeScheduleRecei =
                             placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), 1, TypeLocationEnum.RECEIVED_PLACE.getValue());
                     PlaceResponeDTO placeScheduleDeli =
-                            placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), listScheduleDeli.size(), TypeLocationEnum.RECEIVED_PLACE.getValue());
+                            placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), listScheduleDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
 
                     String dateRecei = sdf.format(placeScheduleRecei.getPlannedTime());
                     String dateDeli = sdf.format(placeScheduleDeli.getPlannedTime());
@@ -606,7 +606,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                             j = scheduleForConsignmentDTOS.size();
                         }
                     } else if (dateC.compareTo(dateRecei) > 0 && dateC.compareTo(dateRecei) > 0) {
-                        if (dateC.compareTo(dateDeli) > 0) {
+                        if (dateC.compareTo(dateDeli) > 0  && (dateC.compareTo(dateDeli) >= dateDeli.compareTo(dateRecei))) {
                             flag = true;
                         } else {
                             flag = false;

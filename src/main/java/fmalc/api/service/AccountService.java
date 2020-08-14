@@ -11,4 +11,6 @@ public interface AccountService {
     Account getAccount(String username);
 
     boolean checkUsername(String numberPhone);
+
+    Account findById(int id);
 }
