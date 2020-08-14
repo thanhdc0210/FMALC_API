@@ -1,8 +1,5 @@
 package fmalc.api.repository;
 
-import ch.qos.logback.core.boolex.EvaluationException;
-import fmalc.api.dto.LocationDTO;
-
 import fmalc.api.entity.Location;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

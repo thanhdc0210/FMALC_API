@@ -1,10 +1,6 @@
 package fmalc.api.repository;
 
-import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Schedule;
-import fmalc.api.entity.Vehicle;
-import io.swagger.models.auth.In;
-import org.hibernate.sql.Update;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -25,10 +20,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     List<Schedule> findScheudleByConsignment(int consignmentId);
 
     Schedule findScheduleById(int id);
-
-//    @Query("Select s from Schedule s Where s.consignment.id = :consignmentId" +
-//            " And s.driver.id = :driverId")
-//    Schedule findScheduleByConsignment_IdAndDriver_Id(@Param("consignmentId") Integer consignmentId, @Param("driverId") Integer driverId);
 
     @Query("select  s from Schedule s where s.vehicle.id =?1")
     List<Schedule> checkVehicleInScheduled(int idVehicle);
@@ -45,6 +36,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query("select  s from Schedule s where s.driver.id =?1 and s.vehicle.id =?2 and  s.consignment.id = ?3")
     Schedule findScheduleByVeDriCons(int idDriver, int idVehicle, int idConsignment);
 
+    // Get the list of schedules of the driver
     @Query("Select s From Schedule s" +
             " Where s.consignment.status IN :status and s.driver.account.username = :username" +
             " and s.isApprove = true")
@@ -71,4 +63,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
             "and c.id = p.consignment.id and c.status = 0")
     Integer countScheduleNumberInADayOfDriver(@Param("id") Integer id,
                                               @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
+
+//    @Query("Select s from Schedule s Where s.consignment.id = :consignmentId" +
+//            " And s.driver.id = :driverId")
+//    Schedule findScheduleByConsignment_IdAndDriver_Id(@Param("consignmentId") Integer consignmentId, @Param("driverId") Integer driverId);
+
 }

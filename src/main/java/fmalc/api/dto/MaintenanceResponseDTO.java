@@ -1,7 +1,7 @@
 package fmalc.api.dto;
 
-import lombok.Data;
 import fmalc.api.entity.Maintenance;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;

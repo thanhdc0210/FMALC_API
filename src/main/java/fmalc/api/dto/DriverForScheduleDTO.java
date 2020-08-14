@@ -1,11 +1,9 @@
 package fmalc.api.dto;
 
 import fmalc.api.entity.Driver;
-import fmalc.api.entity.Vehicle;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;

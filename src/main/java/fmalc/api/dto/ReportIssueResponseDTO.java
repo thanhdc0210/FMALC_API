@@ -7,8 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,7 +26,7 @@ public class ReportIssueResponseDTO{
             reportIssueContentResponses = new ArrayList<>();
         }
         for(ReportIssue reportIssue : reportIssues){
-            if (reportIssue.getStatus().equals(true)){
+            if (reportIssue.getStatus().equals(false)){
                 ReportIssueContentResponseDTO reportIssueContentResponseDTO = new ReportIssueContentResponseDTO();
                 reportIssueContentResponseDTO.setContent(reportIssue.getContent());
                 reportIssueContentResponseDTO.setImage(reportIssue.getImage());

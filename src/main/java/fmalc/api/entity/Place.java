@@ -1,10 +1,13 @@
 package fmalc.api.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import javax.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Getter

@@ -1,6 +1,6 @@
 package fmalc.api.dto;
 
-import lombok.*;
+import lombok.Data;
 
 import java.util.List;
 

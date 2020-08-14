@@ -1,12 +1,8 @@
 package fmalc.api.controller;
 
-import fmalc.api.dto.DriverRequestDTO;
-import fmalc.api.dto.DriverResponseDTO;
-import fmalc.api.entity.Driver;
 import fmalc.api.entity.Inspection;
 import fmalc.api.service.InspectionService;
 import fmalc.api.service.UploaderService;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

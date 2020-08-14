@@ -1,6 +1,5 @@
 package fmalc.api.dto;
 
-import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
 import lombok.Data;
 import org.modelmapper.ModelMapper;

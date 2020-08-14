@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -39,4 +38,7 @@ public class DayOff {
 
     @Column(name = "note", nullable = false)
     private String note;
+
+    @Column(name = "is_approve", nullable = false)
+    private Boolean isApprove;
 }

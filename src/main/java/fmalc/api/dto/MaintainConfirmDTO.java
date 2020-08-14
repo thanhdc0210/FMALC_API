@@ -2,7 +2,7 @@ package fmalc.api.dto;
 
 import lombok.*;
 
-import java.util.*;
+import java.util.List;
 
 @Data
 @Getter

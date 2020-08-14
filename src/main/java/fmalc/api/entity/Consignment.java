@@ -1,15 +1,13 @@
 package fmalc.api.entity;
 
+import lombok.*;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Collectors;
-
-import javax.persistence.*;
-
-import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 @Getter
 @Setter

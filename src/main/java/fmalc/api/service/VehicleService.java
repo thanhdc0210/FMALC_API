@@ -24,8 +24,6 @@ public interface VehicleService {
     Vehicle findVehicleByLicensePlates(String licensePlates);
 
     List<Vehicle> findByStatus(int status, double weight);
-    String findVehicleLicensePlatesForReportInspectionBeforeDelivery(String username, Timestamp endDate, Integer status);
-    String findVehicleLicensePlatesForReportInspectionAfterDelivery(String username, Timestamp startDate, Integer status, Integer type);
 
     Vehicle updateKmVehicle(int id, int km);
 
@@ -48,8 +46,16 @@ public interface VehicleService {
     List<ScheduleForConsignmentDTO> checkScheduleForVehicle(int idVehicle);
 
     int updateStatus(int status, int id);
-    Vehicle findVehicleByUsernameAndConsignmentStatus(String username, List<Integer> status,
-                                                      Timestamp startDate, Timestamp endDate);
 
     boolean checkLicensePlates(String licensePlates);
+
+
+    // Get license plates for making report before running
+    String findLicensePlatesBeforeRunningOrWhileRunning(
+            List<Integer> status, String username);
+
+    // Get license plates for making report after running
+    String findLicensePlatesForMakingReportAfterRunning(
+            List<Integer> status, String username);
+
 }

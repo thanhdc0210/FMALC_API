@@ -1,36 +1,26 @@
 package fmalc.api.controller;
 
 
-import com.google.firebase.internal.FirebaseService;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fmalc.api.dto.*;
-import fmalc.api.entity.*;
-
-import fmalc.api.dto.DetailedScheduleDTO;
-import fmalc.api.dto.ScheduleResponseDTO;
-
-
+import fmalc.api.entity.Consignment;
+import fmalc.api.entity.Driver;
 import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.ConsignmentStatusEnum;
-
 import fmalc.api.enums.NotificationTypeEnum;
-
 import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.SearchTypeForDriverEnum;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.annotation.MultipartConfig;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.*;
@@ -54,6 +44,7 @@ public class ScheduleController {
     @Autowired
     NotificationService notificationService;
 
+    // Get the list of schedules of the driver
     @GetMapping(value = "driver")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<List<ScheduleResponseDTO>> findByConsignmentStatusAndUsername(@RequestParam(value = "status") List<Integer> status, @RequestParam(value = "username") String username) {

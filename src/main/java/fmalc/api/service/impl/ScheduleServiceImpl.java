@@ -4,9 +4,7 @@ package fmalc.api.service.impl;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
-import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.SearchTypeForDriverEnum;
-import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.ScheduleRepository;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static fmalc.api.enums.SearchTypeForDriverEnum.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -151,8 +149,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         return schedules;
     }
 
+    // Get the list of schedules of the driver
     @Override
-
     public List<Schedule> findByConsignmentStatusAndUsername(List<Integer> status, String username) {
 
 
@@ -234,12 +232,13 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.countScheduleNumberInADayOfDriver(id, startDate, endDate);
     }
 
+    // THANHDC
+
 //    @Override
 //    public Schedule findScheduleByConsignment_IdAndDriver_Id(Integer consignmentId, Integer driverId) {
 //
 //        return scheduleRepository.findScheduleByConsignment_IdAndDriver_Id(consignmentId, driverId);
 //    }
-
 
 }
 

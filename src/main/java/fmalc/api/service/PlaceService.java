@@ -1,10 +1,9 @@
 package fmalc.api.service;
 
 import fmalc.api.dto.PlaceResponeDTO;
-import fmalc.api.entity.Place;
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.List;
 
 public interface PlaceService {
     List<PlaceResponeDTO> getPlaceOfConsignment(int idConsignment);

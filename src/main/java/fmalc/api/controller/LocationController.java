@@ -3,11 +3,17 @@
 package fmalc.api.controller;
 
 
-import fmalc.api.dto.*;
-
-import fmalc.api.entity.*;
+import fmalc.api.dto.LocationDTO;
+import fmalc.api.dto.LocationResponeDTO;
+import fmalc.api.dto.ScheduleDTO;
+import fmalc.api.dto.VehicleForDetailDTO;
+import fmalc.api.entity.Location;
+import fmalc.api.entity.Schedule;
 import fmalc.api.enums.ConsignmentStatusEnum;
-import fmalc.api.service.*;
+import fmalc.api.service.ConsignmentService;
+import fmalc.api.service.LocationService;
+import fmalc.api.service.ScheduleService;
+import fmalc.api.service.VehicleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -17,15 +23,12 @@ import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.util.function.Tuple2;
 
-
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RestController
