@@ -1,7 +1,6 @@
 package fmalc.api.repository;
 
 import fmalc.api.entity.Consignment;
-import fmalc.api.entity.Place;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;

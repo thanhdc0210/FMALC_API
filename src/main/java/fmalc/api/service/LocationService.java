@@ -1,7 +1,5 @@
 package fmalc.api.service;
 
-import fmalc.api.dto.LocationDTO;
-
 import fmalc.api.entity.Location;
 
 import java.util.List;

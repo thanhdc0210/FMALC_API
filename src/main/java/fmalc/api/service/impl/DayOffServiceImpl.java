@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class DayOffServiceImpl implements DayOffService {
@@ -62,7 +64,7 @@ public class DayOffServiceImpl implements DayOffService {
         boolean flag = true;
         for (int i = 0; i < idDriver.size(); i++) {
             flag = true;
-            dayOffs = dayOffRepository.checkDayOffOfDriver(idDriver.get(i).getId());
+            dayOffs = dayOffRepository.checkDayOffOfDriver(idDriver.get(i).getId(), true);
             if (dayOffs.size() > 0) {
                 for (int j = 0; j < dayOffs.size(); j++) {
                     String dateOff = sdf.format(dayOffs.get(j).getStartDate());
@@ -159,22 +161,28 @@ public class DayOffServiceImpl implements DayOffService {
         driver = driverService.findById(dayOffDTO.getIdDriver());
         FleetManager fleetManager = driver.getFleetManager();
         boolean flag = true;
-        flag = checkSchedule(driver.getId(), (dayOffDTO.getDateStart()),(dayOffDTO.getDateEnd()));
-        if (flag) {
-            flag = findDriverForMaintain(driver, (dayOffDTO.getDateStart()), (dayOffDTO.getDateEnd()));
+        Notification notification = new Notification();
+        AccountNotification accountNotification = new AccountNotification();
+        notification = notificationRepository.findById(dayOffDTO.getIdNotify()).get();
+        if(notification.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
+            flag = true;
+        }else{
+            flag = checkSchedule(driver.getId(), (dayOffDTO.getDateStart()),(dayOffDTO.getDateEnd()));
             if (flag) {
-                flag = checkDayOff((dayOffDTO.getDateStart()), driver.getId(), (dayOffDTO.getDateEnd()));
+                flag = findDriverForMaintain(driver, (dayOffDTO.getDateStart()), (dayOffDTO.getDateEnd()));
+                if (flag) {
+                    flag = checkDayOff((dayOffDTO.getDateStart()), driver.getId(), (dayOffDTO.getDateEnd()));
+                }
             }
         }
+
         if (flag) {
-            Notification notification = new Notification();
-            AccountNotification accountNotification = new AccountNotification();
-            notification = notificationRepository.findById(dayOffDTO.getIdNotify()).get();
+
             notification.getType();
             String note = NotificationTypeEnum.getValueEnumToShow(notification.getType()) +" "+ notification.getContent();
             DayOff dayOff = new DayOff();
             dayOff.setDriver(driver);
-
+            dayOff.setIsApprove(true);
             dayOff.setStartDate(new Date(sdf.parse((dayOffDTO.getDateStart())).getTime()));
             dayOff.setEndDate(new Date(sdf.parse((dayOffDTO.getDateEnd())).getTime()));
             dayOff.setFleetManager(fleetManager);
@@ -183,8 +191,11 @@ public class DayOffServiceImpl implements DayOffService {
             if (dayOffRepository.save(dayOff) != null) {
                 Account account = accountService.findById(fleetManager.getAccount().getId());
                 accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
-                accountNotification.setStatus(true);
-                accountNotification = accountNotificationService.save(accountNotification);
+                if(accountNotification!=null){
+                    accountNotification.setStatus(true);
+                    accountNotification = accountNotificationService.save(accountNotification);
+                }
+
             }
         }
         return flag;
@@ -379,7 +390,7 @@ public class DayOffServiceImpl implements DayOffService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<DayOff> dayOffs = new ArrayList<>();
         boolean flag = false;
-        dayOffs = dayOffRepository.checkDayOffOfDriver(id);
+        dayOffs = dayOffRepository.checkDayOffOfDriver(id,true);
         if (dayOffs.size() > 0) {
             for (int j = 0; j < dayOffs.size(); j++) {
                 String dateOff = sdf.format(dayOffs.get(j).getStartDate());

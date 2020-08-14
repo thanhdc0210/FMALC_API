@@ -1,7 +1,5 @@
 package fmalc.api.service.impl;
 
-import fmalc.api.dto.LocationDTO;
-
 import fmalc.api.entity.Location;
 import fmalc.api.repository.LocationRepository;
 import fmalc.api.service.LocationService;

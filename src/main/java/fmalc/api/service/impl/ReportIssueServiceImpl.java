@@ -57,7 +57,7 @@ public class ReportIssueServiceImpl implements ReportIssueService {
                 reportIssue.setImage(reportIssueContentRequestDTO.getImageUrl());
                 reportIssue.setCreateTime(new Timestamp(System.currentTimeMillis()));
                 reportIssue.setInspection(inspectionRepository.findById(reportIssueContentRequestDTO.getInspectionId()).get());
-                reportIssue.setStatus(true);
+                reportIssue.setStatus(false);
                 reportIssue.setType(reportIssueRequestDTO.getType());
                 reportIssueList.add(reportIssue);
             }
@@ -79,7 +79,7 @@ public class ReportIssueServiceImpl implements ReportIssueService {
                 reportIssue.setImage(reportIssueContentRequestDTO.getImageUrl());
                 reportIssue.setCreateTime(new Timestamp(System.currentTimeMillis()));
                 reportIssue.setInspection(inspectionRepository.findById(reportIssueContentRequestDTO.getInspectionId()).get());
-                reportIssue.setStatus(true);
+                reportIssue.setStatus(false);
                 reportIssue.setType(reportIssueRequestDTO.getType());
                 arrayList.add(reportIssue);
             }
@@ -125,7 +125,7 @@ public class ReportIssueServiceImpl implements ReportIssueService {
                     reportIssue.setId(reportIssueIdList.get(i));
                     reportIssue.setUpdatedBy(driverRepository.findDriverByUsername(username));
                     reportIssue.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-                    reportIssue.setStatus(false);
+                    reportIssue.setStatus(true);
                     if (reportIssueRepository.save(reportIssue) != null) {
                         flag = true;
                     } else {

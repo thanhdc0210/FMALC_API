@@ -1,10 +1,9 @@
 package fmalc.api.dto;
 
-import fmalc.api.entity.*;
+import fmalc.api.entity.Maintenance;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
-import javax.persistence.*;
 import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;

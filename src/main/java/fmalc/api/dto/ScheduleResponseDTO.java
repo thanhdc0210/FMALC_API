@@ -1,6 +1,5 @@
 package fmalc.api.dto;
 
-import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Schedule;
 import fmalc.api.enums.ConsignmentStatusEnum;
 import lombok.AllArgsConstructor;

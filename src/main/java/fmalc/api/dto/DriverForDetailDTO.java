@@ -1,7 +1,6 @@
 package fmalc.api.dto;
 
 import fmalc.api.entity.Driver;
-import fmalc.api.enums.DriverStatusEnum;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 

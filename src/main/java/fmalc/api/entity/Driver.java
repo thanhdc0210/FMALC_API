@@ -1,13 +1,14 @@
 package fmalc.api.entity;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.sql.Date;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-
-import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
+import java.io.Serializable;
+import java.sql.Date;
+import java.util.Collection;
 
 @Table(name = "driver")
 @Getter

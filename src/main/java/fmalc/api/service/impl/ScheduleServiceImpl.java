@@ -4,9 +4,7 @@ package fmalc.api.service.impl;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
-import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.SearchTypeForDriverEnum;
-import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.ScheduleRepository;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static fmalc.api.enums.SearchTypeForDriverEnum.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -151,8 +149,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         return schedules;
     }
 
+    // Get the list of schedules of the driver
     @Override
-
     public List<Schedule> findByConsignmentStatusAndUsername(List<Integer> status, String username) {
 
 
@@ -203,18 +201,18 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType) {
+    public List<Schedule> searchByTypeForDriver(String value, SearchTypeForDriverEnum searchType, Integer driverId) {
         List<Schedule> result = new ArrayList<>();
         switch (searchType) {
             case CONSIGNMENT_ID:
                 Integer parsed = Integer.parseInt(value);
-                result = scheduleRepository.findByConsignment_Id(parsed);
+                result = scheduleRepository.findScheduleByConsignmentIdAndDriverIdAndIsApprove(parsed, driverId,true);
                 return result;
             case LICENSE_PLATE:
-                result = scheduleRepository.findByVehicleLicensePlatesContaining(value);
+                result = scheduleRepository.findByVehicleLicensePlatesContainingAndDriverIdAndIsApprove(value, driverId,true);
                 return result;
             case OWNER_NAME:
-                result = scheduleRepository.findByConsignmentOwnerNameContaining(value);
+                result = scheduleRepository.findByConsignmentOwnerNameContainingAndDriverIdAndIsApprove(value, driverId,true);
                 return result;
             default:
                 throw new IllegalStateException("Unexpected value: " + searchType);
@@ -234,12 +232,13 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.countScheduleNumberInADayOfDriver(id, startDate, endDate);
     }
 
-    @Override
-    public Schedule findScheduleByConsignment_IdAndDriver_Id(Integer consignmentId, Integer driverId) {
+    // THANHDC
 
-        return scheduleRepository.findScheduleByConsignment_IdAndDriver_Id(consignmentId, driverId);
-    }
-
+//    @Override
+//    public Schedule findScheduleByConsignment_IdAndDriver_Id(Integer consignmentId, Integer driverId) {
+//
+//        return scheduleRepository.findScheduleByConsignment_IdAndDriver_Id(consignmentId, driverId);
+//    }
 
 }
 

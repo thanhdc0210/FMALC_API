@@ -1,12 +1,10 @@
 package fmalc.api.dto;
 
 import fmalc.api.entity.Place;
-import fmalc.api.entity.Schedule;
 import fmalc.api.enums.TypeLocationEnum;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
-import javax.persistence.Column;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;

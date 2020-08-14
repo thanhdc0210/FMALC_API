@@ -1,16 +1,13 @@
 package fmalc.api.dto;
 
 import fmalc.api.entity.Consignment;
-import fmalc.api.entity.ConsignmentHistory;
-import fmalc.api.entity.Place;
 import fmalc.api.entity.Schedule;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
 import org.modelmapper.ModelMapper;
 
-import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 public class ConsignmentDetailDTO {

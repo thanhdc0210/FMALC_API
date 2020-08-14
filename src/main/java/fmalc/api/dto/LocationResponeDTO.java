@@ -1,12 +1,10 @@
 package fmalc.api.dto;
 
 import fmalc.api.entity.Location;
-import fmalc.api.entity.Schedule;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 

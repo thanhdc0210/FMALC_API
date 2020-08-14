@@ -4,6 +4,7 @@ import fmalc.api.controller.NotificationController;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
+import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.DayOffRepository;
 import fmalc.api.repository.MaintenanceRepository;
@@ -58,6 +59,9 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Autowired
     DayOffRepository dayOffRepository;
+
+    @Autowired
+    NotificationService notificationService;
 
     private final static int DEFAULT_KM = 5000;
     private final static int DAYS = 24 * 60 * 60 * 1000;
@@ -471,7 +475,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<DayOff> dayOffs = new ArrayList<>();
         boolean flag = false;
-        dayOffs = dayOffRepository.checkDayOffOfDriver(id);
+        dayOffs = dayOffRepository.checkDayOffOfDriver(id,true);
         if (dayOffs.size() > 0) {
             for (int j = 0; j < dayOffs.size(); j++) {
                 String dateOff = sdf.format(dayOffs.get(j).getStartDate());
@@ -811,7 +815,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             addMaintenance.setMaintenanceType(maintenanceType);
         }
 
-        maintainanceRepository.save(addMaintenance);
+        Maintenance maintenance = maintainanceRepository.save(addMaintenance);
     }
 
     @Override
@@ -827,6 +831,19 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             maintenance.setActualMaintainDate(new Date(date.getTime()));
             maintenance = maintainanceRepository.save(maintenance);
             dates.add(date);
+
+            try {
+                NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+                notificationRequestDTO.setVehicle_id(maintenance.getVehicle().getId());
+                notificationRequestDTO.setDriver_id(driver.getId());
+                notificationRequestDTO.setStatus(false);
+                notificationRequestDTO.setType(NotificationTypeEnum.MAINTAIN_SCHEDULE.getValue());
+                notificationRequestDTO.setContent("Bạn có lịch đi bảo trì xe vào ngày " + maintenance.getActualMaintainDate());
+                notificationService.createNotification(notificationRequestDTO);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         }else{
             java.util.Date date1 = new java.util.Date();
             Calendar c = Calendar.getInstance();

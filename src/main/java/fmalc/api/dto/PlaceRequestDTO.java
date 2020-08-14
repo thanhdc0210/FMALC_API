@@ -2,8 +2,6 @@ package fmalc.api.dto;
 
 import lombok.Data;
 
-
-import javax.persistence.Column;
 import java.sql.Timestamp;
 
 @Data

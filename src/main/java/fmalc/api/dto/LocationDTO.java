@@ -3,7 +3,6 @@ package fmalc.api.dto;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 
 @Data
