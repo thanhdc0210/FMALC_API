@@ -46,8 +46,7 @@ public class ReportIssueController {
                                                                                 @RequestParam(value = "status") List<Integer> status) {
         try {
 
-            String licensePlate = vehicleService.findLicensePlatesForMakingReportBeforeRunning(status, username,
-                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
+            String licensePlate = vehicleService.findLicensePlatesForMakingReportBeforeRunningOrWhileRunning(status, username);
             Vehicle vehicle = vehicleService.findVehicleByLicensePlates(licensePlate);
 
             if (vehicle == null) {

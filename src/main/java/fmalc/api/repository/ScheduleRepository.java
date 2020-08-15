@@ -71,11 +71,4 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query("Select s.id From Schedule s Where s.consignment.id = :consignmentId AND s.driver.id = :driverId")
     Integer findScheduleIdByConsignmentIdAndDriverId(@Param("consignmentId") Integer consignmentId, @Param("driverId") Integer driverId);
 
-    @Query("Select s From Schedule s, Place p" +
-            " Where s.consignment.status IN :status and s.driver.account.username = :username" +
-            " and s.isApprove = true" +
-            " AND s.consignment.id = p.consignment.id" +
-            " AND p.plannedTime BETWEEN :startDate AND :endDate")
-    List<Schedule> findByConsignmentStatusAndUsernameAndTimeCondition(@Param("status") List<Integer> status, @Param("username") String username,
-    @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 }

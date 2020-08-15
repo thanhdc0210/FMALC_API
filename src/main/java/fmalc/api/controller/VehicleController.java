@@ -168,8 +168,7 @@ public class VehicleController {
             (@RequestParam(value = "username") String username, @RequestParam(value = "status") List<Integer> status) {
 
         try{
-            String vehiclePlate = vehicleService.findLicensePlatesForMakingReportBeforeRunning(status, username,
-                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
+            String vehiclePlate = vehicleService.findLicensePlatesForMakingReportBeforeRunningOrWhileRunning(status, username);
 
             List<Inspection> inspections = inspectionService.findAll();
             if (inspections == null) {
@@ -202,8 +201,7 @@ public class VehicleController {
             (@RequestParam(value = "username") String username, @RequestParam(value = "status") List<Integer> status) {
 
        try {
-           String vehiclePlate = vehicleService.findLicensePlatesForMakingReportAfterRunning(status, username,
-                   Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
+           String vehiclePlate = vehicleService.findLicensePlatesForMakingReportAfterRunning(status, username);
            List<Inspection> inspections = inspectionService.findAll();
            if (inspections == null) {
                return ResponseEntity.noContent().build();
@@ -235,7 +233,7 @@ public class VehicleController {
             List<Integer> status = new ArrayList<>();
             status.add(ConsignmentStatusEnum.OBTAINING.getValue());
             status.add(ConsignmentStatusEnum.DELIVERING.getValue());
-            String vehiclePlate = vehicleService.findLicensePlatesWhileRunning(status, username);
+            String vehiclePlate = vehicleService.findLicensePlatesForMakingReportBeforeRunningOrWhileRunning(status, username);
 
             if(vehiclePlate!= null){
                 return ResponseEntity.ok().body(vehicleService.findVehicleByLicensePlates(vehiclePlate).getId().toString());
