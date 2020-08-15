@@ -26,8 +26,17 @@ public class DayOffController {
         }
         return  ResponseEntity.noContent().build();
     }
-//    @GetMapping()
-//    public ResponseEntity<DayOffRequestDTO> getListDayOff(){
-//
-//    }
+
+    @GetMapping("cancel-dayoff")
+    public ResponseEntity<Boolean> cancelDayOff(@RequestBody DayOffDTO dayOffDTO){
+        try{
+            boolean result = dayOffService.cancelDayOff(dayOffDTO);
+            if(result){
+                return  ResponseEntity.ok().body(result);
+            }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+        return  ResponseEntity.noContent().build();
+    }
 }

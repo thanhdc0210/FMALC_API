@@ -13,6 +13,7 @@ import fmalc.api.entity.Notification;
 import fmalc.api.enums.LevelInAlertEnum;
 import fmalc.api.enums.NotificationTypeEnum;
 
+import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -45,6 +46,9 @@ public class NotificationController {
 
     @Autowired
     AccountService accountService;
+
+    ScheduleService scheduleService;
+
 
     @Autowired
     AccountNotificationService accountNotificationService;
@@ -146,8 +150,22 @@ public class NotificationController {
             if (accountNotifications != null) {
                 List<NotificationMobileResponse> notificationMobileResponses = new ArrayList<>();
 
-                for (AccountNotification accountNotification : accountNotifications) {
-                    notificationMobileResponses.add(new NotificationMobileResponse(accountNotification));
+
+//                for (AccountNotification accountNotification : accountNotifications) {
+//                    notificationMobileResponses.add(new NotificationMobileResponse(accountNotification));
+
+                for(AccountNotification accountNotification : accountNotifications){
+                    if (accountNotification.getNotification().getType().equals(NotificationTypeEnum.TASK_SCHEDULE.getValue())) {
+                        NotificationMobileResponse notificationMobileResponse = new NotificationMobileResponse(accountNotification);
+                        String subString[] = notificationMobileResponse.getContent().split("#");
+                        String subStringId[] = subString[subString.length - 1].split("\\s");
+                        Integer consignmentId =  Integer.valueOf(subStringId[0]);
+                        notificationMobileResponse.setScheduleId(scheduleService.findScheduleIdByConsignmentIdAndDriverId(consignmentId, driverService.findDriverByUsername(notificationMobileResponse.getUsername()).getId()));
+                        notificationMobileResponses.add(notificationMobileResponse);
+                    }else{
+                        notificationMobileResponses.add(new NotificationMobileResponse(accountNotification));
+                    }
+
                 }
 
                 if (notificationMobileResponses != null) {
@@ -196,7 +214,7 @@ public class NotificationController {
         }
         if (alert != null) {
             NotificationRequestDTO noti = new NotificationRequestDTO();
-            noti.setType(NotificationTypeEnum.ALERT.getValue());
+//            noti.setType(NotificationTypeEnum.ALERT.getValue());
             noti.setDriver_id(alert.getDriver().getId());
             noti.setStatus(false);
             noti.setVehicle_id(alert.getVehicle().getId());

@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 @Transactional
 public interface AccountRepository extends JpaRepository<Account, Integer>, JpaSpecificationExecutor<Account> {
@@ -27,4 +29,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer>, JpaS
     Account findByDriverId(@Param("id") Integer id);
 
     boolean existsByUsername(String username);
+
+    List<Account> findAllByIsActiveIsTrueAndRole_Role(String role);
 }

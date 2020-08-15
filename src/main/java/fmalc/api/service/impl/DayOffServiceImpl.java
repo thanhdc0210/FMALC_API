@@ -186,9 +186,7 @@ public class DayOffServiceImpl implements DayOffService {
                 }
             }
         }
-
         if (flag) {
-
             notification.getType();
             String note = NotificationTypeEnum.getValueEnumToShow(notification.getType()) +" "+ notification.getContent();
             DayOff dayOff = new DayOff();
@@ -200,7 +198,6 @@ public class DayOffServiceImpl implements DayOffService {
                 dayOff.setEndDate(new Date(sdf.parse((dayOffDTO.getDateEnd())).getTime()));
                 dayOff.setFleetManager(fleetManager);
                 dayOff.setNote(note);
-
                 if (dayOffRepository.save(dayOff) != null) {
                     Account account = accountService.findById(fleetManager.getAccount().getId());
                     accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
@@ -221,6 +218,51 @@ public class DayOffServiceImpl implements DayOffService {
                 }
             }
 
+        }
+        return flag;
+    }
+
+    @Override
+    public boolean cancelDayOff(DayOffDTO dayOffDTO) {
+        Driver driver = new Driver();
+        driver = driverService.findById(dayOffDTO.getIdDriver());
+        FleetManager fleetManager = driver.getFleetManager();
+        boolean flag = true;
+        Notification notification = new Notification();
+        AccountNotification accountNotification = new AccountNotification();
+        notification = notificationRepository.findById(dayOffDTO.getIdNotify()).get();
+        notification.getType();
+        String note = NotificationTypeEnum.getValueEnumToShow(notification.getType()) +" "+ notification.getContent();
+        DayOff dayOff = new DayOff();
+        dayOff = checkDayOff(dayOffDTO);
+        if(dayOff==null){
+            dayOff.setDriver(driver);
+            dayOff.setIsApprove(false);
+            try {
+                dayOff.setStartDate(new Date(sdf.parse((dayOffDTO.getDateStart())).getTime()));
+                dayOff.setEndDate(new Date(sdf.parse((dayOffDTO.getDateEnd())).getTime()));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            dayOff.setFleetManager(fleetManager);
+            dayOff.setNote(note);
+            if (dayOffRepository.save(dayOff) != null) {
+                Account account = accountService.findById(fleetManager.getAccount().getId());
+                accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
+                if(accountNotification!=null){
+                    accountNotification.setStatus(true);
+                    accountNotification = accountNotificationService.save(accountNotification);
+                }
+            }
+        }else{
+            dayOff.setIsApprove(true);
+            dayOff = dayOffRepository.save(dayOff);
+            Account account = accountService.findById(fleetManager.getAccount().getId());
+            accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
+            if(accountNotification!=null){
+                accountNotification.setStatus(true);
+                accountNotification = accountNotificationService.save(accountNotification);
+            }
         }
         return flag;
     }

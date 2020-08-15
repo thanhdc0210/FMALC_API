@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -43,7 +46,8 @@ public class ReportIssueController {
                                                                                 @RequestParam(value = "status") List<Integer> status) {
         try {
 
-            String licensePlate = vehicleService.findLicensePlatesBeforeRunningOrWhileRunning(status, username);
+            String licensePlate = vehicleService.findLicensePlatesBeforeRunningOrWhileRunning(status, username,
+                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
             Vehicle vehicle = vehicleService.findVehicleByLicensePlates(licensePlate);
 
             if (vehicle == null) {

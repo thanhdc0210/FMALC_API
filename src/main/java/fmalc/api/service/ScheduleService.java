@@ -13,7 +13,7 @@ import java.util.List;
 public interface ScheduleService {
     List<ScheduleForLocationDTO> getScheduleByConsignmentId(int id);
     List<Schedule> createSchedule(RequestSaveScheObjDTO requestSaveScheObjDTO , MultipartFile file);
-
+    Schedule getScheduleByVehicleAndConsignment(int idCon, int idVehicle);
     List<ScheduleForConsignmentDTO> getScheduleForVehicle(int idVehicle) ;
 
     List<ScheduleForLocationDTO> getScheduleToCheck();
@@ -41,6 +41,8 @@ public interface ScheduleService {
 
 //    THANHDC
     Integer countScheduleNumberInADayOfDriver(Integer id, Timestamp startDate, Timestamp endDate);
+
+    Integer findScheduleIdByConsignmentIdAndDriverId(Integer consignmentId, Integer driverId);
 
 //    Schedule findScheduleByConsignment_IdAndDriver_Id(Integer consignmentId, Integer driverId);
 }

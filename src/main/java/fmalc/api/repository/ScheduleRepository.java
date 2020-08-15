@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.yaml.snakeyaml.events.ScalarEvent;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -23,6 +24,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 
     @Query("select  s from Schedule s where s.vehicle.id =?1")
     List<Schedule> checkVehicleInScheduled(int idVehicle);
+
+    @Query("select s from  Schedule s where s.consignment.id =?1 and s.vehicle.id=?2")
+    Schedule getScheduleByVehicleAndConsignment(int idCons, int idVehicle);
 
     @Query("select  s from Schedule s where s.driver.id =?1")
     List<Schedule> checkDriverInScheduled(int idDriver);
@@ -68,4 +72,14 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 //            " And s.driver.id = :driverId")
 //    Schedule findScheduleByConsignment_IdAndDriver_Id(@Param("consignmentId") Integer consignmentId, @Param("driverId") Integer driverId);
 
+    @Query("Select s.id From Schedule s Where s.consignment.id = :consignmentId AND s.driver.id = :driverId")
+    Integer findScheduleIdByConsignmentIdAndDriverId(@Param("consignmentId") Integer consignmentId, @Param("driverId") Integer driverId);
+
+    @Query("Select s From Schedule s, Place p" +
+            " Where s.consignment.status IN :status and s.driver.account.username = :username" +
+            " and s.isApprove = true" +
+            " AND s.consignment.id = p.consignment.id" +
+            " AND p.plannedTime BETWEEN :startDate AND :endDate")
+    List<Schedule> findByConsignmentStatusAndUsernameAndTimeCondition(@Param("status") List<Integer> status, @Param("username") String username,
+    @Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 }

@@ -123,6 +123,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public Schedule getScheduleByVehicleAndConsignment(int idCon, int idVehicle) {
+        return scheduleRepository.getScheduleByVehicleAndConsignment(idCon,idVehicle);
+    }
+
+    @Override
     public List<ScheduleForConsignmentDTO> getScheduleForVehicle(int idVehicle) {
         List<Schedule> schedules = scheduleRepository.checkVehicleInScheduled(idVehicle);
         ScheduleForConsignmentDTO sc = new ScheduleForConsignmentDTO();
@@ -233,6 +238,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     // THANHDC
+
+    public Integer findScheduleIdByConsignmentIdAndDriverId(Integer consignmentId, Integer driverId){
+        return scheduleRepository.findScheduleIdByConsignmentIdAndDriverId(consignmentId, driverId);
+    }
 
 //    @Override
 //    public Schedule findScheduleByConsignment_IdAndDriver_Id(Integer consignmentId, Integer driverId) {

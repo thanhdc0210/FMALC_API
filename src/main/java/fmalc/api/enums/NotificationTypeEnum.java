@@ -38,11 +38,22 @@ public enum NotificationTypeEnum {
             return 5;
         }
     },
-    ALERT("Cảnh báo") {
+
+//    ALERT("Cảnh báo") {
+    APPROVED("Được chấp nhận"){
         @Override
         public int getValue() {
             return 6;
         }
+
+
+    },
+    REJECTED("Bị từ chối"){
+        @Override
+        public int getValue() {
+            return 7;
+        }
+
     };
 
     String notificationTypeEnum;
@@ -72,7 +83,13 @@ public enum NotificationTypeEnum {
             case 5:
                 return DAY_OFF_UNEXPECTED.getNotificationTypeEnum();
             case 6:
-                return ALERT.getNotificationTypeEnum();
+
+//                return ALERT.getNotificationTypeEnum();
+
+                return APPROVED.getNotificationTypeEnum();
+            case 7:
+                return REJECTED.getNotificationTypeEnum();
+
             default:
                 throw new AssertionError("Unknown operations");
         }

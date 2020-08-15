@@ -6,10 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fmalc.api.dto.*;
-import fmalc.api.entity.Consignment;
-import fmalc.api.entity.Driver;
-import fmalc.api.entity.Schedule;
-import fmalc.api.entity.Vehicle;
+import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.enums.ScheduleConsginmentEnum;
@@ -65,12 +62,15 @@ public class ScheduleController {
 
     @GetMapping(value = "id/{id}")
     public ResponseEntity<DetailedScheduleDTO> findById(@PathVariable("id") Integer id) {
+        Consignment consignment = consignmentService.findById(id);
+        List<Place> places = (List<Place>) consignment.getPlaces();
+        List<PlaceResponeDTO> placeResponeDTOS = new PlaceResponeDTO().mapToListResponse(places);
         Schedule schedule = scheduleService.findById(id);
         if (schedule == null || schedule.equals("")) {
             return ResponseEntity.noContent().build();
         }
-        DetailedScheduleDTO detailedScheduleDTO = new DetailedScheduleDTO(schedule);
-
+        DetailedScheduleDTO detailedScheduleDTO = new DetailedScheduleDTO();
+        detailedScheduleDTO.setPlaces(placeResponeDTOS);
         return ResponseEntity.ok().body(detailedScheduleDTO);
     }
 
@@ -641,5 +641,20 @@ public class ScheduleController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("id")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    public ResponseEntity<Integer> findScheduleIdByConsignmentIdAndDriverId(@RequestParam("consignmentId") Integer consignmentId,
+                                            @RequestParam("driverId") Integer driverId){
+        try {
+            Integer id = scheduleService.findScheduleIdByConsignmentIdAndDriverId(consignmentId, driverId);
+            if (id == null){
+                return ResponseEntity.noContent().build();
+            }else{
+                return ResponseEntity.ok().body(id);
+            }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 }

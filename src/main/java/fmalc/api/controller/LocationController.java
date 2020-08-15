@@ -7,6 +7,7 @@ import fmalc.api.dto.LocationDTO;
 import fmalc.api.dto.LocationResponeDTO;
 import fmalc.api.dto.ScheduleDTO;
 import fmalc.api.dto.VehicleForDetailDTO;
+import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Location;
 import fmalc.api.entity.Schedule;
 import fmalc.api.enums.ConsignmentStatusEnum;
@@ -271,23 +272,30 @@ public class LocationController {
         List<Location> locationLists = new ArrayList();
         List<LocationResponeDTO> locationDTOS = new ArrayList();
         if (size > 0) {
-            for (Map.Entry key : tracking.entrySet()) {
-                if ((Integer) key.getValue() == id) {
-                    Schedule schedule =scheduleService.findById(id);
-                    if (schedule.getConsignment().getStatus() == ConsignmentStatusEnum.OBTAINING.getValue()
-                    ||schedule.getConsignment().getStatus() == ConsignmentStatusEnum.DELIVERING.getValue()) {
-                        Location locationSave = (Location) key.getKey();
-                        locationLists.add(locationSave);
-                    } else if(schedule.getConsignment().getStatus() == ConsignmentStatusEnum.COMPLETED.getValue()) {
-                        List<Location> locationList = locationService.getListLocationBySchedule(id);
-                        if(locationList.size()>0){
-                            locationDTOS = new LocationResponeDTO().mapToListResponse(locationList);
+            Consignment consignment = consignmentService.findById(id);
+            List<Schedule> schedules = (List<Schedule>) consignment.getSchedules();
+//                    Schedule schedule =scheduleService.findById(id);
+            for(int i=0; i< schedules.size(); i++){
+                Schedule schedule =schedules.get(i);
+                for (Map.Entry key : tracking.entrySet()) {
+                    if ((Integer) key.getValue() == schedule.getId()) {
+
+                        if (schedule.getConsignment().getStatus() == ConsignmentStatusEnum.OBTAINING.getValue()
+                                ||schedule.getConsignment().getStatus() == ConsignmentStatusEnum.DELIVERING.getValue()) {
+                            Location locationSave = (Location) key.getKey();
+                            locationLists.add(locationSave);
+                        } else if(schedule.getConsignment().getStatus() == ConsignmentStatusEnum.COMPLETED.getValue()) {
+                            List<Location> locationList = locationService.getListLocationBySchedule(schedule.getId());
+                            if(locationList.size()>0){
+                                locationDTOS.addAll(new LocationResponeDTO().mapToListResponse(locationList)) ;
+                            }
                         }
+                    } else {
+                        return locationDTOS;
                     }
-                } else {
-                    return locationDTOS;
                 }
             }
+
             locationDTOS = new LocationResponeDTO().mapToListResponse(locationLists);
 
         } else {

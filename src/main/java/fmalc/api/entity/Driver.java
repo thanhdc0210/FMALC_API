@@ -39,7 +39,7 @@ public class Driver implements Serializable {
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @ManyToOne
     @JoinColumn(name = "fleet_manager_id", referencedColumnName = "id", nullable = false)
     private FleetManager fleetManager;
 

@@ -23,6 +23,7 @@ public class NotificationMobileResponse {
     private Integer type;
     private String username;
     private Integer notificationId;
+    private Integer scheduleId;
 
     public NotificationMobileResponse(AccountNotification accountNotification) {
         Notification notification = accountNotification.getNotification();

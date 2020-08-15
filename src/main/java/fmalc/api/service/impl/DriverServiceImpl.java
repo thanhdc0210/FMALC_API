@@ -109,8 +109,15 @@ public class DriverServiceImpl implements DriverService {
         if (!driverRepository.existsById(id)) {
             throw new Exception();
         }
-        driverRepository.updateDriver(id, driverRequest.getName(), driverRequest.getIdentityNo(), driverRequest.getNo(), driverRequest.getLicenseExpires(), driverRequest.getDateOfBirth(), driverRequest.getDriverLicense());
-        return driverRepository.findById(id).get();
+        Driver driver = driverRepository.findById(id).get();
+        driver.setName(driverRequest.getName());
+        driver.setDateOfBirth(driverRequest.getDateOfBirth());
+        driver.setIdentityNo(driverRequest.getIdentityNo());
+        driver.setNo(driverRequest.getNo());
+        driver.setDriverLicense(driverRequest.getDriverLicense());
+        driver.setLicenseExpires(driverRequest.getLicenseExpires());
+        driver.setFleetManager(fleetManagerRepository.findById(driverRequest.getFleetManagerId()).get());
+        return driverRepository.save(driver);
     }
 
     @Override

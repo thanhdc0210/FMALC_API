@@ -19,5 +19,5 @@ public interface DayOffService {
 
     boolean confirmDayOff(DayOffDTO dayOffDTO);
 
-
+    boolean cancelDayOff(DayOffDTO dayOffDTO);
 }
