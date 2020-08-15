@@ -1,13 +1,12 @@
 package fmalc.api.controller;
 
+import fmalc.api.dto.AlertRequestDTO;
 import fmalc.api.dto.AlertResponseDTO;
 import fmalc.api.entity.Alert;
 import fmalc.api.service.AlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +21,18 @@ public class AlertController {
     public ResponseEntity<List<AlertResponseDTO>> getAllAlert() {
         List<Alert> alerts = alertService.getAlerts();
         return ResponseEntity.ok().body(new AlertResponseDTO().mapToListResponse(alerts));
+    }
+
+    @PostMapping("driver-send")
+    public ResponseEntity driverSendAlert(@RequestBody AlertRequestDTO alertRequest) {
+        Alert alert = alertService.driverSendAlert(alertRequest);
+        if (alert == null) {
+            return ResponseEntity.noContent().build();
+        }
+        if (alert != null) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 }
