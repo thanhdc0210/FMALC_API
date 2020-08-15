@@ -3,12 +3,14 @@ package fmalc.api.service.impl;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import fmalc.api.dto.DayOffNotificationResponseDTO;
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationResponeDTO;
 import fmalc.api.dto.NotificationUnread;
 import fmalc.api.entity.*;
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.repository.*;
+import fmalc.api.service.AccountNotificationService;
 import fmalc.api.service.NotificationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     NotificationRepository notificationRepository;
+
+    @Autowired
+    AccountNotificationService accountNotificationService;
 
     @Autowired
     DriverRepository driverRepository;
@@ -170,8 +175,28 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<Notification> getNotificationsDayOff() {
-        return notificationRepository.findAllByTypeInOrderByIdDesc(Arrays.asList(4, 5));
+    public List<DayOffNotificationResponseDTO> getNotificationsDayOff() {
+        List<Notification> notifications =notificationRepository.findAllByTypeInOrderByIdDesc(Arrays.asList(4, 5));
+        List<DayOffNotificationResponseDTO> dayOffNotificationResponseDTOS = new DayOffNotificationResponseDTO().mapToListResponse(notifications);
+        DayOffNotificationResponseDTO dayOffDTO = new DayOffNotificationResponseDTO();
+        AccountNotification an = new AccountNotification();
+        Account account = new Account();
+        for(int i=0; i< dayOffNotificationResponseDTOS.size();i++){
+
+            dayOffDTO = dayOffNotificationResponseDTOS.get(i);
+
+            account = accountRepository.findByDriverId(dayOffDTO.getDriver().getId());
+            an =  accountNotificationService.findByFleetAndNoti(account.getId(),notifications.get(i).getId());
+            DayOff dayOff = dayOffRepository.getDayOffExistByDateIsApprove(dayOffDTO.getDriver().getId(),new Date(dayOffDTO.getStartDate().getTime()), new Date(dayOffDTO.getEndDate().getTime()));
+            dayOffNotificationResponseDTOS.get(i).setIsRead(an.getStatus());
+            if(dayOff!=null){
+                dayOffNotificationResponseDTOS.get(i).setIsApprove(dayOff.getIsApprove());
+            }else{
+                dayOffNotificationResponseDTOS.get(i).setIsApprove(false);
+            }
+        }
+
+        return dayOffNotificationResponseDTOS;
     }
 
     private Notification convertToDto(NotificationRequestDTO notificationRequestDTO) {

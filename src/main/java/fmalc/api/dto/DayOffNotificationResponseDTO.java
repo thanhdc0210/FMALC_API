@@ -20,7 +20,8 @@ public class DayOffNotificationResponseDTO {
     private String note;
     private Boolean isApprove;
     private Integer type;
-
+    private int idNotify;
+    private Boolean isRead;
     public DayOffNotificationResponseDTO mapToResponse(Notification notification) throws ParseException {
         ModelMapper modelMapper = new ModelMapper();
         DayOffNotificationResponseDTO dto = modelMapper.map(notification, DayOffNotificationResponseDTO.class);
@@ -38,7 +39,9 @@ public class DayOffNotificationResponseDTO {
             dto.setEndDate(simpleDateFormat.parse(str.get(1)));
             dto.setNote("");
         }
-        dto.setIsApprove(false);
+        dto.setIdNotify(notification.getId());
+//        dto.setIsRead(notification.getAccountNotifications());
+//        dto.setIsApprove(false);
         return dto;
     }
 

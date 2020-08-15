@@ -26,8 +26,8 @@ public class DayOffController {
         }
         return  ResponseEntity.noContent().build();
     }
-    @GetMapping()
-    public ResponseEntity<DayOffRequestDTO> getListDayOff(){
-
-    }
+//    @GetMapping()
+//    public ResponseEntity<DayOffRequestDTO> getListDayOff(){
+//
+//    }
 }

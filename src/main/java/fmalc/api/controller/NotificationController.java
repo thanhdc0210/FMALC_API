@@ -220,5 +220,9 @@ public class NotificationController {
         return ResponseEntity.badRequest().build();
     }
 
-
+    @GetMapping(value = "/dayoff")
+    public ResponseEntity getNotificationsDayOff() {
+        List<DayOffNotificationResponseDTO> notifications = notificationService.getNotificationsDayOff();
+        return ResponseEntity.ok().body(notifications);
+    }
 }
