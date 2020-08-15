@@ -62,15 +62,15 @@ public class ScheduleController {
 
     @GetMapping(value = "id/{id}")
     public ResponseEntity<DetailedScheduleDTO> findById(@PathVariable("id") Integer id) {
-        Consignment consignment = consignmentService.findById(id);
-        List<Place> places = (List<Place>) consignment.getPlaces();
-        List<PlaceResponeDTO> placeResponeDTOS = new PlaceResponeDTO().mapToListResponse(places);
+//        Consignment consignment = consignmentService.findById(id);
+//        List<Place> places = (List<Place>) consignment.getPlaces();
+//        List<PlaceResponeDTO> placeResponeDTOS = new PlaceResponeDTO().mapToListResponse(places);
         Schedule schedule = scheduleService.findById(id);
         if (schedule == null || schedule.equals("")) {
             return ResponseEntity.noContent().build();
         }
-        DetailedScheduleDTO detailedScheduleDTO = new DetailedScheduleDTO();
-        detailedScheduleDTO.setPlaces(placeResponeDTOS);
+        DetailedScheduleDTO detailedScheduleDTO = new DetailedScheduleDTO(schedule);
+//        detailedScheduleDTO.setPlaces(placeResponeDTOS);
         return ResponseEntity.ok().body(detailedScheduleDTO);
     }
 

@@ -10,10 +10,13 @@ import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.DayOffRepository;
 import fmalc.api.repository.MaintenanceRepository;
-import fmalc.api.repository.MaintenanceTypeRepository;
 import fmalc.api.repository.NotificationRepository;
 import fmalc.api.service.*;
 import lombok.SneakyThrows;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -456,7 +459,7 @@ public class DayOffServiceImpl implements DayOffService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<DayOff> dayOffs = new ArrayList<>();
         boolean flag = false;
-        dayOffs = dayOffRepository.checkDayOffOfDriver(id,true);
+        dayOffs = dayOffRepository.checkDayOffOfDriver(id, true);
         if (dayOffs.size() > 0) {
             for (int j = 0; j < dayOffs.size(); j++) {
                 String dateOff = sdf.format(dayOffs.get(j).getStartDate());
@@ -486,5 +489,35 @@ public class DayOffServiceImpl implements DayOffService {
             flag = true;
         }
         return flag;
+    }
+
+    @Override
+    public DayOff checkDriverDayOffRequest(Integer driverId, String startDate, String endDate) {
+       List<DayOff> dayOffList = dayOffRepository.findByDriverIdAndIsApprove(driverId,false);
+//        DateTimeFormatter formatDate = DateTimeFormat.forPattern("dd-MM-yyyy");
+        DateTimeFormatter formatOut = DateTimeFormat.forPattern("yyyy-MM-dd");
+        dayOffList.sort(Comparator.comparing(DayOff::getStartDate));
+        DateTime start = formatOut.parseDateTime(reverse(startDate)).withTimeAtStartOfDay();
+        DateTime end = formatOut.parseDateTime(reverse(endDate)).millisOfDay().withMaximumValue();
+        Interval interval = new Interval(start,end);
+
+        for(DayOff dayOff : dayOffList){
+            DateTime s = new DateTime(dayOff.getStartDate().getTime()).withTimeAtStartOfDay();
+            DateTime e = new DateTime(dayOff.getEndDate().getTime()).millisOfDay().withMaximumValue();
+            Interval dbInterval = new Interval(s,e);
+            if (interval.overlaps(dbInterval)){
+                return dayOff;
+            }
+        }
+        return null;
+    }
+
+    public String reverse(String str){
+        String s[] = str.split("-");
+        String ans = "";
+        for (int i = s.length - 1; i >= 0; i--) {
+            ans += s[i] + "-";
+        }
+        return (ans.substring(0, ans.length() - 1));
     }
 }

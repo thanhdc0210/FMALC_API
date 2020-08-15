@@ -20,6 +20,8 @@ public interface DayOffRepository extends JpaRepository<DayOff, Integer> {
     @Query("select do from DayOff  do where  do.driver.id=?1 and do.startDate=?2 and do.endDate=?3")
     DayOff getDayOffExistByDateIsApprove(int idDriver,Date start, Date end );
 
+    List<DayOff> findByDriverIdAndIsApprove(Integer driverId, Boolean isApprove);
+
 //    @Query("select do from DayOff do where do.driver.id = ?1 and do.endDay >= ?2")
 //    Boolean checkDayOffEndDriver (int idDriver, Date date);
 

@@ -32,7 +32,7 @@ public class FuelTypeController {
                                                                                   @RequestParam("username") String username) {
         try {
             List<FuelType> fuelTypes = fuelTypeService.getListFuelType();
-            String licensePlate = vehicleService.findLicensePlatesWhileRunning(status, username);
+            String licensePlate = vehicleService.findLicensePlatesForMakingReportBeforeRunningOrWhileRunning(status, username);
 
             if (fuelTypes == null) {
                 return ResponseEntity.noContent().build();
