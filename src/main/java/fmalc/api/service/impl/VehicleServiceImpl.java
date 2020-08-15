@@ -668,8 +668,8 @@ public class VehicleServiceImpl implements VehicleService {
 
     // Get license plates for making report before running
     @Override
-    public String findLicensePlatesBeforeRunningOrWhileRunning(List<Integer> status, String username) {
-        List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsername(status, username);
+    public String findLicensePlatesBeforeRunningOrWhileRunning(List<Integer> status, String username, Timestamp startDate, Timestamp endDate) {
+        List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsernameAndTimeCondition(status, username, startDate, endDate);
 
         if (schedules.size() > 0){
             List<ObjectToSortForSchedule> objectToSortForSchedules = new ArrayList<>();
@@ -695,8 +695,8 @@ public class VehicleServiceImpl implements VehicleService {
 
     // Get license plates for making report after running
     @Override
-    public String findLicensePlatesForMakingReportAfterRunning(List<Integer> status, String username) {
-        List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsername(status, username);
+    public String findLicensePlatesForMakingReportAfterRunning(List<Integer> status, String username, Timestamp startDate, Timestamp endDate) {
+        List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsernameAndTimeCondition(status, username, startDate, endDate);
 
         if (schedules.size() > 0){
             List<ObjectToSortForSchedule> objectToSortForSchedules = new ArrayList<>();

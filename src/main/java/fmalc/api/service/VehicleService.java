@@ -50,12 +50,12 @@ public interface VehicleService {
     boolean checkLicensePlates(String licensePlates);
 
 
-    // Get license plates for making report before running
+    // Get license plates for making report before running and while running
     String findLicensePlatesBeforeRunningOrWhileRunning(
-            List<Integer> status, String username);
+            List<Integer> status, String username, Timestamp startDate, Timestamp endDate);
 
     // Get license plates for making report after running
     String findLicensePlatesForMakingReportAfterRunning(
-            List<Integer> status, String username);
+            List<Integer> status, String username, Timestamp startDate, Timestamp endDate);
 
 }

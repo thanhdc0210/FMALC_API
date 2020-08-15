@@ -18,8 +18,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -165,7 +168,8 @@ public class VehicleController {
             (@RequestParam(value = "username") String username, @RequestParam(value = "status") List<Integer> status) {
 
         try{
-            String vehiclePlate = vehicleService.findLicensePlatesBeforeRunningOrWhileRunning(status, username);
+            String vehiclePlate = vehicleService.findLicensePlatesBeforeRunningOrWhileRunning(status, username,
+                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
 
             List<Inspection> inspections = inspectionService.findAll();
             if (inspections == null) {
@@ -198,7 +202,8 @@ public class VehicleController {
             (@RequestParam(value = "username") String username, @RequestParam(value = "status") List<Integer> status) {
 
        try {
-           String vehiclePlate = vehicleService.findLicensePlatesForMakingReportAfterRunning(status, username);
+           String vehiclePlate = vehicleService.findLicensePlatesForMakingReportAfterRunning(status, username,
+                   Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
            List<Inspection> inspections = inspectionService.findAll();
            if (inspections == null) {
                return ResponseEntity.noContent().build();
@@ -230,7 +235,8 @@ public class VehicleController {
             List<Integer> status = new ArrayList<>();
             status.add(ConsignmentStatusEnum.OBTAINING.getValue());
             status.add(ConsignmentStatusEnum.DELIVERING.getValue());
-            String vehiclePlate = vehicleService.findLicensePlatesBeforeRunningOrWhileRunning(status, username);
+            String vehiclePlate = vehicleService.findLicensePlatesBeforeRunningOrWhileRunning(status, username,
+                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
 
             if(vehiclePlate!= null){
                 return ResponseEntity.ok().body(vehicleService.findVehicleByLicensePlates(vehiclePlate).getId().toString());
