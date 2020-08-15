@@ -44,16 +44,15 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
 //    @Transactional
     public Notification createNotification(NotificationRequestDTO dto) throws ParseException {
-        Notification notify = convertToDto(dto);
+         Notification notify = convertToDto(dto);
         notify.setTime(new Timestamp(System.currentTimeMillis()));
         if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
                 dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()) {
-            notify.setVehicle(null);
+                notify.setVehicle(null);
         } else {
             Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
             notify.setVehicle(vehicle);
         }
-        notify.setDriver(driverRepository.findById(dto.getDriver_id()).get());
         notify.setType(dto.getType());
         notify.setContent(dto.getContent());
         notify.setDriver(driverRepository.findById(dto.getDriver_id()).get());
@@ -62,7 +61,7 @@ public class NotificationServiceImpl implements NotificationService {
             Notification notification = notificationRepository.save(notify);
 
             if (notification != null) {
-                List<Account> accounts = accountRepository.findAllByIsActiveIsTrueAndRole_Role("ROLE_ADMIN");
+                 List<Account> accounts = accountRepository.findAllByIsActiveIsTrueAndRole_Role("ROLE_ADMIN");
                 Driver driver = driverRepository.findById(dto.getDriver_id()).get();
                 accounts.add(accountRepository.findById(driver.getFleetManager().getAccount().getId()).get());
                 List<AccountNotification> accountNotifications = new ArrayList<>();

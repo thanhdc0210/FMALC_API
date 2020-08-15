@@ -9,11 +9,16 @@ import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.DayOffRepository;
 import fmalc.api.service.DayOffService;
 import fmalc.api.service.PlaceService;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -122,5 +127,35 @@ public class DayOffServiceImpl implements DayOffService {
     @Override
     public void save(DayOff dayOff) {
         dayOffRepository.save(dayOff);
+    }
+
+    @Override
+    public DayOff checkDriverDayOffRequest(Integer driverId, String startDate, String endDate) {
+       List<DayOff> dayOffList = dayOffRepository.findByDriverIdAndIsApprove(driverId,false);
+//        DateTimeFormatter formatDate = DateTimeFormat.forPattern("dd-MM-yyyy");
+        DateTimeFormatter formatOut = DateTimeFormat.forPattern("yyyy-MM-dd");
+        dayOffList.sort(Comparator.comparing(DayOff::getStartDate));
+        DateTime start = formatOut.parseDateTime(reverse(startDate)).withTimeAtStartOfDay();
+        DateTime end = formatOut.parseDateTime(reverse(endDate)).millisOfDay().withMaximumValue();
+        Interval interval = new Interval(start,end);
+
+        for(DayOff dayOff : dayOffList){
+            DateTime s = new DateTime(dayOff.getStartDate().getTime()).withTimeAtStartOfDay();
+            DateTime e = new DateTime(dayOff.getEndDate().getTime()).millisOfDay().withMaximumValue();
+            Interval dbInterval = new Interval(s,e);
+            if (interval.overlaps(dbInterval)){
+                return dayOff;
+            }
+        }
+        return null;
+    }
+
+    public String reverse(String str){
+        String s[] = str.split("-");
+        String ans = "";
+        for (int i = s.length - 1; i >= 0; i--) {
+            ans += s[i] + "-";
+        }
+        return (ans.substring(0, ans.length() - 1));
     }
 }
