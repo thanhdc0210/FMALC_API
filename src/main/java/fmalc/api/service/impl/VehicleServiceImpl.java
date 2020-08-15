@@ -671,7 +671,7 @@ public class VehicleServiceImpl implements VehicleService {
     public String findLicensePlatesBeforeRunningOrWhileRunning(List<Integer> status, String username) {
         List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsername(status, username);
 
-        if (schedules != null){
+        if (schedules.size() > 0){
             List<ObjectToSortForSchedule> objectToSortForSchedules = new ArrayList<>();
             schedules.forEach(s -> {
                 List<Place> places = new ArrayList<>(s.getConsignment().getPlaces());
@@ -694,7 +694,7 @@ public class VehicleServiceImpl implements VehicleService {
     public String findLicensePlatesForMakingReportAfterRunning(List<Integer> status, String username) {
         List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsername(status, username);
 
-        if (schedules != null){
+        if (schedules.size() >0){
             List<ObjectToSortForSchedule> objectToSortForSchedules = new ArrayList<>();
             schedules.forEach(s -> {
                 List<Place> places = new ArrayList<>(s.getConsignment().getPlaces());
