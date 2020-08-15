@@ -95,7 +95,7 @@ public class VehicleServiceImpl implements VehicleService {
     public Vehicle disableVehicle(int id) {
         Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
         vehicle.setIsActive(false);
-
+        vehicle.setStatus(VehicleStatusEnum.UNAVAILABLE.getValue());
         return vehicleRepository.save(vehicle);
     }
 

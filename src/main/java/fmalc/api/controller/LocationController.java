@@ -10,6 +10,7 @@ import fmalc.api.dto.VehicleForDetailDTO;
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Location;
 import fmalc.api.entity.Schedule;
+import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.service.ConsignmentService;
 import fmalc.api.service.LocationService;
@@ -49,7 +50,7 @@ public class LocationController {
     private ScheduleService scheduleService;
 
     private HashMap<Location, Integer> tracking = new HashMap<>();
-    private int interval = 1000 * 60 *3; // 1 sec
+    private int interval = 1000 * 60 * 3; // 1 sec
     private int sizeHash = 0;
     private Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
     private List<Integer> idVehicles = new ArrayList<>();
@@ -79,127 +80,143 @@ public class LocationController {
         } else if (!locations.contains(location.getAddress())) {
             locations.add(location);
         }
-            Date timeToRun = new Date(System.currentTimeMillis() + interval);
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                public void run() {
-                    if (locations.size() > 0) {
-                        Location locationTmp = locations.get(0);
-                        locationService.createLocation(locationTmp);
-                        for (int i = 0; i < locations.size(); i++) {
-                            if (locationTmp.getAddress() != locations.get(i).getAddress() ||
-                                    locationTmp.getSchedule().getId() != locations.get(i).getSchedule().getId()) {
-                                locationService.createLocation(locations.get(i));
-                            }
+        Date timeToRun = new Date(System.currentTimeMillis() + interval);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            public void run() {
+                if (locations.size() > 0) {
+                    Location locationTmp = locations.get(0);
+                    locationService.createLocation(locationTmp);
+                    for (int i = 0; i < locations.size(); i++) {
+                        if (locationTmp.getAddress() != locations.get(i).getAddress() ||
+                                locationTmp.getSchedule().getId() != locations.get(i).getSchedule().getId()) {
+                            locationService.createLocation(locations.get(i));
                         }
                     }
-                    locations = new ArrayList<>();
                 }
-            }, timeToRun);
+                locations = new ArrayList<>();
+            }
+        }, timeToRun);
         return ResponseEntity.ok().body("OK");
 
     }
 
     @GetMapping("/stop-tracking/{id}")
-    public ResponseEntity<String> stopTracking(@PathVariable("id") int id){
+    public ResponseEntity<String> stopTracking(@PathVariable("id") int id) {
 //        List<ScheduleForConsignmentDTO>  list =vehicleService.checkScheduleForVehicle(id);
+        Vehicle vehicle = vehicleService.findById(id);
+
         List<Schedule> schedules = scheduleService.checkVehicleInScheduled(id);
         List<Schedule> result = new ArrayList<>();
-        for(int i=0 ; i<schedules.size(); i++){
-            if(schedules.get(i).getConsignment().getStatus()== ConsignmentStatusEnum.DELIVERING.getValue()
-            || schedules.get(i).getConsignment().getStatus()== ConsignmentStatusEnum.OBTAINING.getValue()){
+        for (int i = 0; i < schedules.size(); i++) {
+            if (schedules.get(i).getConsignment().getStatus() == ConsignmentStatusEnum.DELIVERING.getValue()
+                    || schedules.get(i).getConsignment().getStatus() == ConsignmentStatusEnum.OBTAINING.getValue()) {
                 result.add(schedules.get(i));
             }
         }
-        if(result.size()==0){
+        if (result.size() == 0) {
             for (Map.Entry key : tracking.entrySet()) {
-                if(schedules.contains(key.getValue())){
+                if (schedules.contains(key.getValue())) {
                     tracking.remove(key);
                 }
             }
 
-        }else{
-            for (Map.Entry key : tracking.entrySet()) {
-                if(schedules.contains(key.getValue()) && !result.contains(key.getValue())){
-                    tracking.remove(key);
+        } else {
+            Iterator it = tracking.entrySet().iterator();
+            while (it.hasNext())
+            {
+                Map.Entry item = (Map.Entry) it.next();
+                if (schedules.contains(item.getValue()) && !result.contains(item.getValue())) {
+                    tracking.remove(item.getKey());
                 }
+
             }
+
+
+//            for (Map.Entry key : tracking.entrySet()) {
+//                if (schedules.contains(key.getValue()) && !result.contains(key.getValue())) {
+//                    tracking.remove(key);
+//                }
+//            }
         }
-        return  ResponseEntity.ok().body("OK");
+        if (tracking.size() <= 0) {
+            intervals.subscribe((i) -> locationListForConsignment(id)).dispose();
+        }
+        return ResponseEntity.ok().body("OK");
     }
 
-//    @PostMapping()
-//    public ResponseEntity<String> save(@RequestBody LocationDTO dto) throws ParseException {
-//        System.out.println("Send");
-//        Location location = new Location();
-////        location.setId(null);
-//        location.setLatitude(dto.getLatitude());
-//        location.setLongitude(dto.getLongitude());
-//        location.setAddress(dto.getAddress());
-//        Schedule schedule = scheduleService.findById(dto.getSchedule());
-//
-//        Date date = new Date();
-//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-//        df.getTimeZone();
-//        date = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(df.format(date));
-//        Timestamp timestamp = new Timestamp(date.getTime());
-//        location.setTime(timestamp);
-//        location.setSchedule(schedule);
-////        if(schedule.get)
-//        locationService.createLocation(location);
-//        return ResponseEntity.ok().body("OK");
-//
-//    }
 
     @GetMapping("consignment/id/{id}")
-    public ResponseEntity<List<LocationResponeDTO>> getLocationAConsignment(@PathVariable("id") int idConsignment){
-        try{
+    public ResponseEntity<List<LocationResponeDTO>> getLocationAConsignment(@PathVariable("id") int idConsignment) {
+        try {
             List<LocationResponeDTO> locationResponeDTOS = new ArrayList<>();
             List<Location> locations = new ArrayList<>();
             List<Schedule> schedules = consignmentService.findScheduleByConsignment(idConsignment);
-            if(schedules.size()>0){
-               for(int i =0; i< schedules.size(); i++){
-                   List<Location> tmp = locationService.getListLocationBySchedule(schedules.get(i).getId());
-                   if(tmp.size()>0){
-                       locations.addAll(tmp);
-                   }
+            if (schedules.size() > 0) {
+                for (int i = 0; i < schedules.size(); i++) {
+                    List<Location> tmp = locationService.getListLocationBySchedule(schedules.get(i).getId());
+                    if (tmp.size() > 0) {
+                        locations.addAll(tmp);
+                    }
 
-               }
+                }
             }
 
 
-            if(locations.size()>0){
+            if (locations.size() > 0) {
                 locationResponeDTOS = new LocationResponeDTO().mapToListResponse(locations);
-                return  ResponseEntity.ok().body(locationResponeDTOS);
+                return ResponseEntity.ok().body(locationResponeDTOS);
             }
             return ResponseEntity.noContent().build();
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping(value = "/trackingLocation/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<List<LocationResponeDTO>> locationListForConsignment(@PathVariable int id) {
-        intervals.subscribe((i) -> SSELocation(id));
-        Flux<List<LocationResponeDTO>> transactionFlux = Flux.fromStream(Stream.generate(() -> SSELocation(id)));
-        if (SSELocation(id).size() <= 0) {
-            Disposable disposable = intervals.subscribe();
-            disposable.dispose();
+        Flux<List<LocationResponeDTO>> transactionFlux;
+        if (tracking.size() <= 0) {
+            intervals.subscribe((i) -> getLocationAConsignment(id)).dispose();
+            transactionFlux = Flux.fromStream(Stream.generate(() -> SSELocation(id)));
+//            transactionFlux = Flux.fromStream(Stream.generate(() -> getLocationAConsignment(id)));
+//            if (SSELocation(id).size() <= 0) {
+//                Disposable disposable = intervals.subscribe();
+//                disposable.dispose();
+//            }
+        } else {
+            intervals.subscribe((i) -> SSELocation(id));
+            transactionFlux = Flux.fromStream(Stream.generate(() -> SSELocation(id)));
+            if (SSELocation(id).size() <= 0) {
+                Disposable disposable = intervals.subscribe();
+                disposable.dispose();
+            }
         }
+
         return Flux.zip(intervals, transactionFlux).map(Tuple2::getT2);
     }
 
     @GetMapping(value = "/locationofveicle/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<List<LocationResponeDTO>> locationListForVehicle(@PathVariable("id") int id) {
+
         idVehicles.add(id);
-        intervals.subscribe((i) -> SSELocationForVehicle(id));
-        if (SSELocationForVehicle(id).size() <= 0) {
-            Disposable disposable = intervals.subscribe();
-            disposable.dispose();
+        Flux<List<LocationResponeDTO>> transactionFlux;
+        if (tracking.size() <= 0) {
+            intervals.subscribe((i) -> locationListForVehicle(id)).dispose();
+
+            transactionFlux = Flux.fromStream(Stream.generate(() -> SSELocationForVehicle(id)));
+        } else {
+            intervals.subscribe((i) -> SSELocationForVehicle(id));
+
+//            if (SSELocationForVehicle(id).size() <= 0) {
+//                Disposable disposable = intervals.subscribe();
+//                disposable.dispose();
+//            }
+            transactionFlux = Flux.fromStream(Stream.generate(() -> SSELocationForVehicle(id)));
+//            Flux<List<LocationResponeDTO>> flux = ;
         }
-        Flux<List<LocationResponeDTO>> transactionFlux = Flux.fromStream(Stream.generate(() -> SSELocationForVehicle(id)));
-        Flux<List<LocationResponeDTO>> flux = Flux.zip(intervals, transactionFlux).map(Tuple2::getT2);
-        return flux;
+
+        return Flux.zip(intervals, transactionFlux).map(Tuple2::getT2);
     }
 
     private List<LocationResponeDTO> SSELocationForVehicle(int id) {
@@ -215,6 +232,7 @@ public class LocationController {
             disposable.dispose();
         } else {
             if (size > 0) {
+
                 for (Map.Entry key : tracking.entrySet()) {
                     Schedule schedules = scheduleService.findById((Integer) key.getValue());
 //                    scheduleForLocationDTO = scheduleForLocationDTO.convertSchedule(schedules);
@@ -275,19 +293,19 @@ public class LocationController {
             Consignment consignment = consignmentService.findById(id);
             List<Schedule> schedules = (List<Schedule>) consignment.getSchedules();
 //                    Schedule schedule =scheduleService.findById(id);
-            for(int i=0; i< schedules.size(); i++){
-                Schedule schedule =schedules.get(i);
+            for (int i = 0; i < schedules.size(); i++) {
+                Schedule schedule = schedules.get(i);
                 for (Map.Entry key : tracking.entrySet()) {
                     if ((Integer) key.getValue() == schedule.getId()) {
 
                         if (schedule.getConsignment().getStatus() == ConsignmentStatusEnum.OBTAINING.getValue()
-                                ||schedule.getConsignment().getStatus() == ConsignmentStatusEnum.DELIVERING.getValue()) {
+                                || schedule.getConsignment().getStatus() == ConsignmentStatusEnum.DELIVERING.getValue()) {
                             Location locationSave = (Location) key.getKey();
                             locationLists.add(locationSave);
-                        } else if(schedule.getConsignment().getStatus() == ConsignmentStatusEnum.COMPLETED.getValue()) {
+                        } else if (schedule.getConsignment().getStatus() == ConsignmentStatusEnum.COMPLETED.getValue()) {
                             List<Location> locationList = locationService.getListLocationBySchedule(schedule.getId());
-                            if(locationList.size()>0){
-                                locationDTOS.addAll(new LocationResponeDTO().mapToListResponse(locationList)) ;
+                            if (locationList.size() > 0) {
+                                locationDTOS.addAll(new LocationResponeDTO().mapToListResponse(locationList));
                             }
                         }
                     } else {
