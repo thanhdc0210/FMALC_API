@@ -3,10 +3,8 @@ package fmalc.api.controller;
 import fmalc.api.dto.*;
 import fmalc.api.entity.AccountNotification;
 import fmalc.api.entity.Notification;
-import fmalc.api.service.AccountNotificationService;
-import fmalc.api.service.DriverService;
-import fmalc.api.service.NotificationService;
-import fmalc.api.service.VehicleService;
+import fmalc.api.enums.NotificationTypeEnum;
+import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +31,9 @@ public class NotificationController {
 
     @Autowired
     DriverService driverService;
+
+    @Autowired
+    ScheduleService scheduleService;
 
     @Autowired
     AccountNotificationService accountNotificationService;
@@ -154,7 +155,16 @@ public class NotificationController {
                 List<NotificationMobileResponse> notificationMobileResponses = new ArrayList<>();
 
                 for(AccountNotification accountNotification : accountNotifications){
-                    notificationMobileResponses.add(new NotificationMobileResponse(accountNotification));
+                    if (accountNotification.getNotification().getType().equals(NotificationTypeEnum.TASK_SCHEDULE.getValue())) {
+                        NotificationMobileResponse notificationMobileResponse = new NotificationMobileResponse(accountNotification);
+                        String subString[] = notificationMobileResponse.getContent().split("#");
+                        String subStringId[] = subString[subString.length - 1].split("\\s");
+                        Integer consignmentId =  Integer.valueOf(subStringId[0]);
+                        notificationMobileResponse.setScheduleId(scheduleService.findScheduleIdByConsignmentIdAndDriverId(consignmentId, driverService.findDriverByUsername(notificationMobileResponse.getUsername()).getId()));
+                        notificationMobileResponses.add(notificationMobileResponse);
+                    }else{
+                        notificationMobileResponses.add(new NotificationMobileResponse(accountNotification));
+                    }
                 }
 
                 if (notificationMobileResponses != null){
