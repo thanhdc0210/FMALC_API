@@ -170,7 +170,7 @@ public class VehicleController {
             (@RequestParam(value = "username") String username, @RequestParam(value = "status") List<Integer> status) {
 
         try{
-            String vehiclePlate = vehicleService.findLicensePlatesBeforeRunningOrWhileRunning(status, username,
+            String vehiclePlate = vehicleService.findLicensePlatesForMakingReportBeforeRunning(status, username,
                     Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
 
             List<Inspection> inspections = inspectionService.findAll();
@@ -237,8 +237,7 @@ public class VehicleController {
             List<Integer> status = new ArrayList<>();
             status.add(ConsignmentStatusEnum.OBTAINING.getValue());
             status.add(ConsignmentStatusEnum.DELIVERING.getValue());
-            String vehiclePlate = vehicleService.findLicensePlatesBeforeRunningOrWhileRunning(status, username,
-                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
+            String vehiclePlate = vehicleService.findLicensePlatesWhileRunning(status, username);
 
             if(vehiclePlate!= null){
                 return ResponseEntity.ok().body(vehicleService.findVehicleByLicensePlates(vehiclePlate).getId().toString());

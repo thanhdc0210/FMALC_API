@@ -98,7 +98,6 @@ public class NotificationServiceImpl implements NotificationService {
 
             if (notification != null) {
                 List<Account> accounts = accountRepository.findAllByIsActiveIsTrueAndRole_Role("ROLE_ADMIN");
-                Driver driver = driverRepository.findById(dto.getDriver_id()).get();
                 accounts.add(accountRepository.findById(driver.getFleetManager().getAccount().getId()).get());
                 List<AccountNotification> accountNotifications = new ArrayList<>();
                 for (Account acc: accounts) {
@@ -120,6 +119,7 @@ public class NotificationServiceImpl implements NotificationService {
                         .notification(notification)
                         .status(false)
                         .build());
+
                 // Send notification to android
                 if (accountNotification != null) {
                     if (dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() &&

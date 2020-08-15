@@ -32,8 +32,7 @@ public class FuelTypeController {
                                                                                   @RequestParam("username") String username) {
         try {
             List<FuelType> fuelTypes = fuelTypeService.getListFuelType();
-            String licensePlate = vehicleService.findLicensePlatesBeforeRunningOrWhileRunning(status, username,
-                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)), Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
+            String licensePlate = vehicleService.findLicensePlatesWhileRunning(status, username);
 
             if (fuelTypes == null) {
                 return ResponseEntity.noContent().build();

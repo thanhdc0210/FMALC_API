@@ -11,7 +11,6 @@ import fmalc.api.entity.Notification;
 import fmalc.api.entity.Alert;
 import fmalc.api.entity.Notification;
 import fmalc.api.enums.LevelInAlertEnum;
-import fmalc.api.enums.NotificationTypeEnum;
 
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.service.*;
@@ -150,10 +149,6 @@ public class NotificationController {
             if (accountNotifications != null) {
                 List<NotificationMobileResponse> notificationMobileResponses = new ArrayList<>();
 
-
-//                for (AccountNotification accountNotification : accountNotifications) {
-//                    notificationMobileResponses.add(new NotificationMobileResponse(accountNotification));
-
                 for(AccountNotification accountNotification : accountNotifications){
                     if (accountNotification.getNotification().getType().equals(NotificationTypeEnum.TASK_SCHEDULE.getValue())) {
                         NotificationMobileResponse notificationMobileResponse = new NotificationMobileResponse(accountNotification);
@@ -165,7 +160,6 @@ public class NotificationController {
                     }else{
                         notificationMobileResponses.add(new NotificationMobileResponse(accountNotification));
                     }
-
                 }
 
                 if (notificationMobileResponses != null) {

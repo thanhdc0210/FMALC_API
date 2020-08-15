@@ -39,21 +39,17 @@ public enum NotificationTypeEnum {
         }
     },
 
-//    ALERT("Cảnh báo") {
+    ALERT("Cảnh báo"){
+        @Override
+        public int getValue(){return 6;}
+    },
     APPROVED("Được chấp nhận"){
         @Override
-        public int getValue() {
-            return 6;
-        }
-
-
+        public int getValue(){return 7;}
     },
     REJECTED("Bị từ chối"){
         @Override
-        public int getValue() {
-            return 7;
-        }
-
+        public int getValue(){return 8;}
     };
 
     String notificationTypeEnum;
@@ -83,11 +79,11 @@ public enum NotificationTypeEnum {
             case 5:
                 return DAY_OFF_UNEXPECTED.getNotificationTypeEnum();
             case 6:
+                return ALERT.getNotificationTypeEnum();
 
-//                return ALERT.getNotificationTypeEnum();
-
-                return APPROVED.getNotificationTypeEnum();
             case 7:
+                return APPROVED.getNotificationTypeEnum();
+            case 8:
                 return REJECTED.getNotificationTypeEnum();
 
             default:
