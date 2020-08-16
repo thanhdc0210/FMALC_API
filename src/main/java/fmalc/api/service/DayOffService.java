@@ -4,11 +4,6 @@ import fmalc.api.dto.DayOffDTO;
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.DayOff;
 import fmalc.api.entity.Driver;
-
-
-import java.sql.Date;
-import java.util.*;
-
 import java.util.List;
 
 
@@ -20,4 +15,7 @@ public interface DayOffService {
     boolean confirmDayOff(DayOffDTO dayOffDTO);
 
     boolean cancelDayOff(DayOffDTO dayOffDTO);
+
+    DayOff checkDriverDayOffRequest(Integer driverId, String startDate, String endDate);
+
 }

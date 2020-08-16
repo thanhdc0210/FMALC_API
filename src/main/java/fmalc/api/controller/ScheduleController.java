@@ -71,25 +71,9 @@ public class ScheduleController {
             return ResponseEntity.noContent().build();
         }
         DetailedScheduleDTO detailedScheduleDTO = new DetailedScheduleDTO(schedule);
-
         return ResponseEntity.ok().body(detailedScheduleDTO);
     }
 
-//    @GetMapping(value = "{consignmentId}/{driverId}")
-//    public ResponseEntity<DetailedScheduleDTO> findScheduleByConsignment_IdAndDriver_Id(@PathVariable("consignmentId") Integer consignmentId,
-//                                                                                        @PathVariable("driverId") Integer driverId) {
-//        try {
-//            Schedule schedule = scheduleService.findScheduleByConsignment_IdAndDriver_Id(consignmentId, driverId);
-//            if (schedule == null || schedule.equals("")) {
-//                return ResponseEntity.noContent().build();
-//            }
-//            DetailedScheduleDTO detailedScheduleDTO = new DetailedScheduleDTO(schedule);
-//
-//            return ResponseEntity.ok().body(detailedScheduleDTO);
-//        }catch (Exception e){
-//            return ResponseEntity.badRequest().build();
-//        }
-//    }
 
     @PostMapping
     public ResponseEntity<ScheduleToConfirmDTO> createSchedule(@RequestBody RequestObjectDTO requestObjectDTO) throws ParseException {

@@ -55,6 +55,13 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
 //    @Transactional
     public Notification createNotification(NotificationRequestDTO dto) throws ParseException {
+//<<<<<<< HEAD
+//         Notification notify = convertToDto(dto);
+//        notify.setTime(new Timestamp(System.currentTimeMillis()));
+//        if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
+//                dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()) {
+//                notify.setVehicle(null);
+//=======
         Notification notify = convertToDto(dto);
         Driver driver = driverRepository.findById(dto.getDriver_id()).get();
         notify.setTime(new Timestamp(System.currentTimeMillis()));
@@ -85,6 +92,7 @@ public class NotificationServiceImpl implements NotificationService {
                 e.printStackTrace();
             }
             notify.setVehicle(null);
+//>>>>>>> 4d2e225e21df534d779ef82ffb6c325b6f3e61b5
         } else {
             Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
             notify.setVehicle(vehicle);
@@ -97,7 +105,12 @@ public class NotificationServiceImpl implements NotificationService {
             Notification notification = notificationRepository.save(notify);
 
             if (notification != null) {
+//<<<<<<< HEAD
+//                 List<Account> accounts = accountRepository.findAllByIsActiveIsTrueAndRole_Role("ROLE_ADMIN");
+//                Driver driver = driverRepository.findById(dto.getDriver_id()).get();
+//=======
                 List<Account> accounts = accountRepository.findAllByIsActiveIsTrueAndRole_Role("ROLE_ADMIN");
+//>>>>>>> 4d2e225e21df534d779ef82ffb6c325b6f3e61b5
                 accounts.add(accountRepository.findById(driver.getFleetManager().getAccount().getId()).get());
                 List<AccountNotification> accountNotifications = new ArrayList<>();
                 for (Account acc: accounts) {
@@ -111,39 +124,42 @@ public class NotificationServiceImpl implements NotificationService {
                 }
                 accountNotificationRepository.saveAll(accountNotifications);
 
-                Account account = accountRepository.findByDriverId(dto.getDriver_id());
-                AccountNotificationKey accountNotificationKey = new AccountNotificationKey(account.getId(), notification.getId());
-                AccountNotification accountNotification = accountNotificationRepository.save(AccountNotification.builder()
-                        .id(accountNotificationKey)
-                        .account(account)
-                        .notification(notification)
-                        .status(false)
-                        .build());
+                if (dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() &&
+                        dto.getType() != NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue() &&
+                        dto.getType() != NotificationTypeEnum.ALERT.getValue()) {
+                    Account account = accountRepository.findByDriverId(dto.getDriver_id());
+                    AccountNotificationKey accountNotificationKey = new AccountNotificationKey(account.getId(), notification.getId());
+                    AccountNotification accountNotification = accountNotificationRepository.save(AccountNotification.builder()
+                            .id(accountNotificationKey)
+                            .account(account)
+                            .notification(notification)
+                            .status(false)
+                            .build());
 
-                // Send notification to android
-                if (accountNotification != null) {
-                    if (dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() &&
-                            dto.getType() != NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue() &&
+                    // Send notification to android
+                    if (accountNotification != null) {
+                        if (dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() &&
+                                dto.getType() != NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue() &&
                                 dto.getType() != NotificationTypeEnum.ALERT.getValue()) {
-                        String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
-                        String content = dto.getContent();
-                        Message message = Message.builder()
-                                .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
-                                .setNotification(new com.google.firebase.messaging.Notification(title, content))
-                                .putData("title", title)
-                                .putData("body", content)
-                                .build();
+                            String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
+                            String content = dto.getContent();
+                            Message message = Message.builder()
+                                    .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
+                                    .setNotification(new com.google.firebase.messaging.Notification(title, content))
+                                    .putData("title", title)
+                                    .putData("body", content)
+                                    .build();
 
-                        String response = null;
-                        try {
-                            response = FirebaseMessaging.getInstance().send(message);
-                        } catch (FirebaseMessagingException e) {
-                            e.printStackTrace();
-                            logger.info("Fail to send firebase notification " + e.getMessage());
+                            String response = null;
+                            try {
+                                response = FirebaseMessaging.getInstance().send(message);
+                            } catch (FirebaseMessagingException e) {
+                                e.printStackTrace();
+                                logger.info("Fail to send firebase notification " + e.getMessage());
+                            }
                         }
                     }
                 }
-
                 return notification;
             } else {
                 return null;

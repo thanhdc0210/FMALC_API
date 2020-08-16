@@ -680,8 +680,8 @@ public class VehicleServiceImpl implements VehicleService {
 
     // Get license plates for making report before running
     @Override
-    public String findLicensePlatesForMakingReportBeforeRunning(List<Integer> status, String username, Timestamp startDate, Timestamp endDate) {
-        List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsernameAndTimeCondition(status, username, startDate, endDate);
+    public String findLicensePlatesForMakingReportBeforeRunningOrWhileRunning(List<Integer> status, String username) {
+        List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsername(status, username);
 
         if (schedules.size() > 0){
             List<ObjectToSortForSchedule> objectToSortForSchedules = new ArrayList<>();
@@ -707,8 +707,8 @@ public class VehicleServiceImpl implements VehicleService {
 
     // Get license plates for making report after running
     @Override
-    public String findLicensePlatesForMakingReportAfterRunning(List<Integer> status, String username, Timestamp startDate, Timestamp endDate) {
-        List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsernameAndTimeCondition(status, username, startDate, endDate);
+    public String findLicensePlatesForMakingReportAfterRunning(List<Integer> status, String username) {
+        List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsername(status, username);
 
         if (schedules.size() > 0){
             List<ObjectToSortForSchedule> objectToSortForSchedules = new ArrayList<>();
@@ -724,33 +724,6 @@ public class VehicleServiceImpl implements VehicleService {
 
             if (schedules.size() > 0){
                 return schedules.get(schedules.size()-1).getVehicle().getLicensePlates();
-            }else{
-                return null;
-            }
-        }else{
-            return null;
-        }
-    }
-
-    // Get license plates while running
-    @Override
-    public String findLicensePlatesWhileRunning(List<Integer> status, String username) {
-        List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsername(status, username);
-
-        if (schedules.size() > 0){
-            List<ObjectToSortForSchedule> objectToSortForSchedules = new ArrayList<>();
-            schedules.forEach(s -> {
-                List<Place> places = new ArrayList<>(s.getConsignment().getPlaces());
-                objectToSortForSchedules.add(new ObjectToSortForSchedule(s, places.get(0).getPlannedTime(), places.get(places.size()-1).getActualTime()));
-            });
-            objectToSortForSchedules.sort(Comparator.comparing(ObjectToSortForSchedule::getPlannedTime));
-            schedules.removeAll(schedules);
-            objectToSortForSchedules.forEach(objectToSortForSchedule -> {
-                schedules.add(objectToSortForSchedule.getSchedule());
-            });
-
-            if (schedules.size() > 0){
-                return schedules.get(0).getVehicle().getLicensePlates();
             }else{
                 return null;
             }

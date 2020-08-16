@@ -40,8 +40,6 @@ public class DayOffNotificationResponseDTO {
             dto.setNote("");
         }
         dto.setIdNotify(notification.getId());
-//        dto.setIsRead(notification.getAccountNotifications());
-//        dto.setIsApprove(false);
         return dto;
     }
 
