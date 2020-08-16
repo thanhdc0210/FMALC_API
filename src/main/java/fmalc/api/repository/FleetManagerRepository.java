@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.util.List;
 
 @Repository
 public interface FleetManagerRepository extends JpaRepository<FleetManager, Integer> {
@@ -28,4 +29,8 @@ public interface FleetManagerRepository extends JpaRepository<FleetManager, Inte
     FleetManager findByAccount_Username(String username);
 
     boolean existsByIdentityNo(String identityNo);
+
+    List<FleetManager> findByPhoneNumberContainingIgnoreCase(String search);
+
+
 }

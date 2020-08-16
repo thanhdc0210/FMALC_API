@@ -42,8 +42,8 @@ public class FleetManagerServiceImpl implements FleetManagerService {
     private UploaderService uploaderService;
 
     @Override
-    public List<FleetManager> getAllFleet() {
-        return fleetManagerRepository.findAll();
+    public List<FleetManager> getAllFleet(String search) {
+        return fleetManagerRepository.findByPhoneNumberContainingIgnoreCase(search);
     }
 
     @Override
