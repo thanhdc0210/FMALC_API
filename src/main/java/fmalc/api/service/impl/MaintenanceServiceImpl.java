@@ -164,6 +164,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                     maintenance.setImageMaintain(image);
                     maintenance.setStatus(true);
                     //update km cho cả xe
+//                    if()
                     vehicle.setKilometerRunning(km);
                     vehicleRepository.save(vehicle);
                 }

@@ -2,9 +2,7 @@ package fmalc.api.controller;
 
 
 import fmalc.api.dto.*;
-import fmalc.api.entity.Fuel;
-import fmalc.api.entity.Inspection;
-import fmalc.api.entity.Vehicle;
+import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.service.FuelService;
@@ -77,13 +75,41 @@ public class VehicleController {
 
         try {
             Vehicle vehicle = vehicleService.disableVehicle(id);
-            if (vehicle.getIsActive() == false) {
-                return ResponseEntity.ok().body(true);
+            if(vehicle!=null){
+                if (vehicle.getIsActive() == false) {
+                    return ResponseEntity.ok().body(true);
+                }
+            }else{
             }
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("schedule-check/{id}")
+    public ResponseEntity<Integer> checkSchduleOfVehicle(@PathVariable("id") int id){
+        try{
+            int result =0;
+            List<Schedule> schedules = scheduleService.checkVehicleInScheduled(id);
+            if(schedules.size()>0){
+                for(int i=0; i< schedules.size();i++){
+                    Consignment consignment = schedules.get(i).getConsignment();
+                    if(consignment.getStatus()!= ConsignmentStatusEnum.COMPLETED.getValue()
+                    && consignment.getStatus()!= ConsignmentStatusEnum.CANCELED.getValue()
+                    ){
+                        result++;
+                    }
+                }
+            }else{
+
+            }
+
+            return  ResponseEntity.ok().body(result);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/detail/{licensePlates}")
@@ -145,6 +171,10 @@ public class VehicleController {
         vehicle.setWeight(dto.getWeight());
         vehicle.setDateOfManufacture(sqlDate);
         vehicle.setDriverLicense(dto.getDriverLicense());
+        if(vehicle.getStatus()==3 && dto.getStatus()==0){
+            vehicle.setStatus(dto.getStatus());
+            vehicle.setIsActive(true);
+        }
 //        vehicle.setKilometerRunning(dto.getKilometerRunning());
 //        Vehicle checkLicensePlate = vehicleService.findVehicleByLicensePlates(dto.getLicensePlates());
         vehicle = vehicleService.updateVehicle(vehicle);

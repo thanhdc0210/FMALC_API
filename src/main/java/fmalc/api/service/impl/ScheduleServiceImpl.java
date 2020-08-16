@@ -129,7 +129,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public List<ScheduleForConsignmentDTO> getScheduleForVehicle(int idVehicle) {
-        List<Schedule> schedules = scheduleRepository.checkVehicleInScheduled(idVehicle);
+        List<Schedule> schedules = scheduleRepository.checkVehicleInScheduled(idVehicle, ConsignmentStatusEnum.COMPLETED.getValue());
         ScheduleForConsignmentDTO sc = new ScheduleForConsignmentDTO();
         List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = sc.mapToListResponse(schedules);
         return scheduleForConsignmentDTOS;
@@ -150,7 +150,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public List<Schedule> checkVehicleInScheduled(int idVehicle) {
-        List<Schedule> schedules = scheduleRepository.checkVehicleInScheduled(idVehicle);
+        List<Schedule> schedules = scheduleRepository.checkVehicleInScheduled(idVehicle, ConsignmentStatusEnum.COMPLETED.getValue());
         return schedules;
     }
 

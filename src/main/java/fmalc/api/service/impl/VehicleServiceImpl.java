@@ -88,14 +88,26 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<Vehicle> getListVehicle() {
-        return vehicleRepository.getListVehicle(true);
+        return vehicleRepository.findAll();
     }
 
     @Override
     public Vehicle disableVehicle(int id) {
-        Vehicle vehicle = vehicleRepository.findByIdVehicle(id);
-        vehicle.setIsActive(false);
-        vehicle.setStatus(VehicleStatusEnum.UNAVAILABLE.getValue());
+        Vehicle vehicle= new Vehicle();
+//        if(vehicle.getStatus() == VehicleStatusEnum.AVAILABLE.getValue()){
+            vehicle  = vehicleRepository.findByIdVehicle(id);
+            List<Schedule> schedules = scheduleService.checkVehicleInScheduled(vehicle.getId());
+            if(schedules.size()>0){
+
+            }else{
+                if(vehicle.getStatus() == VehicleStatusEnum.AVAILABLE.getValue()){
+                    vehicle.setIsActive(false);
+                    vehicle.setStatus(VehicleStatusEnum.UNAVAILABLE.getValue());
+                }
+
+            }
+
+//        }
         return vehicleRepository.save(vehicle);
     }
 
