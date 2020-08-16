@@ -20,11 +20,11 @@ public class FleetManagerController {
     FleetManagerService fleetManagerService;
 
     @GetMapping
-    public ResponseEntity<List<FLeetManagerResponseDTO>> getAllFleetManager() {
+    public ResponseEntity<List<FLeetManagerResponseDTO>> getAllFleetManager(@RequestParam(value = "search", defaultValue = "") String search) {
         try {
             FLeetManagerResponseDTO fLeetManagerResponseDTO = new FLeetManagerResponseDTO();
             List<FLeetManagerResponseDTO> fleetManagerResponseDTOS = new ArrayList<>();
-            List<FleetManager> fleetManagers = fleetManagerService.getAllFleet();
+            List<FleetManager> fleetManagers = fleetManagerService.getAllFleet(search);
             if (fleetManagers.size() > 0) {
                 fleetManagerResponseDTOS = fLeetManagerResponseDTO.mapToListResponse(fleetManagers);
                 return ResponseEntity.ok().body(fleetManagerResponseDTOS);
