@@ -71,7 +71,7 @@ public class NotificationServiceImpl implements NotificationService {
             DayOff dayOff = new DayOff();
             dayOff.setDriver(driver);
             dayOff.setFleetManager(driver.getFleetManager());
-            dayOff.setIsApprove(false);
+            dayOff.setIsApprove(dto.getType());
             if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue()) {
                 dayOff.setNote(dto.getContent());
                 String[] dateString = dto.getContent().split("\\|");
@@ -222,7 +222,7 @@ public class NotificationServiceImpl implements NotificationService {
             if(dayOff!=null){
                 dayOffNotificationResponseDTOS.get(i).setIsApprove(dayOff.getIsApprove());
             }else{
-                dayOffNotificationResponseDTOS.get(i).setIsApprove(false);
+//                dayOffNotificationResponseDTOS.get(i).setIsApprove(false);
             }
         }
 

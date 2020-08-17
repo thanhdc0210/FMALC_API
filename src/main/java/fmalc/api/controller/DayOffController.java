@@ -5,6 +5,7 @@ import fmalc.api.dto.DayOffDriverRequestDTO;
 import fmalc.api.dto.DayOffResponseDTO;
 import fmalc.api.entity.DayOff;
 import fmalc.api.entity.Driver;
+import fmalc.api.enums.DayOffEnum;
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.repository.DayOffRepository;
 import fmalc.api.service.DayOffService;
@@ -67,7 +68,7 @@ public class DayOffController {
                 DayOff dayOffNew = new DayOff();
                 dayOffNew.setDriver(driver);
                 dayOffNew.setFleetManager(driver.getFleetManager());
-                dayOffNew.setIsApprove(false);
+                dayOffNew.setIsApprove(DayOffEnum.WAITING.getValue());
                 dayOffNew.setNote(dto.getContent());
 
                 if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue()) {

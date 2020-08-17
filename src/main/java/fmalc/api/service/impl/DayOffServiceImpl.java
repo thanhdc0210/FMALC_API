@@ -196,7 +196,7 @@ public class DayOffServiceImpl implements DayOffService {
             dayOff = checkDayOff(dayOffDTO);
             if(dayOff==null){
                 dayOff.setDriver(driver);
-                dayOff.setIsApprove(true);
+//                dayOff.setIsApprove(true);
                 dayOff.setStartDate(new Date(sdf.parse((dayOffDTO.getDateStart())).getTime()));
                 dayOff.setEndDate(new Date(sdf.parse((dayOffDTO.getDateEnd())).getTime()));
                 dayOff.setFleetManager(fleetManager);
@@ -211,7 +211,7 @@ public class DayOffServiceImpl implements DayOffService {
 
                 }
             }else{
-                dayOff.setIsApprove(true);
+//                dayOff.setIsApprove(true);
                 dayOff = dayOffRepository.save(dayOff);
                 Account account = accountService.findById(fleetManager.getAccount().getId());
                 accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
@@ -240,7 +240,7 @@ public class DayOffServiceImpl implements DayOffService {
         dayOff = checkDayOff(dayOffDTO);
         if(dayOff==null){
             dayOff.setDriver(driver);
-            dayOff.setIsApprove(false);
+//            dayOff.setIsApprove(false);
             try {
                 dayOff.setStartDate(new Date(sdf.parse((dayOffDTO.getDateStart())).getTime()));
                 dayOff.setEndDate(new Date(sdf.parse((dayOffDTO.getDateEnd())).getTime()));
@@ -258,7 +258,7 @@ public class DayOffServiceImpl implements DayOffService {
                 }
             }
         }else{
-            dayOff.setIsApprove(true);
+//            dayOff.setIsApprove(true);
             dayOff = dayOffRepository.save(dayOff);
             Account account = accountService.findById(fleetManager.getAccount().getId());
             accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());

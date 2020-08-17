@@ -41,6 +41,6 @@ public class DayOff {
 
 
     @Column(name = "is_approve", nullable = false)
-    private Boolean isApprove;
+    private Integer isApprove;
 
 }
