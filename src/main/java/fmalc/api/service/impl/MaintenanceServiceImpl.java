@@ -808,7 +808,19 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public List<Maintenance> getMaintenanceListForConfirm() {
-        return maintainanceRepository.findAllByActualMaintainDateIsNotNullAndStatusIsFalseOrderByActualMaintainDateDesc();
+        List<Maintenance> maintenances = maintainanceRepository.findAllByActualMaintainDateIsNotNullAndStatusIsFalseOrderByActualMaintainDateDesc();
+        for(int i=0; i< maintenances.size();i++){
+            if(maintenances.get(i).getKmOld()==null){
+                List<Maintenance> checks = maintainanceRepository.findByVehicle(maintenances.get(i).getVehicle().getId());
+                if(checks.size()>0){
+                    checks.sort(Comparator.comparing(Maintenance::getKmOld));
+                    maintenances.get(i).setKmOld(checks.get(checks.size()-1).getKmOld());
+                }else{
+                    maintenances.get(i).setKmOld(0);
+                }
+            }
+        }
+        return maintenances;
     }
 
     @Override
