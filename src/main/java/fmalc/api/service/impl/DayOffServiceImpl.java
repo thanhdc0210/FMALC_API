@@ -555,7 +555,7 @@ public class DayOffServiceImpl implements DayOffService {
 
     @Override
     public DayOff checkDriverDayOffRequest(Integer driverId, String startDate, String endDate) {
-       List<DayOff> dayOffList = dayOffRepository.findByDriverIdAndIsApprove(driverId,false);
+       List<DayOff> dayOffList = dayOffRepository.findByDriverIdAndIsApprove(driverId,DayOffEnum.WAITING.getValue());
 //        DateTimeFormatter formatDate = DateTimeFormat.forPattern("dd-MM-yyyy");
         DateTimeFormatter formatOut = DateTimeFormat.forPattern("yyyy-MM-dd");
         dayOffList.sort(Comparator.comparing(DayOff::getStartDate));
