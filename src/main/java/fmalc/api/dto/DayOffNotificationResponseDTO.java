@@ -18,7 +18,7 @@ public class DayOffNotificationResponseDTO {
     private Date endDate;
     private DriverResponseForNotifyDTO driver;
     private String note;
-    private Boolean isApprove;
+    private Integer isApprove;
     private Integer type;
     private int idNotify;
     private Boolean isRead;

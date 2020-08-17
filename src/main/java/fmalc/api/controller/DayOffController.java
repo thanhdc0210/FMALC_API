@@ -3,6 +3,7 @@ package fmalc.api.controller;
 import fmalc.api.dto.*;
 import fmalc.api.entity.DayOff;
 import fmalc.api.entity.Driver;
+import fmalc.api.enums.DayOffEnum;
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.repository.DayOffRepository;
 import fmalc.api.service.DayOffService;
@@ -33,11 +34,20 @@ public class DayOffController {
                 return  ResponseEntity.ok().body(result);
             }else{
                 List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = dayOffService.getSchedules(dayOffDTO);
-                return  ResponseEntity.ok().body(scheduleForConsignmentDTOS);
+                if(scheduleForConsignmentDTOS.size()<0){
+                    List<MaintainCheckDTO> maintainCheckDTOS = dayOffService.getListMaintenance(dayOffDTO);
+                    if(maintainCheckDTOS.size()>0){
+                        return ResponseEntity.ok().body(maintainCheckDTOS);
+                    }
+                }else{
+                    return  ResponseEntity.ok().body(scheduleForConsignmentDTOS);
+                }
+
             }
         }catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("detail/{id}")
@@ -84,7 +94,7 @@ public class DayOffController {
                 DayOff dayOffNew = new DayOff();
                 dayOffNew.setDriver(driver);
                 dayOffNew.setFleetManager(driver.getFleetManager());
-                dayOffNew.setIsApprove(false);
+                dayOffNew.setIsApprove(DayOffEnum.WAITING.getValue());
                 dayOffNew.setNote(dto.getContent());
                 if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue()) {
                     java.sql.Date parsedStartDate = new Date(new SimpleDateFormat("dd-MM-yyyy").parse(dto.getStartDate()).getTime());

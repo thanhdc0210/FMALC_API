@@ -40,7 +40,9 @@ public class DayOff {
     private String note;
 
 
-    @Column(name = "is_approve")
-    private Boolean isApprove;
+
+    @Column(name = "is_approve", nullable = false)
+    private Integer isApprove;
+
 
 }

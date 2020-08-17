@@ -78,7 +78,7 @@ public class NotificationServiceImpl implements NotificationService {
             DayOff dayOff = new DayOff();
             dayOff.setDriver(driver);
             dayOff.setFleetManager(driver.getFleetManager());
-            dayOff.setIsApprove(false);
+            dayOff.setIsApprove(dto.getType());
             if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue()) {
                 dayOff.setNote(dto.getContent());
                 String[] dateString = dto.getContent().split("\\|");
@@ -213,30 +213,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<DayOffRespsoneDTO> getNotificationsDayOff(String username) {
-//        List<Notification> notifications =notificationRepository.findAllByTypeInOrderByIdDesc(Arrays.asList(4, 5));
-//        List<DayOffNotificationResponseDTO> dayOffNotificationResponseDTOS = new DayOffNotificationResponseDTO().mapToListResponse(notifications);
-//        DayOffNotificationResponseDTO dayOffDTO = new DayOffNotificationResponseDTO();
-//        AccountNotification an = new AccountNotification();
-//        Account account = new Account();
-//        for(int i=0; i< dayOffNotificationResponseDTOS.size();i++){
-//
-//            dayOffDTO = dayOffNotificationResponseDTOS.get(i);
-//
-//            account = accountRepository.findByUsername(username);
-//            an =  accountNotificationService.findByFleetAndNoti(account.getId(),notifications.get(i).getId());
-//            if(an!=null){
-//                DayOff dayOff = dayOffRepository.getDayOffExistByDateIsApprove(dayOffDTO.getDriver().getId(),new Date(dayOffDTO.getStartDate().getTime()), new Date(dayOffDTO.getEndDate().getTime()));
-//                dayOffNotificationResponseDTOS.get(i).setIsRead(an.getStatus());
-//                if(dayOff!=null){
-//                    dayOffNotificationResponseDTOS.get(i).setIsApprove(dayOff.getIsApprove());
-//                }else{
-//                    dayOffNotificationResponseDTOS.get(i).setIsApprove(false);
-//                }
-//            }
-//        }
-
-
         Account account = new Account();
+
         DayOffRespsoneDTO dayOffRespsoneDTO = new DayOffRespsoneDTO();
         List<DayOffRespsoneDTO> dayOffRespsoneDTOS = new ArrayList<>();
         account = accountRepository.findByUsernameRole(username);
@@ -249,41 +227,20 @@ public class NotificationServiceImpl implements NotificationService {
                 Driver driver = dayOffs.get(i).getDriver();
                 if(driver.getFleetManager().getId()== fleetManager.getId()){
                     dayOffRespsoneDTO =dayOffRespsoneDTO.convertDTO(dayOffs.get(i));
-                    if(dayOffs.get(i).getIsApprove()==null){
-                        dayOffRespsoneDTO.setIsApprove(null);
-                    }
+//                    if(dayOffs.get(i).getIsApprove()){
+//                        dayOffRespsoneDTO.setIsApprove(null);
+//                    }
                     dayOffRespsoneDTOS.add(dayOffRespsoneDTO);
                 }
+
+
             }
         }
         return dayOffRespsoneDTOS;
     }
 
 
-//    private DayOffNotificationResponseDTO getDayOff(String username){
-////        List<DayOffNotificationResponseDTO> dayOffNotificationResponseDTOS = new DayOffNotificationResponseDTO().mapToListResponse(notifications);
-////        DayOffNotificationResponseDTO dayOffDTO = new DayOffNotificationResponseDTO();
-////        AccountNotification an = new AccountNotification();
-//        Account account = new Account();
-//        DayOffRespsoneDTO dayOffRespsoneDTO = new DayOffRespsoneDTO();
-//        List<DayOffRespsoneDTO> dayOffRespsoneDTOS = new ArrayList<>();
-//        account = accountRepository.findByUsername(username);
-//        List<DayOff> dayOffs = dayOffRepository.findAll();
-//        if(account.getRole().getRole()==ADMIN){
-//            dayOffRespsoneDTOS = dayOffRespsoneDTO.mapToListResponse(dayOffs);
-//        }else if(account.getRole().getRole()==FLEET_MANAGER){
-//            FleetManager fleetManager = fleetManagerService.findByAccount(account.getId());
-//                for(int i=0; i< dayOffs.size();i++){
-//                    Driver driver = dayOffs.get(i).getDriver();
-//                    if(driver.getFleetManager().getId()== fleetManager.getId()){
-//                        dayOffRespsoneDTO =dayOffRespsoneDTO.convertDTO(dayOffs.get(i));
-//                        dayOffRespsoneDTOS.add(dayOffRespsoneDTO);
-//                    }
-//                }
-//        }
-//
-//
-//    }
+
 
     private Notification convertToDto(NotificationRequestDTO notificationRequestDTO) {
         ModelMapper modelMapper = new ModelMapper();

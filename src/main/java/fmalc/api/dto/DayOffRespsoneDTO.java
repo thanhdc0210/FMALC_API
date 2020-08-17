@@ -19,7 +19,7 @@ public class DayOffRespsoneDTO {
     private Date endDate;
     private DriverForDetailDTO driver;
     private String note;
-    private Boolean isApprove;
+    private int isApprove;
 
     public DayOffRespsoneDTO convertDTO(DayOff fuel){
         ModelMapper modelMapper = new ModelMapper();

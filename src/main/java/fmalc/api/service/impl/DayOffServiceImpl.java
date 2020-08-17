@@ -1,11 +1,9 @@
 package fmalc.api.service.impl;
 
-import fmalc.api.dto.DayOffDTO;
-import fmalc.api.dto.MaintainCheckDTO;
-import fmalc.api.dto.PlaceResponeDTO;
-import fmalc.api.dto.ScheduleForConsignmentDTO;
+import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
+import fmalc.api.enums.DayOffEnum;
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.DayOffRepository;
@@ -78,7 +76,7 @@ public class DayOffServiceImpl implements DayOffService {
         boolean flag = true;
         for (int i = 0; i < idDriver.size(); i++) {
             flag = true;
-            dayOffs = dayOffRepository.checkDayOffOfDriver(idDriver.get(i).getId(), true);
+            dayOffs = dayOffRepository.checkDayOffOfDriver(idDriver.get(i).getId(), DayOffEnum.APPROVED.getValue());
             if (dayOffs.size() > 0) {
                 for (int j = 0; j < dayOffs.size(); j++) {
                     String dateOff = sdf.format(dayOffs.get(j).getStartDate());
@@ -93,7 +91,7 @@ public class DayOffServiceImpl implements DayOffService {
                         String dateReceiOfConsignment = sdf.format(placeSchedulePriorityRecei.getPlannedTime());
                         if (dateOff.compareTo(dateReceiOfConsignment) >= 1) {
                             PlaceResponeDTO placeSchedulePriorityDeli =
-                                    placeService.getPlaceByTypePlaceAndPriority(consignment.getId(), placeConsgimentsPriorityDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
+                                    getPlaceByTypePlaceAndPriority(places, placeConsgimentsPriorityDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
                             if (placeSchedulePriorityDeli != null) {
                                 String dateDeliOfConsignment = sdf.format(placeSchedulePriorityDeli.getPlannedTime());
                                 if (dateOff.compareTo(dateDeliOfConsignment) >= 1) {
@@ -193,13 +191,19 @@ public class DayOffServiceImpl implements DayOffService {
 //            notification.getType();
 //            String note = NotificationTypeEnum.getValueEnumToShow(notification.getType()) +" "+ notification.getContent();
             DayOff dayOff = new DayOff();
+
             dayOff = dayOffRepository.findById(dayOffDTO.getId()).get();
             if(dayOff!=null){
-                dayOff.setIsApprove(true);
+                dayOff.setIsApprove(DayOffEnum.APPROVED.getValue());
+
+
                 if (dayOffRepository.save(dayOff) != null) {
                 }
             }else{
+
                flag = false;
+
+//
             }
 
         }else{
@@ -212,26 +216,17 @@ public class DayOffServiceImpl implements DayOffService {
     public boolean cancelDayOff(DayOffDTO dayOffDTO) {
         Driver driver = new Driver();
         driver = driverService.findById(dayOffDTO.getIdDriver());
-//        FleetManager fleetManager = driver.getFleetManager();
         boolean flag = true;
-//        Notification notification = new Notification();
-//        AccountNotification accountNotification = new AccountNotification();
-//        notification = notificationRepository.findById(dayOffDTO.getIdNotify()).get();
-//        notification.getType();
-//        String note = NotificationTypeEnum.getValueEnumToShow(notification.getType()) +" "+ notification.getContent();
         DayOff dayOff = dayOffRepository.findById(dayOffDTO.getId()).get();
-//        dayOff = checkDayOff(dayOffDTO);
         if(dayOff==null){
+
             flag = false;
+
+
         }else{
-            dayOff.setIsApprove(true);
+            dayOff.setIsApprove(DayOffEnum.REJECTED.getValue());
             dayOff = dayOffRepository.save(dayOff);
-//            Account account = accountService.findById(fleetManager.getAccount().getId());
-//            accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
-//            if(accountNotification!=null){
-//                accountNotification.setStatus(true);
-//                accountNotification = accountNotificationService.save(accountNotification);
-//            }
+
         }
         return flag;
     }
@@ -249,7 +244,7 @@ public class DayOffServiceImpl implements DayOffService {
         List<ScheduleForConsignmentDTO> result = new ArrayList<>();
         ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
         List<Driver> k = new ArrayList<>();
-//        java.util.Date result = new java.util.Date();
+        java.util.Date now = new java.util.Date();
         List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = new ArrayList<>();
         scheduleForConsignmentDTOS = checkScheduleForDriver(id);
 
@@ -273,7 +268,7 @@ public class DayOffServiceImpl implements DayOffService {
                     String dateRecei = sdf.format(placeScheduleRecei.getPlannedTime());
                     String dateDeli = sdf.format(placeScheduleDeli.getPlannedTime());
                     if (dateStart.compareTo(dateRecei) < 0) {
-                        if (dateStart.compareTo(sdf.format(result)) > 0) {
+                        if (dateStart.compareTo(sdf.format(now)) > 0) {
                             if (dateEnd.compareTo(dateRecei) < 0 && dateEnd.compareTo(sdf.format(result)) > 0) {
                                 flag = true;
                             }
@@ -307,6 +302,20 @@ public class DayOffServiceImpl implements DayOffService {
 
         } else {
             flag = true;
+        }
+        return result;
+    }
+
+    @Override
+    public List<MaintainCheckDTO> getListMaintenance(DayOffDTO dayOffDTO) {
+        List<MaintainCheckDTO> maintainCheckDTOS = checkMaintainForDriver(dayOffDTO.getIdDriver());
+        List<MaintainCheckDTO> result = new ArrayList<>();
+        for(int i=0; i< maintainCheckDTOS.size(); i++){
+            if(checkDateAMaintain(dayOffDTO.getDateStart(),maintainCheckDTOS.get(i),dayOffDTO.getDateEnd())){
+
+            }else{
+                result.add(maintainCheckDTOS.get(i));
+            }
         }
         return result;
     }
@@ -420,24 +429,46 @@ public class DayOffServiceImpl implements DayOffService {
         boolean flag = false;
         if (maintainCheckDTO.size() > 0) {
             for (int i = 0; i < maintainCheckDTO.size(); i++) {
-                String dateMaintain = sdf.format(maintainCheckDTO.get(i).getPlannedMaintainDate());
-                if (dateS.compareTo(dateMaintain) > 0) {
-                    if (dateEnd.compareTo(dateMaintain) > 0) {
-                        flag = true;
+                if(maintainCheckDTO.get(i).getActualMaintainDate()!=null){
+                    String dateMaintain = sdf.format(maintainCheckDTO.get(i).getActualMaintainDate());
+                    if (dateS.compareTo(dateMaintain) > 0) {
+                        if (dateEnd.compareTo(dateMaintain) > 0) {
+                            flag = true;
+                        }
+                    } else {
+                        Maintenance maintenance = maintainanceRepository.findById(maintainCheckDTO.get(i).getId()).get();
+
+
                     }
-
-                } else {
-                    Maintenance maintenance = maintainanceRepository.findById(maintainCheckDTO.get(i).getId()).get();
-
-
-                }
-                if (!flag) {
-                    flag = false;
-                    i = maintainCheckDTO.size();
+                    if (!flag) {
+                        flag = false;
+                        i = maintainCheckDTO.size();
+                    }
+                }else{
+                    flag =true;
                 }
             }
         } else {
             flag = true;
+        }
+
+        return flag;
+    }
+
+
+    private boolean checkDateAMaintain(String dateS, MaintainCheckDTO maintainCheckDTO, String dateEnd) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        boolean flag = false;
+//        if (maintainCheckDTO.size() > 0) {
+//            for (int i = 0; i < maintainCheckDTO.size(); i++) {
+        if(maintainCheckDTO.getActualMaintainDate()!=null){
+            String dateMaintain = sdf.format(maintainCheckDTO.getActualMaintainDate());
+            if (dateS.compareTo(dateMaintain) > 0) {
+                if (dateEnd.compareTo(dateMaintain) > 0) {
+                    flag = true;
+                }
+
+            }
         }
 
         return flag;
@@ -467,21 +498,11 @@ public class DayOffServiceImpl implements DayOffService {
             maintainCheckDTOs.sort(Comparator.comparing(MaintainCheckDTO::getActualMaintainDate));
 
             Date date = new Date(System.currentTimeMillis());
-//            List<Integer> id = maintainCheckDTOs.stream()
-//                    .filter(x -> x.getStatus() == 1)
-//                    .map(MaintainCheckDTO::getId)
-//                    .collect(Collectors.toList());
-//            maintainCheckDTOs.removeIf(x -> id.contains(x.getId()));
             int t = 0;
             for (int i = 0; i < maintainCheckDTOs.size(); i++) {
                 t = i;
                 if (maintainCheckDTOs.get(i).getActualMaintainDate() != null) {
                     if (date.after(maintainCheckDTOs.get(i).getActualMaintainDate())) {
-                        maintainCheckDTOs.remove(maintainCheckDTOs.get(i));
-                        i = t;
-                    }
-                } else {
-                    if (date.after(maintainCheckDTOs.get(i).getPlannedMaintainDate())) {
                         maintainCheckDTOs.remove(maintainCheckDTOs.get(i));
                         i = t;
                     }
@@ -500,7 +521,7 @@ public class DayOffServiceImpl implements DayOffService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<DayOff> dayOffs = new ArrayList<>();
         boolean flag = false;
-        dayOffs = dayOffRepository.checkDayOffOfDriver(id, true);
+        dayOffs = dayOffRepository.checkDayOffOfDriver(id, DayOffEnum.APPROVED.getValue());
         if (dayOffs.size() > 0) {
             for (int j = 0; j < dayOffs.size(); j++) {
                 String dateOff = sdf.format(dayOffs.get(j).getStartDate());

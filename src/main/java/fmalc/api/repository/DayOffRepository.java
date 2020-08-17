@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface DayOffRepository extends JpaRepository<DayOff, Integer> {
     @Query("select do from DayOff do where do.driver.id = ?1 and do.isApprove=?2")
-    List<DayOff> checkDayOffOfDriver (int idDriver, Boolean status);
+    List<DayOff> checkDayOffOfDriver (int idDriver, int status);
 
     @Query("select do from DayOff  do where  do.driver.id=?1 and do.isApprove=?2 and do.startDate=?3 and do.endDate=?4")
     DayOff getDayOffExistByDate(int idDriver, Boolean isApprove, Date start, Date end );

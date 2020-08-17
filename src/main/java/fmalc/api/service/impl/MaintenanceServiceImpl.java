@@ -4,6 +4,7 @@ import fmalc.api.controller.NotificationController;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
+import fmalc.api.enums.DayOffEnum;
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.DayOffRepository;
@@ -491,7 +492,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<DayOff> dayOffs = new ArrayList<>();
         boolean flag = false;
-        dayOffs = dayOffRepository.checkDayOffOfDriver(id, true);
+        dayOffs = dayOffRepository.checkDayOffOfDriver(id, DayOffEnum.APPROVED.getValue());
         if (dayOffs.size() > 0) {
             for (int j = 0; j < dayOffs.size(); j++) {
                 String dateOff = sdf.format(dayOffs.get(j).getStartDate());
