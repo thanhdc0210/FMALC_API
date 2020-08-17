@@ -813,8 +813,14 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             if(maintenances.get(i).getKmOld()==null){
                 List<Maintenance> checks = maintainanceRepository.findByVehicle(maintenances.get(i).getVehicle().getId());
                 if(checks.size()>0){
-                    checks.sort(Comparator.comparing(Maintenance::getKmOld));
-                    maintenances.get(i).setKmOld(checks.get(checks.size()-1).getKmOld());
+                    int max =0;
+                    for(int j=0; j< checks.size();j++){
+                        if(checks.get(j).getKmOld()!=null){
+                            max = checks.get(j).getKmOld();
+                        }
+                    }
+//                    checks.sort(Comparator.comparing(Maintenance::getKmOld));
+                    maintenances.get(i).setKmOld(max);
                 }else{
                     maintenances.get(i).setKmOld(0);
                 }
