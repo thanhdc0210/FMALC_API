@@ -17,7 +17,6 @@ public class DayOffRespsoneDTO {
     private Integer id;
     private Date startDate;
     private Date endDate;
-//    private FleetManager fleetManager;
     private DriverForDetailDTO driver;
     private String note;
     private Boolean isApprove;

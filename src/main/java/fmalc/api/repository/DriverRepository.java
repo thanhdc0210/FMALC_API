@@ -63,5 +63,7 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
 
     boolean existsByIdentityNo(String identityNo);
 
+
+
     boolean existsByNo(String no);
 }

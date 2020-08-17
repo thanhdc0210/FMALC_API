@@ -1,6 +1,7 @@
 package fmalc.api.service;
 
 import fmalc.api.dto.DayOffNotificationResponseDTO;
+import fmalc.api.dto.DayOffRespsoneDTO;
 import fmalc.api.dto.NotificationRequestDTO;
 import fmalc.api.dto.NotificationUnread;
 import fmalc.api.entity.Notification;
@@ -19,5 +20,5 @@ public interface NotificationService {
 
     void readNotificationByType(String username, Integer type);
 
-    List<DayOffNotificationResponseDTO> getNotificationsDayOff();
+    List<DayOffRespsoneDTO> getNotificationsDayOff(String username);
 }

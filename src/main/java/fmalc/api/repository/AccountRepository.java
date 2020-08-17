@@ -20,6 +20,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer>, JpaS
 
     Account findByUsername(String username);
 
+    @Query("select a, a.role from Account a where a.username=?1")
+    Account findByUsernameRole(String username);
     @Modifying
     @Transactional
     @Query(value = "Update account a set a.is_active =:isActive where a.id =:id", nativeQuery = true)

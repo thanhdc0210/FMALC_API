@@ -168,59 +168,42 @@ public class DayOffServiceImpl implements DayOffService {
         dayOffRepository.save(dayOff);
     }
 
-    @SneakyThrows
+
     @Override
     public boolean confirmDayOff(DayOffDTO dayOffDTO) {
         Driver driver = new Driver();
         driver = driverService.findById(dayOffDTO.getIdDriver());
-        FleetManager fleetManager = driver.getFleetManager();
+//        FleetManager fleetManager = driver.getFleetManager();
         boolean flag = true;
-        Notification notification = new Notification();
-        AccountNotification accountNotification = new AccountNotification();
-        notification = notificationRepository.findById(dayOffDTO.getIdNotify()).get();
-        if(notification.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
-            flag = true;
-        }else{
-            flag = checkSchedule(driver.getId(), (dayOffDTO.getDateStart()),(dayOffDTO.getDateEnd()));
+//        Notification notification = new Notification();
+//        AccountNotification accountNotification = new AccountNotification();
+//        notification = notificationRepository.findById(dayOffDTO.getIdNotify()).get();
+//        if(notification.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
+//            flag = true;
+//        }else{
+            flag = checkSchedule(driver.getId(), dayOffDTO.getDateStart(),dayOffDTO.getDateEnd());
             if (flag) {
                 flag = findDriverForMaintain(driver, (dayOffDTO.getDateStart()), (dayOffDTO.getDateEnd()));
                 if (flag) {
                     flag = checkDayOff((dayOffDTO.getDateStart()), driver.getId(), (dayOffDTO.getDateEnd()));
                 }
             }
-        }
+//        }
         if (flag) {
-            notification.getType();
-            String note = NotificationTypeEnum.getValueEnumToShow(notification.getType()) +" "+ notification.getContent();
+//            notification.getType();
+//            String note = NotificationTypeEnum.getValueEnumToShow(notification.getType()) +" "+ notification.getContent();
             DayOff dayOff = new DayOff();
-            dayOff = checkDayOff(dayOffDTO);
-            if(dayOff==null){
-                dayOff.setDriver(driver);
+            dayOff = dayOffRepository.findById(dayOffDTO.getId()).get();
+            if(dayOff!=null){
                 dayOff.setIsApprove(true);
-                dayOff.setStartDate(new Date(sdf.parse((dayOffDTO.getDateStart())).getTime()));
-                dayOff.setEndDate(new Date(sdf.parse((dayOffDTO.getDateEnd())).getTime()));
-                dayOff.setFleetManager(fleetManager);
-                dayOff.setNote(note);
                 if (dayOffRepository.save(dayOff) != null) {
-                    Account account = accountService.findById(fleetManager.getAccount().getId());
-                    accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
-                    if(accountNotification!=null){
-                        accountNotification.setStatus(true);
-                        accountNotification = accountNotificationService.save(accountNotification);
-                    }
-
                 }
             }else{
-                dayOff.setIsApprove(true);
-                dayOff = dayOffRepository.save(dayOff);
-                Account account = accountService.findById(fleetManager.getAccount().getId());
-                accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
-                if(accountNotification!=null){
-                    accountNotification.setStatus(true);
-                    accountNotification = accountNotificationService.save(accountNotification);
-                }
+               flag = false;
             }
 
+        }else{
+            flag= false;
         }
         return flag;
     }
@@ -229,45 +212,103 @@ public class DayOffServiceImpl implements DayOffService {
     public boolean cancelDayOff(DayOffDTO dayOffDTO) {
         Driver driver = new Driver();
         driver = driverService.findById(dayOffDTO.getIdDriver());
-        FleetManager fleetManager = driver.getFleetManager();
+//        FleetManager fleetManager = driver.getFleetManager();
         boolean flag = true;
-        Notification notification = new Notification();
-        AccountNotification accountNotification = new AccountNotification();
-        notification = notificationRepository.findById(dayOffDTO.getIdNotify()).get();
-        notification.getType();
-        String note = NotificationTypeEnum.getValueEnumToShow(notification.getType()) +" "+ notification.getContent();
-        DayOff dayOff = new DayOff();
-        dayOff = checkDayOff(dayOffDTO);
+//        Notification notification = new Notification();
+//        AccountNotification accountNotification = new AccountNotification();
+//        notification = notificationRepository.findById(dayOffDTO.getIdNotify()).get();
+//        notification.getType();
+//        String note = NotificationTypeEnum.getValueEnumToShow(notification.getType()) +" "+ notification.getContent();
+        DayOff dayOff = dayOffRepository.findById(dayOffDTO.getId()).get();
+//        dayOff = checkDayOff(dayOffDTO);
         if(dayOff==null){
-            dayOff.setDriver(driver);
-            dayOff.setIsApprove(false);
-            try {
-                dayOff.setStartDate(new Date(sdf.parse((dayOffDTO.getDateStart())).getTime()));
-                dayOff.setEndDate(new Date(sdf.parse((dayOffDTO.getDateEnd())).getTime()));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            dayOff.setFleetManager(fleetManager);
-            dayOff.setNote(note);
-            if (dayOffRepository.save(dayOff) != null) {
-                Account account = accountService.findById(fleetManager.getAccount().getId());
-                accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
-                if(accountNotification!=null){
-                    accountNotification.setStatus(true);
-                    accountNotification = accountNotificationService.save(accountNotification);
-                }
-            }
+            flag = false;
         }else{
             dayOff.setIsApprove(true);
             dayOff = dayOffRepository.save(dayOff);
-            Account account = accountService.findById(fleetManager.getAccount().getId());
-            accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
-            if(accountNotification!=null){
-                accountNotification.setStatus(true);
-                accountNotification = accountNotificationService.save(accountNotification);
-            }
+//            Account account = accountService.findById(fleetManager.getAccount().getId());
+//            accountNotification = accountNotificationService.findByFleetAndNoti(account.getId(), notification.getId());
+//            if(accountNotification!=null){
+//                accountNotification.setStatus(true);
+//                accountNotification = accountNotificationService.save(accountNotification);
+//            }
         }
         return flag;
+    }
+
+    @Override
+    public DayOff getDetail(int id) {
+        return dayOffRepository.findById(id).get();
+    }
+
+    @Override
+    public List<ScheduleForConsignmentDTO> getSchedules(DayOffDTO dayOffDTO){
+        int id = dayOffDTO.getIdDriver();
+        String dateStart = dayOffDTO.getDateStart();
+        String dateEnd = dayOffDTO.getDateEnd();
+        List<ScheduleForConsignmentDTO> result = new ArrayList<>();
+        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
+        List<Driver> k = new ArrayList<>();
+//        java.util.Date result = new java.util.Date();
+        List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = new ArrayList<>();
+        scheduleForConsignmentDTOS = checkScheduleForDriver(id);
+
+        boolean flag = true;
+
+        if (scheduleForConsignmentDTOS.size() > 0) {
+
+            for (int j = 0; j < scheduleForConsignmentDTOS.size(); j++) {
+                scheduleForLocationDTO = scheduleForConsignmentDTOS.get(j);
+                if (scheduleForLocationDTO.getConsignment().getStatus() != ConsignmentStatusEnum.COMPLETED.getValue() ||
+                        scheduleForLocationDTO.getConsignment().getStatus() != ConsignmentStatusEnum.CANCELED.getValue()
+                ) {
+                    List<PlaceResponeDTO> listScheduleDeli =
+                            placeService.getPlaceByTypePlace(scheduleForLocationDTO.getConsignment().getId(), TypeLocationEnum.DELIVERED_PLACE.getValue());
+
+                    PlaceResponeDTO placeScheduleRecei =
+                            placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), 1, TypeLocationEnum.RECEIVED_PLACE.getValue());
+                    PlaceResponeDTO placeScheduleDeli =
+                            placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTO.getConsignment().getId(), listScheduleDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
+
+                    String dateRecei = sdf.format(placeScheduleRecei.getPlannedTime());
+                    String dateDeli = sdf.format(placeScheduleDeli.getPlannedTime());
+                    if (dateStart.compareTo(dateRecei) < 0) {
+                        if (dateStart.compareTo(sdf.format(result)) > 0) {
+                            if (dateEnd.compareTo(dateRecei) < 0 && dateEnd.compareTo(sdf.format(result)) > 0) {
+                                flag = true;
+                            }
+
+                        } else {
+                            flag = false;
+//                            j = scheduleForConsignmentDTOS.size();
+                        }
+                    } else if (dateStart.compareTo(dateRecei) > 0) {
+                        if (dateStart.compareTo(dateDeli) > 0 && (dateStart.compareTo(dateDeli) >= dateDeli.compareTo(dateRecei))) {
+
+                            flag = true;
+                        } else {
+                            flag = false;
+//                            j = scheduleForConsignmentDTOS.size();
+//                            i++;
+                        }
+                    } else {
+                        flag = false;
+//                        j = scheduleForConsignmentDTOS.size();
+//                        i++;
+                    }
+                    if (flag) {
+
+                    } else {
+                        result.add(scheduleForConsignmentDTOS.get(j));
+                    }
+                }
+
+            }
+
+        } else {
+            flag = true;
+        }
+        return result;
     }
 
     private boolean checkSchedule(int id, String dateStart, String dateEnd) {
@@ -284,7 +325,7 @@ public class DayOffServiceImpl implements DayOffService {
 
             for (int j = 0; j < scheduleForConsignmentDTOS.size(); j++) {
                 scheduleForLocationDTO = scheduleForConsignmentDTOS.get(j);
-                if (scheduleForLocationDTO.getConsignment().getStatus() != ConsignmentStatusEnum.COMPLETED.getValue() ||
+                if (scheduleForLocationDTO.getConsignment().getStatus() != ConsignmentStatusEnum.COMPLETED.getValue() &&
                         scheduleForLocationDTO.getConsignment().getStatus() != ConsignmentStatusEnum.CANCELED.getValue()
                 ) {
                     List<PlaceResponeDTO> listScheduleDeli =

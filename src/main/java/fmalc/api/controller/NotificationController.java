@@ -233,8 +233,8 @@ public class NotificationController {
     }
 
     @GetMapping(value = "/dayoff")
-    public ResponseEntity getNotificationsDayOff() {
-        List<DayOffNotificationResponseDTO> notifications = notificationService.getNotificationsDayOff();
+    public ResponseEntity getNotificationsDayOff(@RequestParam("username") String username) {
+        List<DayOffRespsoneDTO> notifications = notificationService.getNotificationsDayOff(username);
         return ResponseEntity.ok().body(notifications);
     }
 }

@@ -1,8 +1,6 @@
 package fmalc.api.controller;
 
-import fmalc.api.dto.DayOffDTO;
-import fmalc.api.dto.DayOffDriverRequestDTO;
-import fmalc.api.dto.DayOffResponseDTO;
+import fmalc.api.dto.*;
 import fmalc.api.entity.DayOff;
 import fmalc.api.entity.Driver;
 import fmalc.api.enums.NotificationTypeEnum;
@@ -13,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.*;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,12 +24,30 @@ public class DayOffController {
     @Autowired
     DayOffService dayOffService;
 
-    @PostMapping()
-    public ResponseEntity<Boolean> confirmDayOff(@RequestBody DayOffDTO dayOffDTO){
+    @PostMapping("confirm-dayoff")
+    public ResponseEntity confirmDayOff(@RequestBody DayOffDTO dayOffDTO){
         try{
             boolean result = dayOffService.confirmDayOff(dayOffDTO);
             if(result){
+//                List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = dayOffService.getSchedules(dayOffDTO);
                 return  ResponseEntity.ok().body(result);
+            }else{
+                List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = dayOffService.getSchedules(dayOffDTO);
+                return  ResponseEntity.ok().body(scheduleForConsignmentDTOS);
+            }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("detail/{id}")
+    public ResponseEntity<DayOffRespsoneDTO> getDetail(@PathVariable("id") int id){
+        try{
+            DayOff result = dayOffService.getDetail(id);
+
+            if(result!=null){
+                DayOffRespsoneDTO dayOffResponseDTO = new DayOffRespsoneDTO().convertDTO(result);
+                return  ResponseEntity.ok().body(dayOffResponseDTO);
             }
         }catch (Exception e){
             return ResponseEntity.badRequest().build();
@@ -69,7 +86,6 @@ public class DayOffController {
                 dayOffNew.setFleetManager(driver.getFleetManager());
                 dayOffNew.setIsApprove(false);
                 dayOffNew.setNote(dto.getContent());
-
                 if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue()) {
                     java.sql.Date parsedStartDate = new Date(new SimpleDateFormat("dd-MM-yyyy").parse(dto.getStartDate()).getTime());
                     java.sql.Date parsedEndDate = new Date(new SimpleDateFormat("dd-MM-yyyy").parse(dto.getEndDate()).getTime());

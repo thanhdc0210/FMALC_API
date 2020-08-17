@@ -9,5 +9,5 @@ public class DayOffDTO {
     private String dateStart;
     private String dateEnd;
     private int idDriver;
-    private int idNotify;
+    private int id;
 }
