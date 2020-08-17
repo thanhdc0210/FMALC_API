@@ -24,13 +24,13 @@ public class AlertController {
     }
 
     @PostMapping("driver-send")
-    public ResponseEntity driverSendAlert(@RequestBody AlertRequestDTO alertRequest) {
+    public ResponseEntity<AlertRequestDTO> driverSendAlert(@RequestBody AlertRequestDTO alertRequest) {
         Alert alert = alertService.driverSendAlert(alertRequest);
         if (alert == null) {
             return ResponseEntity.noContent().build();
         }
         if (alert != null) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(alertRequest);
         } else {
             return ResponseEntity.noContent().build();
         }

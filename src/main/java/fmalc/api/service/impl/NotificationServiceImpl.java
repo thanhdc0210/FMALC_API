@@ -62,13 +62,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
 //    @Transactional
     public Notification createNotification(NotificationRequestDTO dto) throws ParseException {
-//<<<<<<< HEAD
-//         Notification notify = convertToDto(dto);
-//        notify.setTime(new Timestamp(System.currentTimeMillis()));
-//        if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
-//                dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()) {
-//                notify.setVehicle(null);
-//=======
+
         Notification notify = convertToDto(dto);
         Driver driver = driverRepository.findById(dto.getDriver_id()).get();
         notify.setTime(new Timestamp(System.currentTimeMillis()));

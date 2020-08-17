@@ -208,7 +208,7 @@ public class NotificationController {
         }
         if (alert != null) {
             NotificationRequestDTO noti = new NotificationRequestDTO();
-//            noti.setType(NotificationTypeEnum.ALERT.getValue());
+            noti.setType(NotificationTypeEnum.ALERT.getValue());
             noti.setDriver_id(alert.getDriver().getId());
             noti.setStatus(false);
             noti.setVehicle_id(alert.getVehicle().getId());
