@@ -208,10 +208,6 @@ public class LocationController {
         } else {
             intervals.subscribe((i) -> SSELocationForVehicle(id));
 
-//            if (SSELocationForVehicle(id).size() <= 0) {
-//                Disposable disposable = intervals.subscribe();
-//                disposable.dispose();
-//            }
             transactionFlux = Flux.fromStream(Stream.generate(() -> SSELocationForVehicle(id)));
 //            Flux<List<LocationResponeDTO>> flux = ;
         }
@@ -220,53 +216,102 @@ public class LocationController {
     }
 
     private List<LocationResponeDTO> SSELocationForVehicle(int id) {
-        System.out.println(tracking.size());
-        int size = tracking.size();
-        ScheduleDTO scheduleForLocationDTO = new ScheduleDTO();
-        List<Location> locationLists = new ArrayList();
-        LocationResponeDTO locationResponeDTO = new LocationResponeDTO();
         List<LocationResponeDTO> locationDTOS = new ArrayList();
-        if (idVehicles.size() <= 0) {
-            locationDTOS = new ArrayList();
-            Disposable disposable = intervals.subscribe();
-            disposable.dispose();
-        } else {
-            if (size > 0) {
-
-                for (Map.Entry key : tracking.entrySet()) {
-                    Schedule schedules = scheduleService.findById((Integer) key.getValue());
+       try{
+//           Vehicle vehicle = vehicleService.findById(id);
+//
+//           List<Schedule> schedules = scheduleService.checkVehicleInScheduled(id);
+//           List<Schedule> result = new ArrayList<>();
+//           System.out.println(tracking.size());
+           int size = tracking.size();
+           ScheduleDTO scheduleForLocationDTO = new ScheduleDTO();
+           List<Location> locationLists = new ArrayList();
+           LocationResponeDTO locationResponeDTO = new LocationResponeDTO();
+//           for (int i = 0; i < schedules.size(); i++) {
+//               if (schedules.get(i).getConsignment().getStatus() == ConsignmentStatusEnum.DELIVERING.getValue()
+//                       || schedules.get(i).getConsignment().getStatus() == ConsignmentStatusEnum.OBTAINING.getValue()) {
+//                   result.add(schedules.get(i));
+//               }
+//           }
+//           if (result.size() == 0) {
+//               for (Map.Entry key : tracking.entrySet()) {
+//                   if (schedules.contains(key.getValue())) {
+//                       tracking.remove(key);
+//                   }
+//               }
+//
+//           } else {
+//               Iterator it = tracking.entrySet().iterator();
+//               while (it.hasNext())
+//               {
+//                   Map.Entry item = (Map.Entry) it.next();
+//                   if (schedules.contains(item.getValue()) && !result.contains(item.getValue())) {
+//                       tracking.remove(item.getKey());
+//                   }
+//
+//               }
+//           }
+           if (idVehicles.size() <= 0) {
+               locationDTOS = new ArrayList();
+               Disposable disposable = intervals.subscribe();
+               disposable.dispose();
+           } else {
+               if (size > 0) {
+                   Iterator it = tracking.entrySet().iterator();
+                   while (it.hasNext())
+                   {
+                       Map.Entry item = (Map.Entry) it.next();
+                       Schedule schedules = scheduleService.findById((Integer) item.getValue());
 //                    scheduleForLocationDTO = scheduleForLocationDTO.convertSchedule(schedules);
-                    VehicleForDetailDTO vehicleForDetailDTO = vehicleService.findVehicleById(schedules.getVehicle().getId());
-                    if (schedules != null) {
-                        if (idVehicles.contains(schedules.getVehicle().getId())) {
-                            if (vehicleForDetailDTO.getId() == id) {
-                                if (vehicleForDetailDTO.getStatus() == 2) {
-                                    Location locationSave = (Location) key.getKey();
-                                    locationSave.setSchedule(schedules);
-                                    locationLists.add(locationSave);
-                                } else {
-                                    tracking.remove(key.getKey());
-                                }
-                            } else {
-                            }
-                        } else {
-                        }
-                    }
+                       VehicleForDetailDTO vehicleForDetailDTO = vehicleService.findVehicleById(schedules.getVehicle().getId());
+                       if (schedules != null) {
+                           if (idVehicles.contains(schedules.getVehicle().getId())) {
+                               if (vehicleForDetailDTO.getId() == id) {
+                                   if (vehicleForDetailDTO.getStatus() == 2) {
+                                       Location locationSave = (Location) item.getKey();
+                                       locationSave.setSchedule(schedules);
+                                       locationLists.add(locationSave);
+                                   } else {
+                                       tracking.remove(item.getKey());
+                                   }
+                               } else {
+                               }
+                           } else {
+                           }
+                       }
 
-                }
-                locationDTOS = locationResponeDTO.mapToListResponse(locationLists);
+                   }
+//                   for (Map.Entry key : tracking.entrySet()) {
+//                       Schedule schedules = scheduleService.findById((Integer) key.getValue());
+////                    scheduleForLocationDTO = scheduleForLocationDTO.convertSchedule(schedules);
+//                       VehicleForDetailDTO vehicleForDetailDTO = vehicleService.findVehicleById(schedules.getVehicle().getId());
+//                       if (schedules != null) {
+//                           if (idVehicles.contains(schedules.getVehicle().getId())) {
+//                               if (vehicleForDetailDTO.getId() == id) {
+//                                   if (vehicleForDetailDTO.getStatus() == 2) {
+//                                       Location locationSave = (Location) key.getKey();
+//                                       locationSave.setSchedule(schedules);
+//                                       locationLists.add(locationSave);
+//                                   } else {
+//                                       tracking.remove(key.getKey());
+//                                   }
+//                               } else {
+//                               }
+//                           } else {
+//                           }
+//                       }
+//                   }
+                   locationDTOS = locationResponeDTO.mapToListResponse(locationLists);
 //                locationDTOS = locationLists.stream().map(this::convertToDto).collect(Collectors.toList());
 
-            } else {
-            }
-        }
-        locationDTOS.sort(Comparator.comparing(LocationResponeDTO::getTime));
-//        Collections.sort(locationDTOS, new Comparator<LocationResponeDTO>() {
-//            @Override
-//            public int compare(LocationResponeDTO o1, LocationResponeDTO o2) {
-//                return o2.getTime().compareTo(o1.getTime());
-//            }
-//        });
+               } else {
+               }
+               locationDTOS.sort(Comparator.comparing(LocationResponeDTO::getTime));
+           }
+       }catch (Exception e){
+        return locationDTOS;
+       }
+
         return locationDTOS;
     }
 

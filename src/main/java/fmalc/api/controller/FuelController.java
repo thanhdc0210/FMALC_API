@@ -21,12 +21,12 @@ public class FuelController {
 
     @PostMapping("fuel-filling")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
-    public ResponseEntity<Fuel> saveFuel(@RequestBody FuelRequestDTO fuelRequestDTO){
+    public ResponseEntity<String> saveFuel(@RequestBody FuelRequestDTO fuelRequestDTO){
         Fuel fuel = fuelService.saveFuelFilling(fuelRequestDTO);
         if (fuel == null){
             return ResponseEntity.noContent().build();
         }else{
-            return ResponseEntity.ok().body(fuel);
+            return ResponseEntity.ok().body("SUCCESS");
         }
     }
 }

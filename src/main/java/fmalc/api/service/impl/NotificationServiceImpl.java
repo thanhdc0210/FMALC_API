@@ -65,53 +65,45 @@ public class NotificationServiceImpl implements NotificationService {
 
         Notification notify = convertToDto(dto);
         Driver driver = driverRepository.findById(dto.getDriver_id()).get();
+
+
         notify.setTime(new Timestamp(System.currentTimeMillis()));
         if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() ||
-                dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue() ||
-                    dto.getType() == NotificationTypeEnum.ALERT.getValue()) {
-            DayOff dayOff = new DayOff();
-            dayOff.setDriver(driver);
-            dayOff.setFleetManager(driver.getFleetManager());
-            dayOff.setIsApprove(dto.getType());
-            if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue()) {
-                dayOff.setNote(dto.getContent());
-                String[] dateString = dto.getContent().split("\\|");
-                java.util.Date startDate = new SimpleDateFormat("dd-MM-yyyy").parse(dateString[0]);
-                java.util.Date endDate = new SimpleDateFormat("dd-MM-yyyy").parse(dateString[1]);
-                dayOff.setStartDate(new java.sql.Date(startDate.getTime()));
-                dayOff.setEndDate(new java.sql.Date(endDate.getTime()));
-            } else if(dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
-                dayOff.setNote(dto.getContent());
-                Date today = new Date(Calendar.getInstance().getTime().getTime());
-                dayOff.setStartDate(today);
-                dayOff.setEndDate(today);
-            }
-            try{
-            dayOffRepository.save(dayOff);
+                dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()
 
-            } catch (Exception e){
-                e.printStackTrace();
-            }
+        ) {
+//            if( dto.getType() == NotificationTypeEnum.ALERT.getValue()){
+                if(dto.getContent()==null){
+                    notify.setContent("Tài xế: "+driver.getName()+" đã gửi yêu cầu nghỉ phép");
+                }else{
+                    notify.setContent("Tài xế: "+driver.getName()+" đã gửi yêu cầu xin nghỉ đột xuất");
+                }
+
             notify.setVehicle(null);
-//>>>>>>> 4d2e225e21df534d779ef82ffb6c325b6f3e61b5
         } else {
-            Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
-            notify.setVehicle(vehicle);
+            if(dto.getVehicle_id()>0){
+                Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
+                if( dto.getType() == NotificationTypeEnum.ALERT.getValue()){
+                    notify.setContent("Tài xế: "+driver.getName()+" đang lái xe: "+vehicle.getLicensePlates()+" đã"+dto.getContent());
+                }else{
+                    notify.setContent(dto.getContent());
+                }
+                notify.setVehicle(vehicle);
+            }
+
+
         }
         notify.setType(dto.getType());
-        notify.setContent(dto.getContent());
+
         notify.setDriver(driver);
 
         try {
             Notification notification = notificationRepository.save(notify);
 
             if (notification != null) {
-//<<<<<<< HEAD
-//                 List<Account> accounts = accountRepository.findAllByIsActiveIsTrueAndRole_Role("ROLE_ADMIN");
-//                Driver driver = driverRepository.findById(dto.getDriver_id()).get();
-//=======
+
                 List<Account> accounts = accountRepository.findAllByIsActiveIsTrueAndRole_Role("ROLE_ADMIN");
-//>>>>>>> 4d2e225e21df534d779ef82ffb6c325b6f3e61b5
+
                 accounts.add(accountRepository.findById(driver.getFleetManager().getAccount().getId()).get());
                 List<AccountNotification> accountNotifications = new ArrayList<>();
                 for (Account acc: accounts) {
@@ -242,3 +234,26 @@ public class NotificationServiceImpl implements NotificationService {
         return dto;
     }
 }
+//    DayOff dayOff = new DayOff();
+//            dayOff.setDriver(driver);
+//                    dayOff.setFleetManager(driver.getFleetManager());
+//                    dayOff.setIsApprove(dto.getType());
+//                    if (dto.getType() == NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue()) {
+//                    dayOff.setNote(dto.getContent());
+//                    String[] dateString = dto.getContent().split("\\|");
+//                    java.util.Date startDate = new SimpleDateFormat("dd-MM-yyyy").parse(dateString[0]);
+//                    java.util.Date endDate = new SimpleDateFormat("dd-MM-yyyy").parse(dateString[1]);
+//                    dayOff.setStartDate(new java.sql.Date(startDate.getTime()));
+//                    dayOff.setEndDate(new java.sql.Date(endDate.getTime()));
+//                    } else if(dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
+//                    dayOff.setNote(dto.getContent());
+//                    Date today = new Date(Calendar.getInstance().getTime().getTime());
+//                    dayOff.setStartDate(today);
+//                    dayOff.setEndDate(today);
+//                    }
+//                    try{
+//                    dayOffRepository.save(dayOff);
+//
+//                    } catch (Exception e){
+//                    e.printStackTrace();
+//                    }
