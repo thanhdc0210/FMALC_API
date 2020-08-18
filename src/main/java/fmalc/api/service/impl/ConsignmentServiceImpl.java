@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -226,5 +223,10 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 
 
         return 0;
+    }
+
+    @Override
+    public Integer findConsignmentId(Integer driverId, Integer vehicleId) {
+        return scheduleRepository.findByDriver_IdAndVehicle_IdAndConsignment_StatusIn(driverId, vehicleId, Arrays.asList(1, 2)).getConsignment().getId();
     }
 }
