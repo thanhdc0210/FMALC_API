@@ -32,9 +32,9 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
     @Query(value = "Update maintenance m set m.actual_maintain_date =:date where m.id =:id", nativeQuery = true)
     void updateActualMaintainDate(Integer id, Date date);
 
-    List<Maintenance> findAllByActualMaintainDateIsNotNullOrderByActualMaintainDateDesc();
+    List<Maintenance> findAllByActualMaintainDateIsNotNullOrderByIdDesc();
 
-    List<Maintenance> findAllByActualMaintainDateIsNotNullAndStatusIsFalseOrderByActualMaintainDateDesc();
+    List<Maintenance> findAllByActualMaintainDateIsNotNullAndStatusIsFalseOrderByIdDesc();
 
     //GiangTLB
     List<Maintenance> findMaintenancesByDriverIdAndAndStatus(int driverId, boolean status);
