@@ -15,6 +15,7 @@ import java.util.List;
 public class FuelTypeResponseDTO {
 
     private String vehicleLicensePlate;
+    private double capacity;
     private List<FuelType> fuelTypeList;
 
 }

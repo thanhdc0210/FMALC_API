@@ -46,6 +46,7 @@ public class NotificationController {
     @Autowired
     AccountService accountService;
 
+    @Autowired
     ScheduleService scheduleService;
 
 

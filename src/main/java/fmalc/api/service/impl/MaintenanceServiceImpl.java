@@ -159,7 +159,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         if (maintenance != null) {
             Date actualTime = maintenance.getActualMaintainDate();
             if (currentTime.after(actualTime)) {
-                if (maintenance.getKmOld() < km) {
+                if (vehicle.getKilometerRunning() < km) {
                     maintenance.setKmOld(km);
                     String image = uploaderService.upload(file);
                     maintenance.setImageMaintain(image);
