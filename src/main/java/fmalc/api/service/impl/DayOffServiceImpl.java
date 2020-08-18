@@ -54,6 +54,9 @@ public class DayOffServiceImpl implements DayOffService {
     @Autowired
     AccountNotificationService accountNotificationService;
 
+    @Autowired
+    NotificationService notificationService;
+
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 
@@ -224,7 +227,7 @@ public class DayOffServiceImpl implements DayOffService {
 
             flag = checkSchedule(driver.getId(), dayOffDTO.getDateStart(),dayOffDTO.getDateEnd());
             if (flag) {
-                flag =  flag = checkDateMaintain((dayOffDTO.getDateStart()), checkMaintainForDriver(driver.getId()),  (dayOffDTO.getDateEnd()));
+                flag = checkDateMaintain((dayOffDTO.getDateStart()), checkMaintainForDriver(driver.getId()),  (dayOffDTO.getDateEnd()));
                 if (flag) {
                     flag = checkDayOff((dayOffDTO.getDateStart()), driver.getId(), (dayOffDTO.getDateEnd()));
                 }
@@ -241,7 +244,18 @@ public class DayOffServiceImpl implements DayOffService {
 
 
                 if (dayOffRepository.save(dayOff) != null) {
-
+                    try {
+                        NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+                        notificationRequestDTO.setVehicle_id(null);
+                        notificationRequestDTO.setDriver_id(driver.getId());
+                        notificationRequestDTO.setStatus(false);
+                        notificationRequestDTO.setType(NotificationTypeEnum.MAINTAIN_SCHEDULE.getValue());
+                        notificationRequestDTO.setContent("Đơn xin nghỉ của bạn từ " +
+                                dayOff.getStartDate() + " >> " + dayOff.getEndDate() + " được chấp nhận");
+                        notificationService.createNotification(notificationRequestDTO);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }else{
 
@@ -258,7 +272,6 @@ public class DayOffServiceImpl implements DayOffService {
 
     @Override
     public boolean cancelDayOff(int id) {
-        Driver driver = new Driver();
 //        driver = driverService.findById(id);
         boolean flag = true;
         DayOff dayOff = dayOffRepository.findById(id).get();
@@ -269,7 +282,20 @@ public class DayOffServiceImpl implements DayOffService {
 
         }else{
             dayOff.setIsApprove(DayOffEnum.REJECTED.getValue());
-            dayOff = dayOffRepository.save(dayOff);
+            if (dayOffRepository.save(dayOff) != null) {
+                try {
+                    NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+                    notificationRequestDTO.setVehicle_id(null);
+                    notificationRequestDTO.setDriver_id(dayOff.getDriver().getId());
+                    notificationRequestDTO.setStatus(false);
+                    notificationRequestDTO.setType(NotificationTypeEnum.MAINTAIN_SCHEDULE.getValue());
+                    notificationRequestDTO.setContent("Đơn xin nghỉ của bạn từ " +
+                            dayOff.getStartDate() + " >> " + dayOff.getEndDate() + " bị từ chối");
+                    notificationService.createNotification(notificationRequestDTO);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
         }
         return flag;

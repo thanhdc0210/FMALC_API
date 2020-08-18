@@ -4,9 +4,9 @@ import lombok.Data;
 
 @Data
 public class NotificationRequestDTO {
-    private int vehicle_id;
-    private int driver_id;
-    private boolean status;
+    private Integer vehicle_id;
+    private Integer driver_id;
+    private Boolean status;
     private String content;
-    private int type;
+    private Integer type;
 }
