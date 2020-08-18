@@ -74,10 +74,10 @@ public class DayOffController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("cancel-dayoff")
-    public ResponseEntity<Boolean> cancelDayOff(@RequestBody DayOffDTO dayOffDTO) {
+    @GetMapping("cancel-dayoff/{id}")
+    public ResponseEntity<Boolean> cancelDayOff(@PathVariable("id") int id) {
         try {
-            boolean result = dayOffService.cancelDayOff(dayOffDTO);
+            boolean result = dayOffService.cancelDayOff(id);
             if (result) {
                 return ResponseEntity.ok().body(result);
             }

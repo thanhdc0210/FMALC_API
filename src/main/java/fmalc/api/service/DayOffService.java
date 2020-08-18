@@ -19,7 +19,7 @@ public interface DayOffService {
     boolean confirmDayOff(DayOffDTO dayOffDTO);
     List<ScheduleForConsignmentDTO> getSchedules(DayOffDTO dayOffDTO);
     List<MaintainCheckDTO> getListMaintenance(DayOffDTO dayOffDTO);
-    boolean cancelDayOff(DayOffDTO dayOffDTO);
+    boolean cancelDayOff(int id);
     DayOff getDetail(int id);
     DayOff checkDriverDayOffRequest(Integer driverId, String startDate, String endDate);
 

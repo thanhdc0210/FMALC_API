@@ -257,11 +257,11 @@ public class DayOffServiceImpl implements DayOffService {
     }
 
     @Override
-    public boolean cancelDayOff(DayOffDTO dayOffDTO) {
+    public boolean cancelDayOff(int id) {
         Driver driver = new Driver();
-        driver = driverService.findById(dayOffDTO.getIdDriver());
+//        driver = driverService.findById(id);
         boolean flag = true;
-        DayOff dayOff = dayOffRepository.findById(dayOffDTO.getId()).get();
+        DayOff dayOff = dayOffRepository.findById(id).get();
         if(dayOff==null){
 
             flag = false;

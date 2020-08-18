@@ -162,7 +162,6 @@ public class NotificationController {
                         notificationMobileResponses.add(new NotificationMobileResponse(accountNotification));
                     }
                 }
-
                 if (notificationMobileResponses != null) {
                     return ResponseEntity.ok().body(notificationMobileResponses);
                 } else {
