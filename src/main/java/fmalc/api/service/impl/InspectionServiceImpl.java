@@ -38,4 +38,9 @@ public class InspectionServiceImpl implements InspectionService {
     public Inspection update(Inspection inspection) {
         return inspectionRepository.save(inspection);
     }
+
+    @Override
+    public List<Inspection> findAllOrderById() {
+        return inspectionRepository.findAllByOrderByIdDesc();
+    }
 }

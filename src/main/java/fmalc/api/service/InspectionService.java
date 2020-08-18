@@ -12,4 +12,6 @@ public interface InspectionService {
     Inspection save(Inspection inspection);
 
     Inspection update(Inspection inspection) throws Exception;
+
+    List<Inspection> findAllOrderById();
 }

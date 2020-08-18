@@ -43,7 +43,7 @@ public class FleetManagerServiceImpl implements FleetManagerService {
 
     @Override
     public List<FleetManager> getAllFleet(String search) {
-        return fleetManagerRepository.findByPhoneNumberContainingIgnoreCase(search);
+        return fleetManagerRepository.findByPhoneNumberContainingIgnoreCaseOrderByIdDesc(search);
     }
 
     @Override

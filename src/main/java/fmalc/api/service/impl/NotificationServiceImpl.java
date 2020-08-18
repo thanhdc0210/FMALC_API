@@ -3,7 +3,10 @@ package fmalc.api.service.impl;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
-import fmalc.api.dto.*;
+import fmalc.api.dto.DayOffRespsoneDTO;
+import fmalc.api.dto.NotificationRequestDTO;
+import fmalc.api.dto.NotificationResponeDTO;
+import fmalc.api.dto.NotificationUnread;
 import fmalc.api.entity.*;
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.repository.*;
@@ -20,7 +23,6 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
@@ -218,7 +220,7 @@ public class NotificationServiceImpl implements NotificationService {
         DayOffRespsoneDTO dayOffRespsoneDTO = new DayOffRespsoneDTO();
         List<DayOffRespsoneDTO> dayOffRespsoneDTOS = new ArrayList<>();
         account = accountRepository.findByUsernameRole(username);
-        List<DayOff> dayOffs = dayOffRepository.findAll();
+        List<DayOff> dayOffs = dayOffRepository.findAllByOrderByIdDesc();
         if(account.getRole().getRole().equals(ADMIN)){
             dayOffRespsoneDTOS = dayOffRespsoneDTO.mapToListResponse(dayOffs);
         }else if(account.getRole().getRole().equals(FLEET_MANAGER)){

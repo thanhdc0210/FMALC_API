@@ -21,7 +21,7 @@ public class InspectionController {
 
     @GetMapping
     public ResponseEntity<List<Inspection>> getAllInspection() {
-        List<Inspection> result = inspectionService.findAll();
+        List<Inspection> result = inspectionService.findAllOrderById();
         if (result.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

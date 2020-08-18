@@ -30,7 +30,7 @@ public interface FleetManagerRepository extends JpaRepository<FleetManager, Inte
 
     boolean existsByIdentityNo(String identityNo);
 
-    List<FleetManager> findByPhoneNumberContainingIgnoreCase(String search);
+    List<FleetManager> findByPhoneNumberContainingIgnoreCaseOrderByIdDesc(String search);
 
 
 }
