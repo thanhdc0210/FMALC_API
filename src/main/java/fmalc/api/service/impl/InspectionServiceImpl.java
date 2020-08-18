@@ -35,11 +35,7 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
-    public Inspection update(Integer id, Inspection inspection) throws Exception {
-        if (!inspectionRepository.existsById(id)) {
-            throw new Exception();
-        }
-        inspectionRepository.update(id, inspection.getInspectionName());
-        return inspectionRepository.findById(id).get();
+    public Inspection update(Inspection inspection) {
+        return inspectionRepository.save(inspection);
     }
 }
