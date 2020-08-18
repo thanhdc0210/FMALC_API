@@ -38,19 +38,11 @@ public class FuelTypeUtil extends TimerTask {
                     lst[i] = lst[i].replaceAll("[^0-9]+", "");
                     prices.add(Double.parseDouble(lst[i]));
                 }
-
-
-//                for (int i = 0; i < 10; i++) {
-//                    if (i % 2 != 0) {
-//                        lst[i] = lst[i].replaceAll("[^0-9]+", "");
-//                        prices.add(Double.parseDouble(lst[i]));
-//                    }
-//
-                }
-
-                fuelTypeService.createOrUpdateFuelType(prices);
-            } catch(IOException e){
-                e.printStackTrace();
             }
+
+            fuelTypeService.createOrUpdateFuelType(prices);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+}
