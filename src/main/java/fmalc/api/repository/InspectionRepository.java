@@ -17,4 +17,6 @@ public interface InspectionRepository extends JpaRepository<Inspection, Integer>
     void update(Integer id, String inspectionName);
 
     List<Inspection> findAllByOrderByIdAsc();
+
+    List<Inspection> findAllByOrderByIdDesc();
 }
