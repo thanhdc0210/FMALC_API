@@ -3,6 +3,7 @@ package fmalc.api.repository;
 
 import fmalc.api.entity.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
 //    int countAllByAccountNotContainsAndTypeNot(Account account, Integer type);
 
 //    List<Notification> findTop4ByAccountNotContainsAndTypeNotOrderByIdDesc(Account account, Integer type);
+
 
     List<Notification> findAllByTypeOrderByIdDesc(int type);
 

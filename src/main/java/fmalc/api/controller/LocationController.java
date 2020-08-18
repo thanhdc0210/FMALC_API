@@ -52,7 +52,7 @@ public class LocationController {
     private HashMap<Location, Integer> tracking = new HashMap<>();
     private int interval = 1000 * 60 * 3; // 1 sec
     private int sizeHash = 0;
-    private Flux<Long> intervals = Flux.interval(Duration.ofSeconds(5));
+    private Flux<Long> intervals = Flux.interval(Duration.ofSeconds(60));
     private List<Integer> idVehicles = new ArrayList<>();
     List<Location> locations = new ArrayList<>();
 
@@ -272,7 +272,8 @@ public class LocationController {
                                        locationSave.setSchedule(schedules);
                                        locationLists.add(locationSave);
                                    } else {
-                                       tracking.remove(item.getKey());
+//                                       tracking.remove(item.getKey());
+                                       it.remove();
                                    }
                                } else {
                                }

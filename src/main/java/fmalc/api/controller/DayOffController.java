@@ -37,10 +37,16 @@ public class DayOffController {
                 return ResponseEntity.ok().body(result);
             } else {
                 List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = dayOffService.getSchedules(dayOffDTO);
-                if (scheduleForConsignmentDTOS.size() < 0) {
+                if (scheduleForConsignmentDTOS.size() <= 0) {
                     List<MaintainCheckDTO> maintainCheckDTOS = dayOffService.getListMaintenance(dayOffDTO);
                     if (maintainCheckDTOS.size() > 0) {
                         return ResponseEntity.ok().body(maintainCheckDTOS);
+                    }else{
+                        DayOff dayOff = dayOffService.getDayOffApprove(dayOffDTO);
+                        if(dayOff.getId()!=null){
+                            return ResponseEntity.ok().body(dayOff);
+                        }
+//                        return ResponseEntity.noContent().build();
                     }
                 } else {
                     return ResponseEntity.ok().body(scheduleForConsignmentDTOS);

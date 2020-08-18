@@ -134,14 +134,14 @@ public class ConsignmentController {
 
 
 
-    @GetMapping(value = "status")
-    public ResponseEntity<List<ConsignmentListDTO>> getAllByStatus(@RequestParam("status") Integer status) {
+    @GetMapping(value = "status/{username}")
+    public ResponseEntity<List<ConsignmentListDTO>> getAllByStatus(@RequestParam("status") Integer status, @PathVariable("username") String username) {
         List<Consignment> consignments = new ArrayList<>();
         if(status == ConsignmentStatusEnum.DELIVERING.getValue() || status == ConsignmentStatusEnum.OBTAINING.getValue()){
-            consignments.addAll(consignmentService.getAllByStatus(ConsignmentStatusEnum.DELIVERING.getValue()));
-            consignments.addAll(consignmentService.getAllByStatus(ConsignmentStatusEnum.OBTAINING.getValue()));
+            consignments.addAll(consignmentService.getAllByStatus(ConsignmentStatusEnum.DELIVERING.getValue(), username));
+            consignments.addAll(consignmentService.getAllByStatus(ConsignmentStatusEnum.OBTAINING.getValue(), username));
         }else{
-            consignments = consignmentService.getAllByStatus(status);
+            consignments = consignmentService.getAllByStatus(status, username);
         }
 
         ConsignmentListDTO consignmentListDTO = new ConsignmentListDTO();

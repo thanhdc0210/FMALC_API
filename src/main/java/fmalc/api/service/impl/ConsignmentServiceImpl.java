@@ -6,7 +6,9 @@ import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.*;
+import fmalc.api.service.AccountService;
 import fmalc.api.service.ConsignmentService;
+import fmalc.api.service.FleetManagerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,13 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     VehicleRepository vehicleRepository;
     @Autowired
     DriverRepository driverRepository;
+
+    @Autowired
+    FleetManagerService fleetManagerService;
+    @Autowired
+    AccountService accountService;
+    private static final String ADMIN="ROLE_ADMIN";
+    private static final String FLEET = "ROLE_FLEET_MANAGER";
 
 //    @Override
 //    public List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(List<Integer> status, String username) {
@@ -71,8 +80,26 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     }
 
     @Override
-    public List<Consignment> getAllByStatus(Integer status) {
-        return consignmentRepository.findAllByStatus(status);
+    public List<Consignment> getAllByStatus(Integer status, String username) {
+        Account account= accountService.getAccount(username);
+        List<Consignment> consignments = consignmentRepository.findAllByStatus(status);
+        FleetManager fleetManager =  fleetManagerService.findByAccount(account.getId());
+        List<Driver> drivers = (List<Driver>) fleetManager.getDrivers();
+        List<Consignment> result = new ArrayList<>();
+        if(account.getRole().getRole().equals(ADMIN)){
+            result.addAll(consignments);
+        }else{
+            for(int i=0; i< consignments.size();i++){
+                List<Schedule> schedules = (List<Schedule>) consignments.get(i).getSchedules();
+                for(int j=0; j<schedules.size();j++){
+                    if(drivers.contains(schedules.get(j).getDriver())){
+                        result.add(consignments.get(i));
+                        j=schedules.size();
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     @Override
