@@ -54,7 +54,7 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     Driver findByIdAndAccountIsActive(Integer id, Boolean isActive);
 
     @Query("select d from Driver d where d.fleetManager.id=?1")
-    List<Driver> findByFleetManagerIdAndPhoneNumberContainingIgnoreCase(int idFleet, String searchPhone);
+    List<Driver> findByFleetManagerIdAndPhoneNumberContainingIgnoreCaseOrderByIdDesc(int idFleet, String searchPhone);
 
     Driver findDiverByPhoneNumberOrIdentityNoOrNo(String phone, String indentityNo, String no);
 

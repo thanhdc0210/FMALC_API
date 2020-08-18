@@ -17,7 +17,6 @@ import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -88,7 +87,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<Vehicle> getListVehicle() {
-        return vehicleRepository.findAll();
+        return vehicleRepository.findAllByOrderByIdDesc();
     }
 
     @Override

@@ -33,7 +33,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public List<Driver> findAllAndSearchByFleet(int idFleet,String searchPhone) {
-        return driverRepository.findByFleetManagerIdAndPhoneNumberContainingIgnoreCase(idFleet,searchPhone);
+        return driverRepository.findByFleetManagerIdAndPhoneNumberContainingIgnoreCaseOrderByIdDesc(idFleet,searchPhone);
     }
 
     @Override
