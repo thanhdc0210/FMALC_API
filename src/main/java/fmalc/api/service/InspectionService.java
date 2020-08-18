@@ -11,5 +11,5 @@ public interface InspectionService {
 
     Inspection save(Inspection inspection);
 
-    Inspection update(Integer id, Inspection inspection) throws Exception;
+    Inspection update(Inspection inspection) throws Exception;
 }

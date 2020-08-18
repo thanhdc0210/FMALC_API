@@ -47,10 +47,10 @@ public class InspectionController {
         }
     }
 
-    @PutMapping(value = "id/{id}")
-    public ResponseEntity<Inspection> updateInspection(@PathVariable("id") Integer id, @RequestBody Inspection inspection) {
+    @PutMapping
+    public ResponseEntity<Inspection> updateInspection(@RequestBody Inspection inspection) {
         try {
-            inspection = inspectionService.update(id, inspection);
+            inspection = inspectionService.update(inspection);
             return ResponseEntity.ok().body(inspection);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();
