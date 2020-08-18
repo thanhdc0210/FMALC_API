@@ -2,6 +2,7 @@ package fmalc.api.controller;
 
 import fmalc.api.dto.FuelTypeResponseDTO;
 import fmalc.api.entity.FuelType;
+import fmalc.api.entity.Vehicle;
 import fmalc.api.service.FuelTypeService;
 import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class FuelTypeController {
     @Autowired
     VehicleService vehicleService;
 
+
     @GetMapping("/fuel-type")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<FuelTypeResponseDTO> getFuelTypesAndVehicleLicensePlate(@RequestParam("status") List<Integer> status,
@@ -33,13 +35,14 @@ public class FuelTypeController {
         try {
             List<FuelType> fuelTypes = fuelTypeService.getListFuelType();
             String licensePlate = vehicleService.findLicensePlatesForMakingReportBeforeRunningOrWhileRunning(status, username);
-
+            Vehicle vehicle = vehicleService.findVehicleByLicensePlates(licensePlate);
             if (fuelTypes == null) {
                 return ResponseEntity.noContent().build();
             } else {
                 if (licensePlate == null) {
                     FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
                     fuelTypeResponseDTO.setVehicleLicensePlate(null);
+                    fuelTypeResponseDTO.setCapacity(vehicle.getMaximumCapacity());
                     fuelTypeResponseDTO.setFuelTypeList(fuelTypes);
                     return ResponseEntity.ok().body(fuelTypeResponseDTO);
                 } else {
