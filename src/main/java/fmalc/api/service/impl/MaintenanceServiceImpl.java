@@ -159,7 +159,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         if (maintenance != null) {
             Date actualTime = maintenance.getActualMaintainDate();
             if (currentTime.after(actualTime)) {
-                if (maintenance.getKmOld() < km) {
+                if (vehicle.getKilometerRunning() < km) {
                     maintenance.setKmOld(km);
                     String image = uploaderService.upload(file);
                     maintenance.setImageMaintain(image);
@@ -808,7 +808,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public List<Maintenance> getMaintenanceListForConfirm() {
-        List<Maintenance> maintenances = maintainanceRepository.findAllByActualMaintainDateIsNotNullAndStatusIsFalseOrderByActualMaintainDateDesc();
+        List<Maintenance> maintenances = maintainanceRepository.findAllByActualMaintainDateIsNotNullAndStatusIsFalseOrderByIdDesc();
         for(int i=0; i< maintenances.size();i++){
             if(maintenances.get(i).getKmOld()==null){
                 List<Maintenance> checks = maintainanceRepository.findByVehicle(maintenances.get(i).getVehicle().getId());
@@ -831,7 +831,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public List<Maintenance> getMaintenance() {
-        return maintainanceRepository.findAllByActualMaintainDateIsNotNullOrderByActualMaintainDateDesc();
+        return maintainanceRepository.findAllByActualMaintainDateIsNotNullOrderByIdDesc();
     }
 
     @Override

@@ -106,8 +106,10 @@ public class DayOffController {
                         java.sql.Date parsedEndDate = new Date(new SimpleDateFormat("dd-MM-yyyy").parse(dto.getEndDate()).getTime());
                         dayOffNew.setStartDate(parsedStartDate);
                         dayOffNew.setEndDate(parsedEndDate);
+                        dayOffNew.setNote("Xin nghỉ phép từ " +parsedStartDate +" đến " + parsedEndDate);
                     } else if (dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()) {
                         java.sql.Date today = new Date(Calendar.getInstance().getTime().getTime());
+                        dayOffNew.setNote(dto.getContent());
                         dayOffNew.setStartDate(today);
                         dayOffNew.setEndDate(today);
                     }
@@ -144,8 +146,10 @@ public class DayOffController {
                     java.sql.Date parsedEndDate = new Date(new SimpleDateFormat("dd-MM-yyyy").parse(dto.getEndDate()).getTime());
                     dayOff.setStartDate(parsedStartDate);
                     dayOff.setEndDate(parsedEndDate);
+                    dayOff.setNote("Xin nghỉ phép từ " +parsedStartDate +" đến " + parsedEndDate);
                 } else if (dto.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()) {
                     java.sql.Date today = new Date(Calendar.getInstance().getTime().getTime());
+                    dayOff.setNote(dto.getContent());
                     dayOff.setStartDate(today);
                     dayOff.setEndDate(today);
 //                dayOff.setId(id);
@@ -153,11 +157,10 @@ public class DayOffController {
 
 
             }
-
+            dayOff = dayOffRepository.save(dayOff);
             if (dayOff != null) {
                 return ResponseEntity.ok().body(new DayOffResponseDTO(dayOff.getStartDate().toString(), dayOff.getEndDate().toString(), dayOff.getId()));
             }
-            dayOff = dayOffRepository.save(dayOff);
         } catch (Exception e) {
 
             return ResponseEntity.badRequest().build();

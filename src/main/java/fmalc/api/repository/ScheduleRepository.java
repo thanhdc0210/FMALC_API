@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.yaml.snakeyaml.events.ScalarEvent;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -75,4 +74,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     @Query("Select s.id From Schedule s Where s.consignment.id = :consignmentId AND s.driver.id = :driverId")
     Integer findScheduleIdByConsignmentIdAndDriverId(@Param("consignmentId") Integer consignmentId, @Param("driverId") Integer driverId);
 
+    Schedule findByDriver_IdAndVehicle_IdAndConsignment_StatusIn(Integer driverId, Integer vehicleId, List<Integer> status);
 }

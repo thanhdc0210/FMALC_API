@@ -28,12 +28,12 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public List<Driver> findAllAndSearch(String searchPhone) {
-        return driverRepository.findByPhoneNumberContainingIgnoreCase(searchPhone);
+        return driverRepository.findByPhoneNumberContainingIgnoreCaseOrderByIdDesc(searchPhone);
     }
 
     @Override
     public List<Driver> findAllAndSearchByFleet(int idFleet,String searchPhone) {
-        return driverRepository.findByFleetManagerIdAndPhoneNumberContainingIgnoreCase(idFleet,searchPhone);
+        return driverRepository.findByFleetManagerIdAndPhoneNumberContainingIgnoreCaseOrderByIdDesc(idFleet,searchPhone);
     }
 
     @Override

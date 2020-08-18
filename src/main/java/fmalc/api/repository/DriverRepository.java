@@ -43,8 +43,8 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     @Transactional
     @Query(value = "Update driver d set d.image =:image where d.id =:id", nativeQuery = true)
     int updateImageById(@Param("id") Integer id,@Param("image") String image);
-    
-    List<Driver> findByPhoneNumberContainingIgnoreCase(String searchPhone);
+
+    List<Driver> findByPhoneNumberContainingIgnoreCaseOrderByIdDesc(String searchPhone);
 
     @Query("Select d from Driver d Where d.account.username = :username")
     Driver findDriverByUsername(@Param("username") String username);
@@ -54,7 +54,7 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     Driver findByIdAndAccountIsActive(Integer id, Boolean isActive);
 
     @Query("select d from Driver d where d.fleetManager.id=?1")
-    List<Driver> findByFleetManagerIdAndPhoneNumberContainingIgnoreCase(int idFleet, String searchPhone);
+    List<Driver> findByFleetManagerIdAndPhoneNumberContainingIgnoreCaseOrderByIdDesc(int idFleet, String searchPhone);
 
     Driver findDiverByPhoneNumberOrIdentityNoOrNo(String phone, String indentityNo, String no);
 
@@ -62,8 +62,6 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     String findTokenDeviceByDriverId(@Param("id") Integer id);
 
     boolean existsByIdentityNo(String identityNo);
-
-
 
     boolean existsByNo(String no);
 }

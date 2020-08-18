@@ -51,5 +51,4 @@ public interface ConsignmentRepository
                     "GROUP BY p.consignment.id ) " +
                     " AND  c.status= :status ")
     List<Consignment> getConsignmentForReport (@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate, @Param("status") Integer status);
-
 }

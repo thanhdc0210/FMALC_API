@@ -263,4 +263,10 @@ public class ConsignmentController {
         return ResponseEntity.ok().body(placeResponeDTO);
     }
 
+    @GetMapping("find-for-alert")
+    public Integer findConsignmentIdForAlert(@RequestParam("driverId") Integer driverId,
+                                     @RequestParam("vehicleId") Integer vehicleId) {
+        return consignmentService.findConsignmentId(driverId, vehicleId);
+    }
+
 }
