@@ -176,6 +176,8 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<Notification> getNotificationsByType(int type) {
+
+
         return notificationRepository.findAllByTypeOrderByIdDesc(type);
     }
 

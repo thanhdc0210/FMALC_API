@@ -46,6 +46,7 @@ public class NotificationController {
     @Autowired
     AccountService accountService;
 
+    @Autowired
     ScheduleService scheduleService;
 
 
@@ -83,7 +84,6 @@ public class NotificationController {
                     intervals.subscribe((i) -> notifyForManagerWorkingHours()).dispose();
 
                 }
-
                 return ResponseEntity.ok().body(notificationResponeDTO);
             } else {
                 return ResponseEntity.noContent().build();
@@ -91,7 +91,6 @@ public class NotificationController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
-
     }
 
     private List<NotificationResponeDTO> returnResponeFor() {
@@ -135,6 +134,8 @@ public class NotificationController {
 
     @GetMapping(value = "/by-type")
     public ResponseEntity getNotificationsByType(@RequestParam("type") int type) {
+//       Account account = accountService.getAccount(username);
+
         List<Notification> notifications = notificationService.getNotificationsByType(type);
         return ResponseEntity.ok().body(new NotificationResponeDTO().mapToListResponse(notifications));
     }

@@ -13,8 +13,9 @@ import java.util.List;
 public interface DayOffService {
     List<Driver> checkDayOffODriver(List<Driver> idDriver, Consignment consignment);
 
+    DayOff getDayOffApprove(DayOffDTO dayOffDTO);
     void save(DayOff dayOff);
-
+    List<DayOff> getDayOffOfDriverIsApprove(int idDriver);
     boolean confirmDayOff(DayOffDTO dayOffDTO);
     List<ScheduleForConsignmentDTO> getSchedules(DayOffDTO dayOffDTO);
     List<MaintainCheckDTO> getListMaintenance(DayOffDTO dayOffDTO);

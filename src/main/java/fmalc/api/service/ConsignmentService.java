@@ -18,7 +18,7 @@ public interface ConsignmentService {
 
     List<Consignment> findAll();
 
-    List<Consignment> getAllByStatus(Integer status);
+    List<Consignment> getAllByStatus(Integer status, String username);
 
     Consignment consignmentConfirm(ConsignmentRequestDTO consignmentRequestDTO);
 

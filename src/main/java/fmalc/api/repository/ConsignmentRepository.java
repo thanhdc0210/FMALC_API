@@ -25,6 +25,9 @@ public interface ConsignmentRepository
 
     List<Consignment> findAllByStatus(Integer status);
 
+//    @Query("select  c from  c")
+//    List<Consignment> getlll(Integer status);
+
     Consignment findConsignmentById(int id);
 
     @Query("select c from Consignment c, Schedule s where c.id = s.consignment.id and s.vehicle.id=?1")

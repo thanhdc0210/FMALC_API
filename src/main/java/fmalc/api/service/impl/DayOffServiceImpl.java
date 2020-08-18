@@ -130,6 +130,49 @@ public class DayOffServiceImpl implements DayOffService {
         return drivers;
     }
 
+    @Override
+    public DayOff getDayOffApprove(DayOffDTO dayOffDTO) {
+        int id = dayOffDTO.getIdDriver();
+        String dates = (dayOffDTO.getDateStart());
+        String dateEndPlane = (dayOffDTO.getDateEnd());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<DayOff> dayOffs = new ArrayList<>();
+        DayOff result = new DayOff();
+        boolean flag = false;
+        dayOffs = dayOffRepository.checkDayOffOfDriver(id, DayOffEnum.APPROVED.getValue());
+        if (dayOffs.size() > 0) {
+            for (int j = 0; j < dayOffs.size(); j++) {
+                String dateOff = sdf.format(dayOffs.get(j).getStartDate());
+
+                if (dateOff.compareTo(dates) >= 1) {
+                    if (dateOff.compareTo(dateEndPlane) >= 1) {
+                        flag = true;
+                    }
+
+                } else if (dates.compareTo(dateOff) >= 1) {
+                    String dateEnd = sdf.format(dayOffs.get(j).getEndDate());
+                    if (dateEnd.compareTo(dates) >= 1) {
+                        flag = false;
+                        result=dayOffs.get(j);
+                    } else if (dateEnd.compareTo(dates) <= -1) {
+//                        if(dateEnd.compareTo(dateEndPlane))
+                        flag = true;
+                    }
+                }
+
+                if (flag == false) {
+                    j = dayOffs.size();
+                } else {
+
+                }
+            }
+        } else {
+            flag = true;
+        }
+        return result;
+//        return null;
+    }
+
     private PlaceResponeDTO getPlaceByTypePlaceAndPriority(List<Place> places, int priority, int type) {
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
         Place place = new Place();
@@ -166,6 +209,11 @@ public class DayOffServiceImpl implements DayOffService {
         dayOffRepository.save(dayOff);
     }
 
+    @Override
+    public List<DayOff> getDayOffOfDriverIsApprove(int idDriver) {
+        return dayOffRepository.findByDriverIdAndIsApprove(idDriver,DayOffEnum.APPROVED.getValue());
+    }
+
 
     @Override
     public boolean confirmDayOff(DayOffDTO dayOffDTO) {
@@ -173,15 +221,10 @@ public class DayOffServiceImpl implements DayOffService {
         driver = driverService.findById(dayOffDTO.getIdDriver());
 //        FleetManager fleetManager = driver.getFleetManager();
         boolean flag = true;
-//        Notification notification = new Notification();
-//        AccountNotification accountNotification = new AccountNotification();
-//        notification = notificationRepository.findById(dayOffDTO.getIdNotify()).get();
-//        if(notification.getType() == NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue()){
-//            flag = true;
-//        }else{
+
             flag = checkSchedule(driver.getId(), dayOffDTO.getDateStart(),dayOffDTO.getDateEnd());
             if (flag) {
-                flag = findDriverForMaintain(driver, (dayOffDTO.getDateStart()), (dayOffDTO.getDateEnd()));
+                flag =  flag = checkDateMaintain((dayOffDTO.getDateStart()), checkMaintainForDriver(driver.getId()),  (dayOffDTO.getDateEnd()));
                 if (flag) {
                     flag = checkDayOff((dayOffDTO.getDateStart()), driver.getId(), (dayOffDTO.getDateEnd()));
                 }
@@ -198,6 +241,7 @@ public class DayOffServiceImpl implements DayOffService {
 
 
                 if (dayOffRepository.save(dayOff) != null) {
+
                 }
             }else{
 
@@ -373,8 +417,6 @@ public class DayOffServiceImpl implements DayOffService {
                     }
                     if (flag && j == scheduleForConsignmentDTOS.size() - 1) {
                         flag = true;
-                    } else {
-                        flag = false;
                     }
                 }
 
@@ -552,6 +594,10 @@ public class DayOffServiceImpl implements DayOffService {
         }
         return flag;
     }
+
+//    private DayOff checkDadyOff(String dates, int id, String dateEndPlane) {
+//
+//    }
 
     @Override
     public DayOff checkDriverDayOffRequest(Integer driverId, String startDate, String endDate) {
