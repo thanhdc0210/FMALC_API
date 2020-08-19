@@ -164,6 +164,7 @@ public class DayOffServiceImpl implements DayOffService {
                 }
 
                 if (flag == false) {
+                    result = dayOffs.get(j);
                     j = dayOffs.size();
                 } else {
 
