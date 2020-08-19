@@ -83,12 +83,15 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     public List<Consignment> getAllByStatus(Integer status, String username) {
         Account account= accountService.getAccount(username);
         List<Consignment> consignments = consignmentRepository.findAllByStatus(status);
-        FleetManager fleetManager =  fleetManagerService.findByAccount(account.getId());
-        List<Driver> drivers = (List<Driver>) fleetManager.getDrivers();
         List<Consignment> result = new ArrayList<>();
         if(account.getRole().getRole().equals(ADMIN)){
+
+
+
             result.addAll(consignments);
         }else{
+            FleetManager fleetManager =  fleetManagerService.findByAccount(account.getId());
+            List<Driver> drivers = (List<Driver>) fleetManager.getDrivers();
             for(int i=0; i< consignments.size();i++){
                 List<Schedule> schedules = (List<Schedule>) consignments.get(i).getSchedules();
                 for(int j=0; j<schedules.size();j++){
