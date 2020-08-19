@@ -43,8 +43,10 @@ public class DayOffController {
                         return ResponseEntity.ok().body(maintainCheckDTOS);
                     }else{
                         DayOff dayOff = dayOffService.getDayOffApprove(dayOffDTO);
+                        DayOffRespsoneDTO dayOffRespsoneDTO = new DayOffRespsoneDTO().convertDTO(dayOff);
+
                         if(dayOff.getId()!=null){
-                            return ResponseEntity.ok().body(dayOff);
+                            return ResponseEntity.ok().body(dayOffRespsoneDTO);
                         }
 //                        return ResponseEntity.noContent().build();
                     }
