@@ -42,12 +42,12 @@ public class FuelTypeController {
                 if (licensePlate == null) {
                     FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
                     fuelTypeResponseDTO.setVehicleLicensePlate(null);
-                    fuelTypeResponseDTO.setCapacity(vehicle.getMaximumCapacity());
                     fuelTypeResponseDTO.setFuelTypeList(fuelTypes);
                     return ResponseEntity.ok().body(fuelTypeResponseDTO);
                 } else {
                     FuelTypeResponseDTO fuelTypeResponseDTO = new FuelTypeResponseDTO();
                     fuelTypeResponseDTO.setVehicleLicensePlate(licensePlate);
+                    fuelTypeResponseDTO.setCapacity(vehicle.getMaximumCapacity());
                     fuelTypeResponseDTO.setFuelTypeList(fuelTypes);
                     return ResponseEntity.ok().body(fuelTypeResponseDTO);
                 }
