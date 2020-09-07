@@ -1,14 +1,9 @@
 package fmalc.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import fmalc.api.entity.Fuel;
-import fmalc.api.entity.FuelType;
-import fmalc.api.entity.Schedule;
-import fmalc.api.entity.Vehicle;
+import fmalc.api.entity.FuelHistory;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
-import javax.persistence.*;
 import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,16 +17,16 @@ public class FuelVehicleDTO {
     private Date fillingDate;
     private FuelTypeVehicleDTO fuelType;
 
-    public FuelVehicleDTO convertDTO(Fuel fuel){
+    public FuelVehicleDTO convertDTO(FuelHistory fuelHistory){
         ModelMapper modelMapper = new ModelMapper();
-        FuelVehicleDTO fuelVehicleDTO = modelMapper.map(fuel, FuelVehicleDTO.class);
+        FuelVehicleDTO fuelVehicleDTO = modelMapper.map(fuelHistory, FuelVehicleDTO.class);
 
         return fuelVehicleDTO;
     }
 
 
-    public List<FuelVehicleDTO> mapToListResponse(List<Fuel> fuels) {
-        return fuels.stream()
+    public List<FuelVehicleDTO> mapToListResponse(List<FuelHistory> fuelHistories) {
+        return fuelHistories.stream()
                 .map(x -> convertDTO(x))
                 .collect(Collectors.toList());
     }
