@@ -3,6 +3,7 @@ package fmalc.api.service.impl;
 import fmalc.api.dto.FuelRequestDTO;
 import fmalc.api.entity.Fuel;
 import fmalc.api.entity.FuelType;
+import fmalc.api.entity.Vehicle;
 import fmalc.api.repository.FuelRepository;
 import fmalc.api.repository.FuelTypeRepository;
 import fmalc.api.repository.VehicleRepository;
@@ -31,8 +32,9 @@ public class FuelServiceImpl implements FuelService {
         fuel.setKmOld(fuelTypeRequestDTO.getKmOld());
         fuel.setUnitPriceAtFillingTime(fuelTypeRequestDTO.getUnitPriceAtFillingTime());
         fuel.setVolume(fuelTypeRequestDTO.getVolume());
-        fuel.setVehicle(vehicleRepository.findByLicensePlates(fuelTypeRequestDTO.getVehicleLicensePlates()));
-
+        Vehicle vehicle = vehicleRepository.findByLicensePlates(fuelTypeRequestDTO.getVehicleLicensePlates());
+        vehicle.setKilometerRunning(fuelTypeRequestDTO.getKmOld());
+        fuel.setVehicle(vehicle);
         return fuelRepository.save(fuel);
     }
 
