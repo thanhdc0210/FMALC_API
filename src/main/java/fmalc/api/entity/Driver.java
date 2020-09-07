@@ -1,5 +1,6 @@
 package fmalc.api.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -86,4 +87,7 @@ public class Driver implements Serializable {
 
     @Column(name = "token_device")
     private String tokenDevice;
+
+    @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
+    private Collection<Fuel> fuels;
 }

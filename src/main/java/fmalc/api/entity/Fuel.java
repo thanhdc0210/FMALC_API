@@ -44,4 +44,10 @@ public class Fuel implements Serializable {
     @JoinColumn(name = "fuel_type_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
     private FuelType fuelType;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
+    private Driver driver;
+
 }
