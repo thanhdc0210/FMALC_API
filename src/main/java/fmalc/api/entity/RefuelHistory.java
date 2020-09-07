@@ -15,8 +15,8 @@ import java.sql.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "fuel")
-public class FuelHistory implements Serializable {
+@Table(name = "refuel_history")
+public class RefuelHistory implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id

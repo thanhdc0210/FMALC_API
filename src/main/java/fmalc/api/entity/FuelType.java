@@ -31,5 +31,5 @@ public class FuelType {
 
     @OneToMany(mappedBy = "fuelType", cascade = { CascadeType.MERGE })
     @JsonIgnore
-    private Collection<FuelHistory> fuelHistories;
+    private Collection<RefuelHistory> fuelHistories;
 }

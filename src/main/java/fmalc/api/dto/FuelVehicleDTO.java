@@ -1,6 +1,6 @@
 package fmalc.api.dto;
 
-import fmalc.api.entity.FuelHistory;
+import fmalc.api.entity.RefuelHistory;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
@@ -17,15 +17,15 @@ public class FuelVehicleDTO {
     private Date fillingDate;
     private FuelTypeVehicleDTO fuelType;
 
-    public FuelVehicleDTO convertDTO(FuelHistory fuelHistory){
+    public FuelVehicleDTO convertDTO(RefuelHistory refuelHistory){
         ModelMapper modelMapper = new ModelMapper();
-        FuelVehicleDTO fuelVehicleDTO = modelMapper.map(fuelHistory, FuelVehicleDTO.class);
+        FuelVehicleDTO fuelVehicleDTO = modelMapper.map(refuelHistory, FuelVehicleDTO.class);
 
         return fuelVehicleDTO;
     }
 
 
-    public List<FuelVehicleDTO> mapToListResponse(List<FuelHistory> fuelHistories) {
+    public List<FuelVehicleDTO> mapToListResponse(List<RefuelHistory> fuelHistories) {
         return fuelHistories.stream()
                 .map(x -> convertDTO(x))
                 .collect(Collectors.toList());
