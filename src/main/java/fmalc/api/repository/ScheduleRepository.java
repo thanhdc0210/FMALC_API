@@ -1,5 +1,6 @@
 package fmalc.api.repository;
 
+import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -75,4 +76,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     Integer findScheduleIdByConsignmentIdAndDriverId(@Param("consignmentId") Integer consignmentId, @Param("driverId") Integer driverId);
 
     Schedule findByDriver_IdAndVehicle_IdAndConsignment_StatusIn(Integer driverId, Integer vehicleId, List<Integer> status);
+
+    @Query("select   c from  Consignment  c, Schedule s, Driver d, Place p where c.id= s.consignment.id and s.driver.id=d.id and c.status=0 and " +
+            "p.consignment.id = c.id and p.priority=1 and p.type=0 and d.id=?1 order by p.plannedTime asc ")
+    List<Consignment> findConsignmentFirst(int idDriver);
 }

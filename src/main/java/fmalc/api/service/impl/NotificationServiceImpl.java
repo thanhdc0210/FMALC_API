@@ -230,12 +230,12 @@ public class NotificationServiceImpl implements NotificationService {
         if(account.getRole().getRole().equals(ADMIN)){
             Page page = dayOffRepository.findAllByOrderByIdDesc(pageable);
             paging.setList(new DayOffRespsoneDTO().mapToListResponse(page.getContent()));
-            paging.setTotalPage(pageable.getPageSize());
+            paging.setTotalPage(page.getTotalPages());
             paging.setPageCurrent(pageCurrent);
         }else if(account.getRole().getRole().equals(FLEET_MANAGER)){
             Page page = dayOffRepository.findByRole(username, pageable);
             paging.setList(new DayOffRespsoneDTO().mapToListResponse(page.getContent()));
-            paging.setTotalPage(pageable.getPageSize());
+            paging.setTotalPage(page.getTotalPages());
             paging.setPageCurrent(pageCurrent);
         }
         return paging;
