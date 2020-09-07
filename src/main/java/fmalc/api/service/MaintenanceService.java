@@ -3,6 +3,7 @@ package fmalc.api.service;
 import fmalc.api.dto.MaintainCheckDTO;
 import fmalc.api.dto.MaintainConfirmDTO;
 import fmalc.api.dto.MaintainReponseDTO;
+import fmalc.api.dto.Paging;
 import fmalc.api.entity.Maintenance;
 import fmalc.api.entity.Vehicle;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +16,7 @@ public interface MaintenanceService {
     List<MaintainCheckDTO> checkMaintainForVehicle(int idVehicle) ;
     List<MaintainCheckDTO> checkMaintainForDriver(int idDriver);
     List<MaintainReponseDTO> getListMaintainByVehicle(int idVehicle);
-    List<Maintenance> getMaintenance();
+    Paging getMaintenance(String username, int page);
 
     //GiangTLB
     List<Maintenance> getListMaintenanceForDriver(int driverId);

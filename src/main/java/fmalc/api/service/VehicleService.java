@@ -1,9 +1,7 @@
 package fmalc.api.service;
 
 
-import fmalc.api.dto.ConsignmentRequestDTO;
-import fmalc.api.dto.ScheduleForConsignmentDTO;
-import fmalc.api.dto.VehicleForDetailDTO;
+import fmalc.api.dto.*;
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Vehicle;
 
@@ -15,11 +13,13 @@ public interface VehicleService {
     Vehicle updateVehicle(Vehicle vehicle);
     Vehicle findById(int id);
 
+    List<VehicleResponseDTO> findAll();
+
     VehicleForDetailDTO findVehicleById(int id);
 
     Vehicle findVehicleByIdForLocation(int id);
 
-    List<Vehicle> getListVehicle();
+    Paging getListVehicle(int page, String license, int status);
     Vehicle disableVehicle(int id);
     Vehicle findVehicleByLicensePlates(String licensePlates);
 

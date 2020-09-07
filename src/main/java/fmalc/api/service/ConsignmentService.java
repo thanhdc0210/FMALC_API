@@ -2,6 +2,7 @@ package fmalc.api.service;
 
 import fmalc.api.dto.ConsignmentRequestDTO;
 import fmalc.api.dto.ConsignmentUpdateDTO;
+import fmalc.api.dto.Paging;
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Schedule;
 
@@ -18,7 +19,7 @@ public interface ConsignmentService {
 
     List<Consignment> findAll();
 
-    List<Consignment> getAllByStatus(Integer status, String username);
+   Paging getAllByStatus(Integer status, String username, int type, int page, String search);
 
     Consignment consignmentConfirm(ConsignmentRequestDTO consignmentRequestDTO);
 

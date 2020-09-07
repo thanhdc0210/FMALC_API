@@ -1,19 +1,30 @@
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.AlertRequestDTO;
+import fmalc.api.dto.AlertResponseDTO;
+import fmalc.api.dto.MaintainanceResponse;
+import fmalc.api.dto.Paging;
+import fmalc.api.entity.Account;
 import fmalc.api.entity.Alert;
 import fmalc.api.entity.Driver;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.VehicleStatusEnum;
+import fmalc.api.repository.AccountRepository;
 import fmalc.api.repository.AlertRepository;
 import fmalc.api.repository.DriverRepository;
 import fmalc.api.repository.VehicleRepository;
+import fmalc.api.service.AccountService;
 import fmalc.api.service.AlertService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,9 +39,29 @@ public class AlertServiceImpl implements AlertService {
     @Autowired
     VehicleRepository vehicleRepository;
 
+    @Autowired
+    AccountRepository accountRepository;
+    private static final String ADMIN ="ROLE_ADMIN";
+    private static final String FLEET_MANAGER ="ROLE_FLEET_MANAGER";
     @Override
-    public List<Alert> getAlerts() {
-        return alertRepository.findAllByOrderByIdDesc();
+    public Paging getAlerts(String username,int pageCurrent) {
+        Account account = accountRepository.findByUsername(username);
+        Paging paging = new Paging();
+        Pageable pageable = PageRequest.of(pageCurrent, paging.getNumberElements(), Sort.by("level").descending().and(Sort.by("id").descending()));
+        if(account.getRole().getRole().equals(ADMIN)){
+//            return alertRepository.findAllByOrderByIdDesc(pageable);
+            Page page = alertRepository.findAllByOrderByIdDesc(pageable);
+            paging.setList(new AlertResponseDTO().mapToListResponse(page.getContent()));
+            paging.setTotalPage(page.getTotalPages());
+            paging.setPageCurrent(pageCurrent);
+        }else if(account.getRole().getRole().equals(FLEET_MANAGER)){
+//            return  alertRepository.findAlertByDriver(username);
+            Page page =alertRepository.findAlertByDriver(username,pageable);
+            paging.setList(new AlertResponseDTO().mapToListResponse(page.getContent()));
+            paging.setTotalPage(page.getTotalPages());
+            paging.setPageCurrent(pageCurrent);
+        }
+        return paging;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package fmalc.api.repository;
 
 import fmalc.api.entity.DayOff;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,7 +24,11 @@ public interface DayOffRepository extends JpaRepository<DayOff, Integer> {
 
     List<DayOff> findByDriverIdAndIsApprove(Integer driverId, Integer isApprove);
 
-    List<DayOff> findAllByOrderByIdDesc();
+    @Query("select do from DayOff do, Driver  d, Account a, FleetManager f where " +
+            "do.driver.id=d.id and a.id=f.account.id and d.fleetManager.id =f.id and a.username=?1")
+    Page findByRole(String username, Pageable pa);
+    @Query("select do from DayOff do ")
+    Page findAllByOrderByIdDesc(Pageable pa);
 
 //    @Query("select do from DayOff do where do.driver.id = ?1 and do.endDay >= ?2")
 //    Boolean checkDayOffEndDriver (int idDriver, Date date);

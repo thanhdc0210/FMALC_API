@@ -3,10 +3,7 @@ package fmalc.api.service.impl;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
-import fmalc.api.dto.DayOffRespsoneDTO;
-import fmalc.api.dto.NotificationRequestDTO;
-import fmalc.api.dto.NotificationResponeDTO;
-import fmalc.api.dto.NotificationUnread;
+import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.repository.*;
@@ -16,6 +13,10 @@ import fmalc.api.service.FleetManagerService;
 import fmalc.api.service.NotificationService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -177,10 +178,26 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<Notification> getNotificationsByType(int type) {
+    public Paging getNotificationsByType(int type, String username,int pagecurrent) {
+        Paging paging = new Paging();
+        Pageable pageable = PageRequest.of(pagecurrent, paging.getNumberElements(), Sort.by("id").descending());
+        Account account = accountService.getAccount(username);
+        List<Notification> result = new ArrayList<>();
+        if(account.getRole().getRole().equals(ADMIN)){
+            Page page = notificationRepository.findAllByTypeOrderByIdDesc(type,pageable);
+            paging.setList(new NotificationResponeDTO().mapToListResponse(page.getContent()));
+            paging.setTotalPage(page.getTotalPages());
+            paging.setPageCurrent(pagecurrent);
+//            result = notificationRepository.findAllByTypeOrderByIdDesc(type);
+        }else if(account.getRole().getRole().equals(FLEET_MANAGER)){
+            Page page = notificationRepository.findAllTypeAndAccount(account.getId(),type,pageable);
+            paging.setList(new NotificationResponeDTO().mapToListResponse(page.getContent()));
+            paging.setTotalPage(page.getTotalPages());
+            paging.setPageCurrent(pagecurrent);
+//            result =
+        }
 
-
-        return notificationRepository.findAllByTypeOrderByIdDesc(type);
+        return paging;
     }
 
 //    public List<Notification> findByDriverId(Integer driverId) {
@@ -202,31 +219,26 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public List<DayOffRespsoneDTO> getNotificationsDayOff(String username) {
+    public Paging getNotificationsDayOff(String username,int pageCurrent) {
         Account account = new Account();
-
+        Paging paging = new Paging();
+        Pageable pageable = PageRequest.of(pageCurrent, paging.getNumberElements(), Sort.by("isApprove").ascending().and(Sort.by("id").descending()));
         DayOffRespsoneDTO dayOffRespsoneDTO = new DayOffRespsoneDTO();
         List<DayOffRespsoneDTO> dayOffRespsoneDTOS = new ArrayList<>();
         account = accountRepository.findByUsernameRole(username);
-        List<DayOff> dayOffs = dayOffRepository.findAllByOrderByIdDesc();
+//        List<DayOff> dayOffs = dayOffRepository.findAllByOrderByIdDesc();
         if(account.getRole().getRole().equals(ADMIN)){
-            dayOffRespsoneDTOS = dayOffRespsoneDTO.mapToListResponse(dayOffs);
+            Page page = dayOffRepository.findAllByOrderByIdDesc(pageable);
+            paging.setList(new DayOffRespsoneDTO().mapToListResponse(page.getContent()));
+            paging.setTotalPage(pageable.getPageSize());
+            paging.setPageCurrent(pageCurrent);
         }else if(account.getRole().getRole().equals(FLEET_MANAGER)){
-            FleetManager fleetManager = fleetManagerService.findByAccount(account.getId());
-            for(int i=0; i< dayOffs.size();i++){
-                Driver driver = dayOffs.get(i).getDriver();
-                if(driver.getFleetManager().getId()== fleetManager.getId()){
-                    dayOffRespsoneDTO =dayOffRespsoneDTO.convertDTO(dayOffs.get(i));
-//                    if(dayOffs.get(i).getIsApprove()){
-//                        dayOffRespsoneDTO.setIsApprove(null);
-//                    }
-                    dayOffRespsoneDTOS.add(dayOffRespsoneDTO);
-                }
-
-
-            }
+            Page page = dayOffRepository.findByRole(username, pageable);
+            paging.setList(new DayOffRespsoneDTO().mapToListResponse(page.getContent()));
+            paging.setTotalPage(pageable.getPageSize());
+            paging.setPageCurrent(pageCurrent);
         }
-        return dayOffRespsoneDTOS;
+        return paging;
     }
 
 

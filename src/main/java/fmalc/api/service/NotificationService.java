@@ -1,10 +1,8 @@
 package fmalc.api.service;
 
-import fmalc.api.dto.DayOffNotificationResponseDTO;
-import fmalc.api.dto.DayOffRespsoneDTO;
-import fmalc.api.dto.NotificationRequestDTO;
-import fmalc.api.dto.NotificationUnread;
+import fmalc.api.dto.*;
 import fmalc.api.entity.Notification;
+import org.springframework.data.domain.Page;
 
 import java.text.ParseException;
 import java.util.List;
@@ -14,11 +12,11 @@ public interface NotificationService {
 
     NotificationUnread countNotificationUnread(String username);
 
-    List<Notification> getNotificationsByType(int type);
+    Paging getNotificationsByType(int type, String username, int page);
 
     void readNotification(String username, Integer notificationId);
 
     void readNotificationByType(String username, Integer type);
 
-    List<DayOffRespsoneDTO> getNotificationsDayOff(String username);
+    Paging getNotificationsDayOff(String username,int page);
 }

@@ -23,7 +23,7 @@ public class ReportIssueDTO {
     private String image;
     private Integer type;
     private String typeStr;
-
+    private int totalPage;
     public ReportIssueDTO convertSchedule(ReportIssue reportIssue){
         ModelMapper modelMapper = new ModelMapper();
         ReportIssueDTO reportIssueDTO = modelMapper.map(reportIssue, ReportIssueDTO.class);

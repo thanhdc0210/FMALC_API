@@ -2,6 +2,7 @@ package fmalc.api.controller;
 
 import fmalc.api.dto.AlertRequestDTO;
 import fmalc.api.dto.AlertResponseDTO;
+import fmalc.api.dto.Paging;
 import fmalc.api.entity.Alert;
 import fmalc.api.service.AlertService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,9 @@ public class AlertController {
     private AlertService alertService;
 
     @GetMapping
-    public ResponseEntity<List<AlertResponseDTO>> getAllAlert() {
-        List<Alert> alerts = alertService.getAlerts();
-        return ResponseEntity.ok().body(new AlertResponseDTO().mapToListResponse(alerts));
+    public ResponseEntity<Paging> getAllAlert(@RequestParam("username") String username, @RequestParam("page") int page) {
+        Paging alerts = alertService.getAlerts(username,page);
+        return ResponseEntity.ok().body((alerts));
     }
 
     @PostMapping("driver-send")

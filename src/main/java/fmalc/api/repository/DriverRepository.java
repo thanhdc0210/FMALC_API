@@ -1,6 +1,8 @@
 package fmalc.api.repository;
 
 import fmalc.api.entity.Driver;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -44,7 +46,7 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     @Query(value = "Update driver d set d.image =:image where d.id =:id", nativeQuery = true)
     int updateImageById(@Param("id") Integer id,@Param("image") String image);
 
-    List<Driver> findByPhoneNumberContainingIgnoreCaseOrderByIdDesc(String searchPhone);
+    Page findByPhoneNumberContainingIgnoreCaseOrderByIdDesc(String searchPhone, Pageable pa);
 
     @Query("Select d from Driver d Where d.account.username = :username")
     Driver findDriverByUsername(@Param("username") String username);
@@ -54,7 +56,7 @@ public interface DriverRepository extends JpaRepository<Driver, Integer> {
     Driver findByIdAndAccountIsActive(Integer id, Boolean isActive);
 
     @Query("select d from Driver d where d.fleetManager.id=?1")
-    List<Driver> findByFleetManagerIdAndPhoneNumberContainingIgnoreCaseOrderByIdDesc(int idFleet, String searchPhone);
+    Page findByFleetManagerIdAndPhoneNumberContainingIgnoreCaseOrderByIdDesc(int idFleet, String searchPhone, Pageable pa);
 
     Driver findDiverByPhoneNumberOrIdentityNoOrNo(String phone, String indentityNo, String no);
 

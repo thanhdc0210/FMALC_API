@@ -11,6 +11,10 @@ import fmalc.api.repository.RoleRepository;
 import fmalc.api.service.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,13 +31,28 @@ public class DriverServiceImpl implements DriverService {
     private DriverRepository driverRepository;
 
     @Override
-    public List<Driver> findAllAndSearch(String searchPhone) {
-        return driverRepository.findByPhoneNumberContainingIgnoreCaseOrderByIdDesc(searchPhone);
+    public Paging findAllAndSearch(String searchPhone, int pageCurrent) {
+        Paging paging = new Paging();
+//        Paging paging = new Paging();
+        Pageable pageable = PageRequest.of(pageCurrent, paging.getNumberElements(), Sort.by("status").descending().and(Sort.by("id").descending()));
+        Page page = driverRepository.findByPhoneNumberContainingIgnoreCaseOrderByIdDesc(searchPhone,pageable);
+        paging.setList(new DriverResponseDTO().mapToListResponse(page.getContent()));
+        paging.setTotalPage(page.getTotalPages());
+        paging.setPageCurrent(pageCurrent);
+        return paging;
     }
 
     @Override
-    public List<Driver> findAllAndSearchByFleet(int idFleet,String searchPhone) {
-        return driverRepository.findByFleetManagerIdAndPhoneNumberContainingIgnoreCaseOrderByIdDesc(idFleet,searchPhone);
+    public Paging findAllAndSearchByFleet(int idFleet,String searchPhone, int pageCurrent) {
+//        return
+        Paging paging = new Paging();
+//        Paging paging = new Paging();
+        Pageable pageable = PageRequest.of(pageCurrent, paging.getNumberElements(), Sort.by("status").descending().and(Sort.by("id").descending()));
+        Page page = driverRepository.findByFleetManagerIdAndPhoneNumberContainingIgnoreCaseOrderByIdDesc(idFleet,searchPhone, pageable);
+        paging.setList(new DriverResponseDTO().mapToListResponse(page.getContent()));
+        paging.setTotalPage(page.getTotalPages());
+        paging.setPageCurrent(pageCurrent);
+        return paging;
     }
 
     @Override

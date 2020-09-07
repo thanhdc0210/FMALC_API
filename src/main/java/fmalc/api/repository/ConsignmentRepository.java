@@ -1,6 +1,8 @@
 package fmalc.api.repository;
 
 import fmalc.api.entity.Consignment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,11 +24,34 @@ public interface ConsignmentRepository
 //            " and fm.account.id = a.id and c.status IN :status and a.username = :username" +
 //            " and c.schedule.isApprove = true")
 //    List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(@Param("status") List<Integer> status, @Param("username") String username);
+@Query( "select c from Consignment  c where  c.status =?1 ")
+    Page findAllByStatus(Integer status, Pageable pa);
 
-    List<Consignment> findAllByStatus(Integer status);
+    @Query( "select c from Consignment  c, Driver  d, FleetManager f, Schedule s, Account  a where " +
+            "  s.consignment.id = c.id and s.driver.id = d.id and d.fleetManager.id = f.id and" +
+            "  a.id = f.account.id and c.status =?1 and a.id=?2 ")
+    Page findAllByStatusFleet(Integer status,int idAccount, Pageable pa);
 
+    @Query( "select c from Consignment  c where c.id =?1 and c.status =?2 ")
+    Page findConsignmentByStatusId( int id,int status,Pageable pa);
+
+
+    @Query( "select c from Consignment  c, Driver  d, FleetManager f, Schedule s, Account  a where " +
+            " s.consignment.id = c.id and s.driver.id = d.id and d.fleetManager.id = f.id and a.id = f.account.id and " +
+            "  c.id =?1 and c.status =?2 and a.id=?3 ")
+    Page findConsignmentByStatusIdFleet( int id,int status,int idAccount, Pageable pa);
+//    @Query( "select c from Consignment  c where c.id =?1 and c.status =?2 ")
+//    Page findConsignmentByIdAndStatus( int id,int statusOB, int statusDE,Pageable pa);
+
+    @Query( "select c from Consignment  c where c.ownerName LIKE CONCAT('%',?2,'%') and c.status =?1 ")
+    Page findConsignmentByStatusAndOwnerNameIsContaining(int status, String search, Pageable pa);
 //    @Query("select  c from  c")
 //    List<Consignment> getlll(Integer status);
+
+    @Query( "select c  from Consignment  c, Driver  d, FleetManager f, Schedule s, Account a where" +
+            "  s.consignment.id = c.id and s.driver.id = d.id and d.fleetManager.id = f.id " +
+            "and a.id=f.account.id and c.ownerName LIKE CONCAT('%',?2,'%') and c.status =?1 and a.id=?3 ")
+    Page findConsignmentByStatusAndOwnerNameIsContainingFleet(int status, String search,int idAccount, Pageable pa);
 
     Consignment findConsignmentById(int id);
 

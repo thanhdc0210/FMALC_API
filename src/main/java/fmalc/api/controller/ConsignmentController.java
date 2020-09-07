@@ -134,55 +134,51 @@ public class ConsignmentController {
 
 
 
-    @GetMapping(value = "status/{username}")
-    public ResponseEntity<List<ConsignmentListDTO>> getAllByStatus(@RequestParam("status") Integer status, @PathVariable("username") String username) {
+    @GetMapping(value = "status")
+    public ResponseEntity<Paging> getAllByStatus(@RequestParam("status") Integer status, @RequestParam("username") String username
+    ,@RequestParam("page") Integer page,@RequestParam("type") Integer type,@RequestParam("search") String search) {
         List<Consignment> consignments = new ArrayList<>();
-        if(status == ConsignmentStatusEnum.DELIVERING.getValue() || status == ConsignmentStatusEnum.OBTAINING.getValue()){
-            consignments.addAll(consignmentService.getAllByStatus(ConsignmentStatusEnum.DELIVERING.getValue(), username));
-            consignments.addAll(consignmentService.getAllByStatus(ConsignmentStatusEnum.OBTAINING.getValue(), username));
-        }else{
-            consignments = consignmentService.getAllByStatus(status, username);
-        }
 
+        Paging paging = consignmentService.getAllByStatus(status,username,type,page,search);
         ConsignmentListDTO consignmentListDTO = new ConsignmentListDTO();
-        List<ConsignmentListDTO> consignmentListDTOS = consignmentListDTO.mapToListResponse(consignments);
-        if (consignments.isEmpty()) {
+//        List<ConsignmentListDTO> consignmentListDTOS = consignmentListDTO.mapToListResponse(consignments);
+        if (paging.getList()!=null && paging.getList().isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
 
-        for (int i = 0; i < consignmentListDTOS.size(); i++) {
-            List<ScheduleForLocationDTO> schedules = new ArrayList<>();
-            schedules = scheduleService.getScheduleByConsignmentId(consignmentListDTOS.get(i).getId());
-            if (schedules.size() > 0) {
-                for (int j = 0; j < schedules.size(); j++) {
-                    if (schedules.get(j).isApprove()) {
-                        VehicleForDetailDTO vehicleForDetailDTO;
-                        List<VehicleForDetailDTO> vehicleForDetailDTOS = new ArrayList<>();
-
-                        Driver driver = new Driver();
-                        List<Driver> drivers = new ArrayList<>();
-
-                        DriverResponseDTO driverResponseDTO = new DriverResponseDTO();
-                        List<DriverResponseDTO> driverResponseDTOS = new ArrayList<>();
-
-                        vehicleForDetailDTO = vehicleService.findVehicleById(schedules.get(j).getVehicle_id());
-                        vehicleForDetailDTOS.add(vehicleForDetailDTO);
-
-                        driver = driverService.findById(schedules.get(j).getDriver_id());
-                        drivers.add(driver);
-                        driverResponseDTOS = driverResponseDTO.mapToListResponse(drivers);
-                        consignmentListDTOS.get(i).setDrivers(driverResponseDTOS);
-                        consignmentListDTOS.get(i).setVehicles(vehicleForDetailDTOS);
-                    }
-
-                }
-            }
-        }
-        if (consignments.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok().body(consignmentListDTOS);
+//        for (int i = 0; i < consignmentListDTOS.size(); i++) {
+//            List<ScheduleForLocationDTO> schedules = new ArrayList<>();
+//            schedules = scheduleService.getScheduleByConsignmentId(consignmentListDTOS.get(i).getId());
+//            if (schedules.size() > 0) {
+//                for (int j = 0; j < schedules.size(); j++) {
+//                    if (schedules.get(j).isApprove()) {
+//                        VehicleForDetailDTO vehicleForDetailDTO;
+//                        List<VehicleForDetailDTO> vehicleForDetailDTOS = new ArrayList<>();
+//
+//                        Driver driver = new Driver();
+//                        List<Driver> drivers = new ArrayList<>();
+//
+//                        DriverResponseDTO driverResponseDTO = new DriverResponseDTO();
+//                        List<DriverResponseDTO> driverResponseDTOS = new ArrayList<>();
+//
+//                        vehicleForDetailDTO = vehicleService.findVehicleById(schedules.get(j).getVehicle_id());
+//                        vehicleForDetailDTOS.add(vehicleForDetailDTO);
+//
+//                        driver = driverService.findById(schedules.get(j).getDriver_id());
+//                        drivers.add(driver);
+//                        driverResponseDTOS = driverResponseDTO.mapToListResponse(drivers);
+//                        consignmentListDTOS.get(i).setDrivers(driverResponseDTOS);
+//                        consignmentListDTOS.get(i).setVehicles(vehicleForDetailDTOS);
+//                    }
+//
+//                }
+//            }
+//        }
+//        if (consignments.isEmpty()) {
+//            return ResponseEntity.badRequest().build();
+//        }
+        return ResponseEntity.ok().body(paging);
     }
 
     @PostMapping("cancel/{id}/{username}")

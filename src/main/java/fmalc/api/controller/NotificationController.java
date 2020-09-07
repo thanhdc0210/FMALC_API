@@ -133,11 +133,11 @@ public class NotificationController {
     }
 
     @GetMapping(value = "/by-type")
-    public ResponseEntity getNotificationsByType(@RequestParam("type") int type) {
+    public ResponseEntity<Paging> getNotificationsByType(@RequestParam("type") int type, @RequestParam("username") String username, @RequestParam("page") int page) {
 //       Account account = accountService.getAccount(username);
 
-        List<Notification> notifications = notificationService.getNotificationsByType(type);
-        return ResponseEntity.ok().body(new NotificationResponeDTO().mapToListResponse(notifications));
+        Paging notifications = notificationService.getNotificationsByType(type, username,page);
+        return ResponseEntity.ok().body((notifications));
     }
 
     @GetMapping(value = "/account/{username}")
@@ -233,8 +233,8 @@ public class NotificationController {
     }
 
     @GetMapping(value = "/dayoff")
-    public ResponseEntity getNotificationsDayOff(@RequestParam("username") String username) {
-        List<DayOffRespsoneDTO> notifications = notificationService.getNotificationsDayOff(username);
+    public ResponseEntity getNotificationsDayOff(@RequestParam("username") String username,@RequestParam("page") int page) {
+        Paging notifications = notificationService.getNotificationsDayOff(username,page);
         return ResponseEntity.ok().body(notifications);
     }
 }

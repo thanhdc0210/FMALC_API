@@ -1,9 +1,6 @@
 package fmalc.api.controller;
 
-import fmalc.api.dto.ReportIssueDTO;
-import fmalc.api.dto.ReportIssueInformationForUpdatingDTO;
-import fmalc.api.dto.ReportIssueRequestDTO;
-import fmalc.api.dto.ReportIssueResponseDTO;
+import fmalc.api.dto.*;
 import fmalc.api.entity.ReportIssue;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.service.ReportIssueService;
@@ -89,11 +86,11 @@ public class ReportIssueController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ReportIssueDTO>> getIssue() {
-        List<ReportIssue> reportIssues = reportIssueService.getAllIssue();
+    public ResponseEntity<Paging> getIssue(@RequestParam("username") String username,@RequestParam("page") int page) {
+        Paging reportIssues = reportIssueService.getAllIssue(username,page);
         try {
-            if (!reportIssues.isEmpty()) {
-                return ResponseEntity.ok().body(new ReportIssueDTO().mapToListResponse(reportIssues));
+            if (!reportIssues.getList().isEmpty()) {
+                return ResponseEntity.ok().body(reportIssues);
             } else {
                 return ResponseEntity.noContent().build();
             }

@@ -2,6 +2,7 @@ package fmalc.api.service;
 
 import fmalc.api.dto.DayOffRequestDTO;
 import fmalc.api.dto.DriverRequestDTO;
+import fmalc.api.dto.Paging;
 import fmalc.api.dto.ScheduleForConsignmentDTO;
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Driver;
@@ -12,9 +13,9 @@ import java.util.List;
 
 public interface DriverService {
 
-    List<Driver> findAllAndSearch(String searchPhone);
+    Paging findAllAndSearch(String searchPhone, int pageCurrent);
 
-    List<Driver> findAllAndSearchByFleet(int idFleet,String searchPhone);
+    Paging findAllAndSearchByFleet(int idFleet,String searchPhone, int currentPage);
 
     Driver findDiverByPhoneNumberOrIdentityNoOrNo(String phone, String indentityNo, String no);
 

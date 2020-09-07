@@ -1,17 +1,17 @@
 package fmalc.api.service.impl;
 
-import fmalc.api.dto.ReportIssueContentRequestDTO;
-import fmalc.api.dto.ReportIssueDTO;
-import fmalc.api.dto.ReportIssueInformationForUpdatingDTO;
-import fmalc.api.dto.ReportIssueRequestDTO;
+import fmalc.api.dto.*;
+import fmalc.api.entity.Account;
 import fmalc.api.entity.ReportIssue;
-import fmalc.api.repository.DriverRepository;
-import fmalc.api.repository.InspectionRepository;
-import fmalc.api.repository.ReportIssueRepository;
-import fmalc.api.repository.VehicleRepository;
+import fmalc.api.repository.*;
 import fmalc.api.service.ReportIssueService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -34,6 +34,11 @@ public class ReportIssueServiceImpl implements ReportIssueService {
     @Autowired
     ReportIssueRepository reportIssueRepository;
 
+    private static int NUMBER_ELEMENTS=10;
+    @Autowired
+    AccountRepository accountRepository;
+    private static final String ADMIN ="ROLE_ADMIN";
+    private static final String FLEET_MANAGER ="ROLE_FLEET_MANAGER";
     @Override
     public boolean saveReportIssue(ReportIssueRequestDTO reportIssueRequestDTO) {
 
@@ -148,7 +153,24 @@ public class ReportIssueServiceImpl implements ReportIssueService {
     }
 
     @Override
-    public List<ReportIssue> getAllIssue() {
-        return reportIssueRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    public Paging getAllIssue(String username,int pagecurrent) {
+        Paging paging = new Paging();
+        Pageable firstPageWithTwoElements = PageRequest.of(pagecurrent, paging.getNumberElements(), Sort.by("status").descending().and(Sort.by("id").descending()));
+        List<ReportIssueDTO> reportIssues = new ArrayList<>();
+        Account account = accountRepository.findByUsername(username);
+        if(account.getRole().getRole().equals(ADMIN)){
+//            reportIssues =  new ReportIssueDTO().mapToListResponse(reportIssueRepository.findAll(firstPageWithTwoElements));
+//            return ;
+            Page page = reportIssueRepository.getAllByAdmin(firstPageWithTwoElements);
+                paging.setList(new ReportIssueDTO().mapToListResponse(page.getContent()));
+                paging.setTotalPage(page.getTotalPages());
+                paging.setPageCurrent(pagecurrent);
+        }else if(account.getRole().getRole().equals(FLEET_MANAGER)){
+            Page page = (reportIssueRepository.getAllByUsername(username,firstPageWithTwoElements));
+            paging.setList(new ReportIssueDTO().mapToListResponse(page.getContent()));
+            paging.setTotalPage(page.getTotalPages());
+            paging.setPageCurrent(pagecurrent);
+        }
+        return paging;
     }
 }

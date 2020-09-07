@@ -4,6 +4,7 @@ package fmalc.api.controller;
 import fmalc.api.dto.DayOffRequestDTO;
 import fmalc.api.dto.DriverRequestDTO;
 import fmalc.api.dto.DriverResponseDTO;
+import fmalc.api.dto.Paging;
 import fmalc.api.entity.Account;
 import fmalc.api.entity.Driver;
 import fmalc.api.entity.FleetManager;
@@ -34,23 +35,27 @@ public class DriverController {
     FleetManagerService fleetManagerService;
 
     @GetMapping
-    public ResponseEntity<List<DriverResponseDTO>> getAllDriver(@RequestParam(value = "searchPhone", defaultValue = "") String searchPhone
-        , @RequestParam(value = "manager") String username
+    public ResponseEntity getAllDriver(@RequestParam(value = "searchPhone", defaultValue = "") String searchPhone
+        , @RequestParam(value = "manager") String username , @RequestParam(value = "page") int page
     ) {
         List<Driver> drivers = new ArrayList<>();
         Account account = accountService.getAccount(username);
         if(account.getRole().getRole().equals(GlobalVariables.ADMIN)){
-             drivers = driverService.findAllAndSearch(searchPhone);
-            if (drivers.isEmpty()) {
+            Paging paging= driverService.findAllAndSearch(searchPhone,page);
+//             drivers
+            if (paging.getList().isEmpty()) {
                 return ResponseEntity.noContent().build();
+            }else{
+                return ResponseEntity.ok().body(paging);
             }
         }else if(account.getRole().getRole().equals(GlobalVariables.FLEET) ){
             FleetManager fleetManager = fleetManagerService.findByAccount(account.getId());
-            drivers = driverService.findAllAndSearchByFleet(fleetManager.getId(),searchPhone);
+            Paging paging= driverService.findAllAndSearchByFleet(fleetManager.getId(),searchPhone, page);
+            return ResponseEntity.ok().body(paging);
         }
 
         List<DriverResponseDTO> result = new ArrayList<>(new DriverResponseDTO().mapToListResponse(drivers));
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "id/{id}")

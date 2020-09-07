@@ -15,6 +15,10 @@ import fmalc.api.service.PlaceService;
 import fmalc.api.service.ScheduleService;
 import fmalc.api.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -73,6 +77,12 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
+    public List<VehicleResponseDTO> findAll() {
+        List<VehicleResponseDTO> vehicleResponseDTOS = new VehicleResponseDTO().mapToListResponse(vehicleRepository.findAll());
+        return vehicleResponseDTOS;
+    }
+
+    @Override
     public VehicleForDetailDTO findVehicleById(int id) {
         Vehicle vehicle = vehicleRepository.findById(id).get();
         VehicleForDetailDTO vehicleForDetailDTO = new VehicleForDetailDTO();
@@ -86,8 +96,47 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<Vehicle> getListVehicle() {
-        return vehicleRepository.findAllByOrderByIdDesc();
+    public Paging getListVehicle(int pageCurrent , String license, int status) {
+        Paging paging = new Paging();
+        Pageable pageable = PageRequest.of(pageCurrent, paging.getNumberElements(), Sort.by("status").descending().and(Sort.by("kilometerRunning").descending()));
+//        Page page = new Page();
+        if(status>=0){
+
+            if(license!=null && license!=""){
+                Page page = vehicleRepository.findAllLicenseStatus( status,license,pageable);
+//                paging.setList(page.getContent());
+                paging.setList(new VehicleResponseDTO().mapToListResponse(page.getContent()));
+                paging.setTotalPage(page.getTotalPages());
+                paging.setPageCurrent(pageCurrent);
+                return paging;
+            }else{
+                Page page = vehicleRepository.findAllStatus(status,pageable);
+//                paging.setList(page.getContent());
+                paging.setList(new VehicleResponseDTO().mapToListResponse(page.getContent()));
+                paging.setTotalPage(page.getTotalPages());
+                paging.setPageCurrent(pageCurrent);
+                return paging;
+            }
+        }else{
+            if(license!=null && license!=""){
+                Page page = vehicleRepository.findAllLicense(VehicleStatusEnum.UNAVAILABLE.getValue(),license,pageable);
+//                paging.setList(page.getContent());
+                paging.setList(new VehicleResponseDTO().mapToListResponse(page.getContent()));
+                paging.setTotalPage(page.getTotalPages());
+                paging.setPageCurrent(pageCurrent);
+                return paging;
+            }else{
+                Page page = vehicleRepository.findAllStatusDiffUnavai(VehicleStatusEnum.UNAVAILABLE.getValue(),pageable);
+//                paging.setList(page.getContent());
+                paging.setList(new VehicleResponseDTO().mapToListResponse(page.getContent()));
+                paging.setTotalPage(page.getTotalPages());
+                paging.setPageCurrent(pageCurrent);
+                return paging;
+            }
+
+        }
+
+
     }
 
     @Override

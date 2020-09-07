@@ -13,6 +13,10 @@ import fmalc.api.repository.MaintenanceTypeRepository;
 import fmalc.api.repository.VehicleRepository;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,7 +43,13 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     NotificationController notificationController;
 
     @Autowired
+    FleetManagerService fleetManagerService;
+
+    @Autowired
     MaintenanceTypeRepository maintenanceTypeRepository;
+
+    @Autowired
+    AccountService accountService;
 
     @Autowired
     VehicleRepository vehicleRepository;
@@ -66,7 +76,8 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     private final static int DEFAULT_KM = 5000;
     private final static int DAYS = 24 * 60 * 60 * 1000;
-
+    private static final String ADMIN ="ROLE_ADMIN";
+    private static final String FLEET_MANAGER ="ROLE_FLEET_MANAGER";
     @Override
     public List<MaintainCheckDTO> checkMaintainForVehicle(int idVehicle) {
         List<Maintenance> maintenances = maintainanceRepository.findByVehicle(idVehicle);
@@ -830,8 +841,26 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    public List<Maintenance> getMaintenance() {
-        return maintainanceRepository.findAllByActualMaintainDateIsNotNullOrderByIdDesc();
+    public Paging getMaintenance(String username,int pageCurrent) {
+        Account account = accountService.getAccount(username);
+        Paging paging = new Paging();
+        Pageable pageable = PageRequest.of(pageCurrent, paging.getNumberElements(), Sort.by("status").ascending().and(Sort.by("id").descending()));
+        List<Maintenance> result = new ArrayList<>();
+        if(account.getRole().getRole().equals(ADMIN)){
+            Page page = maintainanceRepository.findAllByActualMaintainDateIsNotNullOrderByIdDesc(pageable);
+            paging.setList(new MaintainanceResponse().mapToListResponse(page.getContent()));
+            paging.setTotalPage(page.getTotalPages());
+            paging.setPageCurrent(pageCurrent);
+//            result =maintainanceRepository.findAllByActualMaintainDateIsNotNullOrderByIdDesc();
+        }else if(account.getRole().getRole().equals(FLEET_MANAGER)){
+            FleetManager fleetManager =  fleetManagerService.findByAccount(account.getId());
+//            result = maintainanceRepository.findAllByAccount(fleetManager.getId());
+            Page page =maintainanceRepository.findAllByAccount(fleetManager.getId(),pageable);
+            paging.setList(new MaintainanceResponse().mapToListResponse(page.getContent()));
+            paging.setTotalPage(page.getTotalPages());
+            paging.setPageCurrent(pageCurrent);
+        }
+        return paging;
     }
 
     @Override

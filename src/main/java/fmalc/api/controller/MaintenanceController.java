@@ -37,22 +37,22 @@ public class MaintenanceController {
     private Flux<List<NotificationResponeDTO>> flux;
 
     @GetMapping("/actual-date")
-    public ResponseEntity getMaintenance() {
+    public ResponseEntity getMaintenance(@RequestParam("username") String username, @RequestParam("page") int page) {
         try {
-            List<Maintenance> maintenances = maintenanceService.getMaintenance();
-            var idsRemove = maintenances.stream()
-                    .collect(groupingBy(x -> x.getVehicle().getId(),
-                            minBy(comparingInt(y -> y.getId()))))
-                    .values()
-                    .stream()
-                    .map(x -> x.get().getId())
-                    .collect(toList());
-            maintenances.removeIf(x -> idsRemove.contains(x.getId()));
-            if (maintenances.isEmpty()) {
+            Paging maintenances = maintenanceService.getMaintenance(username,page);
+//            var idsRemove = maintenances.stream()
+//                    .collect(groupingBy(x -> x.getVehicle().getId(),
+//                            minBy(comparingInt(y -> y.getId()))))
+//                    .values()
+//                    .stream()
+//                    .map(x -> x.get().getId())
+//                    .collect(toList());
+//            maintenances.removeIf(x -> idsRemove.contains(x.getId()));
+            if (maintenances.getList().isEmpty()) {
                 return ResponseEntity.noContent().build();
             } else {
-                List<MaintainanceResponse> result = new ArrayList<>(new MaintainanceResponse().mapToListResponse(maintenances));
-                return ResponseEntity.ok().body(result);
+//                List<MaintainanceResponse> result = new ArrayList<>((maintenances));
+                return ResponseEntity.ok().body(maintenances);
             }
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

@@ -42,16 +42,29 @@ public class VehicleController {
     private static int defaultKilometRunning = 0;
 
     @GetMapping("/listVehicles")
-    public ResponseEntity<List<VehicleResponseDTO>> getListVehicle() {
-        List<Vehicle> vehicles = vehicleService.getListVehicle();
+    public ResponseEntity<Paging> getListVehicle(@RequestParam("page") int page,@RequestParam("status") int status,@RequestParam("license") String license) {
+            Paging vehicles = vehicleService.getListVehicle(page, license,status);
+
+        if (vehicles.getList().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+//        List<VehicleResponseDTO> vehicleDTOS = vehicles.stream().map(this::convertToDto).collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(vehicles);
+    }
+
+    @GetMapping("/vehicles-report")
+    public ResponseEntity<List<VehicleResponseDTO>> getListVehicleForReport() {
+        List<VehicleResponseDTO> vehicles = vehicleService.findAll();
 
         if (vehicles.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        List<VehicleResponseDTO> vehicleDTOS = vehicles.stream().map(this::convertToDto).collect(Collectors.toList());
+//        List<VehicleResponseDTO> vehicleDTOS = vehicles.stream().map(this::convertToDto).collect(Collectors.toList());
 
-        return ResponseEntity.ok().body(vehicleDTOS);
+        return ResponseEntity.ok().body(vehicles);
     }
 
     private VehicleResponseDTO convertToDto(Vehicle vehicleType) {
