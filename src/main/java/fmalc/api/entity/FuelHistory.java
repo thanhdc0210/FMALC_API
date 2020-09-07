@@ -16,7 +16,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "fuel")
-public class Fuel implements Serializable {
+public class FuelHistory implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -44,4 +44,10 @@ public class Fuel implements Serializable {
     @JoinColumn(name = "fuel_type_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
     private FuelType fuelType;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
+    @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
+    private Driver driver;
+
 }

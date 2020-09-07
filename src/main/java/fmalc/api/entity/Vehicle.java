@@ -46,7 +46,7 @@ public class Vehicle implements Serializable {
     private Collection<ReportIssue> reportIssues;
 
     @OneToMany(mappedBy = "vehicle", cascade = { CascadeType.MERGE })
-    private Collection<Fuel> fuels;
+    private Collection<FuelHistory> fuelHistories;
 
     @Column(name = "kilometer_running", nullable = false)
     private Integer kilometerRunning;

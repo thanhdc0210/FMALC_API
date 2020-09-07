@@ -63,7 +63,7 @@ public class FuelTypeController {
         if (fuelTypes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        fuelTypes.stream().forEach(x -> x.setFuels(null));
+        fuelTypes.stream().forEach(x -> x.setFuelHistories(null));
         return ResponseEntity.ok().body(fuelTypes);
     }
 

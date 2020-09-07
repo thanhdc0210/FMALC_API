@@ -5,7 +5,7 @@ import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.VehicleStatusEnum;
-import fmalc.api.service.FuelService;
+import fmalc.api.service.FuelHistoryService;
 import fmalc.api.service.InspectionService;
 import fmalc.api.service.ScheduleService;
 import fmalc.api.service.VehicleService;
@@ -15,14 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1.0/vehicles")
@@ -37,7 +33,7 @@ public class VehicleController {
     ScheduleService scheduleService;
 
     @Autowired
-    FuelService fuelService;
+    FuelHistoryService fuelHistoryService;
 
     private static int defaultKilometRunning = 0;
 
@@ -298,7 +294,7 @@ public class VehicleController {
     public ResponseEntity<List<FuelVehicleDTO>> getFuelOfVehicle(@PathVariable("id") int id){
         FuelVehicleDTO fuelVehicleDTO = new FuelVehicleDTO();
         try{
-            List<FuelVehicleDTO> fuelVehicleDTOS = fuelVehicleDTO.mapToListResponse(fuelService.getListFuelByVehicleId(id));
+            List<FuelVehicleDTO> fuelVehicleDTOS = fuelVehicleDTO.mapToListResponse(fuelHistoryService.getListFuelByVehicleId(id));
             if(fuelVehicleDTOS.size()>0){
                 return ResponseEntity.ok().body(fuelVehicleDTOS);
             }

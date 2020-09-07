@@ -86,4 +86,7 @@ public class Driver implements Serializable {
 
     @Column(name = "token_device")
     private String tokenDevice;
+
+    @OneToMany(mappedBy = "driver", cascade = { CascadeType.MERGE })
+    private Collection<FuelHistory> fuelHistories;
 }

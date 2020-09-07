@@ -15,4 +15,5 @@ public class FuelRequestDTO {
     private Double unitPriceAtFillingTime;
     private Double volume;
     private String vehicleLicensePlates;
+    private Integer driverId;
 }
