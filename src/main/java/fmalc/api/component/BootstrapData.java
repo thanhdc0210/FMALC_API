@@ -83,23 +83,23 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         }
 
         // Account for first Fleet_Manager to test
-        Account managerAccount = accountRepository.findByUsername("manager1");
-        if (managerAccount == null) {
-            managerAccount = new Account();
-            managerAccount.setUsername("manager1");
-            managerAccount.setPassword(passwordEncoder.encode("123456"));
-            managerAccount.setRole(roleFleetManager);
-            managerAccount.setIsActive(true);
-            managerAccount = accountRepository.save(managerAccount);
-
-            FleetManager fleetManager = new FleetManager();
-            fleetManager.setAccount(managerAccount);
-            fleetManager.setIdentityNo("123456789");
-            fleetManager.setName("Fleet Manager Default");
-            fleetManager.setPhoneNumber("0909090909");
-            fleetManager.setImage("/assets/images/noavatar.png");
-            fleetManagerRepository.save(fleetManager);
-        }
+//        Account managerAccount = accountRepository.findByUsername("manager1");
+//        if (managerAccount == null) {
+//            managerAccount = new Account();
+//            managerAccount.setUsername("manager1");
+//            managerAccount.setPassword(passwordEncoder.encode("123456"));
+//            managerAccount.setRole(roleFleetManager);
+//            managerAccount.setIsActive(true);
+//            managerAccount = accountRepository.save(managerAccount);
+//
+//            FleetManager fleetManager = new FleetManager();
+//            fleetManager.setAccount(managerAccount);
+//            fleetManager.setIdentityNo("123456789");
+//            fleetManager.setName("Fleet Manager Default");
+//            fleetManager.setPhoneNumber("0909090909");
+//            fleetManager.setImage("/assets/images/noavatar.png");
+//            fleetManagerRepository.save(fleetManager);
+//        }
     }
 
     private void bootstrapMaintainType() {
