@@ -864,6 +864,13 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
+    public MaintainReponseDTO getDetailMaintainance(int id) {
+       Maintenance maintenance = maintainanceRepository.findById(id).get();
+        MaintainReponseDTO maintainReponseDTO = new MaintainReponseDTO().convertSchedule(maintenance);
+        return maintainReponseDTO;
+    }
+
+    @Override
     public void createFirstMaintain(Vehicle vehicle) {
         LocalDate today = LocalDate.now();
         Maintenance addMaintenance = new Maintenance();

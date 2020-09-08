@@ -196,8 +196,6 @@ public class ConsignmentController {
         }catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
-
-
     }
     @PostMapping
     public ResponseEntity<NewScheduleDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO) {

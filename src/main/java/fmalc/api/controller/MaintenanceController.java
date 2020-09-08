@@ -76,6 +76,20 @@ public class MaintenanceController {
 
     }
 
+    @GetMapping("detail")
+    public ResponseEntity<MaintainReponseDTO> getDetail(@RequestParam("id") Integer id){
+        try{
+            MaintainReponseDTO maintainReponseDTO = maintenanceService.getDetailMaintainance(id);
+            if(maintainReponseDTO!=null){
+                return ResponseEntity.ok().body(maintainReponseDTO);
+            }else{
+                return ResponseEntity.noContent().build();
+            }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @PutMapping(value = "update-maintaining-complete")
 //    @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity updateMaintainingComplete(@RequestParam("id") Integer id, @RequestParam("km") Integer km, @RequestPart(value = "file") MultipartFile file) {

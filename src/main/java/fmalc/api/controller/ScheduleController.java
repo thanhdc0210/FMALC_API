@@ -63,6 +63,17 @@ public class ScheduleController {
         }
     }
 
+    @GetMapping(value = "first-consignment/{idDriver}")
+    public ResponseEntity<Integer> findFirstConsignment(@PathVariable("idDriver") Integer id) {
+
+        Integer idConsignment = scheduleService.findConsignmentFirst(id);
+        if (idConsignment != null && idConsignment>0) {
+            return ResponseEntity.ok().body(idConsignment);
+        }
+//        DetailedScheduleDTO detailedScheduleDTO = new DetailedScheduleDTO(schedule);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping(value = "id/{id}")
     public ResponseEntity<DetailedScheduleDTO> findById(@PathVariable("id") Integer id) {
 

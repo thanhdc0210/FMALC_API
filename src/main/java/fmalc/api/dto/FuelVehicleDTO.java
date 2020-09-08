@@ -16,8 +16,11 @@ public class FuelVehicleDTO {
     private Integer kmOld;
     private Date fillingDate;
     private FuelTypeVehicleDTO fuelType;
+    private DriverForDetailDTO driver;
+
 
     public FuelVehicleDTO convertDTO(RefuelHistory refuelHistory){
+
         ModelMapper modelMapper = new ModelMapper();
         FuelVehicleDTO fuelVehicleDTO = modelMapper.map(refuelHistory, FuelVehicleDTO.class);
 

@@ -243,6 +243,13 @@ public class ScheduleServiceImpl implements ScheduleService {
         return scheduleRepository.findScheduleIdByConsignmentIdAndDriverId(consignmentId, driverId);
     }
 
+    @Override
+    public Integer findConsignmentFirst(int idDriver) {
+        List<Consignment> consignments = scheduleRepository.findConsignmentFirst(idDriver);
+//        consignments.sort(Comparator.comparing(Cons));
+        return consignments.get(0).getId();
+    }
+
 //    @Override
 //    public Schedule findScheduleByConsignment_IdAndDriver_Id(Integer consignmentId, Integer driverId) {
 //

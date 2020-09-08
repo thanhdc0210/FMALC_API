@@ -18,6 +18,8 @@ public interface MaintenanceService {
     List<MaintainReponseDTO> getListMaintainByVehicle(int idVehicle);
     Paging getMaintenance(String username, int page);
 
+    MaintainReponseDTO getDetailMaintainance(int id);
+
     //GiangTLB
     List<Maintenance> getListMaintenanceForDriver(int driverId);
     //--------
