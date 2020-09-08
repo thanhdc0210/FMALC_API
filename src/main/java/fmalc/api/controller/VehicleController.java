@@ -5,7 +5,7 @@ import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
 import fmalc.api.enums.VehicleStatusEnum;
-import fmalc.api.service.FuelHistoryService;
+import fmalc.api.service.RefuelHistoryService;
 import fmalc.api.service.InspectionService;
 import fmalc.api.service.ScheduleService;
 import fmalc.api.service.VehicleService;
@@ -33,7 +33,7 @@ public class VehicleController {
     ScheduleService scheduleService;
 
     @Autowired
-    FuelHistoryService fuelHistoryService;
+    RefuelHistoryService refuelHistoryService;
 
     private static int defaultKilometRunning = 0;
 
@@ -294,7 +294,7 @@ public class VehicleController {
     public ResponseEntity<List<FuelVehicleDTO>> getFuelOfVehicle(@PathVariable("id") int id){
         FuelVehicleDTO fuelVehicleDTO = new FuelVehicleDTO();
         try{
-            List<FuelVehicleDTO> fuelVehicleDTOS = fuelVehicleDTO.mapToListResponse(fuelHistoryService.getListFuelByVehicleId(id));
+            List<FuelVehicleDTO> fuelVehicleDTOS = fuelVehicleDTO.mapToListResponse(refuelHistoryService.getListFuelByVehicleId(id));
             if(fuelVehicleDTOS.size()>0){
                 return ResponseEntity.ok().body(fuelVehicleDTOS);
             }

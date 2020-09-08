@@ -2,8 +2,8 @@ package fmalc.api.controller;
 
 
 import fmalc.api.dto.FuelRequestDTO;
-import fmalc.api.entity.FuelHistory;
-import fmalc.api.service.FuelHistoryService;
+import fmalc.api.entity.RefuelHistory;
+import fmalc.api.service.RefuelHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1.0/fuelHistories")
-public class FuelController {
+public class RefuelHistoryController {
 
     @Autowired
-    FuelHistoryService fuelHistoryService;
+    RefuelHistoryService refuelHistoryService;
 
     @PostMapping("fuel-filling")
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public ResponseEntity<String> saveFuel(@RequestBody FuelRequestDTO fuelRequestDTO){
-        FuelHistory fuelHistory = fuelHistoryService.saveFuelFilling(fuelRequestDTO);
-        if (fuelHistory == null){
+        RefuelHistory refuelHistory = refuelHistoryService.saveFuelFilling(fuelRequestDTO);
+        if (refuelHistory == null){
             return ResponseEntity.noContent().build();
         }else{
             return ResponseEntity.ok().body("SUCCESS");
