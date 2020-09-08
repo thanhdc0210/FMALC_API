@@ -139,11 +139,18 @@ public class NotificationServiceImpl implements NotificationService {
                                 dto.getType() != NotificationTypeEnum.ALERT.getValue()) {
                             String title = NotificationTypeEnum.getValueEnumToShow(dto.getType());
                             String content = dto.getContent();
+                            String click_action = "DriverHomeActivity";
+                            if (dto.getType() == NotificationTypeEnum.TASK_SCHEDULE.getValue()){
+                                click_action = NotificationTypeEnum.TASK_SCHEDULE.getNotificationTypeEnum();
+                            }else if(dto.getType() == NotificationTypeEnum.MAINTAIN_SCHEDULE.getValue()){
+                                click_action = NotificationTypeEnum.MAINTAIN_SCHEDULE.getNotificationTypeEnum();
+                            }
                             Message message = Message.builder()
                                     .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
-                                    .setNotification(new com.google.firebase.messaging.Notification(title, content))
+                                    .setNotification(new com.google.firebase.messaging.Notification(title, content, click_action))
                                     .putData("title", title)
                                     .putData("body", content)
+//                                    .putData("click_action", click_action)
                                     .build();
 
                             String response = null;
