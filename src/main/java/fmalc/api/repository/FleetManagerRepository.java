@@ -28,6 +28,7 @@ public interface FleetManagerRepository extends JpaRepository<FleetManager, Inte
 
     FleetManager findByAccount_Username(String username);
 
+    FleetManager findByAccount_UsernameAndAccount_IsActive(String username,Boolean isActive);
     boolean existsByIdentityNo(String identityNo);
 
     List<FleetManager> findByPhoneNumberContainingIgnoreCaseOrderByIdDesc(String search);

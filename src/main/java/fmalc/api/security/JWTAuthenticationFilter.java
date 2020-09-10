@@ -84,7 +84,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         loginResponseDTO.setToken(TOKEN_PREFIX + token);
         loginResponseDTO.setRole(roles.get(0));
         if (roles.get(0).equals("ROLE_FLEET_MANAGER")) {
-            FleetManager fleetManager = fleetManagerRepository.findByAccount_Username(username);
+            FleetManager fleetManager = fleetManagerRepository.findByAccount_UsernameAndAccount_IsActive(username,true);
             loginResponseDTO.setAvatar(fleetManager.getImage());
             loginResponseDTO.setName(fleetManager.getName());
             loginResponseDTO.setId(fleetManager.getId());
