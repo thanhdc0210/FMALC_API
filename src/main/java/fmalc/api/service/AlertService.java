@@ -9,4 +9,5 @@ import java.util.List;
 public interface AlertService {
     Paging getAlerts(String username, int page);
     Alert driverSendAlert(AlertRequestDTO alertRequestDTO);
+    Alert updateStatus(int id);
 }

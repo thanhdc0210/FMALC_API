@@ -28,7 +28,7 @@ public class AccountController {
     }
 
     @PutMapping(value = "is-active/{id}")
-    public ResponseEntity updateIsActive(@PathVariable("id") Integer id, @RequestParam("isActive") Boolean isActive) {
+    public ResponseEntity<AccountDTO> updateIsActive(@PathVariable("id") Integer id, @RequestParam("isActive") Boolean isActive) {
         try {
             Account account = accountService.updateIsActive(id, isActive);
             return ResponseEntity.ok().body(new AccountDTO().mapToResponse(account));

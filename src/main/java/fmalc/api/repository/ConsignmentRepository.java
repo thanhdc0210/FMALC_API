@@ -19,39 +19,60 @@ import java.util.List;
 public interface ConsignmentRepository
         extends JpaRepository<Consignment, Integer>, JpaSpecificationExecutor<Consignment> {
 
-//    @Query("Select c From Consignment c, Account a, ConsignmentHistory ch, FleetManager fm" +
+    //    @Query("Select c From Consignment c, Account a, ConsignmentHistory ch, FleetManager fm" +
 //            " Where c.id = ch.consignment.id and ch.fleetManager.id = fm.id" +
 //            " and fm.account.id = a.id and c.status IN :status and a.username = :username" +
 //            " and c.schedule.isApprove = true")
 //    List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(@Param("status") List<Integer> status, @Param("username") String username);
-@Query( "select c from Consignment  c where  c.status =?1 ")
+    @Query("select c from Consignment  c where  c.status =?1 ")
     Page findAllByStatus(Integer status, Pageable pa);
 
-    @Query( "select c from Consignment  c, Driver  d, FleetManager f, Schedule s, Account  a where " +
+    @Query("select c from Consignment  c where  c.status =?1 or c.status=?2 ")
+    Page findAllByStatusObOrDe(Integer status, Integer status2, Pageable pa);
+
+    @Query("select c from Consignment  c, Driver  d, FleetManager f, Schedule s, Account  a where " +
             "  s.consignment.id = c.id and s.driver.id = d.id and d.fleetManager.id = f.id and" +
             "  a.id = f.account.id and c.status =?1 and a.id=?2 ")
-    Page findAllByStatusFleet(Integer status,int idAccount, Pageable pa);
+    Page findAllByStatusFleet(Integer status, int idAccount, Pageable pa);
 
-    @Query( "select c from Consignment  c where c.id =?1 and c.status =?2 ")
-    Page findConsignmentByStatusId( int id,int status,Pageable pa);
+    @Query("select c from Consignment  c, Driver  d, FleetManager f, Schedule s, Account  a where " +
+            "  s.consignment.id = c.id and s.driver.id = d.id and d.fleetManager.id = f.id and" +
+            "  a.id = f.account.id and (c.status =?1 or c.status=?2 ) and a.id=?3 ")
+    Page findAllByStatusFleetObOrDe(Integer status, Integer status2, int idAccount, Pageable pa);
 
+    @Query("select c from Consignment  c where c.id =?1 and c.status =?2 ")
+    Page findConsignmentByStatusId(int id, int status, Pageable pa);
 
-    @Query( "select c from Consignment  c, Driver  d, FleetManager f, Schedule s, Account  a where " +
+    @Query("select c from Consignment  c where c.id =?1 and (c.status =?2 or c.status=?3) ")
+    Page findConsignmentByStatusIdObOrDe(int id, int status, int status2, Pageable pa);
+
+    @Query("select c from Consignment  c, Driver  d, FleetManager f, Schedule s, Account  a where " +
             " s.consignment.id = c.id and s.driver.id = d.id and d.fleetManager.id = f.id and a.id = f.account.id and " +
             "  c.id =?1 and c.status =?2 and a.id=?3 ")
-    Page findConsignmentByStatusIdFleet( int id,int status,int idAccount, Pageable pa);
-//    @Query( "select c from Consignment  c where c.id =?1 and c.status =?2 ")
-//    Page findConsignmentByIdAndStatus( int id,int statusOB, int statusDE,Pageable pa);
+    Page findConsignmentByStatusIdFleet(int id, int status, int idAccount, Pageable pa);
 
-    @Query( "select c from Consignment  c where c.ownerName LIKE CONCAT('%',?2,'%') and c.status =?1 ")
-    Page findConsignmentByStatusAndOwnerNameIsContaining(int status, String search, Pageable pa);
-//    @Query("select  c from  c")
+    @Query("select c from Consignment  c, Driver  d, FleetManager f, Schedule s, Account  a where " +
+            " s.consignment.id = c.id and s.driver.id = d.id and d.fleetManager.id = f.id and a.id = f.account.id and " +
+            "  c.id =?1 and c.status =?2  or c.status=?3 and a.id=?4 ")
+    Page findConsignmentByStatusIdFleetObOrDe(int id, int status, int status2, int idAccount, Pageable pa);
+
+    @Query("select c from Consignment  c where c.ownerName LIKE CONCAT('%',?2,'%') and c.status =?1 or c.status=?2 ")
+    Page findConsignmentByStatusAndOwnerNameIsContaining(int status, int status2, String search, Pageable pa);
+
+    //    @Query("select  c from  c")
 //    List<Consignment> getlll(Integer status);
+    @Query("select c from Consignment  c where c.ownerName LIKE CONCAT('%',?2,'%') and c.status =?1 ")
+    Page findConsignmentByStatus(int status, String search, Pageable pa);
 
-    @Query( "select c  from Consignment  c, Driver  d, FleetManager f, Schedule s, Account a where" +
+    @Query("select c  from Consignment  c, Driver  d, FleetManager f, Schedule s, Account a where" +
             "  s.consignment.id = c.id and s.driver.id = d.id and d.fleetManager.id = f.id " +
             "and a.id=f.account.id and c.ownerName LIKE CONCAT('%',?2,'%') and c.status =?1 and a.id=?3 ")
-    Page findConsignmentByStatusAndOwnerNameIsContainingFleet(int status, String search,int idAccount, Pageable pa);
+    Page findConsignmentByStatusAndOwnerNameIsContainingFleet(int status, String search, int idAccount, Pageable pa);
+
+    @Query("select c  from Consignment  c, Driver  d, FleetManager f, Schedule s, Account a where" +
+            "  s.consignment.id = c.id and s.driver.id = d.id and d.fleetManager.id = f.id " +
+            "and a.id=f.account.id and c.ownerName LIKE CONCAT('%',?3,'%') and c.status =?1 or c.status=?2 and a.id=?3 ")
+    Page findConsignmentByStatusObOrDe(int status,int status2, String search, int idAccount, Pageable pa);
 
     Consignment findConsignmentById(int id);
 
@@ -68,12 +89,12 @@ public interface ConsignmentRepository
             " INNER JOIN Driver d ON s.driver.id = d.id" +
             " WHERE d.id = :driverId" +
             " AND c.status = :status")
-    List<Consignment> getConsignmentOfDriver(@Param("driverId") int driverId,@Param("status") int status);
+    List<Consignment> getConsignmentOfDriver(@Param("driverId") int driverId, @Param("status") int status);
 
     @Query(value = "SELECT c from  Consignment c where c.id in (" +
-                    "SELECT p.consignment.id from Place p "+
-                    "WHERE p.actualTime between :startDate AND :endDate "+
-                    "GROUP BY p.consignment.id ) " +
-                    " AND  c.status= :status ")
-    List<Consignment> getConsignmentForReport (@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate, @Param("status") Integer status);
+            "SELECT p.consignment.id from Place p " +
+            "WHERE p.actualTime between :startDate AND :endDate " +
+            "GROUP BY p.consignment.id ) " +
+            " AND  c.status= :status ")
+    List<Consignment> getConsignmentForReport(@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate, @Param("status") Integer status);
 }

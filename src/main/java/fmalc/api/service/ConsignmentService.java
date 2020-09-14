@@ -29,8 +29,8 @@ public interface ConsignmentService {
 
     List<Consignment> getConsignmentOfDriver(int id, int status);
     List<Schedule> findScheduleByConsignment(int id);
-    Consignment cancelConsignment(int id, String content);
-    int updateConsignment(ConsignmentUpdateDTO consignmentUpdateDTO);
+    Consignment cancelConsignment(int id, String content, String username);
+    int updateConsignment(ConsignmentUpdateDTO consignmentUpdateDTO, String username);
 
     Integer findConsignmentId(Integer driverId, Integer vehicleId);
 //    Consignment mapDriverForConsignment(Consignment consignment);

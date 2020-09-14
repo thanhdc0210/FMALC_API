@@ -83,7 +83,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         List<Maintenance> maintenances = maintainanceRepository.findByVehicle(idVehicle);
         if (!maintenances.isEmpty()) {
             List<MaintainCheckDTO> maintainCheckDTOs = new MaintainCheckDTO().mapToListResponse(maintenances);
-
             Date date = new Date(System.currentTimeMillis());
             int t = 0;
             for (int i = 0; i < maintainCheckDTOs.size(); i++) {
@@ -100,13 +99,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                     }
                 }
             }
-//            List<Integer> id = maintainCheckDTOs.stream()
-//                    .filter(x -> date.after(x.getPlannedMaintainDate()))
-//                    .map(MaintainCheckDTO::getId)
-//                    .collect(Collectors.toList());
-//
-//            maintainCheckDTOs.removeIf(x -> id.contains(x.getId()));
-
             if (!maintainCheckDTOs.isEmpty()) {
                 return maintainCheckDTOs;
             }
@@ -120,16 +112,8 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         List<Maintenance> maintenances = maintainanceRepository.findByDriver(idDriver);
         if (!maintenances.isEmpty()) {
             List<MaintainCheckDTO> maintainCheckDTOs = new MaintainCheckDTO().mapToListResponse(maintenances);
-
-
             maintainCheckDTOs.sort(Comparator.comparing(MaintainCheckDTO::getActualMaintainDate));
-
             Date date = new Date(System.currentTimeMillis());
-//            List<Integer> id = maintainCheckDTOs.stream()
-//                    .filter(x -> x.getStatus() == 1)
-//                    .map(MaintainCheckDTO::getId)
-//                    .collect(Collectors.toList());
-//            maintainCheckDTOs.removeIf(x -> id.contains(x.getId()));
             int t = 0;
             for (int i = 0; i < maintainCheckDTOs.size(); i++) {
                 t = i;
@@ -145,7 +129,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                     }
                 }
             }
-
             if (!maintainCheckDTOs.isEmpty()) {
                 return maintainCheckDTOs;
             }
@@ -198,49 +181,45 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             List<Maintenance> maintenances = maintainanceRepository.findByVehicle(vehicle.getId());
             for (int i = 0; i < maintenances.size(); i++) {
 
-                if (maintenances.get(i).getStatus() == false) {
+                if (maintenances.get(i).getStatus() == false ) {
                     maintenance = maintenances.get(i);
                     maintenances.remove(maintenances.get(i));
                     i = maintenances.size();
-//                    maintainanceRepository.updateActualMaintainDate(maintenance.getId(),);
                 }
             }
-
             maintenances.sort(Comparator.comparing(Maintenance::getActualMaintainDate));
-            int kmRun = vehicle.getKilometerRunning();
             int kmOld = 0;
             if (maintenances.size() > 0) {
-                kmOld = maintenances.get(maintenances.size() - 1).getKmOld();
-            } else {
-                if (maintenance != null) {
-                    kmOld = maintenance.getKmOld();
+                if( maintenances.get(maintenances.size() - 1).getKmOld()!=null){
+                    kmOld =  maintenances.get(maintenances.size() - 1).getKmOld();
                 }
 
+            } else {
+                if (maintenance != null) {
+                   if(maintenance.getKmOld()!=null){
+                       kmOld = maintenance.getKmOld();
+                   }
+                }
             }
-
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             java.util.Date date = new java.util.Date();
             Date dateS = new Date(date.getTime());
-
             if (maintenance.getId() != null) {
                 if (maintenances.size() > 0) {
-                    if (maintenance.getActualMaintainDate() != null) {
+                    if (maintenance.getActualMaintainDate() != null ) {
                         maintenance = new Maintenance();
                     } else {
-                        int numDate = sdf.format(dateS).compareTo(sdf.format(maintenances.get(maintenances.size() - 1).getActualMaintainDate()));
+//                        int numDate = sdf.format(dateS).compareTo(sdf.format(maintenances.get(maintenances.size() - 1).getActualMaintainDate()));
                         long diff = dateS.getTime() - (maintenances.get(maintenances.size() - 1).getActualMaintainDate().getTime());
                         int diffDays = (int) (diff / DAYS);
                         if (diffDays == 0) {
                             diffDays = 1;
                         }
-//                    int cal = 5000/((vehicle.getKilometerRunning()- kmOld)/diffDays);
                         int avg = 0;
                         if ((vehicle.getKilometerRunning() < kmOld)) {
-                            avg = DEFAULT_KM / (((vehicle.getKilometerRunning() + kmOld) - kmOld) / diffDays);
+                            avg = (DEFAULT_KM-(vehicle.getKilometerRunning() - kmOld))/((vehicle.getKilometerRunning() - kmOld) / diffDays);
                         } else {
-                            avg = DEFAULT_KM / ((vehicle.getKilometerRunning() - kmOld) / diffDays);
+                            avg = (DEFAULT_KM-(vehicle.getKilometerRunning() - kmOld))/((vehicle.getKilometerRunning() - kmOld) / diffDays);
                         }
-
                         int t = (kmOld + DEFAULT_KM) / DEFAULT_KM;
                         MaintenanceType maintenanceType = new MaintenanceType();
                         if (t % 2 == 0) {
@@ -250,10 +229,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                             maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 2");
                             maintenance.setMaintenanceType(maintenanceType);
                         }
-
-
                         if (avg <= 7) {
-
                             date1 = checkScheduleForAVehicle(vehicle, 1);
                             if(checkDateMaintainForAVehicle(sdf.format(date1),vehicle.getId())){
                                 maintenance.setActualMaintainDate(new Date(date1.getTime()));
@@ -271,8 +247,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
                                 }
                             }
-
-
                         } else {
                             date1 = checkScheduleForAVehicle(vehicle, avg);
                             if(checkDateMaintainForAVehicle(sdf.format(date1),vehicle.getId())){
@@ -298,9 +272,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                         }
                         int avg = 0;
                         if ((vehicle.getKilometerRunning() < kmOld)) {
-                            avg = DEFAULT_KM / (((vehicle.getKilometerRunning() + kmOld) - kmOld) / diffDays);
+                            avg = (DEFAULT_KM-(vehicle.getKilometerRunning() - kmOld))/((vehicle.getKilometerRunning() - kmOld) / diffDays);
+
                         } else {
-                            avg = DEFAULT_KM / ((vehicle.getKilometerRunning() - kmOld) / diffDays);
+                            avg = (DEFAULT_KM-(vehicle.getKilometerRunning() - kmOld))/((vehicle.getKilometerRunning() - kmOld) / diffDays);
+
                         }
                         int t = (kmOld + DEFAULT_KM) / DEFAULT_KM;
                         if (avg <= 7) {
@@ -334,7 +310,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                                     res = true;
                                 }
                             }
-
                         }
                     } else {
                         maintenance = new Maintenance();
@@ -347,11 +322,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                     }
                     int avg = 0;
                     if ((vehicle.getKilometerRunning() < kmOld)) {
-                        avg = DEFAULT_KM / (((vehicle.getKilometerRunning() + kmOld) - kmOld) / diffDays);
+                        avg = (DEFAULT_KM-(vehicle.getKilometerRunning() - kmOld))/((vehicle.getKilometerRunning() - kmOld) / diffDays);
                     } else {
-                        avg = DEFAULT_KM / ((vehicle.getKilometerRunning() - kmOld) / diffDays);
+                        avg = (DEFAULT_KM-(vehicle.getKilometerRunning() - kmOld))/((vehicle.getKilometerRunning() - kmOld) / diffDays);
+
                     }
-//                    int t = (kmOld + DEFAULT_KM) / DEFAULT_KM;
                     if (avg <= 7) {
                         date1 = checkScheduleForAVehicle(vehicle, 1);
                         if(checkDateMaintainForAVehicle(sdf.format(date1),vehicle.getId())){
@@ -396,9 +371,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                     }
                     int avg = 0;
                     if ((vehicle.getKilometerRunning() < kmOld)) {
-                        avg = DEFAULT_KM / (((vehicle.getKilometerRunning() + kmOld) - kmOld) / diffDays);
+                        avg = (DEFAULT_KM-(vehicle.getKilometerRunning() - kmOld))/((vehicle.getKilometerRunning() - kmOld) / diffDays);
+
                     } else {
-                        avg = DEFAULT_KM / ((vehicle.getKilometerRunning() - kmOld) / diffDays);
+                        avg = (DEFAULT_KM-(vehicle.getKilometerRunning() - kmOld))/((vehicle.getKilometerRunning() - kmOld) / diffDays);
+
                     }
                     int t = (kmOld + DEFAULT_KM) / DEFAULT_KM;
                     MaintenanceType maintenanceType = new MaintenanceType();
@@ -1014,9 +991,9 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
 
-    private boolean     checkDateMaintainForAVehicle(String dateS, int idVehicle) {
+    private boolean checkDateMaintainForAVehicle(String dateS, int idVehicle) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        boolean flag = false;
+        boolean flag = true;
 //        Date date = new Date();
         List<Maintenance> maintenances = maintainanceRepository.findByVehicle(idVehicle);
         if (maintenances.size() > 0) {
@@ -1028,17 +1005,17 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                     String dateMaintain;
                     if(maintenances.get(i).getActualMaintainDate()!=null){
                         dateMaintain = sdf.format(maintenances.get(i).getActualMaintainDate());
+                        if (dateS.compareTo(dateMaintain) > 0 || dateS.compareTo(dateMaintain) < 0) {
+//                        flag = true;
+                        } else {
+                            flag=false;
+                        }
                     }else{
-                        dateMaintain = sdf.format(maintenances.get(i).getPlannedMaintainDate());
+//                        dateMaintain = sdf.format(maintenances.get(i).getPlannedMaintainDate());
                     }
 
-                    if (dateS.compareTo(dateMaintain) > 0 || dateS.compareTo(dateMaintain) < 0) {
-                        flag = true;
-                    } else {
 
-                    }
                     if (!flag) {
-//                        flag = false;
                         i = maintenances.size();
                     }
                 }
