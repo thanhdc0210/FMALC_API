@@ -77,7 +77,7 @@ public class AlertServiceImpl implements AlertService {
 
             }
         } catch (Exception e){
-            System.out.println(e);
+
         }
         if(driver != null && vehicle != null){
             alert.setContent(alertRequestDTO.getContent());
@@ -90,5 +90,14 @@ public class AlertServiceImpl implements AlertService {
         }
 
         return null;
+    }
+
+    @Override
+    public Alert updateStatus(int id) {
+        Alert alert = new Alert();
+        if(alertRepository.updateStatus(id,true)>0){
+            alert = alertRepository.findById(id).get();
+        }
+        return alert;
     }
 }

@@ -48,15 +48,6 @@ public class ConsignmentController {
     @Autowired
     ConsignmentHistoryService consignmentHistoryService;
 
-    @GetMapping("test")
-    public ResponseEntity<List<ScheduleForLocationDTO>> test() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-//        Long plannedTime = finishPlace.getPlannedTime().getTime();
-        String s = "";
-        List<ScheduleForLocationDTO> scheduleForLocationDTOS = scheduleService.getScheduleToCheck();
-        return ResponseEntity.ok().body(scheduleForLocationDTOS);
-    }
-
     @GetMapping("vehicle/{id}")
     public ResponseEntity<List<ConsignmentResponseDTO>> getConsignmentByIdVehicle(@PathVariable("id") int id){
         try{
@@ -111,23 +102,15 @@ public class ConsignmentController {
     @PostMapping("update/{username}")
     public ResponseEntity<Integer> updateConsignment(@PathVariable("username") String username, @RequestBody ConsignmentUpdateDTO consignmentUpdateDTO    ){
         try{
-            Account accout = accountService.getAccount(username);
-            FleetManager fleetManager = fleetManagerService.findByAccount(accout.getId());
-
-            int i = consignmentService.updateConsignment(consignmentUpdateDTO);
-            String note ="Cập nhật lại lô hàng số "+consignmentUpdateDTO.getId();
-            ConsignmentHistory consignmentHistory = consignmentHistoryService.save(consignmentUpdateDTO.getId(),fleetManager,note);
-//            if(consignment!=null){
-//                ConsignmentDetailDTO consignmentDetailDTO = new ConsignmentDetailDTO();
-//                consignmentDetailDTO = consignmentDetailDTO.convertToDTO(consignment);
+            int i = consignmentService.updateConsignment(consignmentUpdateDTO, username);
+            if(i>0){
                 return ResponseEntity.ok().body(i);
-//            }else{
-//                return ResponseEntity.noContent().build();
-//            }
-
+            }else{
+                return ResponseEntity.noContent().build();
+            }
         }
         catch (Exception e){
-            return   ResponseEntity.badRequest().build();
+            return  ResponseEntity.badRequest().build();
         }
 
     }
@@ -137,62 +120,28 @@ public class ConsignmentController {
     @GetMapping(value = "status")
     public ResponseEntity<Paging> getAllByStatus(@RequestParam("status") Integer status, @RequestParam("username") String username
     ,@RequestParam("page") Integer page,@RequestParam("type") Integer type,@RequestParam("search") String search) {
-        List<Consignment> consignments = new ArrayList<>();
-
-        Paging paging = consignmentService.getAllByStatus(status,username,type,page,search);
-        ConsignmentListDTO consignmentListDTO = new ConsignmentListDTO();
-//        List<ConsignmentListDTO> consignmentListDTOS = consignmentListDTO.mapToListResponse(consignments);
-        if (paging.getList()!=null && paging.getList().isEmpty()) {
-            return ResponseEntity.noContent().build();
+        try{
+            Paging paging = consignmentService.getAllByStatus(status,username,type,page,search);
+            if (paging.getList()!=null && paging.getList().isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok().body(paging);
+        }catch (Exception e){
+            return  ResponseEntity.badRequest().build();
         }
-
-
-//        for (int i = 0; i < consignmentListDTOS.size(); i++) {
-//            List<ScheduleForLocationDTO> schedules = new ArrayList<>();
-//            schedules = scheduleService.getScheduleByConsignmentId(consignmentListDTOS.get(i).getId());
-//            if (schedules.size() > 0) {
-//                for (int j = 0; j < schedules.size(); j++) {
-//                    if (schedules.get(j).isApprove()) {
-//                        VehicleForDetailDTO vehicleForDetailDTO;
-//                        List<VehicleForDetailDTO> vehicleForDetailDTOS = new ArrayList<>();
-//
-//                        Driver driver = new Driver();
-//                        List<Driver> drivers = new ArrayList<>();
-//
-//                        DriverResponseDTO driverResponseDTO = new DriverResponseDTO();
-//                        List<DriverResponseDTO> driverResponseDTOS = new ArrayList<>();
-//
-//                        vehicleForDetailDTO = vehicleService.findVehicleById(schedules.get(j).getVehicle_id());
-//                        vehicleForDetailDTOS.add(vehicleForDetailDTO);
-//
-//                        driver = driverService.findById(schedules.get(j).getDriver_id());
-//                        drivers.add(driver);
-//                        driverResponseDTOS = driverResponseDTO.mapToListResponse(drivers);
-//                        consignmentListDTOS.get(i).setDrivers(driverResponseDTOS);
-//                        consignmentListDTOS.get(i).setVehicles(vehicleForDetailDTOS);
-//                    }
-//
-//                }
-//            }
-//        }
-//        if (consignments.isEmpty()) {
-//            return ResponseEntity.badRequest().build();
-//        }
-        return ResponseEntity.ok().body(paging);
     }
 
     @PostMapping("cancel/{id}/{username}")
     public ResponseEntity<Integer> cancelConsignment(@PathVariable("id") int id,@PathVariable("username") String username, @RequestBody String content){
         try{
             content = content.replaceAll("\"","");
-            Consignment consignment = consignmentService.cancelConsignment(id,content);
+            Consignment consignment = consignmentService.cancelConsignment(id,content,username);
             if(consignment.getStatus() == ConsignmentStatusEnum.CANCELED.getValue()){
-                Account account = accountService.getAccount(username);
-                FleetManager fleetManager = fleetManagerService.findByAccount(account.getId());
-                String note = "Lô hàng bị hủy bởi "+ fleetManager.getName();
-                ConsignmentHistory consignmentHistory = consignmentHistoryService.save(consignment.getId(), fleetManager,note);
+                return ResponseEntity.ok().body(consignment.getStatus());
+            }else{
+                return  ResponseEntity.noContent().build();
             }
-            return ResponseEntity.ok().body(consignment.getStatus());
+
         }catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
@@ -203,13 +152,10 @@ public class ConsignmentController {
             NewScheduleDTO newScheduleDTO = new NewScheduleDTO();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", Locale.getDefault());
             sdf.setTimeZone(TimeZone.getTimeZone(""));
-            Consignment consignment = new Consignment();
-            ScheduleToConfirmDTO scheduleToConfirmDTO = new ScheduleToConfirmDTO();
-            List<ScheduleToConfirmDTO> scheduleToConfirmDTOS = new ArrayList<>();
+            Consignment consignment;
             ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
             consignmentRequestDTO.setImageConsignment("sdsaas");
             consignment = consignmentService.consignmentConfirm(consignmentRequestDTO);
-
             ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
             List<Vehicle> vehicles =
                     vehicleService.findVehicleForSchedule(consignment, consignmentRequestDTO, ScheduleConsginmentEnum.SCHEDULE_NOT_CHECK.getValue());
@@ -218,12 +164,6 @@ public class ConsignmentController {
             consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
             scheduleForLocationDTO.setConsignment(consignmentResponseDTO);
             scheduleForLocationDTOS.add(scheduleForLocationDTO);
-            if (consignmentRequestDTO.getVehicles().size() <= scheduleForLocationDTOS.size()) {
-
-            } else {
-
-            }
-
             ParkingDTO parkingDTO = parkingService.getParking();
             newScheduleDTO.setParkingDTO(parkingDTO);
             newScheduleDTO.setScheduleForConsignmentDTOS(scheduleForLocationDTOS);
