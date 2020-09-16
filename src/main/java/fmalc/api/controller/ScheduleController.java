@@ -653,4 +653,20 @@ public class ScheduleController {
         }
     }
 
+    @GetMapping("/schedule-detail")
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    public ResponseEntity<Integer> findScheduleIdByContentOfNotificationAndDriverId(@RequestParam("content") String content,
+                                            @RequestParam("driverId") Integer driverId){
+        try {
+            Integer id = scheduleService.findScheduleIdByContentOfNotificationAndDriverId(content, driverId);
+            if (id == null){
+                return ResponseEntity.noContent().build();
+            }else{
+                return ResponseEntity.ok().body(id);
+            }
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }

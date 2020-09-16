@@ -44,6 +44,8 @@ public interface ScheduleService {
 
     Integer findScheduleIdByConsignmentIdAndDriverId(Integer consignmentId, Integer driverId);
 
+    Integer findScheduleIdByContentOfNotificationAndDriverId(String content, Integer driver_id);
+
     Integer findConsignmentFirst(int idDriver);
 //    Schedule findScheduleByConsignment_IdAndDriver_Id(Integer consignmentId, Integer driverId);
 }
