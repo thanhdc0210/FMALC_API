@@ -22,6 +22,7 @@ public class DetailedScheduleDTO {
     private String status;
     private String ownerNote;
     private Integer consignmentId;
+    private Integer kilometer_running;
 
     public DetailedScheduleDTO(Schedule schedule) {
 
@@ -33,6 +34,7 @@ public class DetailedScheduleDTO {
         this.consignmentId = schedule.getConsignment().getId();
         this.scheduleId = schedule.getId();
         this.ownerNote = schedule.getConsignment().getOwnerNote();
+        this.kilometer_running = schedule.getVehicle().getKilometerRunning();
         for(Place place : schedule.getConsignment().getPlaces()){
             places.add(new PlaceResponeDTO().convertPlace(place));
         }
