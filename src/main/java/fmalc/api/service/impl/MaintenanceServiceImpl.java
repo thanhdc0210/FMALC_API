@@ -868,6 +868,16 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         Maintenance maintenance = maintainanceRepository.save(addMaintenance);
     }
 
+
+    public String reverse(String str) {
+        String s[] = str.split("-");
+        String ans = "";
+        for (int i = s.length - 1; i >= 0; i--) {
+            ans += s[i] + "-";
+        }
+        return (ans.substring(0, ans.length() - 1));
+    }
+
     @Override
     public List<java.util.Date> dateConfirm(int idVehicle, int idDriver, java.util.Date date) {
 
@@ -892,7 +902,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                         notificationRequestDTO.setDriver_id(driver.getId());
                         notificationRequestDTO.setStatus(false);
                         notificationRequestDTO.setType(NotificationTypeEnum.MAINTAIN_SCHEDULE.getValue());
-                        notificationRequestDTO.setContent("Bạn có lịch đi bảo trì xe vào ngày " + maintenance.getActualMaintainDate());
+                        notificationRequestDTO.setContent("Bạn có lịch đi bảo trì xe vào ngày " + reverse(maintenance.getActualMaintainDate().toString()));
                         notificationService.createNotification(notificationRequestDTO);
                     } catch (Exception e) {
                         e.printStackTrace();

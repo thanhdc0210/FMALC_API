@@ -11,4 +11,7 @@ import java.util.*;
 public interface RefuelHistoryRepository extends JpaRepository<RefuelHistory, Integer> {
         @Query("select f from RefuelHistory f where f.vehicle.id =?1")
         List<RefuelHistory> getByVehicle(int idVehicle);
+
+        @Query("select f from RefuelHistory f where  year(f.fillingDate) = ?1 and f.vehicle.id =?2 ORDER BY f.fillingDate ASC ")
+        List<RefuelHistory> getRefuelHistoriesByYear(Integer year, Integer id);
 }

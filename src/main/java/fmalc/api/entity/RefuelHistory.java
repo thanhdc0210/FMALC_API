@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.Calendar;
 
 @Entity
 @Getter
@@ -49,5 +50,9 @@ public class RefuelHistory implements Serializable {
     @JoinColumn(name = "driver_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
     private Driver driver;
+
+    public Integer getMonthForReport(){
+        return fillingDate.getMonth();
+    }
 
 }

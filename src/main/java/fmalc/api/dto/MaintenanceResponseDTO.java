@@ -25,7 +25,7 @@ public class MaintenanceResponseDTO implements Serializable {
         this.content = dto.getMaintenanceType().getContent();
         this.maintainTypeName = dto.getMaintenanceType().getMaintenanceTypeName();
         this.licensePlates = dto.getVehicle().getLicensePlates();
-        this.maintainDate = dto.getPlannedMaintainDate();
+        this.maintainDate = dto.getActualMaintainDate();
     }
 
     public List<MaintenanceResponseDTO> mapToListResponse(List<Maintenance> baseEntities){

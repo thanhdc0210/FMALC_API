@@ -244,6 +244,16 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public Integer findScheduleIdByContentOfNotificationAndDriverId(String content, Integer driver_id) {
+
+        String subString[] = content.split("#");
+        String subStringId[] = subString[subString.length - 1].split("\\s");
+        Integer consignmentId =  Integer.valueOf(subStringId[0]);
+
+        return scheduleService.findScheduleIdByConsignmentIdAndDriverId(consignmentId, driver_id);
+    }
+
+    @Override
     public Integer findConsignmentFirst(int idDriver) {
         List<Consignment> consignments = scheduleRepository.findConsignmentFirst(idDriver);
 //        consignments.sort(Comparator.comparing(Cons));

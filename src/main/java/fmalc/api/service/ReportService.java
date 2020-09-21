@@ -9,5 +9,5 @@ public interface ReportService {
    HashMap<String, Integer> getOverviewReport();
    HashMap<Integer,Object> getReportByYear(int year) throws ParseException;
    ReportBySpecificRangeResponseDTO getReportOneVehicleBySpecificRange(Integer vehicleId, String startDate,String endDate, Integer status) throws ParseException;
-
+//   HashMap<Integer, Double> getFuelHistoryReport(Integer year, Integer vehicleId);
 }

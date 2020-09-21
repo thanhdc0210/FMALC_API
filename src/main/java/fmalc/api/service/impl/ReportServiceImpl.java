@@ -1,15 +1,9 @@
 package fmalc.api.service.impl;
 
 import fmalc.api.dto.ReportBySpecificRangeResponseDTO;
-import fmalc.api.entity.Consignment;
-import fmalc.api.entity.Place;
-import fmalc.api.entity.Schedule;
-import fmalc.api.entity.Vehicle;
+import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
-import fmalc.api.repository.ConsignmentRepository;
-import fmalc.api.repository.DriverRepository;
-import fmalc.api.repository.ScheduleRepository;
-import fmalc.api.repository.VehicleRepository;
+import fmalc.api.repository.*;
 import fmalc.api.service.ReportService;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +36,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     ScheduleRepository scheduleRepository;
+
+    @Autowired
+    RefuelHistoryRepository refuelHistoryRepository;
 
     private static final String MONTH_YEAR_PATTERN = "MM-yyyy";
     private static final String DMY_PATTERN = "dd-MM-yyyy";
@@ -125,12 +122,12 @@ public class ReportServiceImpl implements ReportService {
     public ReportBySpecificRangeResponseDTO getReportOneVehicleBySpecificRange(Integer vehicleId, String startDate, String endDate, Integer status) throws ParseException {
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat formatter = new SimpleDateFormat(pattern);
-        Date localDateStartTime =formatter.parse(startDate);
+        Date localDateStartTime = formatter.parse(startDate);
         Date localDateEndTime = formatter.parse(endDate);
 
 
         List<Consignment> consignmentList = new ArrayList<>();
-        consignmentList = consignmentRepository.getConsignmentForReport(new Timestamp(localDateStartTime.getTime()),new Timestamp(localDateEndTime.getTime()), status);
+        consignmentList = consignmentRepository.getConsignmentForReport(new Timestamp(localDateStartTime.getTime()), new Timestamp(localDateEndTime.getTime()), status);
         AtomicInteger rate = new AtomicInteger();
 
 
@@ -145,8 +142,45 @@ public class ReportServiceImpl implements ReportService {
             result.setRate(rate.get());
             result.setTotalConsignment(consignmentList.size());
         }
+        // Tính trung bình bn lít xăng trên 100km của xe mỗi tháng
+        //HashMap key là tháng, value là trung bình mỗi tháng của xe đó
+        HashMap<Integer, Double> refuelAverage = new HashMap<>();
+        //set 12 months
+        for (int i = 0; i <= 11; i++) {
+            refuelAverage.put(i, 0.0);
+        }
+
+        Vehicle vehicle = vehicleRepository.findByIdVehicle(vehicleId);
+        List<RefuelHistory> refuelHistory = refuelHistoryRepository.getRefuelHistoriesByYear( Calendar.getInstance().get(Calendar.YEAR), vehicleId);
+        Map<Integer, List<RefuelHistory>> groupByListMonth = refuelHistory.stream()
+                .collect(groupingBy(RefuelHistory::getMonthForReport));
+        for (Map.Entry<Integer, List<RefuelHistory>> oneMonth : groupByListMonth.entrySet()) {
+            double km;
+            double volume;
+            double average;
+            int size = oneMonth.getValue().size();
+            if (size>1) {
+                km = (double) (oneMonth.getValue().get(size - 1).getKmOld() - oneMonth.getValue().get(0).getKmOld());
+
+                volume = oneMonth.getValue().stream().mapToDouble(RefuelHistory::getVolume).sum();
+                average = 100 * volume / km;
+                // round x.xx
+                average = Math.floor(average * 100) / 100;
+                refuelAverage.put(oneMonth.getKey(), average);
+            } else if(size == 1){
+                average = vehicle.getAverageFuel();
+                refuelAverage.put(oneMonth.getKey(), average);
+            }
+        }
+        result.setAverageFuelByMonth(refuelAverage);
         return result;
     }
+
+//    @Override
+//    public HashMap<Integer, Double> getFuelHistoryReport(Integer year, Integer vehicleId) {
+//
+//        return refuelAverage;
+//    }
 
     public class ObjectForReportVehicle {
         Integer total;
