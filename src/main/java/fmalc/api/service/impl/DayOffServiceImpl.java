@@ -537,6 +537,10 @@ public class DayOffServiceImpl implements DayOffService {
                     flag = true;
                 }
 
+            }else if(dateS.compareTo(dateMaintain) < 0){
+                if (dateEnd.compareTo(dateMaintain) < 0) {
+                    flag = true;
+                }
             }
         }
 

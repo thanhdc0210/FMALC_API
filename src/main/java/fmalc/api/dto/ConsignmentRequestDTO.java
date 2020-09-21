@@ -1,6 +1,8 @@
 package fmalc.api.dto;
 
+import fmalc.api.entity.Consignment;
 import lombok.Data;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 
@@ -15,4 +17,11 @@ public class ConsignmentRequestDTO {
     private String imageConsignment;
     private List<PlaceRequestDTO> place;
     private List<VehicleConsignmentDTO> vehicles;
+
+    public Consignment convertEntity(ConsignmentRequestDTO consignmentRequestDTO){
+        ModelMapper modelMapper = new ModelMapper();
+        Consignment consignment = modelMapper.map(consignmentRequestDTO, Consignment.class);
+        return consignment;
+    }
+//    public List<>
 }

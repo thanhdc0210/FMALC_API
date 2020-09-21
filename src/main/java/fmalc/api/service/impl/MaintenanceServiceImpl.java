@@ -594,7 +594,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
             for (int j = 0; j < scheduleForConsignmentDTOS.size(); j++) {
                 scheduleForLocationDTO = scheduleForConsignmentDTOS.get(j);
-                if (scheduleForLocationDTO.getConsignment().getStatus() != ConsignmentStatusEnum.COMPLETED.getValue() ||
+                if (scheduleForLocationDTO.getConsignment().getStatus() != ConsignmentStatusEnum.COMPLETED.getValue() &&
                         scheduleForLocationDTO.getConsignment().getStatus() != ConsignmentStatusEnum.CANCELED.getValue()
                 ) {
                     List<PlaceResponeDTO> listScheduleDeli =
@@ -937,7 +937,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 //        int i = avg;
         boolean flag = true;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar c = Calendar.getInstance();
+//        Calendar c = Calendar.getInstance();
 
         if (schedules != null && schedules.size() > 0) {
             scheduleForConsignmentDTOS = scheduleForLocationDTO.mapToListResponse(schedules);

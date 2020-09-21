@@ -6,8 +6,11 @@ import fmalc.api.enums.ConsignmentStatusEnum;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Data
@@ -35,6 +38,7 @@ public class ConsignmentListDTO {
 
             deliveryDetailResponseDTOs.add(deliveryDetailResponseDTO);
         }
+
         return consignmentResponseDTO;
     }
 

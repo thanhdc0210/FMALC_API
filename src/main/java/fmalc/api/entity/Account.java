@@ -15,7 +15,7 @@ import java.util.Collection;
 @NoArgsConstructor  
 @Table(name = "account")
 @Entity
-public class Account implements Serializable {
+public class    Account implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id

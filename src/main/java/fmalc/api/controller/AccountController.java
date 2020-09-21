@@ -16,7 +16,6 @@ public class AccountController {
 
     @Autowired
     AccountService accountService;
-
     @GetMapping("/accounts")
     public ResponseEntity<List<AccountDTO>> getListAccount() {
         List<Account> accountList = accountService.findAll();

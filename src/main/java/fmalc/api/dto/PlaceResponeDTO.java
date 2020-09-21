@@ -6,7 +6,10 @@ import lombok.Data;
 import org.modelmapper.ModelMapper;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Data
@@ -31,6 +34,7 @@ public class PlaceResponeDTO {
 
     public PlaceResponeDTO convertPlace(Place place){
         ModelMapper modelMapper = new ModelMapper();
+
         PlaceResponeDTO placeResponeDTO= modelMapper.map(place,PlaceResponeDTO.class);
         return placeResponeDTO;
     }

@@ -11,10 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -57,20 +56,16 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     private static final String ADMIN = "ROLE_ADMIN";
     private static final String FLEET = "ROLE_FLEET_MANAGER";
 
-//    @Override
-//    public List<Consignment> findByConsignmentStatusAndUsernameForFleetManager(List<Integer> status, String username) {
-//        return consignmentRepository.findByConsignmentStatusAndUsernameForFleetManager(status, username);
-//    }
-
     @Override
     public Consignment findById(int consignment_id) {
-        return consignmentRepository.findById(consignment_id).get();
+        Consignment consignment =  consignmentRepository.findById(consignment_id).get();
+        return consignment;
     }
 
     @Override
-    public Consignment save(ConsignmentRequestDTO consignmentRequestDTO) throws ParseException {
+    public Consignment save(ConsignmentRequestDTO consignmentRequestDTO){
         ModelMapper modelMapper = new ModelMapper();
-        Consignment consignment = modelMapper.map(consignmentRequestDTO, Consignment.class);
+        Consignment consignment = new ConsignmentRequestDTO().convertEntity(consignmentRequestDTO);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", Locale.getDefault());
         sdf.setTimeZone(TimeZone.getTimeZone(""));
         List<Place> places = consignmentRequestDTO.getPlace().stream()
@@ -79,9 +74,9 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         consignment.setImageContract(consignmentRequestDTO.getImageConsignment());
         consignment = consignmentRepository.save(consignment);
 
-        for (int i = 0; i < places.size(); i++) {
-            places.get(i).setConsignment(consignment);
-            placeRepository.save(places.get(i));
+        for (Place place : places) {
+            place.setConsignment(consignment);
+            placeRepository.save(place);
         }
 
         consignment.setPlaces(places);
@@ -94,29 +89,29 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     }
 
     private List<ConsignmentListDTO> detailList(List<ConsignmentListDTO> consignmentListDTOS) {
-        for (int i = 0; i < consignmentListDTOS.size(); i++) {
-            List<ScheduleForLocationDTO> schedules = new ArrayList<>();
-            schedules = scheduleService.getScheduleByConsignmentId(consignmentListDTOS.get(i).getId());
+        List<ScheduleForLocationDTO> schedules;
+        for (ConsignmentListDTO consignmentListDTO : consignmentListDTOS) {
+            schedules = scheduleService.getScheduleByConsignmentId(consignmentListDTO.getId());
             if (schedules.size() > 0) {
-                for (int j = 0; j < schedules.size(); j++) {
-                    if (schedules.get(j).isApprove()) {
+                for (ScheduleForLocationDTO schedule : schedules) {
+                    if (schedule.isApprove()) {
                         VehicleForDetailDTO vehicleForDetailDTO;
                         List<VehicleForDetailDTO> vehicleForDetailDTOS = new ArrayList<>();
 
-                        Driver driver = new Driver();
+                        Driver driver;
                         List<Driver> drivers = new ArrayList<>();
 
                         DriverResponseDTO driverResponseDTO = new DriverResponseDTO();
-                        List<DriverResponseDTO> driverResponseDTOS = new ArrayList<>();
+                        List<DriverResponseDTO> driverResponseDTOS;
 
-                        vehicleForDetailDTO = vehicleService.findVehicleById(schedules.get(j).getVehicle_id());
+                        vehicleForDetailDTO = vehicleService.findVehicleById(schedule.getVehicle_id());
                         vehicleForDetailDTOS.add(vehicleForDetailDTO);
 
-                        driver = driverService.findById(schedules.get(j).getDriver_id());
+                        driver = driverService.findById(schedule.getDriver_id());
                         drivers.add(driver);
                         driverResponseDTOS = driverResponseDTO.mapToListResponse(drivers);
-                        consignmentListDTOS.get(i).setDrivers(driverResponseDTOS);
-                        consignmentListDTOS.get(i).setVehicles(vehicleForDetailDTOS);
+                        consignmentListDTO.setDrivers(driverResponseDTOS);
+                        consignmentListDTO.setVehicles(vehicleForDetailDTOS);
                     }
 
                 }
@@ -129,170 +124,106 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     public Paging getAllByStatus(Integer status, String username, int type, int pageCurrent, String search) {
         Account account = accountService.getAccount(username);
         Paging paging = new Paging();
-        Pageable pageable = PageRequest.of(pageCurrent, paging.getNumberElements());
-        List<ConsignmentListDTO> consignmentListDTOS = new ArrayList<>();
+        Pageable pageable = PageRequest.of(pageCurrent, paging.getNumberElements(), Sort.by("id").descending());
+        List<ConsignmentListDTO> consignmentListDTOS;
         if (account.getRole().getRole().equals(ADMIN)) {
             if (type == 0) {
-                if (search != "") {
+                if (!search.equals("")) {
                     try {
                         int id = Integer.parseInt(search);
+                        Page page;
                         if (status == ConsignmentStatusEnum.OBTAINING.getValue() || status == ConsignmentStatusEnum.DELIVERING.getValue()) {
-
-                            Page page = consignmentRepository.findConsignmentByStatusIdObOrDe(id,ConsignmentStatusEnum.OBTAINING.getValue(),ConsignmentStatusEnum.DELIVERING.getValue(),  pageable);
-                            consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
-                            if (consignmentListDTOS.size() > 0) {
-                                if (paging.getList() != null) {
-                                    paging.getList().addAll(consignmentListDTOS);
-                                } else {
-                                    paging.setList(consignmentListDTOS);
-                                }
-                            } else {
-                                paging.setList(new ArrayList());
-                            }
-
-                            paging.setTotalPage(page.getTotalPages());
+                            page = consignmentRepository.findConsignmentByStatusIdObOrDe(id, ConsignmentStatusEnum.OBTAINING.getValue(), ConsignmentStatusEnum.DELIVERING.getValue(), pageable);
                         } else {
-                            Page page = consignmentRepository.findConsignmentByStatusId(id, status, pageable);
-                            consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
-                            if (consignmentListDTOS.size() > 0) {
-                                if (paging.getList() != null) {
-                                    paging.getList().addAll(consignmentListDTOS);
-                                } else {
-                                    paging.setList(consignmentListDTOS);
-                                }
-                            } else {
-                                paging.setList(new ArrayList());
-                            }
-                            paging.setTotalPage(page.getTotalPages());
+                            page = consignmentRepository.findConsignmentByStatusId(id, status, pageable);
                         }
+                        consignmentListDTOS =detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
+                        if (consignmentListDTOS.size() > 0) {
+                            if (paging.getList() != null) {
+                                paging.getList().addAll(consignmentListDTOS);
+                            } else {
+                                paging.setList(consignmentListDTOS);
+                            }
+                        } else {
+                            paging.setList(new ArrayList());
+                        }
+                        paging.setTotalPage(page.getTotalPages());
                         paging.setPageCurrent(pageCurrent);
                         return paging;
                     } catch (NumberFormatException e) {
                         return paging;
                     }
                 } else {
+                    Page page;
                     if (status == ConsignmentStatusEnum.OBTAINING.getValue() || status == ConsignmentStatusEnum.DELIVERING.getValue()) {
-                        Page page = consignmentRepository.findAllByStatusObOrDe(ConsignmentStatusEnum.OBTAINING.getValue(),ConsignmentStatusEnum.DELIVERING.getValue(), pageable);
-                        consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
-                        if (consignmentListDTOS.size() > 0) {
-                            if (paging.getList() != null) {
-                                paging.getList().addAll(consignmentListDTOS);
-                            } else {
-                                paging.setList(consignmentListDTOS);
-                            }
-                        } else {
-                            paging.setList(new ArrayList());
-                        }
+                        page = consignmentRepository.findAllByStatusObOrDe(ConsignmentStatusEnum.OBTAINING.getValue(), ConsignmentStatusEnum.DELIVERING.getValue(), pageable);
 
-                        paging.setTotalPage(page.getTotalPages());
                     } else {
-                        Page page = consignmentRepository.findAllByStatus(status, pageable);
-                        consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
-                        if (consignmentListDTOS.size() > 0) {
-                            if (paging.getList() != null) {
-                                paging.getList().addAll(consignmentListDTOS);
-                            } else {
-                                paging.setList(consignmentListDTOS);
-                            }
-                        } else {
-                            paging.setList(new ArrayList());
-                        }
+                        page = consignmentRepository.findAllByStatus(status, pageable);
 
-                        paging.setTotalPage(page.getTotalPages());
                     }
+                    consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
+                    if (consignmentListDTOS.size() > 0) {
+                        if (paging.getList() != null) {
+                            paging.getList().addAll(consignmentListDTOS);
+                        } else {
+                            paging.setList(consignmentListDTOS);
+                        }
+                    } else {
+                        paging.setList(new ArrayList());
+                    }
+                    paging.setTotalPage(page.getTotalPages());
                     paging.setPageCurrent(pageCurrent);
                     return paging;
                 }
 
 
             } else {
+                Page page;
                 if (status == ConsignmentStatusEnum.OBTAINING.getValue() || status == ConsignmentStatusEnum.DELIVERING.getValue()) {
-                    Page page = consignmentRepository.findConsignmentByStatusAndOwnerNameIsContaining(ConsignmentStatusEnum.OBTAINING.getValue() ,ConsignmentStatusEnum.DELIVERING.getValue(), search, pageable);
-                    consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
-                    if (consignmentListDTOS.size() > 0) {
-                        if (paging.getList() != null) {
-                            paging.getList().addAll(consignmentListDTOS);
-                        } else {
-                            paging.setList(consignmentListDTOS);
-                        }
-                    } else {
-                        paging.setList(new ArrayList());
-                    }
-//                   paging.setTotalPage(page.getTotalPages());
-//                    Page page2 = consignmentRepository.findConsignmentByStatusAndOwnerNameIsContaining(ConsignmentStatusEnum.OBTAINING.getValue(),ConsignmentStatusEnum.DELIVERING.getValue(), search, pageable);
-//                    consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page2.getContent()));
-//                    if (consignmentListDTOS.size() > 0) {
-//                        if (paging.getList() != null) {
-//                            paging.getList().addAll(consignmentListDTOS);
-//                        } else {
-//                            paging.setList(consignmentListDTOS);
-//                        }
-//                    } else {
-//                        paging.setList(new ArrayList());
-//                    }
-                    paging.setTotalPage(page.getTotalPages());
+                    page = consignmentRepository.findConsignmentByStatusAndOwnerNameIsContaining(ConsignmentStatusEnum.OBTAINING.getValue(), ConsignmentStatusEnum.DELIVERING.getValue(), search, pageable);
+
                 } else {
-                    Page page = consignmentRepository.findConsignmentByStatus(status, search, pageable);
-                    consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
-                    if (consignmentListDTOS.size() > 0) {
-                        if (paging.getList() != null) {
-                            paging.getList().addAll(consignmentListDTOS);
-                        } else {
-                            paging.setList(consignmentListDTOS);
-                        }
-                    } else {
-                        paging.setList(new ArrayList());
-                    }
-                    paging.setTotalPage(page.getTotalPages());
+                    page = consignmentRepository.findConsignmentByStatus(status, search, pageable);
                 }
+                consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
+                if (consignmentListDTOS.size() > 0) {
+                    if (paging.getList() != null) {
+                        paging.getList().addAll(consignmentListDTOS);
+                    } else {
+                        paging.setList(consignmentListDTOS);
+                    }
+                } else {
+                    paging.setList(new ArrayList());
+                }
+                paging.setTotalPage(page.getTotalPages());
 
                 paging.setPageCurrent(pageCurrent);
                 return paging;
             }
         } else if(account.getRole().getRole().equals(FLEET)) {
             if (type == 0) {
-                if (search != "") {
+                if (!search.equals("")) {
                     try {
                         int id = Integer.parseInt(search);
+                        Page page;
                         if (status == ConsignmentStatusEnum.OBTAINING.getValue() || status == ConsignmentStatusEnum.DELIVERING.getValue()) {
 
-                            Page page = consignmentRepository.findConsignmentByStatusIdFleetObOrDe(id,ConsignmentStatusEnum.OBTAINING.getValue(),ConsignmentStatusEnum.DELIVERING.getValue(),account.getId(),  pageable);
-                            consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
-                            if (consignmentListDTOS.size() > 0) {
-                                if (paging.getList() != null) {
-                                    paging.getList().addAll(consignmentListDTOS);
-                                } else {
-                                    paging.setList(consignmentListDTOS);
-                                }
-                            } else {
-                                paging.setList(new ArrayList());
-                            }
-//                            Page page2 = consignmentRepository.findConsignmentByStatusIdFleet(id,ConsignmentStatusEnum.DELIVERING.getValue(),account.getId(),  pageable);
-//                            consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page2.getContent()));
-//                            if (consignmentListDTOS.size() > 0) {
-//                                if (paging.getList() != null) {
-//                                    paging.getList().addAll(consignmentListDTOS);
-//                                } else {
-//                                    paging.setList(consignmentListDTOS);
-//                                }
-//                            } else {
-//                                paging.setList(new ArrayList());
-//                            }
-                            paging.setTotalPage(page.getTotalPages());
+                            page = consignmentRepository.findConsignmentByStatusIdFleetObOrDe(id, ConsignmentStatusEnum.OBTAINING.getValue(), ConsignmentStatusEnum.DELIVERING.getValue(), account.getId(), pageable);
                         } else {
-                            Page page = consignmentRepository.findConsignmentByStatusIdFleet(id, status,account.getId(), pageable);
-                            consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
-                            if (consignmentListDTOS.size() > 0) {
-                                if (paging.getList() != null) {
-                                    paging.getList().addAll(consignmentListDTOS);
-                                } else {
-                                    paging.setList(consignmentListDTOS);
-                                }
-                            } else {
-                                paging.setList(new ArrayList());
-                            }
-                            paging.setTotalPage(page.getTotalPages());
+                            page = consignmentRepository.findConsignmentByStatusIdFleet(id, status, account.getId(), pageable);
                         }
+                        consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
+                        if (consignmentListDTOS.size() > 0) {
+                            if (paging.getList() != null) {
+                                paging.getList().addAll(consignmentListDTOS);
+                            } else {
+                                paging.setList(consignmentListDTOS);
+                            }
+                        } else {
+                            paging.setList(new ArrayList());
+                        }
+                        paging.setTotalPage(page.getTotalPages());
                         paging.setPageCurrent(pageCurrent);
                         return paging;
                     } catch (NumberFormatException e) {
@@ -551,6 +482,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 
     @Override
     public Integer findConsignmentId(Integer driverId, Integer vehicleId) {
-        return scheduleRepository.findByDriver_IdAndVehicle_IdAndConsignment_StatusIn(driverId, vehicleId, Arrays.asList(1, 2)).getConsignment().getId();
+        return scheduleRepository.findByDriver_IdAndVehicle_IdAndConsignment_StatusIn(
+                driverId, vehicleId, Arrays.asList(1, 2,3,4)).getConsignment().getId();
     }
 }

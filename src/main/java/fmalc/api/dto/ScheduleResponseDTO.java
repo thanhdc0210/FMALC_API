@@ -1,5 +1,6 @@
 package fmalc.api.dto;
 
+import fmalc.api.entity.Place;
 import fmalc.api.entity.Schedule;
 import fmalc.api.enums.ConsignmentStatusEnum;
 import lombok.AllArgsConstructor;
@@ -38,7 +39,7 @@ public class ScheduleResponseDTO {
         this.driverName = schedule.getDriver().getName();
         this.weight = schedule.getConsignment().getWeight();
         this.status = ConsignmentStatusEnum.getValueEnumToShow(schedule.getConsignment().getStatus());
-        this.places = new PlaceResponeDTO().mapToListResponse(List.copyOf(schedule.getConsignment().getPlaces()));
+        this.places = new PlaceResponeDTO().mapToListResponse((List<Place>) schedule.getConsignment().getPlaces());
 
         this.status = ConsignmentStatusEnum.getValueEnumToShow(schedule.getConsignment().getStatus());
         if (schedule.getInheritance()!= null){
