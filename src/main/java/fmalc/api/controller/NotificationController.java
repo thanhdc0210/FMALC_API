@@ -9,7 +9,6 @@ import fmalc.api.entity.Driver;
 import fmalc.api.entity.Notification;
 
 import fmalc.api.entity.Alert;
-import fmalc.api.entity.Notification;
 import fmalc.api.enums.LevelInAlertEnum;
 
 import fmalc.api.enums.NotificationTypeEnum;
@@ -20,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.util.function.Tuple2;
 
@@ -146,7 +144,7 @@ public class NotificationController {
 
         try {
 
-            List<AccountNotification> accountNotifications = accountNotificationService.findByUsername(username);
+            List<AccountNotification> accountNotifications = accountNotificationService.findByUsernameAndTime(username);
             if (accountNotifications != null) {
                 List<NotificationMobileResponse> notificationMobileResponses = new ArrayList<>();
 

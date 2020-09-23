@@ -6,6 +6,9 @@ import fmalc.api.service.AccountNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -14,9 +17,11 @@ public class AccountNotificationServiceImpl implements AccountNotificationServic
     @Autowired
     AccountNotificationRepository accountNotificationRepository;
     @Override
-    public List<AccountNotification> findByUsername(String username) {
+    public List<AccountNotification> findByUsernameAndTime(String username) {
         try {
-            return accountNotificationRepository.findByUsername(username);
+            return accountNotificationRepository.findByUsernameAndTime(username,
+                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
+                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
         }catch (Exception e){
             return null;
         }
