@@ -80,9 +80,14 @@ public class ScheduleController {
         Schedule schedule = scheduleService.findById(id);
         if (schedule == null || schedule.equals("")) {
             return ResponseEntity.noContent().build();
+        }else{
+            if (schedule.getConsignment().getStatus() != ConsignmentStatusEnum.CANCELED.getValue()){
+                DetailedScheduleDTO detailedScheduleDTO = new DetailedScheduleDTO(schedule);
+                return ResponseEntity.ok().body(detailedScheduleDTO);
+            }else{
+                return ResponseEntity.noContent().build();
+            }
         }
-        DetailedScheduleDTO detailedScheduleDTO = new DetailedScheduleDTO(schedule);
-        return ResponseEntity.ok().body(detailedScheduleDTO);
     }
 
 
