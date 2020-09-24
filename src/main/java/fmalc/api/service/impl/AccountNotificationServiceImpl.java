@@ -20,7 +20,7 @@ public class AccountNotificationServiceImpl implements AccountNotificationServic
     public List<AccountNotification> findByUsernameAndTime(String username) {
         try {
             return accountNotificationRepository.findByUsernameAndTime(username,
-                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN)),
+                    Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN).minusDays(1)),
                     Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX)));
         }catch (Exception e){
             return null;
