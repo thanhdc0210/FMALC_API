@@ -8,13 +8,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
 public interface AccountNotificationRepository extends JpaRepository<AccountNotification, AccountNotificationKey>, JpaSpecificationExecutor<AccountNotification> {
 
-    @Query("Select an From AccountNotification an Where an.account.username = :username")
-    List<AccountNotification> findByUsername(@Param("username") String username);
+    @Query("Select an From AccountNotification an Where an.account.username = :username " +
+            "AND an.notification.time between :startDate and :endDate")
+    List<AccountNotification> findByUsernameAndTime(@Param("username") String username,
+                    @Param("startDate")Timestamp startDate, @Param("endDate") Timestamp endDate);
 
 
     @Query("select an from  AccountNotification  an where  an.account.id=?1 and an.notification.id=?2")

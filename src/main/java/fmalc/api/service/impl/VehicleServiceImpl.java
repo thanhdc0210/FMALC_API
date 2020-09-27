@@ -21,7 +21,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -744,9 +747,24 @@ public class VehicleServiceImpl implements VehicleService {
                 schedules.add(objectToSortForSchedule.getSchedule());
             });
 
+<<<<<<< HEAD
             if (schedules.size() > 0) {
                 return schedules.get(schedules.size() - 1).getVehicle().getLicensePlates();
             } else {
+=======
+            if (schedules.size() > 0){
+                Schedule schedule = schedules.get(schedules.size()-1);
+                List<Place> places = new ArrayList<Place>(schedule.getConsignment().getPlaces());
+                Timestamp actualTime = places.get(places.size() - 1).getActualTime();
+                Timestamp startDate = Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MIN).minusDays(2));
+                Timestamp endDate = Timestamp.valueOf(LocalDateTime.now().with(LocalTime.MAX));
+                if (actualTime.after(startDate) && actualTime.before(endDate)) {
+                    return schedule.getVehicle().getLicensePlates();
+                }else{
+                    return null;
+                }
+            }else{
+>>>>>>> 2641dc6989dc8ee6c41c03adcf74f5a27f055982
                 return null;
             }
         } else {

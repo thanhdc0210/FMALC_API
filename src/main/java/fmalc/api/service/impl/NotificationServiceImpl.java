@@ -150,20 +150,24 @@ public class NotificationServiceImpl implements NotificationService {
                             }else{
                                 click_action = "DriverHomeActivity";
                             }
-                            Message message = Message.builder()
-                                    .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
-                                    .setNotification(new com.google.firebase.messaging.Notification(title, content, click_action))
-                                    .putData("title", title)
-                                    .putData("body", content)
-                                    .putData("click_action", click_action)
-                                    .build();
+                            String token = driverRepository.findTokenDeviceByDriverId(dto.getDriver_id());
+                            if (token != null){
+                                Message message = Message.builder()
+                                        .setToken(driverRepository.findTokenDeviceByDriverId(dto.getDriver_id()))
+                                        .setNotification(new com.google.firebase.messaging.Notification(title, content))
+                                        .putData("title", title)
+                                        .putData("body", content)
+                                        .build();
 
-                            String response = null;
-                            try {
-                                response = FirebaseMessaging.getInstance().send(message);
-                            } catch (FirebaseMessagingException e) {
-                                e.printStackTrace();
-                                logger.info("Fail to send firebase notification " + e.getMessage());
+                                String response = null;
+                                try {
+                                    response = FirebaseMessaging.getInstance().send(message);
+                                } catch (FirebaseMessagingException e) {
+                                    e.printStackTrace();
+                                    logger.info("Fail to send firebase notification " + e.getMessage());
+                                }
+                            }else{
+                                return null;
                             }
                         }
                     }
