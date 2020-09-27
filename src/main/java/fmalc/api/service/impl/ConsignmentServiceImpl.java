@@ -3,6 +3,7 @@ package fmalc.api.service.impl;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
+import fmalc.api.enums.ScheduleConsginmentEnum;
 import fmalc.api.enums.TypeLocationEnum;
 import fmalc.api.repository.*;
 import fmalc.api.service.*;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -49,6 +51,9 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    ParkingService parkingService;
 
     @Autowired
     ConsignmentHistoryService consignmentHistoryService;
@@ -478,6 +483,27 @@ public class ConsignmentServiceImpl implements ConsignmentService {
         ConsignmentHistory consignmentHistory = consignmentHistoryService.save(consignmentUpdateDTO.getId(),fleetManager,note);
 
         return 0;
+    }
+
+    @Override
+    public NewScheduleDTO findVehicleDriver(ConsignmentRequestDTO consignmentRequestDTO) {
+        NewScheduleDTO newScheduleDTO = new NewScheduleDTO();
+        Consignment consignment;
+        ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
+        consignmentRequestDTO.setImageConsignment("");
+        consignment = consignmentConfirm(consignmentRequestDTO);
+        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
+        List<Vehicle> vehicles =
+                vehicleService.findVehicleForSchedule(consignment, consignmentRequestDTO, ScheduleConsginmentEnum.SCHEDULE_NOT_CHECK.getValue());
+        List<ScheduleForConsignmentDTO> scheduleForLocationDTOS =
+                vehicleService.findScheduleForFuture(vehicles, consignment, consignmentRequestDTO);
+        consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
+        scheduleForLocationDTO.setConsignment(consignmentResponseDTO);
+        scheduleForLocationDTOS.add(scheduleForLocationDTO);
+        ParkingDTO parkingDTO = parkingService.getParking();
+        newScheduleDTO.setParkingDTO(parkingDTO);
+        newScheduleDTO.setScheduleForConsignmentDTOS(scheduleForLocationDTOS);
+        return newScheduleDTO;
     }
 
     @Override

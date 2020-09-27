@@ -104,21 +104,24 @@ public class NotificationServiceImpl implements NotificationService {
             Notification notification = notificationRepository.save(notify);
 
             if (notification != null) {
+                if(  !notification.getContent().contains("Bạn có lịch đi bảo trì")){
+                    List<Account> accounts = accountRepository.findAllByIsActiveIsTrueAndRole_Role("ROLE_ADMIN");
 
-                List<Account> accounts = accountRepository.findAllByIsActiveIsTrueAndRole_Role("ROLE_ADMIN");
-
-                accounts.add(accountRepository.findById(driver.getFleetManager().getAccount().getId()).get());
-                List<AccountNotification> accountNotifications = new ArrayList<>();
-                for (Account acc: accounts) {
-                    AccountNotificationKey accountNotificationKey = new AccountNotificationKey(acc.getId(), notification.getId());
-                    accountNotifications.add(AccountNotification.builder()
-                            .id(accountNotificationKey)
-                            .account(acc)
-                            .notification(notification)
-                            .status(false)
-                            .build());
+                    accounts.add(accountRepository.findById(driver.getFleetManager().getAccount().getId()).get());
+                    List<AccountNotification> accountNotifications = new ArrayList<>();
+                    for (Account acc: accounts) {
+                        AccountNotificationKey accountNotificationKey = new AccountNotificationKey(acc.getId(), notification.getId());
+                        accountNotifications.add(AccountNotification.builder()
+                                .id(accountNotificationKey)
+                                .account(acc)
+                                .notification(notification)
+                                .status(false)
+                                .build());
+                    }
+                    accountNotificationRepository.saveAll(accountNotifications);
                 }
-                accountNotificationRepository.saveAll(accountNotifications);
+
+
 
                 if (dto.getType() != NotificationTypeEnum.DAY_OFF_BY_SCHEDULE.getValue() &&
                         dto.getType() != NotificationTypeEnum.DAY_OFF_UNEXPECTED.getValue() &&

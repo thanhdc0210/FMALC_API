@@ -2,6 +2,7 @@ package fmalc.api.service;
 
 import fmalc.api.dto.ConsignmentRequestDTO;
 import fmalc.api.dto.ConsignmentUpdateDTO;
+import fmalc.api.dto.NewScheduleDTO;
 import fmalc.api.dto.Paging;
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Schedule;
@@ -32,6 +33,7 @@ public interface ConsignmentService {
     Consignment cancelConsignment(int id, String content, String username);
     int updateConsignment(ConsignmentUpdateDTO consignmentUpdateDTO, String username);
 
+    NewScheduleDTO findVehicleDriver(ConsignmentRequestDTO consignmentRequestDTO);
     Integer findConsignmentId(Integer driverId, Integer vehicleId);
 //    Consignment mapDriverForConsignment(Consignment consignment);
 }

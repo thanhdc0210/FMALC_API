@@ -1,13 +1,19 @@
 
 package fmalc.api.service.impl;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
 import fmalc.api.enums.ConsignmentStatusEnum;
+import fmalc.api.enums.NotificationTypeEnum;
 import fmalc.api.enums.SearchTypeForDriverEnum;
 import fmalc.api.repository.ScheduleRepository;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,6 +49,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Autowired
     ConsignmentService consignmentService;
+
+    @Autowired
+    NotificationService notificationService;
 
     @Autowired
     UploaderService uploaderService;
@@ -136,6 +145,56 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public ConsignmentResponseDTO createSchedules(MultipartFile file, String request) {
+        boolean result = false;
+        JsonObject jsonObject = new JsonParser().parse(request).getAsJsonObject();
+        JsonArray jsonArray = (JsonArray) jsonObject.get("obejctScheDTOS");
+        List<ObejctScheDTO> obejctScheDTOS = new ArrayList<>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonObject post_id = (JsonObject) jsonArray.get(i);
+            ObejctScheDTO obejctScheDTO = new ObejctScheDTO();
+            post_id.get("vehicle_id").getAsInt();
+            obejctScheDTO.setVehicle_id(post_id.get("vehicle_id").getAsInt());
+            obejctScheDTO.setDriver_id(post_id.get("driver_id").getAsInt());
+            if (post_id.get("consignment_id") != null) {
+                obejctScheDTO.setConsignment_id(post_id.get("consignment_id").getAsInt());
+            }
+            obejctScheDTOS.add(obejctScheDTO);
+        }
+        ConsignmentRequestDTO consignmentRequestDTO = new Gson().fromJson(jsonObject.get("consignmentRequestDTO"), ConsignmentRequestDTO.class);
+        RequestSaveScheObjDTO requestSaveScheObjDTO1 = new RequestSaveScheObjDTO();
+        requestSaveScheObjDTO1.setConsignmentRequestDTO(consignmentRequestDTO);
+        requestSaveScheObjDTO1.setObejctScheDTOS(obejctScheDTOS);
+        List<Schedule> schedules = new ArrayList<>();
+        ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
+        if (request != null) {
+            schedules = createSchedule(requestSaveScheObjDTO1, file);
+            try {
+                if (schedules.size() > 0) {
+                    Consignment consignment = consignmentService.findById(schedules.get(0).getConsignment().getId());
+                    consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
+                    NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
+                    for (Schedule schedule : schedules) {
+                        notificationRequestDTO.setVehicle_id(schedule.getVehicle().getId());
+                        notificationRequestDTO.setDriver_id(schedule.getDriver().getId());
+                        notificationRequestDTO.setStatus(false);
+                        notificationRequestDTO.setContent("Bạn có lịch chạy mới của lô hàng #" + schedule.getConsignment().getId());
+                        notificationRequestDTO.setType(NotificationTypeEnum.TASK_SCHEDULE.getValue());
+                        notificationService.createNotification(notificationRequestDTO);
+                    }
+
+                    return (consignmentResponseDTO);
+                }
+
+            } catch (Exception e) {
+                return null;
+            }
+
+        }
+        return consignmentResponseDTO;
+    }
+
+    @Override
     public List<ScheduleForLocationDTO> getScheduleToCheck() {
         ScheduleForLocationDTO scheduleForLocationDTO = new ScheduleForLocationDTO();
         List<Schedule> schedules = scheduleRepository.findAll();
@@ -195,13 +254,16 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public StatusToUpdateDTO updateStautsForVeDriAndCon(StatusToUpdateDTO statusToUpdateDTO, Schedule schedule) {
         StatusToUpdateDTO status = new StatusToUpdateDTO();
-//        Consignment consignment = consignmentService.findById(schedule.getConsignment().getId());
-//        if (consignment.getStatus() == ConsignmentStatusEnum.WAITING.getValue()) {
+
         status.setVehicle_status(vehicleService.updateStatus(statusToUpdateDTO.getVehicle_status(), schedule.getVehicle().getId()));
         status.setDriver_status(driverService.updateStatus(statusToUpdateDTO.getDriver_status(), schedule.getDriver().getId()));
-        status.setConsignment_status(consignmentService.updateStatus(statusToUpdateDTO.getConsignment_status(), schedule.getConsignment().getId()));
+        if(statusToUpdateDTO.getConsignment_status()>=0){
+            consignmentService.updateStatus(statusToUpdateDTO.getConsignment_status(), schedule.getConsignment().getId());
+        }
 
-//        }
+        Consignment consignment = consignmentService.findById(schedule.getConsignment().getId());
+        status.setConsignment_status(consignment.getStatus());
+
         return status;
     }
 
@@ -257,7 +319,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     public Integer findConsignmentFirst(int idDriver) {
         List<Consignment> consignments = scheduleRepository.findConsignmentFirst(idDriver);
 //        consignments.sort(Comparator.comparing(Cons));
-        return consignments.get(0).getId();
+        if(consignments.size()>0){
+            return consignments.get(0).getId();
+        }
+        return 0;
     }
 
 //    @Override

@@ -43,7 +43,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Autowired
     MaintenanceService maintainanceService;
 
-    private static int priorityPlace = 1;
+    private static final int priorityPlace = 1;
 
     @Override
     public Vehicle updateKmVehicle(int id, int km) {
@@ -63,9 +63,9 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public Vehicle updateVehicle(Vehicle vehicle) {
 
-        try{
-          vehicle  =vehicleRepository.save(vehicle);
-        }catch (Exception e){
+        try {
+            vehicle = vehicleRepository.save(vehicle);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return vehicle;
@@ -96,38 +96,33 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Paging getListVehicle(int pageCurrent , String license, int status) {
+    public Paging getListVehicle(int pageCurrent, String license, int status) {
         Paging paging = new Paging();
-        Pageable pageable = PageRequest.of(pageCurrent, paging.getNumberElements(), Sort.by("status").descending().and(Sort.by("kilometerRunning").descending()));
-//        Page page = new Page();
-        if(status>=0){
-
-            if(license!=null && license!=""){
-                Page page = vehicleRepository.findAllLicenseStatus( status,license,pageable);
-//                paging.setList(page.getContent());
+        Page page ;
+                Pageable pageable = PageRequest.of(pageCurrent, paging.getNumberElements(), Sort.by("status").descending().and(Sort.by("kilometerRunning").descending()));
+        if (status >= 0) {
+            if (license != null && !license.equals("")) {
+                page=  vehicleRepository.findAllLicenseStatus(status, license, pageable);
                 paging.setList(new VehicleResponseDTO().mapToListResponse(page.getContent()));
                 paging.setTotalPage(page.getTotalPages());
                 paging.setPageCurrent(pageCurrent);
                 return paging;
-            }else{
-                Page page = vehicleRepository.findAllStatus(status,pageable);
-//                paging.setList(page.getContent());
+            } else {
+                 page = vehicleRepository.findAllStatus(status, pageable);
                 paging.setList(new VehicleResponseDTO().mapToListResponse(page.getContent()));
                 paging.setTotalPage(page.getTotalPages());
                 paging.setPageCurrent(pageCurrent);
                 return paging;
             }
-        }else{
-            if(license!=null && license!=""){
-                Page page = vehicleRepository.findAllLicense(VehicleStatusEnum.UNAVAILABLE.getValue(),license,pageable);
-//                paging.setList(page.getContent());
+        } else {
+            if (license != null && !license.equals("")) {
+                 page = vehicleRepository.findAllLicense(VehicleStatusEnum.UNAVAILABLE.getValue(), license, pageable);
                 paging.setList(new VehicleResponseDTO().mapToListResponse(page.getContent()));
                 paging.setTotalPage(page.getTotalPages());
                 paging.setPageCurrent(pageCurrent);
                 return paging;
-            }else{
-                Page page = vehicleRepository.findAllStatusDiffUnavai(VehicleStatusEnum.UNAVAILABLE.getValue(),pageable);
-//                paging.setList(page.getContent());
+            } else {
+                 page = vehicleRepository.findAllStatusDiffUnavai(VehicleStatusEnum.UNAVAILABLE.getValue(), pageable);
                 paging.setList(new VehicleResponseDTO().mapToListResponse(page.getContent()));
                 paging.setTotalPage(page.getTotalPages());
                 paging.setPageCurrent(pageCurrent);
@@ -141,21 +136,18 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle disableVehicle(int id) {
-        Vehicle vehicle= new Vehicle();
-//        if(vehicle.getStatus() == VehicleStatusEnum.AVAILABLE.getValue()){
-            vehicle  = vehicleRepository.findByIdVehicle(id);
-            List<Schedule> schedules = scheduleService.checkVehicleInScheduled(vehicle.getId());
-            if(schedules.size()>0){
+        Vehicle vehicle;
+        vehicle = vehicleRepository.findByIdVehicle(id);
+        List<Schedule> schedules = scheduleService.checkVehicleInScheduled(vehicle.getId());
+        if (schedules.size() > 0) {
 
-            }else{
-                if(vehicle.getStatus() == VehicleStatusEnum.AVAILABLE.getValue()){
-                    vehicle.setIsActive(false);
-                    vehicle.setStatus(VehicleStatusEnum.UNAVAILABLE.getValue());
-                }
-
+        } else {
+            if (vehicle.getStatus() == VehicleStatusEnum.AVAILABLE.getValue()) {
+                vehicle.setIsActive(false);
+                vehicle.setStatus(VehicleStatusEnum.UNAVAILABLE.getValue());
             }
 
-//        }
+        }
         return vehicleRepository.save(vehicle);
     }
 
@@ -183,9 +175,9 @@ public class VehicleServiceImpl implements VehicleService {
     public List<Vehicle> findByWeightBigger(double weight) {
         List<Vehicle> vehicles = vehicleRepository.findByWeightBigger(weight);
         List<Vehicle> result = new ArrayList<>();
-        for (int i = 0; i < vehicles.size(); i++) {
-            if (vehicles.get(i).getStatus() != VehicleStatusEnum.UNAVAILABLE.getValue()) {
-                result.add(vehicles.get(i));
+        for (Vehicle vehicle : vehicles) {
+            if (vehicle.getStatus() != VehicleStatusEnum.UNAVAILABLE.getValue()) {
+                result.add(vehicle);
             }
         }
         return result;
@@ -195,81 +187,62 @@ public class VehicleServiceImpl implements VehicleService {
     public List<Vehicle> findByWeightSmaller(double weight) {
         List<Vehicle> vehicles = vehicleRepository.findByWeightSmaller(weight);
         List<Vehicle> result = new ArrayList<>();
-        for (int i = 0; i < vehicles.size(); i++) {
-            if (vehicles.get(i).getStatus() != VehicleStatusEnum.UNAVAILABLE.getValue()) {
-                result.add(vehicles.get(i));
+        for (Vehicle vehicle : vehicles) {
+            if (vehicle.getStatus() != VehicleStatusEnum.UNAVAILABLE.getValue()) {
+                result.add(vehicle);
             }
         }
         return result;
     }
 
-       // find vehicles for schedule
+    // find vehicles for schedule
     @Override
     public List<Vehicle> findVehicleForSchedule(Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO, int sche) {
         List<VehicleConsignmentDTO> vehicleConsignmentDTOS = consignmentRequestDTO.getVehicles();
-        List<Vehicle> vehicles = new ArrayList<>();
+        List<Vehicle> vehicles;
         List<Vehicle> result = new ArrayList<>();
         for (int i = 0; i < vehicleConsignmentDTOS.size(); i++) {
             int size = Integer.parseInt(vehicleConsignmentDTOS.get(i).getQuantity());
-//            if (size > 0) {
-                double weight = Double.parseDouble(vehicleConsignmentDTOS.get(i).getWeight());
-                vehicles = findByWeight(weight);
-                int tmp=0;
-                for(int t = 0 ; t< vehicles.size();t++){
-                    tmp =i;
-                    if(result.contains(vehicles.get(t))){
-                       vehicles.remove(vehicles.get(t));
-                       i=tmp;
-                    }
+            double weight = Double.parseDouble(vehicleConsignmentDTOS.get(i).getWeight());
+            vehicles = findByWeight(weight);
+            int tmp;
+            for (int t = 0; t < vehicles.size(); t++) {
+                tmp = i;
+                if (result.contains(vehicles.get(t))) {
+                    vehicles.remove(vehicles.get(t));
+                    i = tmp;
                 }
-//                vehicles = checkDuplicate(result, vehicles);
+            }
+            if (vehicles.size() > 0) {
+                vehicles = checkMaintainForVehicle(vehicles, consignment);
+                if (sche == ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue()) {
+                    vehicles = checkScheduledForVehicle(vehicles, consignment);
+                }
                 if (vehicles.size() > 0) {
-                    vehicles = checkMaintainForVehicle(vehicles, consignment);
-                    if (sche == ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue()) {
-                        vehicles = checkScheduledForVehicle(vehicles, consignment);
-                    }
-                    if (vehicles.size() > 0) {
-                        if (vehicles.size() >= size) {
-                            result = checkDuplicate(result, vehicles);
-                        } else {
-                            List<Vehicle> vehicleSmaller = findByWeightSmaller(weight);
-                            if (vehicleSmaller.size() > 0) {
-                                vehicleSmaller = checkMaintainForVehicle(vehicleSmaller, consignment);
-                                if (sche == ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue()) {
-                                    vehicleSmaller = checkScheduledForVehicle(vehicleSmaller, consignment);
-                                }
-
-                                if (vehicleSmaller.size() > 0 && vehicleSmaller.size() >= (size - vehicles.size())) {
-                                    vehicles.addAll(vehicleSmaller);
-                                    result = checkDuplicate(result, vehicles);
-                                } else {
-                                    vehicles.addAll(vehicleSmaller);
-                                    result = checkDuplicate(result, vehicles);
-                                }
-                            } else {
-                            }
-                        }
+                    if (vehicles.size() >= size) {
+                        result = checkDuplicate(result, vehicles);
                     } else {
-                        if (result.size() > 0) {
-                            result = new ArrayList<>();
-                        }
                         List<Vehicle> vehicleSmaller = findByWeightSmaller(weight);
                         if (vehicleSmaller.size() > 0) {
                             vehicleSmaller = checkMaintainForVehicle(vehicleSmaller, consignment);
                             if (sche == ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue()) {
                                 vehicleSmaller = checkScheduledForVehicle(vehicleSmaller, consignment);
                             }
+
                             if (vehicleSmaller.size() > 0 && vehicleSmaller.size() >= (size - vehicles.size())) {
+                                vehicles.addAll(vehicleSmaller);
                                 result = checkDuplicate(result, vehicles);
                             } else {
+                                vehicles.addAll(vehicleSmaller);
                                 result = checkDuplicate(result, vehicles);
                             }
                         } else {
                         }
                     }
-
                 } else {
-
+                    if (result.size() > 0) {
+                        result = new ArrayList<>();
+                    }
                     List<Vehicle> vehicleSmaller = findByWeightSmaller(weight);
                     if (vehicleSmaller.size() > 0) {
                         vehicleSmaller = checkMaintainForVehicle(vehicleSmaller, consignment);
@@ -277,16 +250,33 @@ public class VehicleServiceImpl implements VehicleService {
                             vehicleSmaller = checkScheduledForVehicle(vehicleSmaller, consignment);
                         }
                         if (vehicleSmaller.size() > 0 && vehicleSmaller.size() >= (size - vehicles.size())) {
-//                            vehicles.addAll(vehicleSmaller);
-                            result = checkDuplicate(result, vehicleSmaller);
+                            result = checkDuplicate(result, vehicles);
                         } else {
-//                            vehicles.addAll(vehicleSmaller);
-                            result = checkDuplicate(result, vehicleSmaller);
+                            result = checkDuplicate(result, vehicles);
                         }
                     } else {
-                        //vehicleBigger size = 0
                     }
                 }
+
+            } else {
+
+                List<Vehicle> vehicleSmaller = findByWeightSmaller(weight);
+                if (vehicleSmaller.size() > 0) {
+                    vehicleSmaller = checkMaintainForVehicle(vehicleSmaller, consignment);
+                    if (sche == ScheduleConsginmentEnum.SCHEDULE_CHECK.getValue()) {
+                        vehicleSmaller = checkScheduledForVehicle(vehicleSmaller, consignment);
+                    }
+                    if (vehicleSmaller.size() > 0 && vehicleSmaller.size() >= (size - vehicles.size())) {
+//                            vehicles.addAll(vehicleSmaller);
+                        result = checkDuplicate(result, vehicleSmaller);
+                    } else {
+//                            vehicles.addAll(vehicleSmaller);
+                        result = checkDuplicate(result, vehicleSmaller);
+                    }
+                } else {
+                    //vehicleBigger size = 0
+                }
+            }
 //            }
 
         }
@@ -296,80 +286,60 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<ScheduleForConsignmentDTO> findScheduleForFuture(List<Vehicle> vehicles, Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO) {
-        boolean flag = true;
+        boolean flag;
         int flagInt;
-        List<ScheduleForConsignmentDTO> scheduleForLocationDTOS = new ArrayList<>();
-        List<Vehicle> result = new ArrayList<>();
+        List<ScheduleForConsignmentDTO> scheduleForLocationDTOS;
         List<ScheduleForConsignmentDTO> scheduleResult = new ArrayList<>();
 
-        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
+        ScheduleForConsignmentDTO scheduleForLocationDTO;
         for (int i = 0; i < vehicles.size(); i++) {
             flag = true;
             scheduleForLocationDTOS = checkScheduleForVehicle(vehicles.get(i).getId());
             if (scheduleForLocationDTOS.size() > 0) {
                 for (int j = 0; j < scheduleForLocationDTOS.size(); j++) {
-
                     scheduleForLocationDTO = scheduleForLocationDTOS.get(j);
                     flagInt = checkVehicleSchedule(scheduleForLocationDTO, consignment, flag);
                     if (flagInt == 1) {
-//                        for(int f = j; f<scheduleForLocationDTOS.size();f++){
-//                            int flagTmp = checkVehicleSchedule(scheduleForLocationDTO, consignment, flag);
-//                            if(flagTmp == -1)
-//                        }
-//                        scheduleResult.add(scheduleForLocationDTO);
                         flag = false;
                     } else if (flagInt == 0) {
-//                        flag = true;
-//                        j = scheduleForLocationDTOS.size();
                     } else if (flagInt == -1) {
                         j = scheduleForLocationDTOS.size();
                         flag = true;
                     }
                 }
                 if (!flag) {
-                    int count  = 0;
+                    int count = 0;
                     int min = checkVehicleScheduleDeli(scheduleForLocationDTOS.get(0), consignment);
                     scheduleForLocationDTO = scheduleForLocationDTOS.get(0);
-
                     int max = checkVehicleScheduleDeli(scheduleForLocationDTOS.get(0), consignment);
                     ScheduleForConsignmentDTO scheduleForConsignmentDTOMAX = scheduleForLocationDTOS.get(0);
-
                     for (int j = 1; j < scheduleForLocationDTOS.size(); j++) {
                         int tmp = checkVehicleScheduleDeli(scheduleForLocationDTOS.get(j), consignment);
                         if (tmp > 0) {
                             if (min > tmp) {
                                 min = tmp;
                                 scheduleForLocationDTO = scheduleForLocationDTOS.get(j);
-                            }else if(min <=0){
+                            } else if (min <= 0) {
                                 min = tmp;
                                 scheduleForLocationDTO = scheduleForLocationDTOS.get(j);
                             }
                             count++;
-                        }else if( tmp <0){
-
+                        } else if (tmp < 0) {
                             if (max < tmp) {
                                 max = tmp;
                                 scheduleForConsignmentDTOMAX = scheduleForLocationDTOS.get(j);
-                            }else if(max <=0){
+                            } else if (max <= 0) {
                                 max = tmp;
                                 scheduleForConsignmentDTOMAX = scheduleForLocationDTOS.get(j);
                             }
-
                         }
                     }
-//                    if( ){
-                        if (count >0 &&checkVehicleScheduleDeli(scheduleForLocationDTO,consignment)!=0) {
-                            scheduleResult.add(scheduleForLocationDTO);
-                        }
-                        else if(count == 0 && checkVehicleScheduleDeli(scheduleForConsignmentDTOMAX,consignment)!=0 ){
-                            scheduleResult.add(scheduleForConsignmentDTOMAX);
-                        }
-//                    }
-
-//                    scheduleForLocationDTO.setVehicle_id(vehicles.get(i).getId());
-
+                    if (count > 0 && checkVehicleScheduleDeli(scheduleForLocationDTO, consignment) != 0) {
+                        scheduleResult.add(scheduleForLocationDTO);
+                    } else if (count == 0 && checkVehicleScheduleDeli(scheduleForConsignmentDTOMAX, consignment) != 0) {
+                        scheduleResult.add(scheduleForConsignmentDTOMAX);
+                    }
                 }
-
             }
         }
 
@@ -401,42 +371,42 @@ public class VehicleServiceImpl implements VehicleService {
 
         if (placeConsignmentRecei.getAddress() != null && placeScheduleDeli.getAddress() != null) {
 //            if(sdf.format(placeConsignmentRecei.getPlannedTime()).compareTo(sdf.format(placeScheduleRecei.getPlannedTime())) ==0){
-                diff = placeConsignmentRecei.getPlannedTime().getTime() - placeScheduleDeli.getPlannedTime().getTime();
-                int diffDays = (int) diff / (24 * 60 * 60 * 1000);
-                int diffHours = (int) diff / (60 * 60 * 1000) % 24;
-                if (diffDays == 0) {
-                    if (diffHours >= 1) {
-                        flagInt = 1;
+            diff = placeConsignmentRecei.getPlannedTime().getTime() - placeScheduleDeli.getPlannedTime().getTime();
+            int diffDays = (int) diff / (24 * 60 * 60 * 1000);
+            int diffHours = (int) diff / (60 * 60 * 1000) % 24;
+            if (diffDays == 0) {
+                if (diffHours >= 1) {
+                    flagInt = 1;
 //                    flag = false;
-                    } else if (diffHours <= -1) {
+                } else if (diffHours <= -1) {
 
-                        List<PlaceResponeDTO> listConsignmentDeli =
-                                getPlaceByTypePlace(places, TypeLocationEnum.DELIVERED_PLACE.getValue());
+                    List<PlaceResponeDTO> listConsignmentDeli =
+                            getPlaceByTypePlace(places, TypeLocationEnum.DELIVERED_PLACE.getValue());
 
-                        PlaceResponeDTO placeConsignmentDeli =
-                                getPlaceByTypePlaceAndPriority(places, listConsignmentDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
-                        if (placeConsignmentDeli.getAddress() != null && placeScheduleRecei.getAddress() != null) {
-                            diff = placeScheduleRecei.getPlannedTime().getTime() - placeConsignmentDeli.getPlannedTime().getTime();
-                            diffDays = (int) diff / (24 * 60 * 60 * 1000);
-                            diffHours = (int) diff / (60 * 60 * 1000) % 24;
-                            if (diffDays == 0) {
-                                if (diffHours >= 1) {
+                    PlaceResponeDTO placeConsignmentDeli =
+                            getPlaceByTypePlaceAndPriority(places, listConsignmentDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
+                    if (placeConsignmentDeli.getAddress() != null && placeScheduleRecei.getAddress() != null) {
+                        diff = placeScheduleRecei.getPlannedTime().getTime() - placeConsignmentDeli.getPlannedTime().getTime();
+                        diffDays = (int) diff / (24 * 60 * 60 * 1000);
+                        diffHours = (int) diff / (60 * 60 * 1000) % 24;
+                        if (diffDays == 0) {
+                            if (diffHours >= 1) {
 //                                flag = false;
-                                    flagInt = 1;
-                                } else {
-                                    flagInt = -1;
-//                                flag = true;
-                                }
+                                flagInt = 1;
                             } else {
-
+                                flagInt = -1;
+//                                flag = true;
                             }
+                        } else {
+
                         }
-                    } else {
-                        flagInt = -1; //trung'
                     }
                 } else {
-                    flagInt = 0;
+                    flagInt = -1; //trung'
                 }
+            } else {
+                flagInt = 0;
+            }
 //            }
 
         }
@@ -463,15 +433,15 @@ public class VehicleServiceImpl implements VehicleService {
 
         if (placeScheduleDeli.getAddress() != null && placeConsignmentRecei.getAddress() != null) {
             diff = placeConsignmentRecei.getPlannedTime().getTime() - placeScheduleDeli.getPlannedTime().getTime();
-            if(sdf.format(placeConsignmentRecei.getPlannedTime()).compareTo(sdf.format(placeScheduleRcei.getPlannedTime()))==0){
+            if (sdf.format(placeConsignmentRecei.getPlannedTime()).compareTo(sdf.format(placeScheduleRcei.getPlannedTime())) == 0) {
                 int diffHours = (int) diff / (60 * 60 * 1000) % 24;
 
-                if (diffHours >= 1 ) {
+                if (diffHours >= 1) {
                     result = diffHours;
-                }else if(diffHours<=-1){
+                } else if (diffHours <= -1) {
                     result = diffHours;
                 }
-            }else if(sdf.format(placeConsignmentRecei.getPlannedTime()).compareTo(sdf.format(placeScheduleRcei.getPlannedTime()))>0){
+            } else if (sdf.format(placeConsignmentRecei.getPlannedTime()).compareTo(sdf.format(placeScheduleRcei.getPlannedTime())) > 0) {
 
             }
 
@@ -480,6 +450,7 @@ public class VehicleServiceImpl implements VehicleService {
         return result;
 
     }
+
     private List<Vehicle> checkMaintainForVehicle(List<Vehicle> vehicles, Consignment consignment) {
 
         boolean flag = true;
@@ -493,16 +464,16 @@ public class VehicleServiceImpl implements VehicleService {
 //            VehicleForDetailDTO vehicle = vehicleService.findVehicleById(vehicles.get(i).getId());
             //check xe co lich bao tri trong tuong lai
             maintainCheckDTO = maintainanceService.checkMaintainForVehicle(vehicles.get(i).getId());
-            if(maintainCheckDTO.size()>0){
-                for(int m =0; m< maintainCheckDTO.size(); m++){
+            if (maintainCheckDTO.size() > 0) {
+                for (int m = 0; m < maintainCheckDTO.size(); m++) {
                     if (maintainCheckDTO.get(m).getId() != null) {
 
-                        if(maintainCheckDTO.get(m).getActualMaintainDate()!=null){
+                        if (maintainCheckDTO.get(m).getActualMaintainDate() != null) {
                             flag = checkDateMaintain(consignment, maintainCheckDTO.get(m), flag);
                             if (flag) {
 //                        result.add(vehicles.get(i));
                                 m = maintainCheckDTO.size();
-                            }else{
+                            } else {
                                 flag = false;
 
                             }
@@ -512,7 +483,7 @@ public class VehicleServiceImpl implements VehicleService {
 
                     }
                 }
-            }else{
+            } else {
                 result.add(vehicles.get(i));
             }
 
@@ -524,46 +495,46 @@ public class VehicleServiceImpl implements VehicleService {
         return result;
     }
 
-    private PlaceResponeDTO getPlaceByTypePlaceAndPriority(List<Place> places, int priority, int type){
+    private PlaceResponeDTO getPlaceByTypePlaceAndPriority(List<Place> places, int priority, int type) {
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
         Place place = new Place();
-        for(int i = 0; i< places.size(); i++){
-            if(places.get(i).getPriority() == priority && places.get(i).getType() == type){
+        for (int i = 0; i < places.size(); i++) {
+            if (places.get(i).getPriority() == priority && places.get(i).getType() == type) {
                 place = places.get(i);
             }
         }
-        if(place!= null){
+        if (place != null) {
             placeResponeDTO = placeResponeDTO.convertPlace(place);
         }
 
-        return  placeResponeDTO;
+        return placeResponeDTO;
     }
 
-    private List<PlaceResponeDTO> getPlaceByTypePlace(List<Place> places,  int type){
+    private List<PlaceResponeDTO> getPlaceByTypePlace(List<Place> places, int type) {
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
         List<PlaceResponeDTO> placeResponeDTOS = new ArrayList<>();
         List<Place> placesResult = new ArrayList<>();
-        for(int i = 0; i< places.size(); i++){
-            if(places.get(i).getType() == type){
+        for (int i = 0; i < places.size(); i++) {
+            if (places.get(i).getType() == type) {
                 placesResult.add(places.get(i));
             }
         }
-        if(places!= null){
+        if (places != null) {
             placeResponeDTOS = placeResponeDTO.mapToListResponse(placesResult);
         }
 
-        return  placeResponeDTOS;
+        return placeResponeDTOS;
     }
 
     private boolean checkDateMaintain(Consignment consignment, MaintainCheckDTO maintainCheckDTO, boolean flag) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         List<Place> places = new ArrayList<>();
         places = (List<Place>) consignment.getPlaces();
-        PlaceResponeDTO placeSchedulePriorityRecei =   getPlaceByTypePlaceAndPriority(places, priorityPlace, TypeLocationEnum.DELIVERED_PLACE.getValue());
+        PlaceResponeDTO placeSchedulePriorityRecei = getPlaceByTypePlaceAndPriority(places, priorityPlace, TypeLocationEnum.DELIVERED_PLACE.getValue());
 
         //list place delivery of a consignment
         List<PlaceResponeDTO> placeConsgimentsPriorityDeli =
-               getPlaceByTypePlace(places, TypeLocationEnum.DELIVERED_PLACE.getValue());
+                getPlaceByTypePlace(places, TypeLocationEnum.DELIVERED_PLACE.getValue());
 
         //receive and priority =1
         if (placeSchedulePriorityRecei != null) {
@@ -585,6 +556,7 @@ public class VehicleServiceImpl implements VehicleService {
         }
         return flag;
     }
+
     @Override
     public List<Vehicle> checkScheduledForVehicle(List<Vehicle> vehicles, Consignment consignment) {
         boolean flag = true;
@@ -633,7 +605,7 @@ public class VehicleServiceImpl implements VehicleService {
             if (scheduleForLocationDTOS.size() > 0) {
                 for (int i = 0; i < scheduleForLocationDTOS.size(); i++) {
                     flag = true;
-                    List<PlaceResponeDTO> listDeli = placeService.getPlaceByTypePlace(scheduleForLocationDTOS.get(i).getConsignment().getId(),TypeLocationEnum.DELIVERED_PLACE.getValue());
+                    List<PlaceResponeDTO> listDeli = placeService.getPlaceByTypePlace(scheduleForLocationDTOS.get(i).getConsignment().getId(), TypeLocationEnum.DELIVERED_PLACE.getValue());
                     PlaceResponeDTO deliveryDetail = placeService.getPlaceByTypePlaceAndPriority(scheduleForLocationDTOS.get(i).getConsignment().getId(), listDeli.size(), TypeLocationEnum.DELIVERED_PLACE.getValue());
                     if (deliveryDetail.getPlannedTime() != null) {
                         String datePlace = sdf.format(deliveryDetail.getPlannedTime());
@@ -668,7 +640,7 @@ public class VehicleServiceImpl implements VehicleService {
     private boolean checkDateConsignmentAndSchedule(ScheduleForConsignmentDTO scheduleForLocationDTO, Consignment consignment, boolean flag) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         flag = true;
-        List<Place>  places = (List<Place>) consignment.getPlaces();
+        List<Place> places = (List<Place>) consignment.getPlaces();
         List<PlaceResponeDTO> listScheduleDeli =
                 placeService.getPlaceByTypePlace(scheduleForLocationDTO.getConsignment().getId(), TypeLocationEnum.DELIVERED_PLACE.getValue());
 //
@@ -720,7 +692,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public int updateStatus(int status, int id) {
 //       Vehicle vehicle= vehicleRepository.updateStatusVehicle(status, id);
-       return  vehicleRepository.updateStatusVehicle(status, id);
+        return vehicleRepository.updateStatusVehicle(status, id);
     }
 
     @Override
@@ -733,11 +705,11 @@ public class VehicleServiceImpl implements VehicleService {
     public String findLicensePlatesForMakingReportBeforeRunningOrWhileRunning(List<Integer> status, String username) {
         List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsername(status, username);
 
-        if (schedules.size() > 0){
+        if (schedules.size() > 0) {
             List<ObjectToSortForSchedule> objectToSortForSchedules = new ArrayList<>();
             schedules.forEach(s -> {
                 List<Place> places = new ArrayList<>(s.getConsignment().getPlaces());
-                objectToSortForSchedules.add(new ObjectToSortForSchedule(s, places.get(0).getPlannedTime(), places.get(places.size()-1).getActualTime()));
+                objectToSortForSchedules.add(new ObjectToSortForSchedule(s, places.get(0).getPlannedTime(), places.get(places.size() - 1).getActualTime()));
             });
             objectToSortForSchedules.sort(Comparator.comparing(ObjectToSortForSchedule::getPlannedTime));
             schedules.removeAll(schedules);
@@ -745,12 +717,12 @@ public class VehicleServiceImpl implements VehicleService {
                 schedules.add(objectToSortForSchedule.getSchedule());
             });
 
-            if (schedules.size() > 0){
+            if (schedules.size() > 0) {
                 return schedules.get(0).getVehicle().getLicensePlates();
-            }else{
+            } else {
                 return null;
             }
-        }else{
+        } else {
             return null;
         }
     }
@@ -760,11 +732,11 @@ public class VehicleServiceImpl implements VehicleService {
     public String findLicensePlatesForMakingReportAfterRunning(List<Integer> status, String username) {
         List<Schedule> schedules = scheduleRepository.findByConsignmentStatusAndUsername(status, username);
 
-        if (schedules.size() > 0){
+        if (schedules.size() > 0) {
             List<ObjectToSortForSchedule> objectToSortForSchedules = new ArrayList<>();
             schedules.forEach(s -> {
                 List<Place> places = new ArrayList<>(s.getConsignment().getPlaces());
-                objectToSortForSchedules.add(new ObjectToSortForSchedule(s, places.get(0).getPlannedTime(), places.get(places.size()-1).getActualTime()));
+                objectToSortForSchedules.add(new ObjectToSortForSchedule(s, places.get(0).getPlannedTime(), places.get(places.size() - 1).getActualTime()));
             });
             objectToSortForSchedules.sort(Comparator.comparing(ObjectToSortForSchedule::getActualTime));
             schedules.removeAll(schedules);
@@ -772,12 +744,12 @@ public class VehicleServiceImpl implements VehicleService {
                 schedules.add(objectToSortForSchedule.getSchedule());
             });
 
-            if (schedules.size() > 0){
-                return schedules.get(schedules.size()-1).getVehicle().getLicensePlates();
-            }else{
+            if (schedules.size() > 0) {
+                return schedules.get(schedules.size() - 1).getVehicle().getLicensePlates();
+            } else {
                 return null;
             }
-        }else{
+        } else {
             return null;
         }
     }

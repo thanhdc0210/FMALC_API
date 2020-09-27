@@ -155,7 +155,7 @@ public class ReportIssueServiceImpl implements ReportIssueService {
     @Override
     public Paging getAllIssue(String username,int pagecurrent) {
         Paging paging = new Paging();
-        Pageable firstPageWithTwoElements = PageRequest.of(pagecurrent, paging.getNumberElements(), Sort.by("status").descending().and(Sort.by("id").descending()));
+        Pageable firstPageWithTwoElements = PageRequest.of(pagecurrent, paging.getNumberElements(), Sort.by("status").ascending().and(Sort.by("id").descending()));
         List<ReportIssueDTO> reportIssues = new ArrayList<>();
         Account account = accountRepository.findByUsername(username);
         if(account.getRole().getRole().equals(ADMIN)){

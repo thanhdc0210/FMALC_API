@@ -149,24 +149,7 @@ public class ConsignmentController {
     @PostMapping
     public ResponseEntity<NewScheduleDTO> createConsignment(@RequestBody ConsignmentRequestDTO consignmentRequestDTO) {
         try {
-            NewScheduleDTO newScheduleDTO = new NewScheduleDTO();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", Locale.getDefault());
-            sdf.setTimeZone(TimeZone.getTimeZone(""));
-            Consignment consignment;
-            ConsignmentResponseDTO consignmentResponseDTO = new ConsignmentResponseDTO();
-            consignmentRequestDTO.setImageConsignment("sdsaas");
-            consignment = consignmentService.consignmentConfirm(consignmentRequestDTO);
-            ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
-            List<Vehicle> vehicles =
-                    vehicleService.findVehicleForSchedule(consignment, consignmentRequestDTO, ScheduleConsginmentEnum.SCHEDULE_NOT_CHECK.getValue());
-            List<ScheduleForConsignmentDTO> scheduleForLocationDTOS =
-                    vehicleService.findScheduleForFuture(vehicles, consignment, consignmentRequestDTO);
-            consignmentResponseDTO = consignmentResponseDTO.mapToResponse(consignment);
-            scheduleForLocationDTO.setConsignment(consignmentResponseDTO);
-            scheduleForLocationDTOS.add(scheduleForLocationDTO);
-            ParkingDTO parkingDTO = parkingService.getParking();
-            newScheduleDTO.setParkingDTO(parkingDTO);
-            newScheduleDTO.setScheduleForConsignmentDTOS(scheduleForLocationDTOS);
+            NewScheduleDTO newScheduleDTO = consignmentService.findVehicleDriver(consignmentRequestDTO);
             return ResponseEntity.ok().body(newScheduleDTO);
         } catch (Exception ex) {
             return ResponseEntity.badRequest().build();

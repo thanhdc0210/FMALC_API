@@ -582,7 +582,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     private boolean checkSchedule(int id, String dateC) {
 //        boolean flag = true;
-        ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
+            ScheduleForConsignmentDTO scheduleForLocationDTO = new ScheduleForConsignmentDTO();
         List<Driver> k = new ArrayList<>();
         java.util.Date result = new java.util.Date();
         List<ScheduleForConsignmentDTO> scheduleForConsignmentDTOS = new ArrayList<>();
