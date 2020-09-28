@@ -27,7 +27,7 @@ public interface AccountNotificationRepository extends JpaRepository<AccountNoti
 
     AccountNotification findByNotification_IdAndAccount_Username(Integer notificationId, String username);
 
-    int countAllByAccount_UsernameAndStatusIsFalseAndNotification_TypeNot(String username, Integer type);
+    int countAllByAccount_UsernameAndStatusIsFalseAndNotification_TypeNotIn(String username, List<Integer> type);
 
-    List<AccountNotification> findTop4ByAccount_UsernameAndStatusIsFalseAndNotification_TypeNot(String username, int type);
+    List<AccountNotification> findTop4ByAccount_UsernameAndStatusIsFalseAndNotification_TypeNotIn(String username, List<Integer> type);
 }
