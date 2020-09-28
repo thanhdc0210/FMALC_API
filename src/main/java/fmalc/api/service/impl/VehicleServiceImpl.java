@@ -747,11 +747,6 @@ public class VehicleServiceImpl implements VehicleService {
                 schedules.add(objectToSortForSchedule.getSchedule());
             });
 
-<<<<<<< HEAD
-            if (schedules.size() > 0) {
-                return schedules.get(schedules.size() - 1).getVehicle().getLicensePlates();
-            } else {
-=======
             if (schedules.size() > 0){
                 Schedule schedule = schedules.get(schedules.size()-1);
                 List<Place> places = new ArrayList<Place>(schedule.getConsignment().getPlaces());
@@ -764,7 +759,6 @@ public class VehicleServiceImpl implements VehicleService {
                     return null;
                 }
             }else{
->>>>>>> 2641dc6989dc8ee6c41c03adcf74f5a27f055982
                 return null;
             }
         } else {

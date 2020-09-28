@@ -71,7 +71,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     public Consignment save(ConsignmentRequestDTO consignmentRequestDTO){
         ModelMapper modelMapper = new ModelMapper();
         Consignment consignment = new ConsignmentRequestDTO().convertEntity(consignmentRequestDTO);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", new Locale("en","UK"));
         sdf.setTimeZone(TimeZone.getTimeZone(""));
         List<Place> places = consignmentRequestDTO.getPlace().stream()
                 .map(x -> modelMapper.map(x, Place.class))
