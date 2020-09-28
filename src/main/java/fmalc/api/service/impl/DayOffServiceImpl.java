@@ -250,9 +250,9 @@ public class DayOffServiceImpl implements DayOffService {
                         notificationRequestDTO.setVehicle_id(null);
                         notificationRequestDTO.setDriver_id(driver.getId());
                         notificationRequestDTO.setStatus(false);
-                        notificationRequestDTO.setType(NotificationTypeEnum.MAINTAIN_SCHEDULE.getValue());
+                        notificationRequestDTO.setType(NotificationTypeEnum.APPROVED.getValue());
                         notificationRequestDTO.setContent("Đơn xin nghỉ của bạn từ " +
-                                dayOff.getStartDate() + " >> " + dayOff.getEndDate() + " được chấp nhận");
+                                dayOff.getStartDate() + " -> " + dayOff.getEndDate() + " được chấp nhận");
                         notificationService.createNotification(notificationRequestDTO);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -289,9 +289,9 @@ public class DayOffServiceImpl implements DayOffService {
                     notificationRequestDTO.setVehicle_id(null);
                     notificationRequestDTO.setDriver_id(dayOff.getDriver().getId());
                     notificationRequestDTO.setStatus(false);
-                    notificationRequestDTO.setType(NotificationTypeEnum.MAINTAIN_SCHEDULE.getValue());
+                    notificationRequestDTO.setType(NotificationTypeEnum.REJECTED.getValue());
                     notificationRequestDTO.setContent("Đơn xin nghỉ của bạn từ " +
-                            dayOff.getStartDate() + " >> " + dayOff.getEndDate() + " bị từ chối");
+                            dayOff.getStartDate() + " -> " + dayOff.getEndDate() + " bị từ chối");
                     notificationService.createNotification(notificationRequestDTO);
                 } catch (Exception e) {
                     e.printStackTrace();

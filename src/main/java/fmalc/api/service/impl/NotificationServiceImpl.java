@@ -76,7 +76,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         ) {
 //            if( dto.getType() == NotificationTypeEnum.ALERT.getValue()){
-                if(dto.getContent()==null){
+                if(dto.getContent().contains("|")){
                     notify.setContent("Tài xế: "+driver.getName()+" đã gửi yêu cầu nghỉ phép");
                 }else{
                     notify.setContent("Tài xế: "+driver.getName()+" đã gửi yêu cầu xin nghỉ đột xuất");
@@ -84,7 +84,8 @@ public class NotificationServiceImpl implements NotificationService {
 
             notify.setVehicle(null);
         } else {
-            if(dto.getVehicle_id()>0){
+
+            if(dto.getVehicle_id() != null && dto.getVehicle_id()>0){
                 Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
                 if( dto.getType() == NotificationTypeEnum.ALERT.getValue()){
                     notify.setContent("Tài xế: "+driver.getName()+" đang lái xe: "+vehicle.getLicensePlates()+" đã"+dto.getContent());
