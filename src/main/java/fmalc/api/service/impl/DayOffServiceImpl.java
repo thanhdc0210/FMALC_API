@@ -244,7 +244,7 @@ public class DayOffServiceImpl implements DayOffService {
                 dayOff.setIsApprove(DayOffEnum.APPROVED.getValue());
 
 
-                if (dayOffRepository.save(dayOff) != null) {
+                if (dayOffRepository.save(dayOff) != null){
                     try {
                         NotificationRequestDTO notificationRequestDTO = new NotificationRequestDTO();
                         notificationRequestDTO.setVehicle_id(null);
