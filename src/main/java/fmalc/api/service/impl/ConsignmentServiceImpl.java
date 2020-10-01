@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -68,7 +69,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     }
 
     @Override
-    public Consignment save(ConsignmentRequestDTO consignmentRequestDTO){
+    public Consignment save(ConsignmentRequestDTO consignmentRequestDTO) throws ParseException {
         ModelMapper modelMapper = new ModelMapper();
         Consignment consignment = new ConsignmentRequestDTO().convertEntity(consignmentRequestDTO);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", new Locale("en","UK"));
@@ -81,6 +82,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 
         for (Place place : places) {
             place.setConsignment(consignment);
+//            place.setPlannedTime((Timestamp) sdf.parse(sdf.format(place.getPlannedTime())));
             placeRepository.save(place);
         }
 

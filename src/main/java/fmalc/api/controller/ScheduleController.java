@@ -326,22 +326,44 @@ public class ScheduleController {
                     return o1.getWeight().compareTo(o2.getWeight());
                 }
             });
-            for (int i = 0; i < sizeVehicle; i++) {
-                if (scheduleds.size() > 0) {
-                    for (int s = 0; s < scheduleds.size(); s++) {
-                        if (vehicles.get(i).getId() != scheduleds.get(s).getVehicle().getId() && !vehiclesSave.contains(vehicles.get(i))) {
-                            vehiclesSave.add(vehicles.get(i));
+            List<VehicleConsignmentDTO> vehicleConsignmentDTOS = consignmentRequestDTO.getVehicles();
+            for(int  v =0; v<vehicleConsignmentDTOS.size(); v++){
+                List<Vehicle> vehiclesTmp = new ArrayList<>();
+                int size = Integer.parseInt(vehicleConsignmentDTOS.get(v).getQuantity());
+                for (int i = 0; i < vehicles.size(); i++) {
+                    if (scheduleds.size() > 0) {
+                        for (int s = 0; s < scheduleds.size(); s++) {
+                            if (vehicles.get(i).getId() != scheduleds.get(s).getVehicle().getId() && !vehiclesSave.contains(vehicles.get(i))) {
+                                if(vehicles.get(i).getWeight()>=  Double.parseDouble(vehicleConsignmentDTOS.get(v).getWeight())){
+                                    if(!vehiclesTmp.contains(vehicles.get(i))){
+                                        vehiclesTmp.add(vehicles.get(i));
+                                        if(size>0){
+                                            size--;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (!vehiclesSave.contains(vehicles.get(i))) {
+                            if(vehicles.get(i).getWeight()>=  Double.parseDouble(vehicleConsignmentDTOS.get(v).getWeight())){
+                                if(!vehiclesTmp.contains(vehicles.get(i))){
+                                    vehiclesTmp.add(vehicles.get(i));
+                                    if(size>0){
+                                        size--;
+                                    }
+                                }
+                            }
+//                            vehiclesSave.add(vehicles.get(i));
                         }
                     }
-
-                } else {
-                    if (!vehiclesSave.contains(vehicles.get(i))) {
-                        vehiclesSave.add(vehicles.get(i));
+                    if(size == 0){
+                        vehiclesSave.addAll(vehiclesTmp);
+                        break;
                     }
-
                 }
-
             }
+
 //            scheduleToConfirmDTO.setVehicles(vehicleForDetailDTO.mapToListResponse(vehiclesSave));
             scheduleToConfirmDTO.setVehicleForDetailDTOS(vehicleForDetailDTO.mapToListResponse(vehiclesSave));
         } else if (vehiclesSave.size() > 0 && vehiclesSave.size() < sizeVehicle) {
