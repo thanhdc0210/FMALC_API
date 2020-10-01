@@ -104,7 +104,7 @@ public class NotificationServiceImpl implements NotificationService {
             Notification notification = notificationRepository.save(notify);
 
             if (notification != null) {
-                if(  !notification.getContent().contains("Bạn có lịch đi bảo trì")){
+                if(  !notification.getContent().contains("Bạn có lịch đi bảo trì") && !notification.getContent().contains("Đơn xin nghỉ của bạn từ")){
                     List<Account> accounts = accountRepository.findAllByIsActiveIsTrueAndRole_Role("ROLE_ADMIN");
 
                     accounts.add(accountRepository.findById(driver.getFleetManager().getAccount().getId()).get());
@@ -165,6 +165,7 @@ public class NotificationServiceImpl implements NotificationService {
                                 } catch (FirebaseMessagingException e) {
                                     e.printStackTrace();
                                     logger.info("Fail to send firebase notification " + e.getMessage());
+                                    return null;    
                                 }
                             }else{
                                 return null;

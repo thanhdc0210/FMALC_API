@@ -107,7 +107,7 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
         if (maintenanceType == null) {
             maintenanceType = new MaintenanceType();
             maintenanceType.setMaintenanceTypeName("Loại 1");
-            maintenanceType.setContent("Thay nhớt, kiểm tra lốp, kiểm tra thắng,...");
+            maintenanceType.setContent("kiểm tra các chi tiết như dầu máy, lọc gió động cơ, lọc gió điều hòa, mực dầu thắng, dầu hộp số, nước làm mát, nước rửa kính....");
             maintenanceType.setKilometersNumber(5000);
             maintenanceTypeRepository.save(maintenanceType);
         }
@@ -119,14 +119,14 @@ public class BootstrapData implements ApplicationListener<ContextRefreshedEvent>
             maintenanceType.setKilometersNumber(10000);
             maintenanceTypeRepository.save(maintenanceType);
         }
-        maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 3");
-        if (maintenanceType == null) {
-            maintenanceType = new MaintenanceType();
-            maintenanceType.setMaintenanceTypeName("Loại 3");
-            maintenanceType.setContent("kiểm tra các chi tiết như dầu máy, lọc gió động cơ, lọc gió điều hòa, mực dầu thắng, dầu hộp số, nước làm mát, nước rửa kính....");
-            maintenanceType.setKilometersNumber(5000);
-            maintenanceTypeRepository.save(maintenanceType);
-        }
+//        maintenanceType = maintenanceTypeRepository.findByMaintenanceTypeName("Loại 3");
+//        if (maintenanceType == null) {
+//            maintenanceType = new MaintenanceType();
+//            maintenanceType.setMaintenanceTypeName("Loại 3");
+//            maintenanceType.setContent("kiểm tra các chi tiết như dầu máy, lọc gió động cơ, lọc gió điều hòa, mực dầu thắng, dầu hộp số, nước làm mát, nước rửa kính....");
+//            maintenanceType.setKilometersNumber(5000);
+//            maintenanceTypeRepository.save(maintenanceType);
+//        }
     }
 
     private void cronJob() {
