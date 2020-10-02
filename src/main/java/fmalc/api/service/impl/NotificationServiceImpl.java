@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
@@ -76,7 +77,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         ) {
 //            if( dto.getType() == NotificationTypeEnum.ALERT.getValue()){
-                if(dto.getContent()==null){
+                if(dto.getContent().contains("|")){
                     notify.setContent("Tài xế: "+driver.getName()+" đã gửi yêu cầu nghỉ phép");
                 }else{
                     notify.setContent("Tài xế: "+driver.getName()+" đã gửi yêu cầu xin nghỉ đột xuất");
@@ -84,7 +85,8 @@ public class NotificationServiceImpl implements NotificationService {
 
             notify.setVehicle(null);
         } else {
-            if(dto.getVehicle_id()>0){
+
+            if(dto.getVehicle_id() != null && dto.getVehicle_id()>0){
                 Vehicle vehicle = vehicleRepository.findById(dto.getVehicle_id()).get();
                 if( dto.getType() == NotificationTypeEnum.ALERT.getValue()){
                     notify.setContent("Tài xế: "+driver.getName()+" đang lái xe: "+vehicle.getLicensePlates()+" đã"+dto.getContent());
@@ -186,9 +188,9 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public NotificationUnread countNotificationUnread(String username) {
         NotificationUnread result = new NotificationUnread();
-        result.setCount(accountNotificationRepository.countAllByAccount_UsernameAndStatusIsFalseAndNotification_TypeNot(username, 3));
+        result.setCount(accountNotificationRepository.countAllByAccount_UsernameAndStatusIsFalseAndNotification_TypeNotIn(username, Arrays.asList(3, 7, 8)));
         List<Notification> notifications = new ArrayList<>();
-        List<AccountNotification> accountNotifications = accountNotificationRepository.findTop4ByAccount_UsernameAndStatusIsFalseAndNotification_TypeNot(username, 3);
+        List<AccountNotification> accountNotifications = accountNotificationRepository.findTop4ByAccount_UsernameAndStatusIsFalseAndNotification_TypeNotIn(username, Arrays.asList(3, 7, 8));
         accountNotifications.stream().forEach(x -> notifications.add(x.getNotification()));
         result.setNotificationsUnread(new NotificationResponeDTO().mapToListResponse(notifications));
         return result;
