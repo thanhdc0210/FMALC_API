@@ -4,6 +4,7 @@ import fmalc.api.dto.PlaceResponeDTO;
 import fmalc.api.entity.*;
 import fmalc.api.repository.DriverRepository;
 import fmalc.api.repository.PlaceRepository;
+import fmalc.api.repository.ScheduleRepository;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ public class PlaceServiceImpl implements PlaceService {
 
     @Autowired
     LocationService locationService;
+
+    @Autowired
+    ScheduleRepository scheduleRepository;
 
     @Autowired
     DriverService driverService;
@@ -80,29 +84,35 @@ public class PlaceServiceImpl implements PlaceService {
         Place place = placeRepository.findById(id);
         PlaceResponeDTO placeResponeDTO = new PlaceResponeDTO();
         if(place!=null){
-//            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", Locale.getDefault());
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
-            place.setActualTime(timestamp);
-            place = placeRepository.save(place);
-            SimpleDateFormat simpleDateFormat =new SimpleDateFormat();
-            placeResponeDTO = placeResponeDTO.convertPlace(place);
+            List<Schedule> schedules = scheduleRepository.getScheduleByConsignmentId(place.getConsignment().getId());
             Consignment consignment = consignmentService.findById(place.getConsignment().getId());
-            List<Schedule> schedules = (List<Schedule>) consignment.getSchedules();
+            for( int i =0; i< schedules.size();i++){
+                if(schedules.get(i).getStatus() == consignment.getStatus()){
+                    if(i==schedules.size()-1){
+//                        if(statusToUpdateDTO.getConsignment_status()>=0){
+                            place.setActualTime(timestamp);
+                            place = placeRepository.save(place);
+//                        }
+                    }
+                }else{
+                    i = schedules.size();
+                }
+
+            }
+
+            placeResponeDTO = placeResponeDTO.convertPlace(place);
+
             List<Place> places = (List<Place>) consignment.getPlaces();
             List<Location> locations = new ArrayList<>();
-            Schedule schedule = new Schedule();
+            Schedule schedule;
             if(places.size()>0){
                 places.sort(Comparator.comparing(Place::getPlannedTime));
                 if(places.get(places.size()-1).getActualTime()!= null){
-
                         schedule = scheduleService.findById(idSchedule);
                         if(schedule.getInheritance()== null ){
                             locations.addAll(locationService.getListLocationBySchedule(idSchedule));
-//                            schedule = schedules.get(i);
-
                         }
-
                     if(locations.size()>0){
                         locations.sort(Comparator.comparing(Location::getTime));
                         long diff = places.get(places.size()-1).getActualTime().getTime() - locations.get(0).getTime().getTime();
@@ -110,7 +120,7 @@ public class PlaceServiceImpl implements PlaceService {
                         if(hours>0){
                             Driver driver = driverService.findById(schedule.getDriver().getId());
                             driver.setWorkingHour(hours);
-                            driver = driverRepository.save(driver);
+                            driverRepository.save(driver);
                         }
                     }
                 }

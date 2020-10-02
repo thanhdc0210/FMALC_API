@@ -2,6 +2,7 @@ package fmalc.api.repository;
 
 import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Schedule;
+import org.hibernate.sql.Select;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Repository
 @Transactional
-public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
+public interface  ScheduleRepository extends JpaRepository<Schedule, Integer> {
     List<Schedule> findByConsignment_Id(int consignmentId);
 
     @Query("select s from Schedule s where s.consignment.id=?1")
@@ -27,6 +28,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
 
     @Query("select s from  Schedule s where s.consignment.id =?1 and s.vehicle.id=?2")
     Schedule getScheduleByVehicleAndConsignment(int idCons, int idVehicle);
+
+    @Query("select  s from Schedule  s where  s.consignment.id=?1")
+    List<Schedule> getScheduleByConsignmentId(int idConsignment);;
 
     @Query("select  s from Schedule s where s.driver.id =?1")
     List<Schedule> checkDriverInScheduled(int idDriver);
@@ -46,10 +50,15 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
             " and s.isApprove = true")
     List<Schedule> findByConsignmentStatusAndUsername(@Param("status") List<Integer> status, @Param("username") String username);
 
-    @Modifying
-//    @Query(value = "update Schedule  s set s.vehicle.id= :idVehicle, s.driver.id= :idDriver, s.isApprove= :status where s.id=:id",nativeQuery = true)
-    @Query(value = "update schedule s set s.vehicle_id=:idVehicle, s.driver_id =:idDriver, s.is_approve=:status where s.id=:id", nativeQuery = true)
-    int updateStatusSchedule(@Param("idVehicle") int idVehicle, @Param("idDriver") int idDriver, @Param("status") int status, @Param("id") int id);
+//    @Modifying
+////    @Query(value = "update Schedule  s set s.vehicle.id= :idVehicle, s.driver.id= :idDriver, s.isApprove= :status where s.id=:id",nativeQuery = true)
+//    @Query(value = "update schedule s set s.vehicle_id=:idVehicle, s.driver_id =:idDriver, s.is_approve=:status where s.id=:id", nativeQuery = true)
+//    int updateStatusSchedule(@Param("idVehicle") int idVehicle, @Param("idDriver") int idDriver, @Param("status") int status, @Param("id") int id);
+
+//    @Modifying
+////    @Query(value = "update Schedule  s set s.vehicle.id= :idVehicle, s.driver.id= :idDriver, s.isApprove= :status where s.id=:id",nativeQuery = true)
+//    @Query(value = "update schedule s set s., s.driver_id =:idDriver, s.is_approve=:status where s.id=:id", nativeQuery = true)
+//    int updateStatusSchedule(@Param("idVehicle") int idVehicle, @Param("idDriver") int idDriver, @Param("status") int status, @Param("id") int id);
 
 
     List<Schedule> findScheduleByConsignmentIdAndDriverIdAndIsApprove(Integer consignmentId, Integer driverId, boolean isApprove);

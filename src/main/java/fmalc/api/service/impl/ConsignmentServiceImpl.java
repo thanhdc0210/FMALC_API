@@ -72,8 +72,8 @@ public class ConsignmentServiceImpl implements ConsignmentService {
     public Consignment save(ConsignmentRequestDTO consignmentRequestDTO) throws ParseException {
         ModelMapper modelMapper = new ModelMapper();
         Consignment consignment = new ConsignmentRequestDTO().convertEntity(consignmentRequestDTO);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", new Locale("en","UK"));
-        sdf.setTimeZone(TimeZone.getTimeZone(""));
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z", new Locale("en","UK"));
+//        sdf.setTimeZone(TimeZone.getTimeZone(""));
         List<Place> places = consignmentRequestDTO.getPlace().stream()
                 .map(x -> modelMapper.map(x, Place.class))
                 .collect(Collectors.toList());
@@ -144,19 +144,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
                         } else {
                             page = consignmentRepository.findConsignmentByStatusId(id, status, pageable);
                         }
-                        consignmentListDTOS =detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
-                        if (consignmentListDTOS.size() > 0) {
-                            if (paging.getList() != null) {
-                                paging.getList().addAll(consignmentListDTOS);
-                            } else {
-                                paging.setList(consignmentListDTOS);
-                            }
-                        } else {
-                            paging.setList(new ArrayList());
-                        }
-                        paging.setTotalPage(page.getTotalPages());
-                        paging.setPageCurrent(pageCurrent);
-                        return paging;
+                        return getPaging(pageCurrent, paging, page);
                     } catch (NumberFormatException e) {
                         return paging;
                     }
@@ -167,21 +155,8 @@ public class ConsignmentServiceImpl implements ConsignmentService {
 
                     } else {
                         page = consignmentRepository.findAllByStatus(status, pageable);
-
                     }
-                    consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
-                    if (consignmentListDTOS.size() > 0) {
-                        if (paging.getList() != null) {
-                            paging.getList().addAll(consignmentListDTOS);
-                        } else {
-                            paging.setList(consignmentListDTOS);
-                        }
-                    } else {
-                        paging.setList(new ArrayList());
-                    }
-                    paging.setTotalPage(page.getTotalPages());
-                    paging.setPageCurrent(pageCurrent);
-                    return paging;
+                    return getPaging(pageCurrent, paging, page);
                 }
 
 
@@ -193,20 +168,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
                 } else {
                     page = consignmentRepository.findConsignmentByStatus(status, search, pageable);
                 }
-                consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
-                if (consignmentListDTOS.size() > 0) {
-                    if (paging.getList() != null) {
-                        paging.getList().addAll(consignmentListDTOS);
-                    } else {
-                        paging.setList(consignmentListDTOS);
-                    }
-                } else {
-                    paging.setList(new ArrayList());
-                }
-                paging.setTotalPage(page.getTotalPages());
-
-                paging.setPageCurrent(pageCurrent);
-                return paging;
+                return getPaging(pageCurrent, paging, page);
             }
         } else if(account.getRole().getRole().equals(FLEET)) {
             if (type == 0) {
@@ -220,19 +182,7 @@ public class ConsignmentServiceImpl implements ConsignmentService {
                         } else {
                             page = consignmentRepository.findConsignmentByStatusIdFleet(id, status, account.getId(), pageable);
                         }
-                        consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
-                        if (consignmentListDTOS.size() > 0) {
-                            if (paging.getList() != null) {
-                                paging.getList().addAll(consignmentListDTOS);
-                            } else {
-                                paging.setList(consignmentListDTOS);
-                            }
-                        } else {
-                            paging.setList(new ArrayList());
-                        }
-                        paging.setTotalPage(page.getTotalPages());
-                        paging.setPageCurrent(pageCurrent);
-                        return paging;
+                        return getPaging(pageCurrent, paging, page);
                     } catch (NumberFormatException e) {
                         return paging;
                     }
@@ -326,6 +276,23 @@ public class ConsignmentServiceImpl implements ConsignmentService {
                 return paging;
             }
         }
+        return paging;
+    }
+
+    private Paging getPaging(int pageCurrent, Paging paging, Page page) {
+        List<ConsignmentListDTO> consignmentListDTOS;
+        consignmentListDTOS = detailList(new ConsignmentListDTO().mapToListResponse(page.getContent()));
+        if (consignmentListDTOS.size() > 0) {
+            if (paging.getList() != null) {
+                paging.getList().addAll(consignmentListDTOS);
+            } else {
+                paging.setList(consignmentListDTOS);
+            }
+        } else {
+            paging.setList(new ArrayList());
+        }
+        paging.setTotalPage(page.getTotalPages());
+        paging.setPageCurrent(pageCurrent);
         return paging;
     }
 

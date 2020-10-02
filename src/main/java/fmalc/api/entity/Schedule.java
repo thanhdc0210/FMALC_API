@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -40,6 +41,9 @@ public class Schedule implements Serializable {
     @Column(name = "image_consignment", length = 500)
     private String imageConsignment;
 
+    @Column(name="status_schedule" , columnDefinition = "interger default 0")
+    @Value("${some.key:0}")
+    private int status;
     /**
      * Lý do cancel
      */

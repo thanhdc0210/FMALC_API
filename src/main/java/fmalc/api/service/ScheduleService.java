@@ -2,6 +2,7 @@
 package fmalc.api.service;
 
 import fmalc.api.dto.*;
+import fmalc.api.entity.Consignment;
 import fmalc.api.entity.Schedule;
 import fmalc.api.enums.SearchTypeForDriverEnum;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +13,8 @@ import java.util.List;
 
 
 public interface ScheduleService {
+    ScheduleToConfirmDTO scheduleConfirm (RequestObjectDTO requestObjectDTO, int driver_sub);
+    ScheduleToConfirmDTO scheduleReturn(Consignment consignment, ConsignmentRequestDTO consignmentRequestDTO, List<ScheduleForConsignmentDTO> scheduleds, int driver_sub);
     List<ScheduleForLocationDTO> getScheduleByConsignmentId(int id);
     List<Schedule> createSchedule(RequestSaveScheObjDTO requestSaveScheObjDTO , MultipartFile file);
     Schedule getScheduleByVehicleAndConsignment(int idCon, int idVehicle);
