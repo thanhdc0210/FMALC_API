@@ -7,10 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fmalc.api.dto.*;
 import fmalc.api.entity.*;
-import fmalc.api.enums.ConsignmentStatusEnum;
-import fmalc.api.enums.NotificationTypeEnum;
-import fmalc.api.enums.ScheduleConsginmentEnum;
-import fmalc.api.enums.SearchTypeForDriverEnum;
+import fmalc.api.enums.*;
 import fmalc.api.repository.ScheduleRepository;
 import fmalc.api.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -639,6 +636,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         status.setVehicle_status(vehicleService.updateStatus(statusToUpdateDTO.getVehicle_status(), schedule.getVehicle().getId()));
         status.setDriver_status(driverService.updateStatus(statusToUpdateDTO.getDriver_status(), schedule.getDriver().getId()));
 //
+//        if()
         schedule.setStatus(statusToUpdateDTO.getConsignment_status());
         Consignment consignment = consignmentService.findById(schedule.getConsignment().getId());
         if(consignment.getStatus()==0){
@@ -651,7 +649,11 @@ public class ScheduleServiceImpl implements ScheduleService {
                scheduleRepository.save(schedule);
            }
         }
-
+        consignment = consignmentService.findById(schedule.getConsignment().getId());
+        if(consignment.getStatus()== ConsignmentStatusEnum.COMPLETED.getValue()){
+            status.setDriver_status(driverService.updateStatus(DriverStatusEnum.AVAILABLE.getValue(), schedule.getDriver().getId()));
+//
+        }
 
         List<Schedule> schedules = scheduleRepository.getScheduleByConsignmentId(schedule.getConsignment().getId());
         for( int i =0; i< schedules.size();i++){

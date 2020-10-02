@@ -12,6 +12,7 @@ import fmalc.api.entity.Location;
 import fmalc.api.entity.Schedule;
 import fmalc.api.entity.Vehicle;
 import fmalc.api.enums.ConsignmentStatusEnum;
+import fmalc.api.enums.VehicleStatusEnum;
 import fmalc.api.service.ConsignmentService;
 import fmalc.api.service.LocationService;
 import fmalc.api.service.ScheduleService;
@@ -105,7 +106,7 @@ public class LocationController {
     public ResponseEntity<String> stopTracking(@PathVariable("id") int id) {
 //        List<ScheduleForConsignmentDTO>  list =vehicleService.checkScheduleForVehicle(id);
         Vehicle vehicle = vehicleService.findById(id);
-
+        vehicleService.updateStatus(VehicleStatusEnum.AVAILABLE.getValue(),id);
         List<Schedule> schedules = scheduleService.checkVehicleInScheduled(id);
         List<Schedule> result = new ArrayList<>();
         for (int i = 0; i < schedules.size(); i++) {
@@ -132,12 +133,6 @@ public class LocationController {
 
             }
 
-
-//            for (Map.Entry key : tracking.entrySet()) {
-//                if (schedules.contains(key.getValue()) && !result.contains(key.getValue())) {
-//                    tracking.remove(key);
-//                }
-//            }
         }
         if (tracking.size() <= 0) {
             intervals.subscribe((i) -> locationListForConsignment(id)).dispose();
